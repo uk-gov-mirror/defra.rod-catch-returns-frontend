@@ -1,4 +1,4 @@
-const logger = require('../lib/logging').logger
+const logger = require('node-js-logger')
 
 module.exports = async (payload) => {
   logger.info('Validate: ' + JSON.stringify(payload))

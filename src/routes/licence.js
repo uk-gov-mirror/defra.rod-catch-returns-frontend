@@ -8,10 +8,10 @@ module.exports = [
 
   // Test handler for direct output
   {
-    path: '/test1',
+    path: '/',
     method: 'GET',
-    handler: () => {
-      return 'test1'
+    handler: (request, h) => {
+      return h.redirect('/licence')
     }
   },
 
@@ -19,6 +19,12 @@ module.exports = [
   {
     path: '/licence',
     method: ['GET', 'POST'],
-    handler: licenceHandlerFnc
+    handler: licenceHandlerFnc,
+    options: {
+      auth: { mode: 'try' },
+      plugins: {
+        'hapi-auth-cookie': { redirectTo: false }
+      }
+    }
   }
 ]

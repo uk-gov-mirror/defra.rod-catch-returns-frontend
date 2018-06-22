@@ -3,7 +3,17 @@ require('dotenv').config()
 
 const Glue = require('glue')
 const Nunjucks = require('nunjucks')
-const Logging = require('./src/lib/logging')
+
+const logger = require('node-js-logger')
+const GoodWinston = require('good-winston')
+const goodWinstonStream = new GoodWinston({ winston: logger })
+
+logger.init({
+  level: 'info',
+  airbrakeKey: process.env.errbit_key,
+  airbrakeHost: process.env.errbit_server,
+  airbrakeLevel: 'error'
+})
 
 const manifest = {
 
@@ -31,7 +41,7 @@ const manifest = {
         plugin: require('good'),
         options: {
           reporters: {
-            winston: Logging.goodWinstonStream()
+            winston: [goodWinstonStream]
           }
         }
       },
@@ -58,17 +68,6 @@ const manifest = {
        */
       {
         plugin: require('hapi-auth-cookie')
-      },
-
-      /*
-       * Plugin to automatically load the routes based on their file location
-       * See https://www.npmjs.com/package/hapi-router
-       */
-      {
-        plugin: require('hapi-router'),
-        options: {
-          routes: './src/routes/**/*.js' // uses glob to include files
-        }
       }
     ]
   }
@@ -117,10 +116,32 @@ const options = {
       }
     })
 
+    // Set up default authentication strategy using cookies
+    server.auth.strategy('session', 'cookie', {
+      password: process.env.COOKIE_PW,
+      cookie: 'sid',
+      redirectTo: '/licence',
+      isSecure: false
+    })
+
+    server.auth.default('session')
+
+    /*
+     * Plugin to automatically load the routes based on their file location
+     * See https://www.npmjs.com/package/hapi-router. Run last so the default authentication
+     * strategy can be registered first
+     */
+    await server.register({
+      plugin: require('hapi-router'),
+      options: {
+        routes: './src/routes/**/*.js' // uses glob to include files
+      }
+    })
+
     await server.start()
-    Logging.logger.info(`Server started at ${server.info.uri}`)
+    logger.info(`Server started at ${server.info.uri}`)
   } catch (err) {
-    Logging.logger.error(err)
+    logger.error(err)
     process.exit(1)
   }
 })()
