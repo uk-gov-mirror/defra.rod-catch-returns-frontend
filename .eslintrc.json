@@ -1,0 +1,14 @@
+{
+    "extends": "standard",
+    "rules": {
+        "multiline-comment-style": [
+            "error",
+            "starred-block"
+        ]
+    },
+    "env": {
+        "node": true,
+        "browser": false,
+        "es6": true
+    }
+}

@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<main id="content">
+    <div tabindex="-1" aria-labelledby="make-corrections" role="group" class="summary">
+        <h1 class="heading-medium"><span id="title">Test 2</span></h1>
+    </div>
+    <form action="/licence" method="post">
+        <div class="form-group">
+            <label class="form-label" for="licence">Licence</label>
+            <input class="form-control" id="licence" name="licence" required>
+        </div>
+        <div class="form-group">
+            <input class="button" type="submit" id="continueBtn" value="Continue" accesskey="L">
+        </div>
+    </form>
+</main>
+{% endblock %}
