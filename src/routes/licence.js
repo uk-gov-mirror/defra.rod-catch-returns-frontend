@@ -8,10 +8,10 @@ module.exports = [
 
   // Test handler for direct output
   {
-    path: '/test1',
+    path: '/',
     method: 'GET',
-    handler: () => {
-      return 'test1'
+    handler: (request, h) => {
+      return h.redirect('/licence')
     }
   },
 
