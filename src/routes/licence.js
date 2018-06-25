@@ -19,6 +19,12 @@ module.exports = [
   {
     path: '/licence',
     method: ['GET', 'POST'],
-    handler: licenceHandlerFnc
+    handler: licenceHandlerFnc,
+    options: {
+      auth: { mode: 'try' },
+      plugins: {
+        'hapi-auth-cookie': { redirectTo: false }
+      }
+    }
   }
 ]

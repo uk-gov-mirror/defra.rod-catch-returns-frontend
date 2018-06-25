@@ -58,17 +58,6 @@ const manifest = {
        */
       {
         plugin: require('hapi-auth-cookie')
-      },
-
-      /*
-       * Plugin to automatically load the routes based on their file location
-       * See https://www.npmjs.com/package/hapi-router
-       */
-      {
-        plugin: require('hapi-router'),
-        options: {
-          routes: './src/routes/**/*.js' // uses glob to include files
-        }
       }
     ]
   }
@@ -114,6 +103,28 @@ const options = {
         directory: {
           path: 'public'
         }
+      }
+    })
+
+    // Set up default authentication strategy using cookies
+    server.auth.strategy('session', 'cookie', {
+      password: process.env.COOKIE_PW,
+      cookie: 'sid',
+      redirectTo: '/licence',
+      isSecure: false
+    })
+
+    server.auth.default('session')
+
+    /*
+     * Plugin to automatically load the routes based on their file location
+     * See https://www.npmjs.com/package/hapi-router. Run last so the default authentication
+     * strategy can be registered first
+     */
+    await server.register({
+      plugin: require('hapi-router'),
+      options: {
+        routes: './src/routes/**/*.js' // uses glob to include files
       }
     })
 
