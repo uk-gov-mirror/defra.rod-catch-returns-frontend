@@ -3,7 +3,18 @@ require('dotenv').config()
 
 const Glue = require('glue')
 const Nunjucks = require('nunjucks')
-const Logging = require('./src/lib/logging')
+
+const logger = require('node-js-logger')
+const Good = require('good')
+const GoodWinston = require('good-winston')
+const goodWinstonStream = new GoodWinston({ winston: logger })
+
+logger.init({
+  level: 'info',
+  airbrakeKey: process.env.errbit_key,
+  airbrakeHost: process.env.errbit_server,
+  airbrakeLevel: 'error'
+})
 
 const manifest = {
 
@@ -31,7 +42,7 @@ const manifest = {
         plugin: require('good'),
         options: {
           reporters: {
-            winston: Logging.goodWinstonStream()
+            winston: [goodWinstonStream]
           }
         }
       },
@@ -129,9 +140,9 @@ const options = {
     })
 
     await server.start()
-    Logging.logger.info(`Server started at ${server.info.uri}`)
+    logger.info(`Server started at ${server.info.uri}`)
   } catch (err) {
-    Logging.logger.error(err)
+    logger.error(err)
     process.exit(1)
   }
 })()

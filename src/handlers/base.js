@@ -1,4 +1,4 @@
-const logger = require('../lib/logging').logger
+const logger = require('node-js-logger')
 
 module.exports = class BaseHandler {
   constructor ([viewpath, validator]) {
@@ -22,4 +22,3 @@ module.exports = class BaseHandler {
     }
   }
 }
-
