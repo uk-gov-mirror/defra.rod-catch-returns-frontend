@@ -5,7 +5,6 @@ const Glue = require('glue')
 const Nunjucks = require('nunjucks')
 
 const logger = require('node-js-logger')
-const Good = require('good')
 const GoodWinston = require('good-winston')
 const goodWinstonStream = new GoodWinston({ winston: logger })
 
