@@ -6,3 +6,4 @@
 /public/
 /npm-debug.log
 /*.iml
+/nohup.out
