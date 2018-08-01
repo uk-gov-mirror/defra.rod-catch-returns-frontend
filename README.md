@@ -22,8 +22,6 @@ http://localhost:3000
 The service will require a .env file in the root directory. Below is an example
 
 ```
-#!/bin/sh
-
 # Redis
 REDIS_HOSTNAME=0.0.0.0
 REDIS_PORT=6379
