@@ -68,6 +68,46 @@ const manifest = {
        */
       {
         plugin: require('hapi-auth-cookie')
+      },
+
+      /*
+       * Add a rudimentary health check
+       * hit /health and check status 200
+       * See: https://www.npmjs.com/package/hapi-alive
+       */
+      {
+        plugin: require('hapi-alive'),
+        options: {
+          responses: {
+            healthy: {
+              message: 'Healthy'
+            },
+            unhealthy: {
+              statusCode: 400
+            }
+          }
+        }
+      },
+
+      /*
+       * Plugin for serving up robots.txt
+       * See https://www.npmjs.com/package/hapi-robots and
+       * https://en.wikipedia.org/wiki/Robots_exclusion_standard
+       */
+      {
+        plugin: require('hapi-robots'),
+        options: {
+          // will disallow everyone from every path:
+          '*': ['/']
+        }
+      },
+
+      /*
+       * Add plugin for CSRF protection
+       * See https://www.npmjs.com/package/crumb
+       */
+      {
+        plugin: require('crumb')
       }
     ]
   }
