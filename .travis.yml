@@ -1,0 +1,32 @@
+language: node_js
+node_js:
+  - "8"
+
+services:
+    - redis-server
+
+cache:
+  directories:
+    - node_modules
+
+before_install:
+  - npm install -g gulp-cli
+
+before_script:
+  - redis-cli FLUSHDB
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
+script:
+  - npm test
+
+after_script:
+  - ./cc-test-reporter after-build -t lcov --exit-code $TRAVIS_TEST_RESULT
+
+addons:
+  code_climate:
+    repo_token: a1b64fbd3a46e52bc5b254fbba6f2decf4b71f13461b15c52b805972c510a303
+
+env:
+  - COOKIE_PW=562fhgfqaj626ba87212ausaiqjqw112

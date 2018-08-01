@@ -8,7 +8,7 @@
     "start": "node index.js",
     "build": "gulp",
     "watch": "nohup gulp watch&",
-    "test": "./node_modules/lab/bin/lab --assert code --verbose --coverage"
+    "test": "./node_modules/lab/bin/lab --verbose"
   },
   "author": "",
   "license": "ISC",

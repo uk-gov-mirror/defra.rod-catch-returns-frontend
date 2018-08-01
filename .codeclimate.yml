@@ -1,0 +1,30 @@
+engines:
+  duplication:
+    enabled: false
+    config:
+      languages:
+        - javascript
+  eslint:
+    enabled: false
+  scss-lint:
+    enabled: true
+  fixme:
+    enabled: true
+
+ratings:
+  paths:
+    - "**.js"
+    - "**.scss"
+
+exclude_paths:
+  - test/
+  - govuk_modules/
+  - node_modules/
+  - public/
+  - src/assets/
+  - "**.yml"
+  - "**.md"
+  - "**.html"
+  - "**.json"
+  - gulpfile.js
+  - LICENSE
