@@ -10,7 +10,7 @@
     "watch": "nohup gulp watch&",
     "test": "./node_modules/lab/bin/lab --verbose"
   },
-  "author": "",
+  "author": "Graham Willis, Druid Wood Ltd",
   "license": "ISC",
   "dependencies": {
     "bash": "0.0.1",
