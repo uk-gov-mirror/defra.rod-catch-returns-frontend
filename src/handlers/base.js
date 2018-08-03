@@ -18,7 +18,7 @@ module.exports = class BaseHandler {
           if (this.validator) {
             errors = await this.validator(request.payload)
           }
-          return this.doPost(request, h, errors)
+          return await this.doPost(request, h, errors)
         }
       } catch (err) {
         logger.error(err)

@@ -11,6 +11,7 @@ const Nunjucks = require('nunjucks')
 
 const logger = require('node-js-logger')
 const GoodWinston = require('good-winston')
+const Blipp = require('blipp')
 const goodWinstonStream = new GoodWinston({ winston: logger })
 
 logger.init({
@@ -108,16 +109,13 @@ const manifest = {
       },
 
       /*
-       * Add plugin for CSRF protection
-       * See https://www.npmjs.com/package/crumb
+       * Print routes on startup
+       * See https://www.npmjs.com/package/blipp
        */
       {
-        plugin: require('crumb'),
-        options: {
-          logUnauthorized: true,
-          autoGenerate: false
-        }
+        plugin: require('blipp')
       }
+
     ]
   }
 }

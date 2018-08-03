@@ -16,7 +16,7 @@ module.exports = class LicenceHandler extends BaseHandler {
 
   async doPost (request, h, errors) {
     if (!errors) {
-      request.cookieAuth.set({ sid: uuid() })
+      request.cookieAuth.set({sid: uuid()})
       return h.redirect('/return')
     }
 

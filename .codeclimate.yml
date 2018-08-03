@@ -18,10 +18,8 @@ ratings:
 
 exclude_paths:
   - test/
-  - govuk_modules/
   - node_modules/
   - public/
-  - src/assets/
   - "**.yml"
   - "**.md"
   - "**.html"

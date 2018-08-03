@@ -14,8 +14,8 @@
   "license": "ISC",
   "dependencies": {
     "bash": "0.0.1",
+    "blipp": "^3.0.0",
     "catbox-redis": "4.1.0",
-    "crumb": "7.1.0",
     "dotenv": "6.0.0",
     "glue": "5.0.0",
     "good": "8.1.1",
