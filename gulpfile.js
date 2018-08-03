@@ -13,9 +13,7 @@ require('dotenv').config()
 
 const paths = {
   assets: 'src/assets/',
-  public: 'public/',
-  src: 'src/',
-  views: 'src/views/'
+  public: 'public/'
 }
 
 const clean = () => {
