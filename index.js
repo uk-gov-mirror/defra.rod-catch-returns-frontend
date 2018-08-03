@@ -11,7 +11,6 @@ const Nunjucks = require('nunjucks')
 
 const logger = require('node-js-logger')
 const GoodWinston = require('good-winston')
-const Blipp = require('blipp')
 const goodWinstonStream = new GoodWinston({ winston: logger })
 
 logger.init({
