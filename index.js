@@ -1,4 +1,9 @@
-// Initialize the environment
+/**
+ * The entry point of the rod catch returns web service. This is a hapi web server
+ * and uses glue to compose the server.
+ *
+ */
+
 require('dotenv').config()
 
 const Glue = require('glue')
@@ -47,16 +52,16 @@ const manifest = {
       },
 
       /*
-       * Templates rendering plugin support for hapi.js
-       * See https://www.npmjs.com/package/vision
+       * Static file and directory handlers plugin for hapi.js
+       * See https://www.npmjs.com/package/inert
        */
       {
         plugin: require('inert')
       },
 
       /*
-       * Static file and directory handlers plugin for hapi.js
-       * See https://www.npmjs.com/package/inert
+       * Templates rendering plugin support for hapi.js
+       * See https://www.npmjs.com/package/vision
        */
       {
         plugin: require('vision')
@@ -107,7 +112,11 @@ const manifest = {
        * See https://www.npmjs.com/package/crumb
        */
       {
-        plugin: require('crumb')
+        plugin: require('crumb'),
+        options: {
+          logUnauthorized: true,
+          autoGenerate: false
+        }
       }
     ]
   }
@@ -138,7 +147,11 @@ const options = {
         }
       },
       relativeTo: __dirname,
-      path: 'src/views',
+      path: [
+        'src/views',
+        'node_modules/govuk-frontend/',
+        'node_modules/govuk-frontend/components/'
+      ],
       context: require('./src/common-view-data').context
     })
 

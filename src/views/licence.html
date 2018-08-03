@@ -1,18 +1,36 @@
-{% extends 'layout.html' %}
+{% extends "layout.html" %}
+
+{% block pageTitle %}Rod Catch Returns{% endblock %}
 
 {% block content %}
-<main id="content">
-    <div tabindex="-1" aria-labelledby="make-corrections" role="group" class="summary">
-        <h1 class="heading-medium"><span id="title">Test 2</span></h1>
-    </div>
-    <form action="/licence" method="post">
-        <div class="form-group">
-            <label class="form-label" for="licence">Licence</label>
-            <input class="form-control" id="licence" name="licence" required>
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h1 class="govuk-heading-xl">
+                    <span class="govuk-caption-xl">Rod Catch Returns</span> Tell us your licence number and postcode
+                </h1>
+                <form action="/licence" method="post">
+                    <fieldset class="govuk-fieldset">
+                        <input type="hidden" name="crumb" value="{{crumb}}"/>
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="licence">Licence</label>
+                            <input class="govuk-input" id="licence" name="licence" required>
+                        </div>
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="postcode">Postcode</label>
+                            <input class="govuk-input" id="postcode" name="postcode" required>
+                        </div>
+                        <div class="govuk-form-group">
+                            <button type="submit" class="govuk-button">
+                                Continue
+                            </button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
         </div>
-        <div class="form-group">
-            <input class="button" type="submit" id="continueBtn" value="Continue" accesskey="L">
-        </div>
-    </form>
-</main>
+
+    </main>
+</div>
 {% endblock %}

@@ -2,7 +2,6 @@ const LicenceHandler = require('../handlers/licence')
 const licenceValidator = require('../validators/licence')
 
 const licenceHandler = new LicenceHandler('licence', licenceValidator)
-const licenceHandlerFnc = async (request, h) => { return licenceHandler.handler(request, h) }
 
 module.exports = [
 
@@ -19,12 +18,31 @@ module.exports = [
   {
     path: '/licence',
     method: ['GET', 'POST'],
-    handler: licenceHandlerFnc,
+    handler: licenceHandler.handler,
     options: {
       auth: { mode: 'try' },
       plugins: {
         'hapi-auth-cookie': { redirectTo: false }
       }
     }
+  },
+
+  // Returns handler - placeholder
+  {
+    path: '/return',
+    method: 'GET',
+    handler: (request, h) => {
+      return h.view('return')
+    }
+  },
+
+  // Error handler
+  {
+    path: '/error',
+    method: 'GET',
+    handler: (request, h) => {
+      return h.view('error')
+    }
   }
+
 ]

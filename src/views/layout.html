@@ -1,8 +1,68 @@
-{% extends 'govuk/govuk_template.html' %}
+{% extends "template.njk" %}
+{% set assetPath = "public" %}
+
+{% from "phase-banner/macro.njk" import govukPhaseBanner %}
+{% from "back-link/macro.njk" import govukBackLink %}
+{% from "footer/macro.njk" import govukFooter %}
 
 {% block head %}
-<link href="/public/stylesheets/main.css" rel="stylesheet" type="text/css" />
-<meta http-equiv="Cache-Control" content="no-store" />
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="-1">
+    <link href="/public/stylesheets/main.css" rel="stylesheet" type="text/css" />
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="-1">
 {% endblock %}
+
+{% block header %}
+    {{ govukHeader({
+            homepageUrl: "#",
+            containerClasses: "govuk-width-container",
+            serviceName: "Rod Catch Returns"
+        })
+    }}
+{% endblock %}
+
+{% block beforeContent %}
+    {{ govukPhaseBanner({
+            tag: {
+            text: "alpha"
+        },
+        html: 'This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.'
+    }) }}
+    {{ govukBackLink({
+        href: "#",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+{% block footer %}
+    {{ govukFooter({
+        meta: {
+            items: [
+                {
+                    href: "#1",
+                    text: "Help"
+                },
+                {
+                    href: "#2",
+                    text: "Cookies"
+                },
+                {
+                    href: "#3",
+                    text: "Contact"
+                },
+                {
+                    href: "#4",
+                    text: "Terms and conditions"
+                }
+            ]
+        }
+    }) }}
+{% endblock %}
+
+{% block bodyEnd %}
+    <script src="/public/javascript/all.js"></script>
+    <script>window.GOVUKFrontend.initAll()</script>
+{% endblock %}
+
+
+

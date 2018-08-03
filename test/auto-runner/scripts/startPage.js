@@ -11,8 +11,9 @@ module.exports = [
     'status': 302,
     'method': 'POST',
     'payload': {
-      'licence': 'Gibberish'
+      'licence': 'Gibberish',
+      'postcode': 'blah'
     },
-    'redirect': '/licence'
+    'redirect': '/return'
   }
 ]
