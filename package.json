@@ -17,6 +17,7 @@
     "blipp": "^3.0.0",
     "catbox-redis": "4.1.0",
     "dotenv": "6.0.0",
+    "figlet": "1.2.0",
     "glue": "5.0.0",
     "good": "8.1.1",
     "good-winston": "4.0.0",

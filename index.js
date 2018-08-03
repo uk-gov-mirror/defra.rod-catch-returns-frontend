@@ -190,7 +190,13 @@ const options = {
     })
 
     await server.start()
-    logger.info(`Server started at ${server.info.uri}`)
+    require('figlet')('Rod Catch Returns', function (err, data) {
+      if (err) {
+        return
+      }
+      console.log(data)
+      logger.info(`Server started at ${server.info.uri}`)
+    })
   } catch (err) {
     logger.error(err)
     process.exit(1)
