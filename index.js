@@ -112,9 +112,40 @@ const manifest = {
        * See https://www.npmjs.com/package/blipp
        */
       {
-        plugin: require('blipp')
-      }
+        plugin: require('blipp'),
+        options: {
+          showStart: false
+        }
+      },
 
+      /*
+       * Clean up any input
+       * See: https://www.npmjs.com/package/disinfect
+       */
+      {
+        plugin: require('disinfect'),
+        options: {
+          disinfectQuery: true,
+          disinfectParams: true,
+          disinfectPayload: true
+        }
+      },
+
+      /*
+       * Plugin for CSRF tokens
+       * See https://www.npmjs.com/package/crumb
+       */
+      {
+        plugin: require('crumb'),
+        options: {
+          key: 'rcr2018',
+          cookieOptions: {
+            isSecure: process.env.HTTPS === 'true' || false,
+            isHttpOnly: true
+          },
+          logUnauthorized: true
+        }
+      }
     ]
   }
 }
@@ -189,6 +220,17 @@ const options = {
     })
 
     await server.start()
+
+    // Handle shutdown gracefully
+    process.on('SIGINT', function () {
+      logger.info('Stopping server...')
+      server.stop({ timeout: 10000 }).then(function (err) {
+        logger.info('Stopped')
+        process.exit((err) ? 1 : 0)
+      })
+    })
+
+    // Print the banner
     require('figlet')('Rod Catch Returns', function (err, data) {
       if (err) {
         return

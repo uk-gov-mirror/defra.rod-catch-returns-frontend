@@ -5,7 +5,7 @@ const licenceHandler = new LicenceHandler('licence', licenceValidator)
 
 module.exports = [
 
-  // Test handler for direct output
+  // Redirect to the start page
   {
     path: '/',
     method: 'GET',
@@ -42,6 +42,15 @@ module.exports = [
     method: 'GET',
     handler: (request, h) => {
       return h.view('error')
+    }
+  },
+
+  // Catch all
+  {
+    method: '*',
+    path: '/{p*}',
+    handler: function (request, h) {
+      return h.redirect('/')
     }
   }
 
