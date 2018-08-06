@@ -225,12 +225,11 @@ const options = {
     await server.start()
 
     // Handle shutdown gracefully
-    process.on('SIGINT', function () {
+    process.on('SIGINT', async () => {
       logger.info('Stopping server...')
-      server.stop({ timeout: 10000 }).then(function (err) {
-        logger.info('Stopped')
-        process.exit((err) ? 1 : 0)
-      })
+      const err = await server.stop({ timeout: 10000 })
+      logger.info('Stopped')
+      process.exit((err) ? 1 : 0)
     })
 
     // Print the banner
