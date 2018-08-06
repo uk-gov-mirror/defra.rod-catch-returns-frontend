@@ -108,7 +108,7 @@ const manifest = {
       },
 
       /*
-       * Print routes on startup
+       * To print routes on startup change showStart to true
        * See https://www.npmjs.com/package/blipp
        */
       {
@@ -158,7 +158,11 @@ const options = {
   try {
     const server = await Glue.compose(manifest, options)
 
-    // Set up the nunjunks templating engine
+    /*
+     * Set up the nunjunks templating engine and include the new gov.uk
+     * design system templates and components so that they are accessible
+     * as macros in the templates
+     */
     server.views({
       engines: {
         html: {
@@ -179,8 +183,7 @@ const options = {
         'src/views',
         'node_modules/govuk-frontend/',
         'node_modules/govuk-frontend/components/'
-      ],
-      context: require('./src/common-view-data').context
+      ]
     })
 
     // Set up the route handlers for static resources
