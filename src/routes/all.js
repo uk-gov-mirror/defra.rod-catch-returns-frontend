@@ -1,7 +1,12 @@
+/**
+ * These routes are scanned automatically by the hapi-router
+ */
 const LicenceHandler = require('../handlers/licence')
 const licenceValidator = require('../validators/licence')
-
 const licenceHandler = new LicenceHandler('licence', licenceValidator)
+
+const ReturnHandler = require('../handlers/return')
+const returnHandler = new ReturnHandler('return')
 
 module.exports = [
 
@@ -27,13 +32,11 @@ module.exports = [
     }
   },
 
-  // Returns handler - placeholder
+  // Returns handler
   {
     path: '/return',
     method: 'GET',
-    handler: (request, h) => {
-      return h.view('return')
-    }
+    handler: returnHandler.handler
   },
 
   // Error handler
