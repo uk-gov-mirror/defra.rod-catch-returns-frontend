@@ -30,7 +30,7 @@ const manifest = {
         engine: require('catbox-redis'),
         host: process.env.REDIS_HOSTNAME,
         port: process.env.REDIS_PORT,
-        partition: 'session-cache'
+        partition: 'server-cache'
       }
     ]
   },
@@ -200,12 +200,37 @@ const options = {
       }
     })
 
+    // Point the server plugin cache to an application cache to hold authenticated session data
+    server.app.cache = server.cache({
+      segment: 'sessions',
+      expiresIn: process.env.SESSION_TTL_MS
+    })
+
     // Set up default authentication strategy using cookies
     server.auth.strategy('session', 'cookie', {
       password: process.env.COOKIE_PW,
       cookie: 'sid',
       redirectTo: '/licence',
-      isSecure: false
+      isSecure: process.env.HTTPS === 'true' || false,
+      clearInvalid: true,
+      /**
+       * validation function called on every request
+       * When the cache-entry expires the user has to re-authenticate
+       */
+      validateFunc: async (request, session) => {
+        const server = request.server
+        const cached = await server.app.cache.get(session.sid)
+
+        const out = {
+          valid: !!cached
+        }
+
+        if (out.valid) {
+          out.credentials = cached.user
+        }
+
+        return out
+      }
     })
 
     server.auth.default('session')
