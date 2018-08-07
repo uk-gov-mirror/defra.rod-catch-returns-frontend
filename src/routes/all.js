@@ -3,7 +3,9 @@
  */
 const LicenceHandler = require('../handlers/licence')
 const licenceValidator = require('../validators/licence')
-const licenceHandler = new LicenceHandler('licence', licenceValidator)
+const licenceHandler = new LicenceHandler('licence', licenceValidator, async (payload) => {
+  payload.foo = 'bar'
+})
 
 const ReturnHandler = require('../handlers/return')
 const returnHandler = new ReturnHandler('return')
