@@ -15,8 +15,8 @@ module.exports = class ReturnHandler extends BaseHandler {
    * @param user
    * @returns {Promise<*>}
    */
-  async doGet (request, h, user) {
-    console.log('User in handler: ' + JSON.stringify(user))
+  async doGet (request, h) {
+    console.log('User in handler: ' + JSON.stringify(await request.cache().get()))
     return h.view(this.path)
   }
 }

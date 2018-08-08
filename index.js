@@ -253,6 +253,21 @@ const options = {
       }
     })
 
+    /*
+     * Decorator to retrieve make access to the session cache available as.
+     * simple setters and getters hiding the session key
+     */
+    server.decorate('request', 'cache', function () {
+      return {
+        get: async () => {
+          return this.server.app.cache.get(this.auth.artifacts.sid)
+        },
+        set: async (obj) => {
+          await this.server.app.cache.set(this.auth.artifacts.sid, obj)
+        }
+      }
+    })
+
     await server.start()
 
     // Handle shutdown gracefully

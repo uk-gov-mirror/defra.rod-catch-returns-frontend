@@ -38,9 +38,11 @@ module.exports = class LicenceHandler extends BaseHandler {
       // Assign a new user
       const user = { contactId: 'CONTACTIDXX' }
 
-      // Set the server cache to the contact details with a key of the sessionId
-      await request.server.app.cache.set(sid, user)
+      // Set the cookie to the session identifier
       request.cookieAuth.set({ sid: sid })
+
+      // Set the server cache to the contact details
+      await request.cache().set(user)
 
       logger.debug('Licence holder is authenticated: ' + JSON.stringify(user))
       return h.redirect('/return')
