@@ -35,6 +35,6 @@ COOKIE_PW=562fhgfqaj626ba87212ausaiqjqw112
 # Set true in secure environments
 HTTPS=false
 
-# Time to live the server authentication cache and cookie in milliseconds. 1 Hour
+# Time to live, the server authentication cache entries in milliseconds. 1 Hour
 SESSION_TTL_MS=3600000
 ```
