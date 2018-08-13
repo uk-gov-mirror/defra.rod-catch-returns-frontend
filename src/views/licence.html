@@ -5,50 +5,46 @@
 {% from "fieldset/macro.njk" import govukFieldset %}
 
 {% block content %}
-<div class="govuk-width-container">
-    <main class="govuk-main-wrapper">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <form action="/licence" method="post">
-                    {% call govukFieldset({
-                        legend: {
-                            html: "Tell us who you are<span class='govuk-caption-xl'>Your licence number and post code will help us identify you</span>",
-                            classes: "govuk-fieldset__legend--xl",
-                            isPageHeading: true
-                        }
-                    }) %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form action="/licence" method="post">
+            {% call govukFieldset({
+                legend: {
+                    html: "Tell us who you are<span class='govuk-caption-xl'>Your licence number and post code will help us identify you</span>",
+                    classes: "govuk-fieldset__legend--xl",
+                    isPageHeading: true
+                }
+            }) %}
 
-                        {{ govukInput({
-                            label: {
-                                text: "Licence Number"
-                            },
-                            hint: {
-                                text: "A recent fish licence number"
-                            },
-                            id: "licence",
-                            name: "licence" })
-                        }}
+                {{ govukInput({
+                    label: {
+                        text: "Licence Number"
+                    },
+                    hint: {
+                        text: "A recent fish licence number"
+                    },
+                    id: "licence",
+                    name: "licence" })
+                }}
 
-                        {{ govukInput({
-                            label: {
-                                text: "Postal Code"
-                            },
-                            hint: {
-                                text: "The postcode you used when you applied for your fishing licence"
-                            },
-                            id: "postcode",
-                            name: "postcode" })
-                        }}
+                {{ govukInput({
+                    label: {
+                        text: "Postal Code"
+                    },
+                    hint: {
+                        text: "The postcode you used when you applied for your fishing licence"
+                    },
+                    id: "postcode",
+                    name: "postcode" })
+                }}
 
-                        {{ govukButton({
-                            text: "Continue" })
-                        }}
+                {{ govukButton({
+                    text: "Continue" })
+                }}
 
-                    {% endcall %}
-                    <input type="hidden" name="rcr2018" value="{{rcr2018}}"/>
-                </form>
-            </div>
-        </div>
-    </main>
+            {% endcall %}
+            <input type="hidden" name="rcr2018" value="{{rcr2018}}"/>
+        </form>
+    </div>
 </div>
 {% endblock %}

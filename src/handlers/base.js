@@ -6,7 +6,7 @@
  * validation
  * if exists
  */
-const logger = require('node-js-logger')
+const { logger } = require('defra-logging-facade')
 
 module.exports = class BaseHandler {
   constructor ([viewpath, validator, preValidateFunction]) {

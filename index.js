@@ -8,17 +8,7 @@ require('dotenv').config()
 
 const Glue = require('glue')
 const Nunjucks = require('nunjucks')
-
-const logger = require('node-js-logger')
-const GoodWinston = require('good-winston')
-const goodWinstonStream = new GoodWinston({ winston: logger })
-
-logger.init({
-  level: 'info',
-  airbrakeKey: process.env.errbit_key,
-  airbrakeHost: process.env.errbit_server,
-  airbrakeLevel: 'error'
-})
+const { logger } = require('defra-logging-facade')
 
 const manifest = {
 
@@ -39,18 +29,12 @@ const manifest = {
   register: {
     plugins: [
       /*
-       * Plugin for logging
-       * See https://www.npmjs.com/package/good
+       * Using the DEFRA logging package
+       * See: https://github.com/DEFRA/defra-logging-facade
        */
       {
-        plugin: require('good'),
-        options: {
-          reporters: {
-            winston: [goodWinstonStream]
-          }
-        }
+        plugin: require('defra-logging-facade').HapiErrorLoggerPlugin
       },
-
       /*
        * Static file and directory handlers plugin for hapi.js
        * See https://www.npmjs.com/package/inert

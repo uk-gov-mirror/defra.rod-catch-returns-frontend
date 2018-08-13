@@ -4,6 +4,7 @@
 const LicenceHandler = require('../handlers/licence')
 const licenceValidator = require('../validators/licence')
 const licenceHandler = new LicenceHandler('licence', licenceValidator, async (payload) => {
+  // Pre-process the payload prior to validation
   payload.foo = 'bar'
 })
 

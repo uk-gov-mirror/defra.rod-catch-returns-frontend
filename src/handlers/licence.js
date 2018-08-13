@@ -4,7 +4,7 @@
 const uuid = require('uuid/v4')
 
 const BaseHandler = require('./base')
-const logger = require('node-js-logger')
+const { logger } = require('defra-logging-facade')
 
 module.exports = class LicenceHandler extends BaseHandler {
   constructor (...args) {
