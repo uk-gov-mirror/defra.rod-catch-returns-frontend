@@ -1,5 +1,5 @@
 const Glue = require('glue')
-const logger = require('node-js-logger')
+const { logger } = require('defra-logging-facade')
 const Code = require('code')
 const expect = Code.expect
 require('dotenv').config()
