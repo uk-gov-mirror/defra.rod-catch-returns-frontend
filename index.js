@@ -171,6 +171,7 @@ const options = {
       relativeTo: __dirname,
       path: [
         'src/views',
+        'src/views/prototype',
         'node_modules/govuk-frontend/',
         'node_modules/govuk-frontend/components/'
       ]
@@ -208,6 +209,11 @@ const options = {
        * When the cache-entry expires the user has to re-authenticate
        */
       validateFunc: async (request, session) => {
+        // TODO Prototype hack - remove
+        if (request.path.toString().startsWith('/prototype')) {
+          return { valid: true }
+        }
+
         const server = request.server
         const cached = await server.app.cache.get(session.sid)
 

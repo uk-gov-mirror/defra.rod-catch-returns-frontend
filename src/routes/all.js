@@ -51,6 +51,15 @@ module.exports = [
     }
   },
 
+  // TODO Prototype handler -- remove
+  {
+    path: '/prototype/{page}',
+    method: 'GET',
+    handler: (request, h) => {
+      return h.view(request.params.page)
+    }
+  },
+
   // Catch all
   {
     method: '*',

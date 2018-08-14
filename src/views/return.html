@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 
+{% from "back-link/macro.njk" import govukBackLink %}
+
 {% block beforeContent %}
     {{ govukBackLink({
         href: "/licence",
