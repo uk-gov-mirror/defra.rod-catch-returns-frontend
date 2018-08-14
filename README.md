@@ -24,6 +24,9 @@ docker-compose up -d
 The service will require a .env file in the root directory. Below is an example
 
 ```
+# Node mode
+NODE_ENV=development
+
 # Redis
 REDIS_HOSTNAME=0.0.0.0
 REDIS_PORT=6379
