@@ -13,10 +13,12 @@ Users are asked to submit details of the fish they caught (species, weight, numb
 npm i
 gulp
 ```
-## To Run
-`npm start`
 
-http://localhost:3000
+If you need to run a local version of REDIS you can do so using docker. Ensure you have the appropriate docker installed version of docker installed for your architecture and type.
+
+```
+docker-compose up -d
+```
 
 ## Environment file
 The service will require a .env file in the root directory. Below is an example
@@ -37,4 +39,14 @@ HTTPS=false
 
 # Time to live, the server authentication cache entries in milliseconds. 1 Hour
 SESSION_TTL_MS=3600000
+
+# The logging setup
+AIRBRAKE_HOST=<<airbrake host>>
+AIRBRAKE_PROJECT_KEY=<<airbrake key>>
+
+```
+## To Run
+```
+npm start
+http://localhost:3000
 ```
