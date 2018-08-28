@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% from "back-link/macro.njk" import govukBackLink %}
+{% from "radios/macro.njk" import govukRadios %}
+{% from "fieldset/macro.njk" import govukFieldset %}
+{% from "button/macro.njk" import govukButton %}
+
+{% block beforeContent %}
+    {{ govukBackLink({
+        href: "/licence",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+{% block pageTitle %}What season are you reporting for?{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="post">
+            {% call govukFieldset({
+              legend: {
+                text: "What season are you reporting for?",
+                classes: "govuk-fieldset__legend--l",
+                isPageHeading: true
+              }
+            }) %}
+
+            {{ govukRadios({
+                classes: "govuk-radios--inline",
+                idPrefix: "year",
+                name: "selectYear",
+                items: years
+            }) }}
+
+            {{ govukButton({
+                text: "Continue"
+            }) }}
+
+            {% endcall %}
+            <input type="hidden" name="rcr2018" value="{{rcr2018}}"/>
+        </form>
+    </div>
+</div>
+{% endblock %}

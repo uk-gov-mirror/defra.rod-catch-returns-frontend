@@ -1,5 +1,5 @@
 /**
- * Start of authenticated journey
+ * Return handler
  */
 const BaseHandler = require('./base')
 

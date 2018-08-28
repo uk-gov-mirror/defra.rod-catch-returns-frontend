@@ -2,13 +2,16 @@
  * These routes are scanned automatically by the hapi-router
  */
 const LicenceHandler = require('../handlers/licence')
-const licenceValidator = require('../validators/licence')
-const licenceHandler = new LicenceHandler('licence', licenceValidator, async (payload) => {
-  // Pre-process the payload prior to validation
-  payload.foo = 'bar'
-})
-
 const ReturnHandler = require('../handlers/return')
+const YearHandler = require('../handlers/year')
+
+// Define the validators
+const licenceValidator = require('../validators/licence')
+const yearValidator = require('../validators/year')
+
+// Define the handlers
+const licenceHandler = new LicenceHandler('licence', licenceValidator)
+const yearHandler = new YearHandler('select-year', yearValidator)
 const returnHandler = new ReturnHandler('return')
 
 module.exports = [
@@ -17,6 +20,7 @@ module.exports = [
   {
     path: '/',
     method: 'GET',
+    options: { auth: false },
     handler: (request, h) => {
       return h.redirect('/licence')
     }
@@ -27,12 +31,14 @@ module.exports = [
     path: '/licence',
     method: ['GET', 'POST'],
     handler: licenceHandler.handler,
-    options: {
-      auth: { mode: 'try' },
-      plugins: {
-        'hapi-auth-cookie': { redirectTo: false }
-      }
-    }
+    options: { auth: false }
+  },
+
+  // Year handler
+  {
+    path: '/select-year',
+    method: ['GET', 'POST'],
+    handler: yearHandler.handler
   },
 
   // Returns handler
@@ -46,17 +52,9 @@ module.exports = [
   {
     path: '/error',
     method: 'GET',
+    options: { auth: false },
     handler: (request, h) => {
       return h.view('error')
-    }
-  },
-
-  // TODO Prototype handler -- remove
-  {
-    path: '/prototype/{page}',
-    method: 'GET',
-    handler: (request, h) => {
-      return h.view(request.params.page)
     }
   },
 

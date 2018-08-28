@@ -3,8 +3,7 @@
  *
  * It handles errors and calls the assigned validator on post
  * The async preValidateFunction can be used to operate on the payload before
- * validation
- * if exists
+ * validation if exists
  */
 const { logger } = require('defra-logging-facade')
 
