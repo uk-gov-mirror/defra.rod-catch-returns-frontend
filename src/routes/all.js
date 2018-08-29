@@ -4,6 +4,7 @@
 const LicenceHandler = require('../handlers/licence')
 const ReturnHandler = require('../handlers/return')
 const YearHandler = require('../handlers/year')
+const SummaryHandler = require('../handlers/summary')
 
 // Define the validators
 const licenceValidator = require('../validators/licence')
@@ -13,6 +14,7 @@ const yearValidator = require('../validators/year')
 const licenceHandler = new LicenceHandler('licence', licenceValidator)
 const yearHandler = new YearHandler('select-year', yearValidator)
 const returnHandler = new ReturnHandler('return')
+const summaryHandler = new SummaryHandler('summary')
 
 module.exports = [
 
@@ -39,6 +41,13 @@ module.exports = [
     path: '/select-year',
     method: ['GET', 'POST'],
     handler: yearHandler.handler
+  },
+
+  // Summary handler
+  {
+    path: '/summary',
+    method: ['GET', 'POST'],
+    handler: summaryHandler.handler
   },
 
   // Returns handler

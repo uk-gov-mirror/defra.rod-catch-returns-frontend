@@ -14,14 +14,14 @@ npm install
 npm run build
 ```
 
-If you need to run a local version of REDIS you can do so using docker. Ensure you have the appropriate docker installed version of docker installed for your architecture and type.
+If you need to run a local version of REDIS you can do so using docker. Ensure you have the appropriate docker version installed for your architecture and type;
 
 ```
 docker-compose up -d
 ```
 
 ## Environment file
-The service will require a .env file in the root directory. Below is an example
+The service will require a `.env` file in the root directory. Below is an example
 
 ```
 # Node mode

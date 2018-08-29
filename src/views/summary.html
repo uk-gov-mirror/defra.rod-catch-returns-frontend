@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+
+{% from "back-link/macro.njk" import govukBackLink %}
+{% from "button/macro.njk" import govukButton %}
+{% from "table/macro.njk" import govukTable %}
+{% from "fieldset/macro.njk" import govukFieldset %}
+
+{% block beforeContent %}
+    {{ govukBackLink({
+        href: "/select-year",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+{% block pageTitle %}Your catch return report?{% endblock %}
+
+{% set rrows = [] %}
+{% set frows = [] %}
+
+{% if rivers.length %}
+    {% for river in rivers %}
+        {{ rrows.push([
+            { text: river.name },
+            { text: river.daysFished, format: "numeric" },
+            { html: "<a class=\"govuk-link\" href=\"add-river\">Edit</a> | <a class=\"govuk-link\" href=\"delete-river\">Delete</a>", format: "numeric" }
+        ]) }}
+    {% endfor %}
+{% endif %}
+
+{% if fish.length %}
+    {% for afish in fish %}
+        {{ frows.push([
+            { text: afish.river },
+            { text: afish.date },
+            { text: afish.type },
+            { text: afish.weight },
+            { text: afish.method },
+            { text: afish.released },
+            { html: "<a class=\"govuk-link\" href=\"add-fish\">Edit</a> | <a class=\"govuk-link\" href=\"delete-fish\">Delete</a>", format: "numeric" }
+        ]) }}
+    {% endfor %}
+{% endif %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <form method="post">
+            <h1 class="govuk-heading-l">Your catch return report</h1>
+            {{ govukTable({
+                caption: "Rivers fished",
+                captionClasses: "govuk-heading-m",
+                firstCellIsHeader: false,
+                head: [
+                    { text: "River" },
+                    { text: "Days fished in total", format: "numeric" },
+                    { text: "Actions", format: "numeric" }
+                ],
+                rows: rrows
+            }) }}
+
+            <p class="govuk-body" style="text-align:right">
+                <a class="govuk-link " href="add-river">Add River</a>
+            </p>
+
+            {{ govukTable({
+                caption: "Fish caught",
+                captionClasses: "govuk-heading-m",
+                firstCellIsHeader: false,
+                head: [
+                    { text: "River" },
+                    { text: "Date" },
+                    { text: "Type" },
+                    { text: "Weight" },
+                    { text: "Method" },
+                    { text: "Released" },
+                    { text: "Actions", format: "numeric" }
+                ],
+                rows: frows
+            }) }}
+
+            <p class="govuk-body" style="text-align:right">
+                <a class="govuk-link " href="add-river">Add Fish</a>
+            </p>
+
+            {{ govukButton({
+                text: "Submit catch return"
+            }) }}
+
+            <input type="hidden" name="rcr2018" value="{{rcr2018}}"/>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

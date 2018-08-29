@@ -4,7 +4,7 @@
 const { logger } = require('defra-logging-facade')
 
 module.exports = async (payload) => {
-  logger.info('Validate: ' + JSON.stringify(payload))
+  logger.debug('Year validation: ' + JSON.stringify(payload))
 
   if (!payload.selectYear) {
     return { selectYear: 'EMPTY' }

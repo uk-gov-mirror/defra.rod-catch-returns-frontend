@@ -24,6 +24,6 @@ module.exports = class YearHandler extends BaseHandler {
   }
 
   async doPost (request, h, errors) {
-    return super.writeCacheAndRedirect(request, h, errors, '/return', '/select-year')
+    return super.writeCacheAndRedirect(request, h, errors, '/summary', '/select-year')
   }
 }
