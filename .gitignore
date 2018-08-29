@@ -9,3 +9,4 @@ npm-debug.log
 nohup.out
 coverage.html
 lcov.info
+volumes/

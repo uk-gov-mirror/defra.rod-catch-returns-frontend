@@ -32,4 +32,44 @@ module.exports = class BaseHandler {
       }
     }
   }
+
+  /*
+   * If there are errors then append the errors and the original payload to the
+   * cache and redirect to the errorPath. Otherwise remove the errors and payload
+   * object from the cache and rewrite the cache
+   */
+  async writeCacheAndRedirect (request, h, errors, successPath, errorPath) {
+    if (errors) {
+      // Write the errors into the cache
+      let cache = await request.cache().get()
+      cache.errors = errors
+      cache.payload = request.payload
+      await request.cache().set(cache)
+      return h.redirect(errorPath)
+    } else {
+      let cache = await request.cache().get()
+      if (cache.errors || cache.payload) {
+        delete cache.errors
+        delete cache.payload
+        await request.cache().set(cache)
+        return h.redirect(successPath)
+      }
+    }
+  }
+
+  /*
+   * Append any errors and payload found in the cache object to
+   * the page view
+   */
+  async readCacheAndDisplayView (request, h, pageObj) {
+    if (typeof pageObj !== 'object' || Array.isArray(pageObj)) {
+      throw new Error('Page object must be an object')
+    }
+
+    let cache = await request.cache().get()
+    if (cache.payload || cache.errors) {
+      pageObj = Object.assign(pageObj, { payload: cache.payload, errors: cache.errors })
+    }
+    return h.view(this.path, pageObj)
+  }
 }

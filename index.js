@@ -249,11 +249,17 @@ const options = {
     server.decorate('request', 'cache', function () {
       return {
         get: async () => {
-          return this.auth.artifacts && this.auth.artifacts.sid ? this.server.app.cache.get(this.auth.artifacts.sid) : null
+          try {
+            return this.server.app.cache.get(this.auth.artifacts.sid)
+          } catch (err) {
+            throw new Error('Cache fetch error')
+          }
         },
         set: async (obj) => {
-          if (this.auth.artifacts && this.auth.artifacts.sid) {
+          try {
             await this.server.app.cache.set(this.auth.artifacts.sid, obj)
+          } catch (err) {
+            throw new Error('Cache put error')
           }
         }
       }
