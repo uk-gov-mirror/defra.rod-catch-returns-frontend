@@ -10,8 +10,8 @@ Users are asked to submit details of the fish they caught (species, weight, numb
 
 ## To build
 ```
-npm i
-gulp
+npm install
+npm run build
 ```
 
 If you need to run a local version of REDIS you can do so using docker. Ensure you have the appropriate docker installed version of docker installed for your architecture and type.
