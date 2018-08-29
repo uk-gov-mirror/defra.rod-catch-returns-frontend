@@ -5,16 +5,19 @@ const LicenceHandler = require('../handlers/licence')
 const ReturnHandler = require('../handlers/return')
 const YearHandler = require('../handlers/year')
 const SummaryHandler = require('../handlers/summary')
+const RiverHandler = require('../handlers/river')
 
 // Define the validators
 const licenceValidator = require('../validators/licence')
 const yearValidator = require('../validators/year')
+const riverValidator = require('../validators/river')
 
 // Define the handlers
 const licenceHandler = new LicenceHandler('licence', licenceValidator)
 const yearHandler = new YearHandler('select-year', yearValidator)
 const returnHandler = new ReturnHandler('return')
 const summaryHandler = new SummaryHandler('summary')
+const riverHandler = new RiverHandler('river', riverValidator)
 
 module.exports = [
 
@@ -48,6 +51,13 @@ module.exports = [
     path: '/summary',
     method: ['GET', 'POST'],
     handler: summaryHandler.handler
+  },
+
+  // River handler
+  {
+    path: '/river',
+    method: ['GET', 'POST'],
+    handler: riverHandler.handler
   },
 
   // Returns handler

@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% from "back-link/macro.njk" import govukBackLink %}
+{% from "fieldset/macro.njk" import govukFieldset %}
+{% from "button/macro.njk" import govukButton %}
+{% from "error-summary/macro.njk" import govukErrorSummary %}
+{% from "select/macro.njk" import govukSelect %}
+{% from "input/macro.njk" import govukInput %}
+
+{% block beforeContent %}
+    {{ govukBackLink({
+        href: "/summary",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+{% block pageTitle %}Add a river to your catch return{% endblock %}
+
+{% set items = [] %}
+{% for river in rivers %}
+    {{ items.push({
+        text: river.name,
+        value: river.id,
+        selected: river.id.toString() === payload.river
+    }) }}
+{% endfor %}
+
+{% set errorList = [] %}
+{% set riverErrorMessage = null %}
+{% set daysErrorMessage = null %}
+
+{% if errors %}
+    {% for error in errors %}
+        {% if error.river %}
+            {% set riverErrorMessage = { text: "Select a river" } %}
+            {{ errorList.push({
+                text: "You have not selected a river",
+                href: "#river"
+            }) }}
+        {% endif %}
+
+        {% if error.days %}
+            {% set daysErrorMessage = { text: "Enter the number of days you fished the river" } %}
+            {{ errorList.push({
+                text: "You have not entered the number of days you fished the river",
+                href: "#days"
+            }) }}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="post">
+
+            {% if errors %}
+                {{ govukErrorSummary({
+                    titleText: "There is a problem",
+                    errorList: errorList
+                }) }}
+            {% endif %}
+
+            {% call govukFieldset({
+              legend: {
+                text: "Add a river to your catch return",
+                classes: "govuk-fieldset__legend--l",
+                isPageHeading: true
+              }
+            }) %}
+
+                {{ govukSelect({
+                    id: "river",
+                    name: "river",
+                    label: {
+                        text: "River"
+                    },
+                    hint: { text: "Click below to select a river" },
+                    items: [ { value: null } ].concat(items),
+                    errorMessage: riverErrorMessage
+                }) }}
+
+                {{ govukInput({
+                    label: {
+                        text: "Days fished in total"
+                    },
+                    id: "days",
+                    name: "days",
+                    value: payload.days,
+                    type: "number",
+                    classes: "govuk-input--width-3",
+                    errorMessage: daysErrorMessage,
+                    hint: { text: "The total number of days you fished on this river" }
+                }) }}
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+
+            {% endcall %}
+            <input type="hidden" name="rcr2018" value="{{rcr2018}}"/>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -14,29 +14,40 @@
 
 {% block pageTitle %}Your catch return report?{% endblock %}
 
-{% set rrows = [] %}
-{% set frows = [] %}
+{% set riverRows = [] %}
+{% set fishRows = [] %}
+
+{% macro fishLinks(id) %}
+    {% set editurl = "/edit-fish?id=" + id %}
+    {% set deleteurl = "/delete-fish?id=" + id %}
+    <span><a class="govuk-link" href="{{ editurl }}">Edit</a> | <a class="govuk-link" href="{{ deleteurl }}">Delete</a></span>
+{% endmacro %}
+
+{% macro riverLinks(id) %}
+    {% set deleteurl = "/delete-river?id=" + id %}
+    <a class="govuk-link" href="{{ deleteurl }}">Delete</a>
+{% endmacro %}
 
 {% if rivers.length %}
     {% for river in rivers %}
-        {{ rrows.push([
+        {{ riverRows.push([
             { text: river.name },
             { text: river.daysFished, format: "numeric" },
-            { html: "<a class=\"govuk-link\" href=\"add-river\">Edit</a> | <a class=\"govuk-link\" href=\"delete-river\">Delete</a>", format: "numeric" }
+            { html: "<a class=\"govuk-link\" href=\"delete-river\">Delete</a>", format: "numeric" }
         ]) }}
     {% endfor %}
 {% endif %}
 
 {% if fish.length %}
     {% for afish in fish %}
-        {{ frows.push([
+        {{ fishRows.push([
             { text: afish.river },
             { text: afish.date },
             { text: afish.type },
             { text: afish.weight },
             { text: afish.method },
             { text: afish.released },
-            { html: "<a class=\"govuk-link\" href=\"add-fish\">Edit</a> | <a class=\"govuk-link\" href=\"delete-fish\">Delete</a>", format: "numeric" }
+            { html: fishLinks(afish.id), format: "numeric" }
         ]) }}
     {% endfor %}
 {% endif %}
@@ -55,11 +66,11 @@
                     { text: "Days fished in total", format: "numeric" },
                     { text: "Actions", format: "numeric" }
                 ],
-                rows: rrows
+                rows: riverRows
             }) }}
 
             <p class="govuk-body" style="text-align:right">
-                <a class="govuk-link " href="add-river">Add River</a>
+                <a class="govuk-link " href="/river">Add River</a>
             </p>
 
             {{ govukTable({
@@ -75,7 +86,7 @@
                     { text: "Released" },
                     { text: "Actions", format: "numeric" }
                 ],
-                rows: frows
+                rows: fishRows
             }) }}
 
             <p class="govuk-body" style="text-align:right">

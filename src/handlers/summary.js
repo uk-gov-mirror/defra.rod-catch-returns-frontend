@@ -16,6 +16,7 @@ const rivers = [
 
 const fish = [
   {
+    id: 0,
     river: 'Derwent (Cumbria)',
     date: '08/18',
     type: 'Salmon',
@@ -24,6 +25,7 @@ const fish = [
     released: 'Yes'
   },
   {
+    id: 1,
     river: 'Trent',
     date: '03/18',
     type: 'Salmon',
