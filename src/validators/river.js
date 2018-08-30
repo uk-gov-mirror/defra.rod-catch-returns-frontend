@@ -4,7 +4,7 @@
 const { logger } = require('defra-logging-facade')
 
 module.exports = async (payload) => {
-  logger.debug('River validation: ' + JSON.stringify(payload))
+  logger.debug('Validate river: ' + JSON.stringify(payload))
 
   let errors = []
 

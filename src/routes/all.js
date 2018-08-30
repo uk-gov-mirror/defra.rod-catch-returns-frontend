@@ -7,11 +7,13 @@ const YearHandler = require('../handlers/year')
 const SummaryHandler = require('../handlers/summary')
 const RiverHandler = require('../handlers/river')
 const DeleteRiverHandler = require('../handlers/delete-river')
+const SalmonAndLargeTroutHandler = require('../handlers/salmon-and-large-trout')
 
 // Define the validators
 const licenceValidator = require('../validators/licence')
 const yearValidator = require('../validators/year')
 const riverValidator = require('../validators/river')
+const salmonAndLargeTroutValidator = require('../validators/salmon-and-large-trout')
 
 // Define the handlers
 const licenceHandler = new LicenceHandler('licence', licenceValidator)
@@ -20,6 +22,7 @@ const returnHandler = new ReturnHandler('return')
 const summaryHandler = new SummaryHandler('summary')
 const riverHandler = new RiverHandler('river', riverValidator)
 const deleteRiverHandler = new DeleteRiverHandler('delete-river', riverValidator)
+const salmonAndLargeTroutHandler = new SalmonAndLargeTroutHandler('salmon-and-large-trout', salmonAndLargeTroutValidator)
 
 module.exports = [
 
@@ -67,6 +70,13 @@ module.exports = [
     path: '/delete-river/{id}',
     method: ['GET', 'POST'],
     handler: deleteRiverHandler.handler
+  },
+
+  // Add salmon and sea trout handler
+  {
+    path: '/salmon-and-large-trout/{id}',
+    method: ['GET', 'POST'],
+    handler: salmonAndLargeTroutHandler.handler
   },
 
   // Returns handler

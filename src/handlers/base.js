@@ -62,6 +62,10 @@ module.exports = class BaseHandler {
    * the page view
    */
   async readCacheAndDisplayView (request, h, pageObj) {
+    if (!pageObj) {
+      return h.view(this.path)
+    }
+
     if (typeof pageObj !== 'object' || Array.isArray(pageObj)) {
       throw new Error('Page object must be an object')
     }
@@ -71,5 +75,18 @@ module.exports = class BaseHandler {
       pageObj = Object.assign(pageObj, { payload: cache.payload, errors: cache.errors })
     }
     return h.view(this.path, pageObj)
+  }
+
+  /*
+   * Allow handlers to clear the cache for a
+   * canceled activity
+   */
+  async clearCache (request) {
+    let cache = await request.cache().get()
+    if (cache.errors || cache.payload) {
+      delete cache.errors
+      delete cache.payload
+      await request.cache().set(cache)
+    }
   }
 }

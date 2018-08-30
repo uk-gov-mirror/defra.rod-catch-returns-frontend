@@ -1,0 +1,331 @@
+{% extends "layout.html" %}
+
+{% from "back-link/macro.njk" import govukBackLink %}
+{% from "fieldset/macro.njk" import govukFieldset %}
+{% from "button/macro.njk" import govukButton %}
+{% from "radios/macro.njk" import govukRadios %}
+{% from "date-input/macro.njk" import govukDateInput %}
+{% from "input/macro.njk" import govukInput %}
+{% from "error-summary/macro.njk" import govukErrorSummary %}
+
+{% set riverItems = [] %}
+{% for river in rivers %}
+    {{ riverItems.push({
+        text: river.name,
+        value: river.id,
+        checked: river.id.toString() === payload.river
+    }) }}
+{% endfor %}
+
+{% set typeItems = [] %}
+{% for type in types %}
+    {{ typeItems.push({
+        text: type,
+        value: type,
+        checked: type === payload.type
+    }) }}
+{% endfor %}
+
+{% set methodItems = [] %}
+{% for method in methods %}
+    {{ methodItems.push({
+        text: method,
+        value: method,
+        checked: method === payload.method
+    }) }}
+{% endfor %}
+
+{% set errorList = [] %}
+{% set riverErrorMessage = null %}
+{% set dateErrorMessage = null %}
+{% set typeErrorMessage = null %}
+{% set systemErrorMessage = null %}
+{% set poundsErrorMessage = null %}
+{% set ouncesErrorMessage = null %}
+{% set kilogramsErrorMessage = null %}
+{% set methodErrorMessage = null %}
+{% set releasedErrorMessage = null %}
+
+{% if errors %}
+    {% for error in errors %}
+        {% if error.river %}
+            {% set riverErrorMessage = { text: "Select a river" } %}
+            {{ errorList.push({
+                text: "You have not selected a river",
+                href: "#river-1"
+            }) }}
+        {% endif %}
+
+        {% if error.date %}
+            {% set dateErrorMessage = { text: "Enter the date you fished the river" } %}
+            {{ errorList.push({
+                text: "You have not entered the date you fished the river",
+                href: "#date-day"
+            }) }}
+        {% endif %}
+
+        {% if error.type %}
+            {% set typeErrorMessage = { text: "Select the type of fish" } %}
+            {{ errorList.push({
+                text: "You have not selected the type of fish",
+                href: "#type-1"
+            }) }}
+        {% endif %}
+
+        {% if error.system %}
+            {% set systemErrorMessage = { text: "Select either pounds and ounces or kilograms for the weight" } %}
+            {{ errorList.push({
+                text: "You have not selected pounds and ounces or kilograms",
+                href: "#system"
+            }) }}
+        {% endif %}
+
+        {% if error.pounds %}
+            {% set poundsErrorMessage = { text: "Enter a valid number of pounds" } %}
+            {{ errorList.push({
+                text: "You have not entered a valid number of pounds",
+                href: "#pounds"
+            }) }}
+        {% endif %}
+
+        {% if error.ounces %}
+            {% set ouncesErrorMessage = { text: "Enter a valid number of ounces" } %}
+            {{ errorList.push({
+                text: "You have not entered a valid number of ounces",
+                href: "#ounces"
+            }) }}
+        {% endif %}
+
+        {% if error.kilograms %}
+            {% set kilogramsErrorMessage = { text: "Enter a valid number of kilograms" } %}
+            {{ errorList.push({
+                text: "You have not entered a valid number of kilograms",
+                href: "#kilograms"
+            }) }}
+        {% endif %}
+
+        {% if error.method %}
+            {% set methodErrorMessage = { text: "Select a method" } %}
+            {{ errorList.push({
+                text: "You have not selected a method",
+                href: "#method"
+            }) }}
+        {% endif %}
+
+        {% if error.released %}
+            {% set releasedErrorMessage = { text: "Select released" } %}
+            {{ errorList.push({
+                text: "You have not selected weather you released this fish back into the river",
+                href: "#released"
+            }) }}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+{% set imperialWeight %}
+    <div class="govuk-date-input__item govuk-!-margin-bottom-5">
+        {{ govukInput({
+            id: "pounds",
+            name: "pounds",
+            type: "number",
+            classes: "govuk-input--width-3",
+            value: payload.pounds,
+            errorMessage: poundsErrorMessage,
+            label: {
+                text: "Pounds"
+            }
+        }) }}
+    </div>
+
+    <div class="govuk-date-input__item govuk-!-margin-bottom-5">
+        {{ govukInput({
+            id: "ounces",
+            name: "ounces",
+            type: "number",
+            classes: "govuk-input--width-2",
+            value: payload.ounces,
+            errorMessage: ouncesErrorMessage,
+            label: {
+                text: "Ounces"
+            }
+        }) }}
+    </div>
+{% endset -%}
+
+{% set metricWeight %}
+    {{ govukInput({
+        id: "kilograms",
+        name: "kilograms",
+        type: "number",
+        value: payload.kilograms,
+        classes: "govuk-input--width-5",
+        errorMessage: kilogramsErrorMessage,
+        label: {
+            text: "Kilograms"
+        }
+    }) }}
+{% endset -%}
+
+{% block beforeContent %}
+    {{ govukBackLink({
+        href: "/summary",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+{% block pageTitle %}Details of the fish you caught{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="post">
+            {% if errors %}
+                {{ govukErrorSummary({
+                    titleText: "There is a problem",
+                    errorList: errorList
+                }) }}
+            {% endif %}
+
+            {% call govukFieldset({
+              legend: {
+                text: "Details of the fish you caught",
+                classes: "govuk-fieldset__legend--l",
+                isPageHeading: true
+              }
+            }) %}
+
+                {{ govukRadios({
+                    idPrefix: "river",
+                    name: "river",
+                    hint: { text: "e.g. Derwent (Cumbria)" },
+                    fieldset: {
+                        legend: {
+                            text: "River",
+                            isPageHeading: false,
+                            classes: "govuk-fieldset__legend govuk-!-font-weight-bold"
+                        }
+                    },
+                    items: riverItems,
+                    errorMessage: riverErrorMessage
+                }) }}
+
+                {{ govukDateInput({
+                    id: "date",
+                    name: "date",
+                    fieldset: {
+                        legend: {
+                            text: "Date caught in the " + year + " season",
+                            isPageHeading: false,
+                            classes: "govuk-fieldset__legend govuk-!-font-weight-bold"
+                        }
+                    },
+                    hint: {
+                        text: "For example, 24 01"
+                    },
+                    items: [
+                        {
+                            name: "day",
+                            value: payload['date-day']
+                        },
+                        {
+                            name: "month",
+                            value: payload['date-month']
+                        }
+                    ],
+                    errorMessage: dateErrorMessage
+                }) }}
+
+                {{ govukRadios({
+                    idPrefix: "type",
+                    name: "type",
+                    fieldset: {
+                        legend: {
+                            text: "Type of fish",
+                            isPageHeading: false,
+                            classes: "govuk-fieldset__legend govuk-!-font-weight-bold"
+                        }
+                    },
+                    classes: "govuk-radios--inline",
+                    items: typeItems,
+                    errorMessage: typeErrorMessage
+                }) }}
+
+                {{ govukRadios({
+                    idPrefix: "system",
+                    name: "system",
+                    fieldset: {
+                        legend: {
+                            text: "Weight of fish",
+                            isPageHeading: false,
+                            classes: "govuk-fieldset__legend govuk-!-font-weight-bold"
+                        }
+                    },
+                    items: [
+                        {
+                            text: "In pounds and ounces",
+                            value: "imperial",
+                            conditional: { html: imperialWeight },
+                            checked: payload.system === "imperial"
+                        },
+                        {
+                            text: "In kilograms",
+                            value: "metric",
+                            conditional: { html: metricWeight },
+                            checked: payload.system === "metric"
+                        }
+                    ],
+                    errorMessage: systemErrorMessage
+                }) }}
+
+                {{ govukRadios({
+                    idPrefix: "method",
+                    name: "method",
+                    fieldset: {
+                        legend: {
+                            text: "Method",
+                            isPageHeading: false,
+                            classes: "govuk-fieldset__legend govuk-!-font-weight-bold"
+                        }
+                    },
+                    classes: "govuk-radios--inline",
+                    items: methodItems,
+                    errorMessage: methodErrorMessage
+                }) }}
+
+                {{ govukRadios({
+                    idPrefix: "released",
+                    name: "released",
+                    fieldset: {
+                        legend: {
+                            text: "Released",
+                            isPageHeading: false,
+                            classes: "govuk-fieldset__legend govuk-!-font-weight-bold"
+                        }
+                    },
+                    items:[
+                        {
+                            text: "Yes",
+                            value: true,
+                            checked: payload.released === 'true'
+                        },
+                        {
+                            text: "No",
+                            value: false,
+                            checked: payload.released === 'false'
+                        }
+                    ],
+                    classes: "govuk-radios--inline",
+                    errorMessage: releasedErrorMessage
+                }) }}
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+
+            {% endcall %}
+            <input type="hidden" name="rcr2018" value="{{rcr2018}}"/>
+        </form>
+        <a class="govuk-link govuk-body-m" href="/summary">Cancel and return to summary page</a>
+    </div>
+</div>
+{% endblock %}

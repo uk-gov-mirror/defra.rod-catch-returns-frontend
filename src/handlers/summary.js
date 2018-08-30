@@ -16,15 +16,15 @@ const rivers = [
   }
 ]
 
-const fish = [
+const salmonAndLargeTrout = [
   {
     id: 0,
     river: 'Derwent (Cumbria)',
     date: '08/18',
     type: 'Salmon',
     weight: '10lb 2oz',
-    method: 'Fly',
-    released: 'Yes'
+    released: true,
+    method: 'Fly'
   },
   {
     id: 1,
@@ -32,8 +32,8 @@ const fish = [
     date: '03/18',
     type: 'Salmon',
     weight: '10lb 8oz',
-    method: 'Spinner',
-    released: 'Yes'
+    released: false,
+    method: 'Spinner'
   }
 ]
 
@@ -50,7 +50,8 @@ module.exports = class SummaryHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
-    return h.view(this.path, { rivers, fish })
+    await super.clearCache(request)
+    return h.view(this.path, { rivers, salmonAndLargeTrout })
   }
 
   /**

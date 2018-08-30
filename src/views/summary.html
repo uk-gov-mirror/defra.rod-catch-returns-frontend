@@ -15,7 +15,7 @@
 {% block pageTitle %}Your catch return report?{% endblock %}
 
 {% set riverRows = [] %}
-{% set fishRows = [] %}
+{% set salmonAndLargeTroutItems = [] %}
 
 {% macro fishLinks(id) %}
     {% set editurl = "/edit-fish/" + id %}
@@ -38,16 +38,16 @@
     {% endfor %}
 {% endif %}
 
-{% if fish.length %}
-    {% for afish in fish %}
-        {{ fishRows.push([
-            { text: afish.river },
-            { text: afish.date },
-            { text: afish.type },
-            { text: afish.weight },
-            { text: afish.method },
-            { text: afish.released },
-            { html: fishLinks(afish.id), format: "numeric" }
+{% if salmonAndLargeTrout.length %}
+    {% for fish in salmonAndLargeTrout %}
+        {{ salmonAndLargeTroutItems.push([
+            { text: fish.river },
+            { text: fish.date },
+            { text: fish.type },
+            { text: fish.weight },
+            { text: fish.method },
+            { text: "Yes" if fish.released else "No" },
+            { html: fishLinks(fish.id), format: "numeric" }
         ]) }}
     {% endfor %}
 {% endif %}
@@ -70,11 +70,11 @@
             }) }}
 
             <p class="govuk-body" style="text-align:right">
-                <a class="govuk-link " href="/river">Add River</a>
+                <a class="govuk-link " href="/river">Add river</a>
             </p>
 
             {{ govukTable({
-                caption: "Fish caught",
+                caption: "Salmon and large sea trout caught",
                 captionClasses: "govuk-heading-m",
                 firstCellIsHeader: false,
                 head: [
@@ -86,11 +86,11 @@
                     { text: "Released" },
                     { text: "Actions", format: "numeric" }
                 ],
-                rows: fishRows
+                rows: salmonAndLargeTroutItems
             }) }}
 
             <p class="govuk-body" style="text-align:right">
-                <a class="govuk-link " href="add-river">Add Fish</a>
+                <a class="govuk-link " href="/salmon-and-large-trout/add">Add a salmon or large sea trout</a>
             </p>
 
             {{ govukButton({
