@@ -12,7 +12,9 @@
     }) }}
 {% endblock %}
 
-{% block pageTitle %}Confirm deleting river {{ river.name }}{% endblock %}
+{% set title = 'Confirm deleting ' + payload.type + ' weighing ' + payload.pounds + 'lb ' + payload.ounces + 'oz, caught on the ' + payload.river %}
+
+{% block pageTitle %}Confirm deleting {{ title }} {% endblock %}
 
 {% block content %}
 <div class="govuk-grid-row">
@@ -21,18 +23,14 @@
 
             {% call govukFieldset({
               legend: {
-                text: "Confirm deleting river " + river.name,
+                text: title,
                 classes: "govuk-fieldset__legend--l",
                 isPageHeading: true
               }
             }) %}
 
-                {{ govukInsetText({
-                    text: "Deleting a river will also delete all the fish associated with it in your catch return."
-                }) }}
-
                 {{ govukButton({
-                    text: "Delete River"
+                    text: "Delete fish"
                 }) }}
 
             {% endcall %}
