@@ -34,7 +34,26 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
-    return super.readCacheAndDisplayView(request, h, { rivers, year, types, methods })
+    if (request.params.id === 'add') {
+      // Add a new salmon and large trout
+      return super.readCacheAndDisplayView(request, h, { rivers, year, types, methods })
+    } else {
+      // Edit the salmon and large trout - replace with a database get
+      const payload = {
+        river: '0',
+        'date-day': 6,
+        'date-month': 6,
+        type: 'Salmon',
+        pounds: 6,
+        ounces: 6,
+        system: 'metric',
+        kilograms: 6,
+        method: 'Fly',
+        released: 'true'
+      }
+      // Some hardcoded example data
+      return h.view(this.path, { rivers, year, types, methods, payload })
+    }
   }
 
   /**

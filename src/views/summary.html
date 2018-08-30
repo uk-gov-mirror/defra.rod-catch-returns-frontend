@@ -17,9 +17,9 @@
 {% set riverRows = [] %}
 {% set salmonAndLargeTroutItems = [] %}
 
-{% macro fishLinks(id) %}
-    {% set editurl = "/edit-fish/" + id %}
-    {% set deleteurl = "/delete-fish/" + id %}
+{% macro salmonAndLargeTroutLinks(id) %}
+    {% set editurl = "/salmon-and-large-trout/" + id %}
+    {% set deleteurl = "/salmon-and-large-trout/delete/" + id %}
     <span><a class="govuk-link" href="{{ editurl }}">Edit</a> | <a class="govuk-link" href="{{ deleteurl }}">Delete</a></span>
 {% endmacro %}
 
@@ -47,7 +47,7 @@
             { text: fish.weight },
             { text: fish.method },
             { text: "Yes" if fish.released else "No" },
-            { html: fishLinks(fish.id), format: "numeric" }
+            { html: salmonAndLargeTroutLinks(fish.id), format: "numeric" }
         ]) }}
     {% endfor %}
 {% endif %}
