@@ -6,6 +6,7 @@ const ReturnHandler = require('../handlers/return')
 const YearHandler = require('../handlers/year')
 const SummaryHandler = require('../handlers/summary')
 const RiverHandler = require('../handlers/river')
+const DeleteRiverHandler = require('../handlers/delete-river')
 
 // Define the validators
 const licenceValidator = require('../validators/licence')
@@ -18,6 +19,7 @@ const yearHandler = new YearHandler('select-year', yearValidator)
 const returnHandler = new ReturnHandler('return')
 const summaryHandler = new SummaryHandler('summary')
 const riverHandler = new RiverHandler('river', riverValidator)
+const deleteRiverHandler = new DeleteRiverHandler('delete-river', riverValidator)
 
 module.exports = [
 
@@ -58,6 +60,13 @@ module.exports = [
     path: '/river',
     method: ['GET', 'POST'],
     handler: riverHandler.handler
+  },
+
+  // Delete river handler
+  {
+    path: '/delete-river/{id}',
+    method: ['GET', 'POST'],
+    handler: deleteRiverHandler.handler
   },
 
   // Returns handler

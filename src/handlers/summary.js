@@ -5,10 +5,12 @@ const BaseHandler = require('./base')
 
 const rivers = [
   {
+    id: 3,
     name: 'Derwent (Cumbria)',
     daysFished: 10
   },
   {
+    id: 2,
     name: 'Trent',
     daysFished: 4
   }
@@ -41,7 +43,7 @@ module.exports = class SummaryHandler extends BaseHandler {
   }
 
   /**
-   * Get handler for select year page
+   * Get handler for the summary page
    * @param request
    * @param h
    * @param user
@@ -51,6 +53,13 @@ module.exports = class SummaryHandler extends BaseHandler {
     return h.view(this.path, { rivers, fish })
   }
 
+  /**
+   * Post handler for the summary page
+   * @param request
+   * @param h
+   * @param errors
+   * @returns {Promise<*>}
+   */
   async doPost (request, h, errors) {
     return h.redirect('/summary')
   }

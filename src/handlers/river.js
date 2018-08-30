@@ -22,7 +22,7 @@ module.exports = class RiverHandler extends BaseHandler {
   }
 
   /**
-   * Get handler for select year page
+   * Get handler for add river page
    * @param request
    * @param h
    * @param user
@@ -32,6 +32,13 @@ module.exports = class RiverHandler extends BaseHandler {
     return super.readCacheAndDisplayView(request, h, { rivers })
   }
 
+  /**
+   * post handler for the add river page
+   * @param request
+   * @param h
+   * @param errors
+   * @returns {Promise<*>}
+   */
   async doPost (request, h, errors) {
     return super.writeCacheAndRedirect(request, h, errors, '/summary', '/river')
   }

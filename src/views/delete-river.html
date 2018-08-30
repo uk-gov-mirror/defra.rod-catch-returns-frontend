@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% from "back-link/macro.njk" import govukBackLink %}
+{% from "fieldset/macro.njk" import govukFieldset %}
+{% from "button/macro.njk" import govukButton %}
+{% from "inset-text/macro.njk" import govukInsetText %}
+
+{% block beforeContent %}
+    {{ govukBackLink({
+        href: "/summary",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+{% block pageTitle %}Confirm deleting river {{ river.name }}{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="post">
+
+            {% call govukFieldset({
+              legend: {
+                text: "Confirm deleting river " + river.name,
+                classes: "govuk-fieldset__legend--l",
+                isPageHeading: true
+              }
+            }) %}
+
+                {{ govukInsetText({
+                    text: "Deleting a river will also delete all the fish associated with it in your catch return."
+                }) }}
+
+                {{ govukButton({
+                    text: "Delete River"
+                }) }}
+
+            {% endcall %}
+            <input type="hidden" name="rcr2018" value="{{rcr2018}}"/>
+        </form>
+        <a class="govuk-link" href="/summary">Cancel and return to summary page</a>
+    </div>
+</div>
+{% endblock %}

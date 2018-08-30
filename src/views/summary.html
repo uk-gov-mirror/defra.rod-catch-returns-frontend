@@ -18,13 +18,13 @@
 {% set fishRows = [] %}
 
 {% macro fishLinks(id) %}
-    {% set editurl = "/edit-fish?id=" + id %}
-    {% set deleteurl = "/delete-fish?id=" + id %}
+    {% set editurl = "/edit-fish/" + id %}
+    {% set deleteurl = "/delete-fish/" + id %}
     <span><a class="govuk-link" href="{{ editurl }}">Edit</a> | <a class="govuk-link" href="{{ deleteurl }}">Delete</a></span>
 {% endmacro %}
 
 {% macro riverLinks(id) %}
-    {% set deleteurl = "/delete-river?id=" + id %}
+    {% set deleteurl = "/delete-river/" + id %}
     <a class="govuk-link" href="{{ deleteurl }}">Delete</a>
 {% endmacro %}
 
@@ -33,7 +33,7 @@
         {{ riverRows.push([
             { text: river.name },
             { text: river.daysFished, format: "numeric" },
-            { html: "<a class=\"govuk-link\" href=\"delete-river\">Delete</a>", format: "numeric" }
+            { html: riverLinks(river.id), format: "numeric" }
         ]) }}
     {% endfor %}
 {% endif %}
