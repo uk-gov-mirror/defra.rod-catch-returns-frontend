@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * Display the confirmation page
  */

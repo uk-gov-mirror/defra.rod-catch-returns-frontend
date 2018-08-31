@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * This set of tests run the regression scripts in ./scripts using the
  * test runner

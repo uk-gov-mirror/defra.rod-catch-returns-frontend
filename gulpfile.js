@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * The gulp build file. Run after install npm
  * It copies the GOV design system assets into the public folder

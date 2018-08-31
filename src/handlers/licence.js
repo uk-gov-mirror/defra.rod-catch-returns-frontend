@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * Ask the user for there fish licence number and postcode
  */

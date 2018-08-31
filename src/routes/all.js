@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * These routes are scanned automatically by the hapi-router
  */

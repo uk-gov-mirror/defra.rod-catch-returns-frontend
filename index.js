@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * The entry point of the rod catch returns web service. This is a hapi web server
  * and uses glue to compose the server.
@@ -144,7 +146,6 @@ const options = {
 ;(async () => {
   try {
     const server = await Glue.compose(manifest, options)
-
     /*
      * Set up the nunjunks rendering engine and include the new gov.uk
      * design system templates and components so that the macros are accessible

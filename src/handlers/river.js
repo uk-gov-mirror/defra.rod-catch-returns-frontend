@@ -1,3 +1,5 @@
+'use strict'
+
 const BaseHandler = require('./base')
 
 const rivers = [

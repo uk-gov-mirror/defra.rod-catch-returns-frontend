@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * Validate the licence number and postcode
  */

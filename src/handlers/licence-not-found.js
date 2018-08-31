@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * Handler for invalid licence entry. This is used because until the licence is validated there
  * is no session cache so a separate handler is needed to handle the errors

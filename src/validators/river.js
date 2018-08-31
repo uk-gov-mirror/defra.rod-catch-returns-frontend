@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * Validate the river and the number of days fished
  */

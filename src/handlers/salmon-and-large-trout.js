@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * Salmon and large trout handler
  */

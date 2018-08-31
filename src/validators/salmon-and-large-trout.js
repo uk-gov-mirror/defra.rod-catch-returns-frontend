@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * Validate the salmon and large trout
  */

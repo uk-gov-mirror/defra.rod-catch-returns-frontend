@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * Delete Salmon and large trout Handler
  */

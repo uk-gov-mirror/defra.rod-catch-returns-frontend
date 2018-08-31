@@ -1,3 +1,5 @@
+'use strict'
+
 const Glue = require('glue')
 const { logger } = require('defra-logging-facade')
 const Code = require('code')

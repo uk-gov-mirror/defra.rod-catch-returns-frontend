@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * Delete River Handler
  */
