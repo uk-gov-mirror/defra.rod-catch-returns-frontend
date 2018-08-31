@@ -5,13 +5,31 @@
 {% from "button/macro.njk" import govukButton %}
 {% from "fieldset/macro.njk" import govukFieldset %}
 {% from "details/macro.njk" import govukDetails %}
+{% from "error-summary/macro.njk" import govukErrorSummary %}
 
 {% block pageTitle %}Report your salmon or sea trout catch{% endblock %}
+
+{% set licenceErrorMessage = null %}
+{% set postcodeErrorMessage = null %}
 
 {% block content %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <form method="post">
+            {% if errors %}
+                {% set licenceErrorMessage = 'Enter the last 6 digits of your licence number' %}
+                {% set postcodeErrorMessage = 'Enter the postcode with which you applied for your licence' %}
+                {{ govukErrorSummary({
+                    titleText: "There is a problem",
+                    errorList: [
+                        {
+                            text: "You have not entered a correct licence number and post code",
+                            href: "#licence"
+                        }
+                    ]
+                }) }}
+            {% endif %}
+
             <h1 class="govuk-heading-xl">
                 Report your salmon or sea trout catch
             </h1>
@@ -35,6 +53,7 @@
                     },
                     id: "licence",
                     name: "licence",
+                    errorMessage: licenceErrorMessage,
                     classes: "govuk-input govuk-!-width-one-quarter" })
                 }}
 
@@ -47,6 +66,7 @@
                     },
                     id: "postcode",
                     name: "postcode",
+                    errorMessage: postcodeErrorMessage,
                     classes: "govuk-input govuk-!-width-one-quarter" })
                 }}
 

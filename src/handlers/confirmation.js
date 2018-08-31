@@ -1,9 +1,9 @@
 /**
- * Return handler
+ * Display the confirmation page
  */
 const BaseHandler = require('./base')
 
-module.exports = class ReturnHandler extends BaseHandler {
+module.exports = class ConfirmHandler extends BaseHandler {
   constructor (...args) {
     super(args)
   }
@@ -16,7 +16,6 @@ module.exports = class ReturnHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
-    console.log('User in handler: ' + JSON.stringify(await request.cache().get()))
-    return h.view(this.path)
+    return h.view(this.path, { reference: 'TYHY44' })
   }
 }

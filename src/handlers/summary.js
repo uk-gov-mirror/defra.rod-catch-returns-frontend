@@ -61,7 +61,7 @@ module.exports = class SummaryHandler extends BaseHandler {
    * @param errors
    * @returns {Promise<*>}
    */
-  async doPost (request, h, errors) {
-    return h.redirect('/summary')
+  async doPost (request, h) {
+    return h.redirect('/submission')
   }
 }

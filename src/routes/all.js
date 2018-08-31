@@ -2,13 +2,15 @@
  * These routes are scanned automatically by the hapi-router
  */
 const LicenceHandler = require('../handlers/licence')
-const ReturnHandler = require('../handlers/return')
+const LicenceNotFoundHandler = require('../handlers/licence-not-found')
 const YearHandler = require('../handlers/year')
 const SummaryHandler = require('../handlers/summary')
 const RiverHandler = require('../handlers/river')
 const DeleteRiverHandler = require('../handlers/delete-river')
 const SalmonAndLargeTroutHandler = require('../handlers/salmon-and-large-trout')
 const DeleteSalmonAndLargeTroutHandler = require('../handlers/delete-salmon-and-large-trout')
+const ConfirmationHandler = require('../handlers/confirmation')
+const SubmissionHandler = require('../handlers/submission')
 
 // Define the validators
 const licenceValidator = require('../validators/licence')
@@ -18,13 +20,15 @@ const salmonAndLargeTroutValidator = require('../validators/salmon-and-large-tro
 
 // Define the handlers
 const licenceHandler = new LicenceHandler('licence', licenceValidator)
+const licenceNotFound = new LicenceNotFoundHandler('licence', licenceValidator)
 const yearHandler = new YearHandler('select-year', yearValidator)
-const returnHandler = new ReturnHandler('return')
 const summaryHandler = new SummaryHandler('summary')
 const riverHandler = new RiverHandler('river', riverValidator)
 const deleteRiverHandler = new DeleteRiverHandler('delete-river', riverValidator)
 const salmonAndLargeTroutHandler = new SalmonAndLargeTroutHandler('salmon-and-large-trout', salmonAndLargeTroutValidator)
 const deleteSalmonAndLargeTroutHandler = new DeleteSalmonAndLargeTroutHandler('delete-salmon-and-large-trout')
+const submissionHandler = new SubmissionHandler('submission')
+const confirmationHandler = new ConfirmationHandler('confirmation')
 
 module.exports = [
 
@@ -43,6 +47,14 @@ module.exports = [
     path: '/licence',
     method: ['GET', 'POST'],
     handler: licenceHandler.handler,
+    options: { auth: false }
+  },
+
+  // Licence not found handler
+  {
+    path: '/licence-not-found',
+    method: ['GET', 'POST'],
+    handler: licenceNotFound.handler,
     options: { auth: false }
   },
 
@@ -88,11 +100,18 @@ module.exports = [
     handler: deleteSalmonAndLargeTroutHandler.handler
   },
 
-  // Returns handler
+  // Submission handler
   {
-    path: '/return',
+    path: '/submission',
+    method: ['GET', 'POST'],
+    handler: submissionHandler.handler
+  },
+
+  // Confirmation handler
+  {
+    path: '/confirmation',
     method: 'GET',
-    handler: returnHandler.handler
+    handler: confirmationHandler.handler
   },
 
   // Error handler

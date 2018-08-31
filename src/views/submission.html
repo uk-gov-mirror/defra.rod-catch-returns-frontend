@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% from "back-link/macro.njk" import govukBackLink %}
+{% from "button/macro.njk" import govukButton %}
+
+{% block beforeContent %}
+    {{ govukBackLink({
+        href: "/summary",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="post">
+            <h1 class="govuk-heading-l">Submit your catch return</h1>
+            <p class="govuk-body">
+                You can return to the service and make changes any time before March 2019. The details you have entered have been saved.
+                If you need to make further changes now <a class="govuk-link" href="/summary">Return to summary</a>
+            </p>
+            <p class="govuk-body">
+                Once you are happy that your catch return is accurate and complete then you can submit it.
+                Once submitted you will not be able to make any further changes for the 2018 season.
+            </p>
+            {{ govukButton({
+                text: "Submit catch return"
+            }) }}
+            <input type="hidden" name="rcr2018" value="{{rcr2018}}"/>
+        </form>
+    </div>
+</div>
+{% endblock %}

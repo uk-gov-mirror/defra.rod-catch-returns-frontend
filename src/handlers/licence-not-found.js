@@ -1,5 +1,6 @@
 /**
- * Ask the user for there fish licence number and postcode
+ * Handler for invalid licence entry. This is used because until the licence is validated there
+ * is no session cache so a separate handler is needed to handle the errors
  */
 const BaseHandler = require('./base')
 const authentication = require('./authentication')
@@ -16,7 +17,7 @@ module.exports = class LicenceHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
-    return h.view(this.path)
+    return h.view(this.path, { errors: { licence: 'NOT_FOUND' } })
   }
 
   /**
