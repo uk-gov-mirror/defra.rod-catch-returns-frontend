@@ -244,8 +244,8 @@ const options = {
     })
 
     /*
-     * Decorator to retrieve make access to the session cache available as.
-     * simple setters and getters hiding the session key
+     * Decorator to make access to the session cache available as
+     * simple setters and getters hiding the session key.
      */
     server.decorate('request', 'cache', function () {
       return {

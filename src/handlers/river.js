@@ -31,7 +31,7 @@ module.exports = class RiverHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
-    return super.readCacheAndDisplayView(request, h, { rivers })
+    return this.readCacheAndDisplayView(request, h, { rivers })
   }
 
   /**
@@ -42,6 +42,6 @@ module.exports = class RiverHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doPost (request, h, errors) {
-    return super.writeCacheAndRedirect(request, h, errors, '/summary', '/river')
+    return this.writeCacheAndRedirect(request, h, errors, '/summary', '/river')
   }
 }

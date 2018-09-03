@@ -38,7 +38,7 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
   async doGet (request, h) {
     if (request.params.id === 'add') {
       // Add a new salmon and large trout
-      return super.readCacheAndDisplayView(request, h, { rivers, year, types, methods })
+      return this.readCacheAndDisplayView(request, h, { rivers, year, types, methods })
     } else {
       // Edit the salmon and large trout - replace with a database get
       const payload = {
@@ -66,7 +66,7 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doPost (request, h, errors) {
-    return super.writeCacheAndRedirect(request, h, errors, '/summary',
+    return this.writeCacheAndRedirect(request, h, errors, '/summary',
       `/salmon-and-large-trout/${encodeURIComponent(request.params.id)}`)
   }
 }
