@@ -4,6 +4,8 @@
  * Salmon and large trout handler
  */
 const BaseHandler = require('./base')
+const MethodsApi = require('../api/methods')
+const SpeciesApi = require('../api/species')
 
 const rivers = [
   { id: 0, name: 'Derwent (Cumbria)' },
@@ -20,8 +22,8 @@ const rivers = [
 
 const year = 2018
 
-const types = [ 'Salmon', 'Sea trout' ]
-const methods = [ 'Fly', 'Spinner', 'Bait' ]
+const methodsApi = new MethodsApi()
+const speciesApi = new SpeciesApi()
 
 module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
   constructor (...args) {
@@ -38,7 +40,12 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
   async doGet (request, h) {
     if (request.params.id === 'add') {
       // Add a new salmon and large trout
-      return this.readCacheAndDisplayView(request, h, { rivers, year, types, methods })
+      return this.readCacheAndDisplayView(request, h, {
+        rivers,
+        year,
+        types: await speciesApi.list(),
+        methods: await methodsApi.list()
+      })
     } else {
       // Edit the salmon and large trout - replace with a database get
       const payload = {

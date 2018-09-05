@@ -20,18 +20,18 @@
 {% set typeItems = [] %}
 {% for type in types %}
     {{ typeItems.push({
-        text: type,
-        value: type,
-        checked: type === payload.type
+        text: type.name,
+        value: type.id,
+        checked: type.id === payload.type
     }) }}
 {% endfor %}
 
 {% set methodItems = [] %}
 {% for method in methods %}
     {{ methodItems.push({
-        text: method,
-        value: method,
-        checked: method === payload.method
+        text: method.name,
+        value: method.id,
+        checked: method.id === payload.method
     }) }}
 {% endfor %}
 

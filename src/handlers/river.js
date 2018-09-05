@@ -1,22 +1,8 @@
 'use strict'
 
 const BaseHandler = require('./base')
-
-const rivers = [
-  { id: 0, name: 'Derwent (Cumbria)' },
-  { id: 1, name: 'Trent' },
-  { id: 2, name: 'Avon' },
-  { id: 3, name: 'Seven' },
-  { id: 4, name: 'Wye' }
-].sort((a, b) => {
-  if (a.name < b.name) {
-    return -1
-  }
-  if (a.name > b.name) {
-    return 1
-  }
-  return 0
-})
+const RiversApi = require('../api/rivers')
+const riversApi = new RiversApi()
 
 module.exports = class RiverHandler extends BaseHandler {
   constructor (...args) {
@@ -31,6 +17,7 @@ module.exports = class RiverHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
+    const rivers = await riversApi.list()
     return this.readCacheAndDisplayView(request, h, { rivers })
   }
 

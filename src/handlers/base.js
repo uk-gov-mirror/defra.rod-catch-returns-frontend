@@ -83,7 +83,7 @@ module.exports = class BaseHandler {
    * Allow handlers to clear the cache for a
    * canceled activity
    */
-  async clearCache (request) {
+  async clearCacheErrorsAndPayload (request) {
     let cache = await request.cache().get()
     if (cache.errors || cache.payload) {
       delete cache.errors

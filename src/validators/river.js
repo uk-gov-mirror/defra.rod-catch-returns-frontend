@@ -10,7 +10,7 @@ module.exports = async (payload) => {
 
   let errors = []
 
-  if (Number.isNaN(Number.parseInt(payload.river))) {
+  if (!payload.river) {
     errors.push({ river: 'NOT_SELECTED' })
   }
 

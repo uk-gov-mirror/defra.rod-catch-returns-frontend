@@ -1,14 +1,11 @@
 'use strict'
 
+const moment = require('moment')
+
 /**
  * Year handler
  */
 const BaseHandler = require('./base')
-
-const years = [
-  { value: 2018, text: '2018' },
-  { value: 2019, text: '2019' }
-]
 
 module.exports = class YearHandler extends BaseHandler {
   constructor (...args) {
@@ -23,7 +20,19 @@ module.exports = class YearHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
-    return this.readCacheAndDisplayView(request, h, { years })
+    const now = moment()
+    const years = []
+    if ([0, 1, 2].includes(now.month())) {
+      // Select the year
+      years.push({ value: now.year() - 1, text: (now.year() - 1).toString() })
+      years.push({ value: now.year(), text: (now.year()).toString() })
+      return this.readCacheAndDisplayView(request, h, { years })
+    } else {
+      let cache = await request.cache().get()
+      cache.year = now.year()
+      await request.cache().set(cache)
+      return h.redirect('/summary')
+    }
   }
 
   /**
@@ -34,6 +43,13 @@ module.exports = class YearHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doPost (request, h, errors) {
+    // Save the year
+    if (!errors) {
+      let cache = await request.cache().get()
+      cache.year = request.payload.year.toString()
+      await request.cache().set(cache)
+    }
+
     return this.writeCacheAndRedirect(request, h, errors, '/summary', '/select-year')
   }
 }

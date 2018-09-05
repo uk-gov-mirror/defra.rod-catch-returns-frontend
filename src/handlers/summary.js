@@ -52,8 +52,9 @@ module.exports = class SummaryHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
-    await this.clearCache(request)
-    return h.view(this.path, { rivers, salmonAndLargeTrout })
+    await this.clearCacheErrorsAndPayload(request)
+    let cache = await request.cache().get()
+    return h.view(this.path, { rivers, salmonAndLargeTrout, year: cache.year })
   }
 
   /**
