@@ -20,7 +20,7 @@ const internals = {
    * @param body
    * @return {string}
    */
-  createRequest: (path, query) => {
+  createRequest: (path, search) => {
     try {
       Hoek.assert(path, 'A path must be supplied')
 
@@ -31,8 +31,8 @@ const internals = {
         pathname: process.env.API_PATH + '/' + path
       }
 
-      if (query) {
-        uriObj.query = query
+      if (search) {
+        uriObj.search = search
       }
 
       return Url.format(uriObj)
@@ -48,29 +48,43 @@ const internals = {
    * @param method - Either 'GET' or 'POST'
    * @return {Promise.<void>} - The (json parsed) results or the request
    */
-  makeRequest: async (uri, method, body) => {
-    Hoek.assert(internals.method[method], `Method not allowed: ${method}`)
+  makeRequest: async (uri, method, body, throwOnNotFound = false) => {
+    // The request library throws an exception on an error status response
+    try {
+      Hoek.assert(internals.method[method], `Method not allowed: ${method}`)
+      logger.debug(`API Call; ${method}:${uri} `)
 
-    logger.debug(`API Call; ${method}:${uri} `)
-
-    const result = await Request({
-      uri: uri,
-      method: method,
-      json: true,
-      timeout: Number.parseInt(process.env.API_REQUEST_TIMEOUT_MS) || 10000,
-      headers: {
-        'Accept': 'application/json'
-      },
-      body: body
-    })
-
-    return result
+      return await Request({
+        uri: uri,
+        method: method,
+        json: true,
+        timeout: Number.parseInt(process.env.API_REQUEST_TIMEOUT_MS) || 10000,
+        body: body
+      })
+    } catch (err) {
+      /*
+       * Not found is ok on searches - its the empty object and a legitimate response
+       * but links should always return a result in HATEOAS
+       */
+      if (err.statusCode === 404) {
+        if (throwOnNotFound) {
+          throw err
+        }
+      } else {
+        throw err
+      }
+    }
   }
 }
 
 module.exports = {
-  request: async (method, path, query, body) => {
-    return internals.makeRequest(internals.createRequest(path, query), method, body)
+  request: async (method, path, search, body) => {
+    const request = internals.createRequest(path, search)
+    return internals.makeRequest(request, method, body)
+  },
+
+  requestFromLink: async (link) => {
+    return internals.makeRequest(link, internals.method.GET, null, true)
   },
 
   method: internals.method

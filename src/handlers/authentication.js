@@ -14,7 +14,7 @@ module.exports = async (request, h) => {
   const sid = uuid()
 
   // Assign a new user
-  const user = { contactId: 'CONTACTIDXX' }
+  const user = { contactId: 'test' }
 
   // Set the cookie to the session identifier
   request.cookieAuth.set({ sid: sid })

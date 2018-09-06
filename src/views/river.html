@@ -89,7 +89,7 @@
                     },
                     hint: { text: "Include days without a catch" },
                     value: payload.days,
-                    type: "number",
+                    attributes: { maxlength: 3 },
                     classes: "govuk-input--width-3",
                     errorMessage: daysErrorMessage
                 }) }}

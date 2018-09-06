@@ -4,6 +4,13 @@
  * Summary handler
  */
 const BaseHandler = require('./base')
+const SubmissionsApi = require('../api/submissions')
+const CatchesApi = require('../api/catches')
+const ActivitiesApi = require('../api/activities')
+
+const submissionsApi = new SubmissionsApi()
+const catchesApi = new CatchesApi()
+const activitiesApi = new ActivitiesApi()
 
 const rivers = [
   {
@@ -53,8 +60,25 @@ module.exports = class SummaryHandler extends BaseHandler {
    */
   async doGet (request, h) {
     await this.clearCacheErrorsAndPayload(request)
-    let cache = await request.cache().get()
-    return h.view(this.path, { rivers, salmonAndLargeTrout, year: cache.year })
+    const cache = await request.cache().get()
+
+    let submission = await submissionsApi.getByContactIdAndYear(cache.contactId, cache.year)
+
+    if (!submission) {
+      submission = await submissionsApi.add(cache.contactId, cache.year)
+    }
+    cache.submissionId = submission.id
+    await request.cache().set(cache)
+
+    const activities = await activitiesApi.getFromLink(submission._links.activities.href)
+    // const catches = await catchesApi.getFromLink(submission._links.catches.href)
+
+    /*
+     *const submission = await submissionsApi.add(cache.contactId, cache.year)
+     * const activitiesApi = await submissionsApi.getFromLink(submission._links.activities.href)
+     * const catches = await catchesApi.getFromLink(submission._links.catches.href)
+     */
+    return h.view(this.path, { rivers, salmonAndLargeTrout, year: cache.year, activities })
   }
 
   /**

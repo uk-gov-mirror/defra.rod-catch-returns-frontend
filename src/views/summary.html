@@ -28,12 +28,12 @@
     <a class="govuk-link" href="{{ deleteurl }}">Delete</a>
 {% endmacro %}
 
-{% if rivers.length %}
-    {% for river in rivers %}
+{% if activities.length %}
+    {% for activity in activities %}
         {{ riverRows.push([
-            { text: river.name },
-            { text: river.daysFished, format: "numeric" },
-            { html: riverLinks(river.id), format: "numeric" }
+            { text: activity.river },
+            { text: activity.days, format: "numeric" },
+            { html: riverLinks(activity.id), format: "numeric" }
         ]) }}
     {% endfor %}
 {% endif %}

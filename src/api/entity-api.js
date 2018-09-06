@@ -1,5 +1,6 @@
 /**
- * List wrapper for a given entity
+ * List wrapper for a given entity. A mapper function may be provided which operates on
+ * results which return a set of items.
  * @param entity
  * @return {Promise.<*>}
  */
@@ -7,23 +8,55 @@
 const Client = require('./client')
 const Url = require('url')
 
-const defaultMapper = (e) => {
-  return {
-    id: Url.parse(e._links.self.href).path.replace(process.env.API_PATH + '/', ''),
-    name: e.name
-  }
-}
-
 module.exports = class EntityApi {
-  constructor (path, entityName = path, mapper = defaultMapper) {
+  constructor (path, entityName = path, mapper = async (e) => {
+    return {
+      id: this.keyFromLink(e),
+      name: e.name
+    }
+  }) {
     this.path = path
     this.entityName = entityName
     this.mapper = mapper
   }
 
+  keyFromLink (obj) {
+    return Url.parse(obj._links.self.href).path.replace(process.env.API_PATH + '/', '')
+  }
+
+  async add (payload) {
+    const result = await Client.request(Client.method.POST, this.path, null, payload)
+    result.id = this.keyFromLink(result)
+    return result
+  }
+
   async list () {
     const result = await Client.request(Client.method.GET, this.path)
-    const arr = result._embedded[this.entityName].map(this.mapper)
-    return arr
+    return Promise.all(result._embedded[this.entityName].map(await this.mapper))
+  }
+
+  async getFromLink (link) {
+    const result = await Client.requestFromLink(link)
+    if (result._embedded) {
+      return Promise.all(result._embedded[this.entityName].map(await this.mapper))
+    } else {
+      result.id = this.keyFromLink(result)
+      return result
+    }
+  }
+
+  async searchFunction (searchFunction, query) {
+    const result = await Client.request(Client.method.GET, this.path + `/search/${searchFunction}`, query)
+
+    if (!result) {
+      return null
+    }
+
+    if (result._embedded) {
+      return Promise.all(result._embedded[this.entityName].map(await this.mapper))
+    } else {
+      result.id = this.keyFromLink(result)
+      return result
+    }
   }
 }

@@ -24,7 +24,7 @@ module.exports = class BaseHandler {
             await this.preValidateFunction(request.payload)
           }
           if (this.validator) {
-            errors = await this.validator(request.payload)
+            errors = await this.validator(request, h)
           }
           return await this.doPost(request, h, errors)
         }
