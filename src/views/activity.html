@@ -31,7 +31,7 @@
 
 {% if errors %}
     {% for error in errors %}
-        {% if error.river %}
+        {% if error.River %}
             {% set riverErrorMessage = { text: "Select a river" } %}
             {{ errorList.push({
                 text: "You have not selected a river",
@@ -39,13 +39,22 @@
             }) }}
         {% endif %}
 
-        {% if error.days %}
-            {% set daysErrorMessage = { text: "Enter the number of days you fished the river" } %}
+        {% if error.Activity === "EMPTY" %}
+            {% set daysErrorMessage = { text: "Enter a number between 1 and 366" } %}
             {{ errorList.push({
                 text: "You have not entered the number of days you fished the river",
                 href: "#days"
             }) }}
         {% endif %}
+
+        {% if error.Activity === "NOT_A_NUMBER" or error.Activity === 'ACTIVITY_DAYS_MAX_EXCEEDED' or error.Activity === 'ACTIVITY_DAYS_NOT_GREATER_THAN_ZERO' %}
+            {% set daysErrorMessage = { text: "Enter a number between 1 and 366" } %}
+            {{ errorList.push({
+                text: "You have not entered a valid number of days you fished the river",
+                href: "#days"
+            }) }}
+        {% endif %}
+
     {% endfor %}
 {% endif %}
 
@@ -95,6 +104,7 @@
                 }) }}
 
                 {{ govukButton({
+                    id: "continue",
                     text: "Continue"
                 }) }}
 

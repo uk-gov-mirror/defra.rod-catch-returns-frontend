@@ -24,14 +24,14 @@
 {% endmacro %}
 
 {% macro riverLinks(id) %}
-    {% set deleteurl = "/delete-river/" + id %}
+    {% set deleteurl = "/delete/" + id %}
     <a class="govuk-link" href="{{ deleteurl }}">Delete</a>
 {% endmacro %}
 
 {% if activities.length %}
     {% for activity in activities %}
         {{ riverRows.push([
-            { text: activity.river },
+            { text: activity.river.name },
             { text: activity.days, format: "numeric" },
             { html: riverLinks(activity.id), format: "numeric" }
         ]) }}
@@ -70,7 +70,7 @@
             }) }}
 
             <p class="govuk-body" style="text-align:right">
-                <a class="govuk-link " href="/river">Add river</a>
+                <a class="govuk-link " href="/activity">Add river</a>
             </p>
 
             {{ govukTable({

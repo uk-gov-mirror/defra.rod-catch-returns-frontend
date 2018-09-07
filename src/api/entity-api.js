@@ -45,6 +45,17 @@ module.exports = class EntityApi {
     }
   }
 
+  async getById (id) {
+    // Throw on a 404
+    const result = await Client.request(Client.method.GET, id, null, null, true)
+    result.id = this.keyFromLink(result)
+    return result
+  }
+
+  async deleteById (id) {
+    await Client.request(Client.method.DELETE, id, null, null, true)
+  }
+
   async searchFunction (searchFunction, query) {
     const result = await Client.request(Client.method.GET, this.path + `/search/${searchFunction}`, query)
 

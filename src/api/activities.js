@@ -12,10 +12,14 @@ const riversApi = new RiversApi()
 module.exports = class ActivitiesApi extends EntityApi {
   constructor () {
     super('activities', 'activities', async (a) => {
+      const river = await riversApi.getFromLink(a._links.river.href)
       return {
         id: this.keyFromLink(a),
         days: a.days,
-        river: (await riversApi.getFromLink(a._links.river.href)).name
+        river: {
+          id: this.keyFromLink(river),
+          name: river.name
+        }
       }
     })
   }

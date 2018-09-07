@@ -12,19 +12,6 @@ const submissionsApi = new SubmissionsApi()
 const catchesApi = new CatchesApi()
 const activitiesApi = new ActivitiesApi()
 
-const rivers = [
-  {
-    id: 3,
-    name: 'Derwent (Cumbria)',
-    daysFished: 10
-  },
-  {
-    id: 2,
-    name: 'Trent',
-    daysFished: 4
-  }
-]
-
 const salmonAndLargeTrout = [
   {
     id: 0,
@@ -78,7 +65,7 @@ module.exports = class SummaryHandler extends BaseHandler {
      * const activitiesApi = await submissionsApi.getFromLink(submission._links.activities.href)
      * const catches = await catchesApi.getFromLink(submission._links.catches.href)
      */
-    return h.view(this.path, { rivers, salmonAndLargeTrout, year: cache.year, activities })
+    return h.view(this.path, { salmonAndLargeTrout, year: cache.year, activities })
   }
 
   /**

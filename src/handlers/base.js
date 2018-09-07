@@ -18,7 +18,7 @@ module.exports = class BaseHandler {
       try {
         let errors
         if (request.method.toUpperCase() === 'GET') {
-          return this.doGet(request, h)
+          return await this.doGet(request, h)
         } else {
           if (this.preValidateFunction) {
             await this.preValidateFunction(request.payload)

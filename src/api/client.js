@@ -78,9 +78,9 @@ const internals = {
 }
 
 module.exports = {
-  request: async (method, path, search, body) => {
+  request: async (method, path, search, body, throwOnNotFound = false) => {
     const request = internals.createRequest(path, search)
-    return internals.makeRequest(request, method, body)
+    return internals.makeRequest(request, method, body, throwOnNotFound)
   },
 
   requestFromLink: async (link) => {

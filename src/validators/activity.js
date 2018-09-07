@@ -9,16 +9,18 @@ const activitiesApi = new ActivitiesApi()
 
 module.exports = async (request, h) => {
   const payload = request.payload
-  logger.debug('Validate river: ' + JSON.stringify(payload))
+  logger.debug('Validate activity: ' + JSON.stringify(payload))
 
   let errors = []
 
   if (!payload.river) {
-    errors.push({ river: 'NOT_SELECTED' })
+    errors.push({ River: 'NOT_SELECTED' })
   }
 
-  if (Number.isNaN(Number.parseInt(payload.days))) {
-    errors.push({ days: 'EMPTY' })
+  if (!payload.days || !payload.days.trim()) {
+    errors.push({ Activity: 'EMPTY' })
+  } else if (Number.isNaN(Number.parseInt(payload.days))) {
+    errors.push({ Activity: 'NOT_A_NUMBER' })
   }
 
   // if there are no errors try to persist the activity
