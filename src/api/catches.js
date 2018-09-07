@@ -21,6 +21,9 @@ module.exports = class CatchesApi extends EntityApi {
       const method = await methodsApi.getFromLink(c._links.method.href)
       return {
         id: this.keyFromLink(c),
+        dateCaught: c.dateCaught,
+        released: c.released,
+        mass: c.mass,
         river: {
           id: this.keyFromLink(river),
           name: river.name
@@ -41,7 +44,7 @@ module.exports = class CatchesApi extends EntityApi {
     return super.add({
       submission: submissionId,
       river: riverId,
-      date_caught: dateCaught,
+      dateCaught: dateCaught,
       species: speciesId,
       mass: mass,
       method: methodId,

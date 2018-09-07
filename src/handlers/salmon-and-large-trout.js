@@ -3,6 +3,8 @@
 /**
  * Salmon and large trout handler
  */
+const Moment = require('moment')
+
 const BaseHandler = require('./base')
 const MethodsApi = require('../api/methods')
 const SpeciesApi = require('../api/species')
@@ -29,35 +31,53 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
-    if (request.params.id === 'add') {
-      // Add a new salmon and large trout
-      const cache = await request.cache().get()
-      let submission = await submissionsApi.getById(cache.submissionId)
-      const activities = await activitiesApi.getFromLink(submission._links.activities.href)
-      const rivers = activities.map(a => a.river)
+    const cache = await request.cache().get()
+    const submission = await submissionsApi.getById(cache.submissionId)
+    const activities = await activitiesApi.getFromLink(submission._links.activities.href)
+    const rivers = activities.map(a => a.river)
 
+    if (request.params.catches === 'add') {
+      // Add a new salmon and large trout
       return this.readCacheAndDisplayView(request, h, {
-        rivers,
+        rivers: rivers,
         year: cache.year,
         types: await speciesApi.list(),
         methods: await methodsApi.list()
       })
     } else {
-      // Edit the salmon and large trout - replace with a database get
-      const payload = {
-        river: '0',
-        'date-day': 6,
-        'date-month': 6,
-        type: 'Salmon',
-        pounds: 6,
-        ounces: 6,
-        system: 'metric',
-        kilograms: 6,
-        method: 'Fly',
-        released: 'true'
+      // Modify an existing catch
+      const largeCatch = await catchesApi.getById(`catches/${request.params.id}`)
+
+      // Check they are not messing about with somebody else's submission
+      if (cache.submissionId !== submission.id) {
+        throw new Error('Action attempted on not owned submission')
       }
+
+      // Prepare a the payload
+      const ctch = await catchesApi.doMap(largeCatch)
+      const dateCaught = Moment(ctch.dateCaught)
+
+      const payload = {
+        river: ctch.river.id,
+        'date-day': dateCaught.format('DD'),
+        'date-month': dateCaught.format('MM'),
+        type: ctch.species.id,
+        pounds: Math.floor(ctch.mass.oz / 16),
+        ounces: Math.round(ctch.mass.oz % 16),
+        system: ctch.mass.type,
+        kilograms: ctch.mass.kg,
+        method: ctch.method.id,
+        released: ctch.released ? 'true' : 'false'
+      }
+
       // Some hardcoded example data
-      // return h.view(this.path, { rivers, year, types, methods, payload })
+      return h.view(this.path, {
+        rivers: rivers,
+        year: cache.year,
+        types: await speciesApi.list(),
+        methods: await methodsApi.list(),
+        payload: payload
+      })
     }
   }
 

@@ -90,14 +90,14 @@ module.exports = [
 
   // Add/edit salmon and sea trout handler
   {
-    path: '/salmon-and-large-trout/{id}',
+    path: '/salmon-and-large-trout/{catches}/{id?}',
     method: ['GET', 'POST'],
     handler: salmonAndLargeTroutHandler.handler
   },
 
   // Delete salmon and sea trout handler
   {
-    path: '/salmon-and-large-trout/delete/{id}',
+    path: '/salmon-and-large-trout/delete/catches/{id}',
     method: ['GET', 'POST'],
     handler: deleteSalmonAndLargeTroutHandler.handler
   },

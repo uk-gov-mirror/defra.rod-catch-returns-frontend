@@ -13,7 +13,7 @@ module.exports = class SubmissionsApi extends EntityApi {
 
   async add (contactId, year) {
     return super.add({
-      contact_id: contactId,
+      contactId: contactId,
       season: year
     })
   }

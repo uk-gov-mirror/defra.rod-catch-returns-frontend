@@ -12,7 +12,7 @@
     }) }}
 {% endblock %}
 
-{% set title = 'Confirm deleting ' + payload.type + ' weighing ' + payload.pounds + 'lb ' + payload.ounces + 'oz, caught on the ' + payload.river %}
+{% set title = 'Confirm deleting ' + largeCatch.species.name + ' weighing ' + largeCatch.weight + ', caught on the ' + largeCatch.river.name %}
 
 {% block pageTitle %}Confirm deleting {{ title }} {% endblock %}
 

@@ -56,10 +56,18 @@
             }) }}
         {% endif %}
 
-        {% if error.date %}
+        {% if error.date === 'EMPTY' %}
             {% set dateErrorMessage = { text: "Enter the date you fished the river" } %}
             {{ errorList.push({
-                text: "You have not entered the date you fished the river",
+                text: "You have not entered the date when you fished the river",
+                href: "#date-day"
+            }) }}
+        {% endif %}
+
+        {% if error.date === 'INVALID' %}
+            {% set dateErrorMessage = { text: "Enter the date you fished the river" } %}
+            {{ errorList.push({
+                text: "You have not entered a valid date when you fished the river",
                 href: "#date-day"
             }) }}
         {% endif %}
@@ -263,15 +271,15 @@
                     items: [
                         {
                             text: "In pounds and ounces",
-                            value: "imperial",
+                            value: "IMPERIAL",
                             conditional: { html: imperialWeight },
-                            checked: payload.system === "imperial"
+                            checked: payload.system === "IMPERIAL"
                         },
                         {
                             text: "In kilograms",
-                            value: "metric",
+                            value: "METRIC",
                             conditional: { html: metricWeight },
-                            checked: payload.system === "metric"
+                            checked: payload.system === "METRIC"
                         }
                     ],
                     errorMessage: systemErrorMessage

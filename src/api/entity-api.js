@@ -70,4 +70,8 @@ module.exports = class EntityApi {
       return result
     }
   }
+
+  async doMap (o) {
+    return this.mapper(o)
+  }
 }

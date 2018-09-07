@@ -38,14 +38,14 @@
     {% endfor %}
 {% endif %}
 
-{% if salmonAndLargeTrout.length %}
-    {% for fish in salmonAndLargeTrout %}
+{% if catches.length %}
+    {% for fish in catches %}
         {{ salmonAndLargeTroutItems.push([
-            { text: fish.river },
-            { text: fish.date },
-            { text: fish.type },
+            { text: fish.river.name },
+            { text: fish.dateCaught },
+            { text: fish.species.name },
             { text: fish.weight },
-            { text: fish.method },
+            { text: fish.method.name },
             { text: "Yes" if fish.released else "No" },
             { html: salmonAndLargeTroutLinks(fish.id), format: "numeric" }
         ]) }}
