@@ -73,27 +73,32 @@
                 <a class="govuk-link " href="/activity">Add river</a>
             </p>
 
-            {{ govukTable({
-                caption: "Salmon and large sea trout caught",
-                captionClasses: "govuk-heading-m",
-                firstCellIsHeader: false,
-                head: [
-                    { text: "River" },
-                    { text: "Date" },
-                    { text: "Type" },
-                    { text: "Weight" },
-                    { text: "Method" },
-                    { text: "Released" },
-                    { text: "Actions", format: "numeric" }
-                ],
-                rows: salmonAndLargeTroutItems
-            }) }}
+            {% if activities.length %}
 
-            <p class="govuk-body" style="text-align:right">
-                <a class="govuk-link " href="/salmon-and-large-trout/add">Add a salmon or large sea trout</a>
-            </p>
+                {{ govukTable({
+                    caption: "Salmon and large sea trout caught",
+                    captionClasses: "govuk-heading-m",
+                    firstCellIsHeader: false,
+                    head: [
+                        { text: "River" },
+                        { text: "Date" },
+                        { text: "Type" },
+                        { text: "Weight" },
+                        { text: "Method" },
+                        { text: "Released" },
+                        { text: "Actions", format: "numeric" }
+                    ],
+                    rows: salmonAndLargeTroutItems
+                }) }}
+
+                <p class="govuk-body" style="text-align:right">
+                    <a class="govuk-link " href="/salmon-and-large-trout/add">Add a salmon or large sea trout</a>
+                </p>
+
+            {% endif %}
 
             {{ govukButton({
+                id: "continue",
                 text: "Continue"
             }) }}
 

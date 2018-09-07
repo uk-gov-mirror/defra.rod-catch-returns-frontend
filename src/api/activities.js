@@ -32,23 +32,3 @@ module.exports = class ActivitiesApi extends EntityApi {
     })
   }
 }
-/*
- * {
- *   "days": 3,
- *   "_created": "2018-09-06T13:12:47.374+0000",
- *   "_last_modified": "2018-09-06T13:12:47.374+0000",
- *   "_links": {
- *   "self": {
- *     "href": "http://localhost:9580/api/activities/1"
- *   },
- *   "activity": {
- *     "href": "http://localhost:9580/api/activities/1"
- *   },
- *   "submission": {
- *     "href": "http://localhost:9580/api/activities/1/submission"
- *   },
- *   "river": {
- *     "href": "http://localhost:9580/api/activities/1/river"
- *   }
- * }
- */

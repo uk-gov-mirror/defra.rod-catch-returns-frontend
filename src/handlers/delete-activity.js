@@ -12,8 +12,6 @@ const submissionsApi = new SubmissionsApi()
 const activitiesApi = new ActivitiesApi()
 const riversApi = new RiversApi()
 
-const river = { id: 2, name: 'Avon' }
-
 module.exports = class DeleteActivityHandler extends BaseHandler {
   constructor (...args) {
     super(args)

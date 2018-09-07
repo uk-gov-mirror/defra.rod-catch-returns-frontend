@@ -6,22 +6,13 @@
 const BaseHandler = require('./base')
 const MethodsApi = require('../api/methods')
 const SpeciesApi = require('../api/species')
+const SubmissionsApi = require('../api/submissions')
+const CatchesApi = require('../api/catches')
+const ActivitiesApi = require('../api/activities')
 
-const rivers = [
-  { id: 0, name: 'Derwent (Cumbria)' },
-  { id: 1, name: 'Trent' }
-].sort((a, b) => {
-  if (a.name < b.name) {
-    return -1
-  }
-  if (a.name > b.name) {
-    return 1
-  }
-  return 0
-})
-
-const year = 2018
-
+const submissionsApi = new SubmissionsApi()
+const catchesApi = new CatchesApi()
+const activitiesApi = new ActivitiesApi()
 const methodsApi = new MethodsApi()
 const speciesApi = new SpeciesApi()
 
@@ -40,9 +31,14 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
   async doGet (request, h) {
     if (request.params.id === 'add') {
       // Add a new salmon and large trout
+      const cache = await request.cache().get()
+      let submission = await submissionsApi.getById(cache.submissionId)
+      const activities = await activitiesApi.getFromLink(submission._links.activities.href)
+      const rivers = activities.map(a => a.river)
+
       return this.readCacheAndDisplayView(request, h, {
         rivers,
-        year,
+        year: cache.year,
         types: await speciesApi.list(),
         methods: await methodsApi.list()
       })
@@ -61,7 +57,7 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
         released: 'true'
       }
       // Some hardcoded example data
-      return h.view(this.path, { rivers, year, types, methods, payload })
+      // return h.view(this.path, { rivers, year, types, methods, payload })
     }
   }
 

@@ -48,6 +48,12 @@ SESSION_TTL_MS=3600000
 AIRBRAKE_HOST=<<airbrake host>>
 AIRBRAKE_PROJECT_KEY=<<airbrake key>>
 
+# The API setup
+API_HOSTNAME=localhost
+API_PORT=9580
+API_PATH=/api
+API_REQUEST_TIMEOUT_MS=10000
+
 ```
 ## To Run
 ```

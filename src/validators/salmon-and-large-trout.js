@@ -3,7 +3,12 @@
 /**
  * Validate the salmon and large trout
  */
+const moment = require('moment')
+const apiErrors = require('./api-errors')
+const CatchesApi = require('../api/catches')
 const { logger } = require('defra-logging-facade')
+
+const catchesApi = new CatchesApi()
 
 module.exports = async (request, h) => {
   const payload = request.payload
@@ -46,5 +51,33 @@ module.exports = async (request, h) => {
     errors.push({ released: 'EMPTY' })
   }
 
-  return errors.length ? errors : null
+  if (payload.system === 'metric') {
+    const oz = 35.274 * Number.parseFloat(payload.kilograms)
+    payload.pounds = Math.floor(oz / 16)
+    payload.ounces = Math.round(oz % 16)
+  } else {
+    const oz = (16 * Number.parseInt(payload.pounds)) + Number.parseInt(payload.ounces)
+    payload.kilograms = Math.round(0.0283495 * oz * 10) / 10
+  }
+
+  if (!errors.length) {
+    const cache = await request.cache().get()
+    try {
+      const dateCaught = moment({ year: cache.year, month: payload['date-month'], day: payload['date-day'] })
+
+      //const mass =
+
+      // submissionId, riverId, dateCaught, speciesId, mass, methodId, released
+      //await catchesApi.add(cache.submissionId,
+      //  payload.river,
+      //  dateCaught.format(),
+       // payload.type
+      //)
+      return null
+    } catch (err) {
+      return apiErrors(err, errors)
+    }
+  } else {
+    return errors
+  }
 }

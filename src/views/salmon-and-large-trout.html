@@ -127,7 +127,7 @@
         {{ govukInput({
             id: "pounds",
             name: "pounds",
-            type: "number",
+            attributes: { maxlength: 3 },
             classes: "govuk-input--width-3",
             value: payload.pounds,
             errorMessage: poundsErrorMessage,
@@ -141,7 +141,7 @@
         {{ govukInput({
             id: "ounces",
             name: "ounces",
-            type: "number",
+            attributes: { maxlength: 2 },
             classes: "govuk-input--width-2",
             value: payload.ounces,
             errorMessage: ouncesErrorMessage,
@@ -156,9 +156,9 @@
     {{ govukInput({
         id: "kilograms",
         name: "kilograms",
-        type: "number",
         value: payload.kilograms,
-        classes: "govuk-input--width-5",
+        classes: "govuk-input--width-3",
+        attributes: { maxlength: 3 },
         errorMessage: kilogramsErrorMessage,
         label: {
             text: "Kilograms"
@@ -319,6 +319,7 @@
                 }) }}
 
                 {{ govukButton({
+                    id: "continue",
                     text: "Continue"
                 }) }}
 
