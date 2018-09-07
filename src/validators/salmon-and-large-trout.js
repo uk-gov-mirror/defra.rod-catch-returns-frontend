@@ -65,14 +65,21 @@ module.exports = async (request, h) => {
     try {
       const dateCaught = moment({ year: cache.year, month: payload['date-month'], day: payload['date-day'] })
 
-      //const mass =
+      const mass = {
+        kg: Number.parseFloat(payload.kilograms),
+        oz: (16 * Number.parseInt(payload.pounds)) + Number.parseInt(payload.ounces),
+        type: payload.system === 'metric' ? 'Metric' : 'Imperial'
+      }
 
-      // submissionId, riverId, dateCaught, speciesId, mass, methodId, released
-      //await catchesApi.add(cache.submissionId,
-      //  payload.river,
-      //  dateCaught.format(),
-       // payload.type
-      //)
+      await catchesApi.add(cache.submissionId,
+        payload.river,
+        dateCaught.format(),
+        payload.type,
+        mass,
+        payload.method,
+        payload.released === 'true'
+      )
+
       return null
     } catch (err) {
       return apiErrors(err, errors)

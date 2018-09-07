@@ -58,7 +58,7 @@ module.exports = class SummaryHandler extends BaseHandler {
     await request.cache().set(cache)
 
     const activities = await activitiesApi.getFromLink(submission._links.activities.href)
-    // const catches = await catchesApi.getFromLink(submission._links.catches.href)
+    const catches = await catchesApi.getFromLink(submission._links.catches.href)
 
     /*
      *const submission = await submissionsApi.add(cache.contactId, cache.year)

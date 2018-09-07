@@ -1,6 +1,13 @@
 'use strict'
 
 const EntityApi = require('./entity-api')
+const RiversApi = require('../api/rivers')
+const SpeciesApi = require('../api/species')
+const MethodsApi = require('../api/methods')
+
+const riversApi = new RiversApi()
+const methodsApi = new MethodsApi()
+const speciesApi = new SpeciesApi()
 
 /**
  * Catches entity handler
@@ -8,7 +15,26 @@ const EntityApi = require('./entity-api')
  */
 module.exports = class CatchesApi extends EntityApi {
   constructor () {
-    super('catches')
+    super('catches', 'catches', async (c) => {
+      const river = await riversApi.getFromLink(c._links.river.href)
+      const species = await speciesApi.getFromLink(c._links.species.href)
+      const method = await methodsApi.getFromLink(c._links.method.href)
+      return {
+        id: this.keyFromLink(c),
+        river: {
+          id: this.keyFromLink(river),
+          name: river.name
+        },
+        species: {
+          id: this.keyFromLink(species),
+          name: species.name
+        },
+        method: {
+          id: this.keyFromLink(method),
+          name: method.name
+        }
+      }
+    })
   }
 
   async add (submissionId, riverId, dateCaught, speciesId, mass, methodId, released) {
@@ -23,24 +49,3 @@ module.exports = class CatchesApi extends EntityApi {
     })
   }
 }
-/*
- * {
- * "dateCaught": "2018-09-07T08:41:11.433Z",
- * "mass": {
- * "kg": 0,
- * "oz": 0,
- * "type": "Metric"
- * },
- * "method": {
- * "name": "string"
- * },
- * "released": true,
- * "river": {
- * "name": "string"
- * },
- * "species": {
- * "name": "string"
- * },
- * "submission":
- * }
- */
