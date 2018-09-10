@@ -20,12 +20,12 @@
 {% macro salmonAndLargeTroutLinks(id) %}
     {% set editurl = id %}
     {% set deleteurl = "/delete/" + id %}
-    <span><a class="govuk-link" href="{{ editurl }}">Edit</a> | <a class="govuk-link" href="{{ deleteurl }}">Delete</a></span>
+    <span><a id="edit-{{ id }}" class="govuk-link" href="{{ editurl }}">Edit</a> | <a id="delete-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete</a></span>
 {% endmacro %}
 
 {% macro riverLinks(id) %}
     {% set deleteurl = "/delete/" + id %}
-    <a class="govuk-link" href="{{ deleteurl }}">Delete</a>
+    <a id="delete-river-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete</a>
 {% endmacro %}
 
 {% if activities.length %}
@@ -93,6 +93,12 @@
 
                 <p class="govuk-body" style="text-align:right">
                     <a class="govuk-link " href="catches/add">Add a salmon or large sea trout</a>
+                </p>
+
+                {{smallCatches|dump}}
+
+                <p class="govuk-body" style="text-align:right">
+                    <a class="govuk-link " href="small-catches/add">Add a small catch of under 1 lb</a>
                 </p>
 
             {% endif %}

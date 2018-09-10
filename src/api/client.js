@@ -53,7 +53,9 @@ const internals = {
     try {
       Hoek.assert(internals.method[method], `Method not allowed: ${method}`)
       logger.debug(`API Call; ${method}:${uri} `)
-
+      if (body) {
+        logger.debug(`Payload; ${JSON.stringify(body, null, 2)}`)
+      }
       return await Request({
         uri: uri,
         method: method,

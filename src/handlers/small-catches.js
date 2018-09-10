@@ -1,22 +1,20 @@
 'use strict'
 
 /**
- * Salmon and large trout handler
+ * Small catch handler
  */
 const Moment = require('moment')
 
 const BaseHandler = require('./base')
 const MethodsApi = require('../api/methods')
-const SpeciesApi = require('../api/species')
 const SubmissionsApi = require('../api/submissions')
-const CatchesApi = require('../api/catches')
+const SmallCatchesApi = require('../api/catches')
 const ActivitiesApi = require('../api/activities')
 
 const submissionsApi = new SubmissionsApi()
-const catchesApi = new CatchesApi()
+const smallCatchesApi = new SmallCatchesApi()
 const activitiesApi = new ActivitiesApi()
 const methodsApi = new MethodsApi()
-const speciesApi = new SpeciesApi()
 
 module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
   constructor (...args) {
@@ -36,24 +34,33 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
     const activities = await activitiesApi.getFromLink(submission._links.activities.href)
     const rivers = activities.map(a => a.river)
 
+    // Calculate calendar months
+    const months = [ ...Array(12).keys() ].map(m => {
+      const mth = Moment({ month: m }).format('MMMM')
+      return {
+        value: mth.toUpperCase(),
+        text: mth
+      }
+    })
+
     if (request.params.id === 'add') {
       // Clear any existing catch id
-      delete cache.largeCatch
+      delete cache.smallCatch
       await request.cache().set(cache)
 
       // Add a new salmon and large trout
       return this.readCacheAndDisplayView(request, h, {
         rivers: rivers,
         year: cache.year,
-        types: await speciesApi.list(),
+        months: months,
         methods: await methodsApi.list()
       })
     } else {
       // Modify an existing catch
-      const largeCatch = await catchesApi.getById(`catches/${request.params.id}`)
+      const smallCatch = await smallCatchesApi.getById(`smallCatches/${request.params.id}`)
 
       // Write the catch id onto the cache
-      cache.largeCatch = { id: largeCatch.id }
+      cache.smallCatch = { id: smallCatch.id }
       await request.cache().set(cache)
 
       // Check they are not messing about with somebody else's submission
@@ -62,26 +69,16 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
       }
 
       // Prepare a the payload
-      const ctch = await catchesApi.doMap(largeCatch)
-      const dateCaught = Moment(ctch.dateCaught)
+      const ctch = await smallCatchesApi.doMap(smallCatch)
 
       const payload = {
         river: ctch.river.id,
-        'date-day': dateCaught.format('DD'),
-        'date-month': dateCaught.format('MM'),
-        type: ctch.species.id,
-        pounds: Math.floor(ctch.mass.oz / 16),
-        ounces: Math.round(ctch.mass.oz % 16),
-        system: ctch.mass.type,
-        kilograms: ctch.mass.kg,
-        method: ctch.method.id,
         released: ctch.released ? 'true' : 'false'
       }
 
       return h.view(this.path, {
         rivers: rivers,
         year: cache.year,
-        types: await speciesApi.list(),
         methods: await methodsApi.list(),
         payload: payload
       })
@@ -89,7 +86,7 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
   }
 
   /**
-   * Post handler for the select salmon and large trout page
+   * Post handler for the small catch
    * @param request
    * @param h
    * @param errors
@@ -97,6 +94,6 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
    */
   async doPost (request, h, errors) {
     return this.writeCacheAndRedirect(request, h, errors, '/summary',
-      `/catches/${encodeURIComponent(request.params.id)}`)
+      `/small-catches/${encodeURIComponent(request.params.id)}`)
   }
 }

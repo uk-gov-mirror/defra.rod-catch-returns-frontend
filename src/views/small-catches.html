@@ -1,0 +1,212 @@
+{% extends "layout.html" %}
+
+{% from "back-link/macro.njk" import govukBackLink %}
+{% from "fieldset/macro.njk" import govukFieldset %}
+{% from "button/macro.njk" import govukButton %}
+{% from "radios/macro.njk" import govukRadios %}
+{% from "input/macro.njk" import govukInput %}
+{% from "error-summary/macro.njk" import govukErrorSummary %}
+
+
+{% set riverItems = [] %}
+{% for river in rivers %}
+    {{ riverItems.push({
+        text: river.name,
+        value: river.id,
+        checked: river.id.toString() === payload.river
+    }) }}
+{% endfor %}
+
+{% set monthItems = [] %}
+{% for month in months %}
+    {{ monthItems.push({
+        text: month.text,
+        value: month.value,
+        checked: month.value === payload.month
+    }) }}
+{% endfor %}
+
+{% set errorList = [] %}
+{% set riverErrorMessage = null %}
+{% set releasedErrorMessage = null %}
+{% set monthsErrorMessage = null %}
+{% set flyErrorMessage = null %}
+{% set spinnerErrorMessage = null %}
+{% set baitErrorMessage = null %}
+
+{% if errors %}
+    {% for error in errors %}
+        {% if error.river %}
+            {% set riverErrorMessage = { text: "Select a river" } %}
+            {{ errorList.push({
+                text: "You have not selected a river",
+                href: "#river-1"
+            }) }}
+        {% endif %}
+
+        {% if error.months %}
+            {% set monthsErrorMessage = { text: "Select the month your caught the fish" } %}
+            {{ errorList.push({
+                text: "You have not selected a month",
+                href: "#month-1"
+            }) }}
+        {% endif %}
+
+        {% if error.released %}
+            {% set releasedErrorMessage = { text: "Enter the number of small fish released back into the water" } %}
+            {{ errorList.push({
+                text: "You have not entered the number of small fish you released back into the river",
+                href: "#released"
+            }) }}
+        {% endif %}
+
+        <!--Shame you cannot do arbitrary object assignment out of the box in nunjunks-->
+        {% if error.fly %}
+            {% set flyErrorMessage = { text: "Enter the number of small fish caught using a fly" } %}
+                {{ errorList.push({
+                    text: "You have entered how many fish you caught using the fly",
+                    href: "#fly"
+                }) }}
+        {% endif %}
+
+        {% if error.spinner %}
+            {% set spinnerErrorMessage = { text: "Enter the number of small fish caught using a spinner" } %}
+                {{ errorList.push({
+                    text: "You have entered how many fish you caught using the spinner",
+                    href: "#spinner"
+                }) }}
+        {% endif %}
+
+        {% if error.bait %}
+            {% set baitErrorMessage = { text: "Enter the number of small fish caught using a bait" } %}
+                {{ errorList.push({
+                    text: "You have entered how many fish you caught using the bait",
+                    href: "#bait"
+                }) }}
+        {% endif %}
+
+    {% endfor %}
+{% endif %}
+
+{% block beforeContent %}
+    {{ govukBackLink({
+        href: "/summary",
+        text: "Back"
+    }) }}
+{% endblock %}
+
+{% block pageTitle %}Monthly details of the small fish you caught weighing under 1 lb{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="post">
+            {% if errors %}
+                {{ govukErrorSummary({
+                    titleText: "There is a problem",
+                    errorList: errorList
+                }) }}
+            {% endif %}
+
+            {% call govukFieldset({
+              legend: {
+                text: "Monthly details of the small fish you caught weighing under 1 lb",
+                classes: "govuk-fieldset__legend--l",
+                isPageHeading: true
+              }
+            }) %}
+
+                {{ govukRadios({
+                    idPrefix: "river",
+                    name: "river",
+                    fieldset: {
+                        legend: {
+                            text: "River",
+                            isPageHeading: false,
+                            classes: "govuk-fieldset__legend govuk-!-font-weight-bold"
+                        }
+                    },
+                    items: riverItems,
+                    errorMessage: riverErrorMessage
+                }) }}
+
+                {{ govukRadios({
+                    idPrefix: "month",
+                    name: "month",
+                    hint: { text: "Click below to select the month of your small catch" },
+                    fieldset: {
+                        legend: {
+                            text: "Month the fish were caught",
+                            isPageHeading: false,
+                            classes: "govuk-fieldset__legend govuk-!-font-weight-bold"
+                        }
+                    },
+                    items: monthItems,
+                    errorMessage: monthsErrorMessage
+                }) }}
+
+                {{ govukInput({
+                    id: "fly",
+                    name: "fly",
+                    hint: { text: "Enter the number of small fish caught using the fly" },
+                    label: {
+                        text: "Fly"
+                    },
+                    value: payload.fly,
+                    attributes: { maxlength: 3 },
+                    classes: "govuk-input--width-3",
+                    errorMessage: flyErrorMessage
+                }) }}
+
+                {{ govukInput({
+                    id: "spinner",
+                    name: "spinner",
+                    hint: { text: "Enter the number of small fish caught using the spinner" },
+                    label: {
+                        text: "Spinner"
+                    },
+                    value: payload.spinner,
+                    attributes: { maxlength: 3 },
+                    classes: "govuk-input--width-3",
+                    errorMessage: spinnerErrorMessage
+                }) }}
+
+                {{ govukInput({
+                    id: "bait",
+                    name: "bait",
+                    hint: { text: "Enter the number of small fish caught using the bait" },
+                    label: {
+                        text: "Bait"
+                    },
+                    value: payload.bait,
+                    attributes: { maxlength: 3 },
+                    classes: "govuk-input--width-3",
+                    errorMessage: baitErrorMessage
+                }) }}
+
+                {{ govukInput({
+                    id: "released",
+                    name: "released",
+                    hint: { text: "Enter the number of small fish released back into the water" },
+                    label: {
+                        text: "Number released"
+                    },
+                    value: payload.released,
+                    attributes: { maxlength: 3 },
+                    classes: "govuk-input--width-3",
+                    errorMessage: releasedErrorMessage
+                }) }}
+
+                {{ govukButton({
+                    name: "continue",
+                    text: "Continue"
+                }) }}
+
+            {% endcall %}
+            <input type="hidden" name="rcr2018" value="{{rcr2018}}"/>
+        </form>
+        <a class="govuk-link govuk-body-m" href="/summary">Cancel and return to summary page</a>
+    </div>
+</div>
+
+{% endblock %}

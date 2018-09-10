@@ -7,10 +7,13 @@ const Moment = require('moment')
 const BaseHandler = require('./base')
 const SubmissionsApi = require('../api/submissions')
 const CatchesApi = require('../api/catches')
+const SmallCatchesApi = require('../api/small-catches')
 const ActivitiesApi = require('../api/activities')
 const printWeight = require('./common').printWeight
+
 const submissionsApi = new SubmissionsApi()
 const catchesApi = new CatchesApi()
+const smallCatchesApi = new SmallCatchesApi()
 const activitiesApi = new ActivitiesApi()
 
 module.exports = class SummaryHandler extends BaseHandler {
@@ -50,8 +53,10 @@ module.exports = class SummaryHandler extends BaseHandler {
       return c
     })
 
+    const smallCatches = await smallCatchesApi.getFromLink(submission._links.smallCatches.href)
+
     // Return the summary view
-    return h.view(this.path, { year: cache.year, activities, catches })
+    return h.view(this.path, { year: cache.year, activities, catches, smallCatches })
   }
 
   /**

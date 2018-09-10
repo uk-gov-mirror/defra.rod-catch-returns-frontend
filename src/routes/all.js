@@ -11,6 +11,7 @@ const ActivityHandler = require('../handlers/activities')
 const DeleteActivityHandler = require('../handlers/delete-activity')
 const SalmonAndLargeTroutHandler = require('../handlers/salmon-and-large-trout')
 const DeleteSalmonAndLargeTroutHandler = require('../handlers/delete-salmon-and-large-trout')
+const SmallCatchHandler = require('../handlers/small-catches')
 const ConfirmationHandler = require('../handlers/confirmation')
 const SubmissionHandler = require('../handlers/submission')
 
@@ -19,6 +20,7 @@ const licenceValidator = require('../validators/licence')
 const yearValidator = require('../validators/year')
 const activityValidator = require('../validators/activity')
 const salmonAndLargeTroutValidator = require('../validators/salmon-and-large-trout')
+const smallCatchValidator = require('../validators/small-catch')
 
 // Define the handlers
 const licenceHandler = new LicenceHandler('licence', licenceValidator)
@@ -29,6 +31,7 @@ const activityHandler = new ActivityHandler('activity', activityValidator)
 const deleteActivityHandler = new DeleteActivityHandler('delete-activity', activityValidator)
 const salmonAndLargeTroutHandler = new SalmonAndLargeTroutHandler('salmon-and-large-trout', salmonAndLargeTroutValidator)
 const deleteSalmonAndLargeTroutHandler = new DeleteSalmonAndLargeTroutHandler('delete-salmon-and-large-trout')
+const smallCatchHandler = new SmallCatchHandler('small-catches', smallCatchValidator)
 const submissionHandler = new SubmissionHandler('submission')
 const confirmationHandler = new ConfirmationHandler('confirmation')
 
@@ -100,6 +103,13 @@ module.exports = [
     path: '/delete/catches/{id}',
     method: ['GET', 'POST'],
     handler: deleteSalmonAndLargeTroutHandler.handler
+  },
+
+  // Add/edit the small catch handler
+  {
+    path: '/small-catches/{id}',
+    method: ['GET', 'POST'],
+    handler: smallCatchHandler.handler
   },
 
   // Submission handler
