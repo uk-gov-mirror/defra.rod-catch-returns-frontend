@@ -36,7 +36,11 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
     const activities = await activitiesApi.getFromLink(submission._links.activities.href)
     const rivers = activities.map(a => a.river)
 
-    if (request.params.catches === 'add') {
+    if (request.params.id === 'add') {
+      // Clear any existing catch id
+      delete cache.largeCatch
+      await request.cache().set(cache)
+
       // Add a new salmon and large trout
       return this.readCacheAndDisplayView(request, h, {
         rivers: rivers,
@@ -47,6 +51,10 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
     } else {
       // Modify an existing catch
       const largeCatch = await catchesApi.getById(`catches/${request.params.id}`)
+
+      // Write the catch id onto the cache
+      cache.largeCatch = { id: largeCatch.id }
+      await request.cache().set(cache)
 
       // Check they are not messing about with somebody else's submission
       if (cache.submissionId !== submission.id) {
@@ -90,6 +98,6 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
    */
   async doPost (request, h, errors) {
     return this.writeCacheAndRedirect(request, h, errors, '/summary',
-      `/salmon-and-large-trout/${encodeURIComponent(request.params.id)}`)
+      `/catches/${encodeURIComponent(request.params.id)}`)
   }
 }

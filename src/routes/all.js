@@ -88,16 +88,16 @@ module.exports = [
     handler: deleteActivityHandler.handler
   },
 
-  // Add/edit salmon and sea trout handler
+  // Add/edit salmon and large sea trout handler
   {
-    path: '/salmon-and-large-trout/{catches}/{id?}',
+    path: '/catches/{id}',
     method: ['GET', 'POST'],
     handler: salmonAndLargeTroutHandler.handler
   },
 
   // Delete salmon and sea trout handler
   {
-    path: '/salmon-and-large-trout/delete/catches/{id}',
+    path: '/delete/catches/{id}',
     method: ['GET', 'POST'],
     handler: deleteSalmonAndLargeTroutHandler.handler
   },

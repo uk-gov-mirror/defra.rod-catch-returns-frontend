@@ -7,6 +7,7 @@ const BaseHandler = require('./base')
 const SubmissionsApi = require('../api/submissions')
 const CatchesApi = require('../api/catches')
 const Moment = require('moment')
+const printWeight = require('./common').printWeight
 
 const submissionsApi = new SubmissionsApi()
 const catchesApi = new CatchesApi()
@@ -35,12 +36,7 @@ module.exports = class DeleteRiverHandler extends BaseHandler {
 
     const c = await catchesApi.doMap(largeCatch)
     c.dateCaught = Moment(c.dateCaught).format('DD/MM')
-
-    if (c.mass.type === 'IMPERIAL') {
-      c.weight = Math.floor(c.mass.oz / 16).toString() + 'lbs ' + Math.round(c.mass.oz % 16).toString() + 'oz'
-    } else {
-      c.weight = (Math.round(c.mass.kg * 10) / 10).toString() + 'Kg'
-    }
+    c.weight = printWeight(c)
 
     // Save the id to delete
     cache.delete = largeCatch.id

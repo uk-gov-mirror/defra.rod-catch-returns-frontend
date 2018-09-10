@@ -5,7 +5,7 @@
  */
 const { logger } = require('defra-logging-facade')
 
-module.exports = async (request, h) => {
+module.exports = async (request) => {
   const payload = request.payload
   logger.debug('Validate licence: ' + JSON.stringify(payload))
 

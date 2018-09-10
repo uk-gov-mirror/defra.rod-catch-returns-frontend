@@ -8,6 +8,7 @@ const BaseHandler = require('./base')
 const SubmissionsApi = require('../api/submissions')
 const CatchesApi = require('../api/catches')
 const ActivitiesApi = require('../api/activities')
+const printWeight = require('./common').printWeight
 const submissionsApi = new SubmissionsApi()
 const catchesApi = new CatchesApi()
 const activitiesApi = new ActivitiesApi()
@@ -45,11 +46,7 @@ module.exports = class SummaryHandler extends BaseHandler {
     // Process the catches for the summary view
     const catches = (await catchesApi.getFromLink(submission._links.catches.href)).map(c => {
       c.dateCaught = Moment(c.dateCaught).format('DD/MM')
-      if (c.mass.type === 'IMPERIAL') {
-        c.weight = Math.floor(c.mass.oz / 16).toString() + 'lbs ' + Math.round(c.mass.oz % 16).toString() + 'oz'
-      } else {
-        c.weight = (Math.round(c.mass.kg * 10) / 10).toString() + 'Kg'
-      }
+      c.weight = printWeight(c)
       return c
     })
 

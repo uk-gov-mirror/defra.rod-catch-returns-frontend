@@ -15,7 +15,7 @@ const speciesApi = new SpeciesApi()
  */
 module.exports = class CatchesApi extends EntityApi {
   constructor () {
-    super('catches', 'catches', async (c) => {
+    super('catches', async (c) => {
       const river = await riversApi.getFromLink(c._links.river.href)
       const species = await speciesApi.getFromLink(c._links.species.href)
       const method = await methodsApi.getFromLink(c._links.method.href)
@@ -42,6 +42,18 @@ module.exports = class CatchesApi extends EntityApi {
 
   async add (submissionId, riverId, dateCaught, speciesId, mass, methodId, released) {
     return super.add({
+      submission: submissionId,
+      river: riverId,
+      dateCaught: dateCaught,
+      species: speciesId,
+      mass: mass,
+      method: methodId,
+      released: released
+    })
+  }
+
+  async change (catchId, submissionId, riverId, dateCaught, speciesId, mass, methodId, released) {
+    return super.change(catchId, {
       submission: submissionId,
       river: riverId,
       dateCaught: dateCaught,

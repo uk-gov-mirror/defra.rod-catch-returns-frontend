@@ -7,7 +7,7 @@
 
 {% block beforeContent %}
     {{ govukBackLink({
-        href: "/select-year",
+        href: "/licence",
         text: "Back"
     }) }}
 {% endblock %}
@@ -18,8 +18,8 @@
 {% set salmonAndLargeTroutItems = [] %}
 
 {% macro salmonAndLargeTroutLinks(id) %}
-    {% set editurl = "/salmon-and-large-trout/" + id %}
-    {% set deleteurl = "/salmon-and-large-trout/delete/" + id %}
+    {% set editurl = id %}
+    {% set deleteurl = "/delete/" + id %}
     <span><a class="govuk-link" href="{{ editurl }}">Edit</a> | <a class="govuk-link" href="{{ deleteurl }}">Delete</a></span>
 {% endmacro %}
 
@@ -92,7 +92,7 @@
                 }) }}
 
                 <p class="govuk-body" style="text-align:right">
-                    <a class="govuk-link " href="/salmon-and-large-trout/add">Add a salmon or large sea trout</a>
+                    <a class="govuk-link " href="catches/add">Add a salmon or large sea trout</a>
                 </p>
 
             {% endif %}

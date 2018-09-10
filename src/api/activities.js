@@ -11,7 +11,7 @@ const riversApi = new RiversApi()
 
 module.exports = class ActivitiesApi extends EntityApi {
   constructor () {
-    super('activities', 'activities', async (a) => {
+    super('activities', async (a) => {
       const river = await riversApi.getFromLink(a._links.river.href)
       return {
         id: this.keyFromLink(a),

@@ -4,13 +4,14 @@
  * Validate the salmon and large trout
  */
 const moment = require('moment')
-const apiErrors = require('./api-errors')
+const apiErrors = require('./common').apiErrors
+const checkNumber = require('./common').checkNumber
 const CatchesApi = require('../api/catches')
 const { logger } = require('defra-logging-facade')
 
 const catchesApi = new CatchesApi()
 
-module.exports = async (request, h) => {
+module.exports = async (request) => {
   const payload = request.payload
   const errors = []
   const cache = await request.cache().get()
@@ -30,7 +31,7 @@ module.exports = async (request, h) => {
     errors.push({ date: 'INVALID' })
     payload['date-day'] = payload['date-month'] = null
   } else {
-    dateCaught = moment({ year: cache.year, month: payload['date-month'], day: payload['date-day'] })
+    dateCaught = moment({ year: cache.year, month: payload['date-month'] - 1, day: payload['date-day'] })
     if (!dateCaught.isValid()) {
       errors.push({ date: 'INVALID' })
       payload['date-day'] = payload['date-month'] = null
@@ -44,16 +45,10 @@ module.exports = async (request, h) => {
   if (!payload.system) {
     errors.push({ system: 'EMPTY' })
   } else if (payload.system === 'IMPERIAL') {
-    if (Number.isNaN(Number.parseInt(payload.pounds))) {
-      errors.push({ pounds: 'INVALID' })
-    }
-    if (Number.isNaN(Number.parseInt(payload.ounces))) {
-      errors.push({ ounces: 'INVALID' })
-    }
+    checkNumber('pounds', payload.pounds, errors)
+    checkNumber('ounces', payload.ounces, errors)
   } else if (payload.system === 'METRIC') {
-    if (Number.isNaN(Number.parseInt(payload.kilograms))) {
-      errors.push({ kilograms: 'INVALID' })
-    }
+    checkNumber('kilograms', payload.kilograms, errors)
   }
 
   if (!payload.method) {
@@ -64,18 +59,19 @@ module.exports = async (request, h) => {
     errors.push({ released: 'EMPTY' })
   }
 
-  if (payload.system === 'METRIC') {
+  // Do the conversion
+  if (payload.system === 'METRIC' && errors.filter(e => e['kilograms']).length === 0) {
     const oz = 35.274 * Number.parseFloat(payload.kilograms)
     payload.pounds = Math.floor(oz / 16)
     payload.ounces = Math.round(oz % 16)
-  } if (payload.system === 'IMPERIAL') {
+  } else if (payload.system === 'IMPERIAL' && errors.filter(e => e['pounds']).length === 0 && errors.filter(e => e['ounces']).length === 0) {
     const oz = (16 * Number.parseInt(payload.pounds)) + Number.parseInt(payload.ounces)
     payload.kilograms = Math.round(0.0283495 * oz * 10) / 10
   }
 
   if (!errors.length) {
     try {
-      const dateCaught = moment({ year: cache.year, month: payload['date-month'], day: payload['date-day'] })
+      const dateCaught = moment({ year: cache.year, month: payload['date-month'] - 1, day: payload['date-day'] })
 
       const mass = {
         kg: Number.parseFloat(payload.kilograms),
@@ -83,15 +79,27 @@ module.exports = async (request, h) => {
         type: payload.system
       }
 
-      await catchesApi.add(cache.submissionId,
-        payload.river,
-        dateCaught.format(),
-        payload.type,
-        mass,
-        payload.method,
-        payload.released === 'true'
-      )
-
+      // Test if we are adding or updating
+      if (cache.largeCatch) {
+        await catchesApi.change(cache.largeCatch.id,
+          cache.submissionId,
+          payload.river,
+          dateCaught.format(),
+          payload.type,
+          mass,
+          payload.method,
+          payload.released === 'true'
+        )
+      } else {
+        await catchesApi.add(cache.submissionId,
+          payload.river,
+          dateCaught.format(),
+          payload.type,
+          mass,
+          payload.method,
+          payload.released === 'true'
+        )
+      }
       return null
     } catch (err) {
       return apiErrors(err, errors)
