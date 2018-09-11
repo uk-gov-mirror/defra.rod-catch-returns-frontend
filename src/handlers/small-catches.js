@@ -8,13 +8,22 @@ const Moment = require('moment')
 const BaseHandler = require('./base')
 const MethodsApi = require('../api/methods')
 const SubmissionsApi = require('../api/submissions')
-const SmallCatchesApi = require('../api/catches')
+const SmallCatchesApi = require('../api/small-catches')
 const ActivitiesApi = require('../api/activities')
 
 const submissionsApi = new SubmissionsApi()
 const smallCatchesApi = new SmallCatchesApi()
 const activitiesApi = new ActivitiesApi()
 const methodsApi = new MethodsApi()
+
+// Calculate calendar months
+const months = [ ...Array(12).keys() ].map(m => {
+  const mth = Moment({ month: m }).format('MMMM')
+  return {
+    value: mth.toUpperCase(),
+    text: mth
+  }
+})
 
 module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
   constructor (...args) {
@@ -34,15 +43,6 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
     const activities = await activitiesApi.getFromLink(submission._links.activities.href)
     const rivers = activities.map(a => a.river)
 
-    // Calculate calendar months
-    const months = [ ...Array(12).keys() ].map(m => {
-      const mth = Moment({ month: m }).format('MMMM')
-      return {
-        value: mth.toUpperCase(),
-        text: mth
-      }
-    })
-
     if (request.params.id === 'add') {
       // Clear any existing catch id
       delete cache.smallCatch
@@ -51,7 +51,6 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
       // Add a new salmon and large trout
       return this.readCacheAndDisplayView(request, h, {
         rivers: rivers,
-        year: cache.year,
         months: months,
         methods: await methodsApi.list()
       })
@@ -70,15 +69,19 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
 
       // Prepare a the payload
       const ctch = await smallCatchesApi.doMap(smallCatch)
-
       const payload = {
         river: ctch.river.id,
-        released: ctch.released ? 'true' : 'false'
+        released: ctch.released,
+        month: ctch.month
       }
 
-      return h.view(this.path, {
+      payload.bait = ctch.counts.find(c => c.method.name.toLowerCase() === 'bait').count
+      payload.spinner = ctch.counts.find(c => c.method.name.toLowerCase() === 'spinner').count
+      payload.fly = ctch.counts.find(c => c.method.name.toLowerCase() === 'fly').count
+
+      return this.readCacheAndDisplayView(request, h, {
         rivers: rivers,
-        year: cache.year,
+        months: months,
         methods: await methodsApi.list(),
         payload: payload
       })

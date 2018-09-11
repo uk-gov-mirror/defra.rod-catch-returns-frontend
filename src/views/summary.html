@@ -16,16 +16,17 @@
 
 {% set riverRows = [] %}
 {% set salmonAndLargeTroutItems = [] %}
-
-{% macro salmonAndLargeTroutLinks(id) %}
-    {% set editurl = id %}
-    {% set deleteurl = "/delete/" + id %}
-    <span><a id="edit-{{ id }}" class="govuk-link" href="{{ editurl }}">Edit</a> | <a id="delete-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete</a></span>
-{% endmacro %}
+{% set smallCatchItems = [] %}
 
 {% macro riverLinks(id) %}
     {% set deleteurl = "/delete/" + id %}
     <a id="delete-river-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete</a>
+{% endmacro %}
+
+{% macro catchLinks(id) %}
+    {% set editurl = id %}
+    {% set deleteurl = "/delete/" + id %}
+    <span><a id="edit-{{ id }}" class="govuk-link" href="{{ editurl }}">Edit</a> | <a id="delete-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete</a></span>
 {% endmacro %}
 
 {% if activities.length %}
@@ -47,7 +48,21 @@
             { text: fish.weight },
             { text: fish.method.name },
             { text: "Yes" if fish.released else "No" },
-            { html: salmonAndLargeTroutLinks(fish.id), format: "numeric" }
+            { html: catchLinks(fish.id), format: "numeric" }
+        ]) }}
+    {% endfor %}
+{% endif %}
+
+{% if smallCatches.length %}
+    {% for catch in smallCatches %}
+        {{ smallCatchItems.push([
+            { text: catch.month },
+            { text: catch.river },
+            { text: catch.fly },
+            { text: catch.spinner },
+            { text: catch.bait },
+            { text: catch.released },
+            { html: catchLinks(catch.id | replace("smallCatches", "small-catches")), format: "numeric" }
         ]) }}
     {% endfor %}
 {% endif %}
@@ -95,7 +110,21 @@
                     <a class="govuk-link " href="catches/add">Add a salmon or large sea trout</a>
                 </p>
 
-                {{smallCatches|dump}}
+                {{ govukTable({
+                    caption: "Small sea trout under 1 lb",
+                    captionClasses: "govuk-heading-m",
+                    firstCellIsHeader: false,
+                    head: [
+                        { text: "Month" },
+                        { text: "River" },
+                        { text: "Fly" },
+                        { text: "Spinner" },
+                        { text: "Bait" },
+                        { text: "Released" },
+                        { text: "Actions", format: "numeric" }
+                    ],
+                    rows: smallCatchItems
+                }) }}
 
                 <p class="govuk-body" style="text-align:right">
                     <a class="govuk-link " href="small-catches/add">Add a small catch of under 1 lb</a>

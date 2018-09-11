@@ -55,7 +55,7 @@
         {% if error.released %}
             {% set releasedErrorMessage = { text: "Enter the number of small fish released back into the water" } %}
             {{ errorList.push({
-                text: "You have not entered the number of small fish you released back into the river",
+                text: "You have not entered a valid number for how many small fish you released back into the river",
                 href: "#released"
             }) }}
         {% endif %}
@@ -63,26 +63,34 @@
         <!--Shame you cannot do arbitrary object assignment out of the box in nunjunks-->
         {% if error.fly %}
             {% set flyErrorMessage = { text: "Enter the number of small fish caught using a fly" } %}
-                {{ errorList.push({
-                    text: "You have entered how many fish you caught using the fly",
-                    href: "#fly"
-                }) }}
+            {{ errorList.push({
+                text: "You have not entered a valid number for how many fish you caught using the fly",
+                href: "#fly"
+            }) }}
         {% endif %}
 
         {% if error.spinner %}
             {% set spinnerErrorMessage = { text: "Enter the number of small fish caught using a spinner" } %}
-                {{ errorList.push({
-                    text: "You have entered how many fish you caught using the spinner",
-                    href: "#spinner"
-                }) }}
+            {{ errorList.push({
+                text: "You have not entered a valid number for how many fish you caught using the spinner",
+                href: "#spinner"
+            }) }}
         {% endif %}
 
         {% if error.bait %}
             {% set baitErrorMessage = { text: "Enter the number of small fish caught using a bait" } %}
-                {{ errorList.push({
-                    text: "You have entered how many fish you caught using the bait",
-                    href: "#bait"
-                }) }}
+            {{ errorList.push({
+                text: "You have not entered a valid number for how many fish you caught using the bait",
+                href: "#bait"
+            }) }}
+        {% endif %}
+
+        {% if error.SmallCatch === 'SMALL_CATCH_RELEASED_MORE_THAN_CAUGHT' %}
+            {% set releasedErrorMessage = { text: "Enter the number of small fish released back into the water" } %}
+            {{ errorList.push({
+                text: "You have released more fish than you have caught",
+                href: "#fly"
+            }) }}
         {% endif %}
 
     {% endfor %}
@@ -153,8 +161,8 @@
                         text: "Fly"
                     },
                     value: payload.fly,
-                    attributes: { maxlength: 3 },
-                    classes: "govuk-input--width-3",
+                    attributes: { maxlength: 4 },
+                    classes: "govuk-input--width-4",
                     errorMessage: flyErrorMessage
                 }) }}
 
@@ -166,8 +174,8 @@
                         text: "Spinner"
                     },
                     value: payload.spinner,
-                    attributes: { maxlength: 3 },
-                    classes: "govuk-input--width-3",
+                    attributes: { maxlength: 4 },
+                    classes: "govuk-input--width-4",
                     errorMessage: spinnerErrorMessage
                 }) }}
 
@@ -179,8 +187,8 @@
                         text: "Bait"
                     },
                     value: payload.bait,
-                    attributes: { maxlength: 3 },
-                    classes: "govuk-input--width-3",
+                    attributes: { maxlength: 4 },
+                    classes: "govuk-input--width-4",
                     errorMessage: baitErrorMessage
                 }) }}
 
@@ -192,8 +200,8 @@
                         text: "Number released"
                     },
                     value: payload.released,
-                    attributes: { maxlength: 3 },
-                    classes: "govuk-input--width-3",
+                    attributes: { maxlength: 4 },
+                    classes: "govuk-input--width-4",
                     errorMessage: releasedErrorMessage
                 }) }}
 

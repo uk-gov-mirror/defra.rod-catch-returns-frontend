@@ -78,7 +78,7 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
         released: ctch.released ? 'true' : 'false'
       }
 
-      return h.view(this.path, {
+      return this.readCacheAndDisplayView(request, h,  {
         rivers: rivers,
         year: cache.year,
         types: await speciesApi.list(),

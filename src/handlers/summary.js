@@ -16,6 +16,15 @@ const catchesApi = new CatchesApi()
 const smallCatchesApi = new SmallCatchesApi()
 const activitiesApi = new ActivitiesApi()
 
+// Calculate calendar months
+const months = [ ...Array(12).keys() ].map(m => {
+  const mth = Moment({ month: m }).format('MMMM')
+  return {
+    value: mth.toUpperCase(),
+    text: mth
+  }
+})
+
 module.exports = class SummaryHandler extends BaseHandler {
   constructor (...args) {
     super(args)
@@ -53,7 +62,15 @@ module.exports = class SummaryHandler extends BaseHandler {
       return c
     })
 
-    const smallCatches = await smallCatchesApi.getFromLink(submission._links.smallCatches.href)
+    const smallCatches = (await smallCatchesApi.getFromLink(submission._links.smallCatches.href)).map(c => {
+      c.month = months.find(m => m.value === c.month).text
+      c.river = c.river.name
+      c.bait = c.counts.find(c => c.method.name.toLowerCase() === 'bait').count
+      c.spinner = c.counts.find(c => c.method.name.toLowerCase() === 'spinner').count
+      c.fly = c.counts.find(c => c.method.name.toLowerCase() === 'fly').count
+      delete c.counts
+      return c
+    })
 
     // Return the summary view
     return h.view(this.path, { year: cache.year, activities, catches, smallCatches })
