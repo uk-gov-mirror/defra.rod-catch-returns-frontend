@@ -23,7 +23,7 @@
     <a id="delete-river-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete</a>
 {% endmacro %}
 
-{% macro catchLinks(id) %}
+{% macro renderLinks(id) %}
     {% set editurl = id %}
     {% set deleteurl = "/delete/" + id %}
     <span><a id="edit-{{ id }}" class="govuk-link" href="{{ editurl }}">Edit</a> | <a id="delete-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete</a></span>
@@ -34,7 +34,7 @@
         {{ riverRows.push([
             { text: activity.river.name },
             { text: activity.days, format: "numeric" },
-            { html: riverLinks(activity.id), format: "numeric" }
+            { html: renderLinks(activity.id), format: "numeric" }
         ]) }}
     {% endfor %}
 {% endif %}
@@ -42,13 +42,13 @@
 {% if catches.length %}
     {% for fish in catches %}
         {{ salmonAndLargeTroutItems.push([
-            { text: fish.river.name },
+            { text: fish.activity.river.name },
             { text: fish.dateCaught },
             { text: fish.species.name },
             { text: fish.weight },
             { text: fish.method.name },
             { text: "Yes" if fish.released else "No" },
-            { html: catchLinks(fish.id), format: "numeric" }
+            { html: renderLinks(fish.id), format: "numeric" }
         ]) }}
     {% endfor %}
 {% endif %}
@@ -62,7 +62,7 @@
             { text: catch.spinner },
             { text: catch.bait },
             { text: catch.released },
-            { html: catchLinks(catch.id | replace("smallCatches", "small-catches")), format: "numeric" }
+            { html: renderLinks(catch.id | replace("smallCatches", "small-catches")), format: "numeric" }
         ]) }}
     {% endfor %}
 {% endif %}
@@ -85,7 +85,7 @@
             }) }}
 
             <p class="govuk-body" style="text-align:right">
-                <a class="govuk-link " href="/activity">Add river</a>
+                <a id="activities-add" class="govuk-link " href="/activities/add">Add river</a>
             </p>
 
             {% if activities.length %}
@@ -107,7 +107,7 @@
                 }) }}
 
                 <p class="govuk-body" style="text-align:right">
-                    <a class="govuk-link " href="catches/add">Add a salmon or large sea trout</a>
+                    <a id="catches-add" class="govuk-link " href="catches/add">Add a salmon or large sea trout</a>
                 </p>
 
                 {{ govukTable({
@@ -127,7 +127,7 @@
                 }) }}
 
                 <p class="govuk-body" style="text-align:right">
-                    <a class="govuk-link " href="small-catches/add">Add a small catch of under 1 lb</a>
+                    <a id="small-catches-add" class="govuk-link " href="small-catches/add">Add a small catch of under 1 lb</a>
                 </p>
 
             {% endif %}
@@ -137,7 +137,7 @@
                 text: "Continue"
             }) }}
 
-            <input type="hidden" name="rcr2018" value="{{rcr2018}}"/>
+            {{ extra() }}
         </form>
     </div>
 </div>

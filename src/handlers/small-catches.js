@@ -62,15 +62,16 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
       cache.smallCatch = { id: smallCatch.id }
       await request.cache().set(cache)
 
+      // Prepare a the payload
+      const ctch = await smallCatchesApi.doMap(smallCatch)
+
       // Check they are not messing about with somebody else's submission
-      if (cache.submissionId !== submission.id) {
+      if (ctch.submissionId !== submission.id) {
         throw new Error('Action attempted on not owned submission')
       }
 
-      // Prepare a the payload
-      const ctch = await smallCatchesApi.doMap(smallCatch)
       const payload = {
-        river: ctch.river.id,
+        river: ctch.activity.river.id,
         released: ctch.released,
         month: ctch.month
       }

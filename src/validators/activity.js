@@ -25,9 +25,16 @@ module.exports = async (request) => {
   // if there are no errors try to persist the activity
   if (!errors.length) {
     const cache = await request.cache().get()
+
     try {
-      await activitiesApi.add(cache.submissionId, payload.river, payload.days)
-      return null
+      // Test if we are adding or updating
+      if (cache.activity) {
+        await activitiesApi.change(cache.activity.id, cache.submissionId, payload.river, payload.days)
+        return null
+      } else {
+        await activitiesApi.add(cache.submissionId, payload.river, payload.days)
+        return null
+      }
     } catch (err) {
       return apiErrors(err, errors)
     }

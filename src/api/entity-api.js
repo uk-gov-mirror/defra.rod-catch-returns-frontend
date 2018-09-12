@@ -38,6 +38,11 @@ module.exports = class EntityApi {
     return result
   }
 
+  // Spring data rest requires a specific operation to change relationships
+  async changeAssoc (key, payload) {
+    return Client.requestAssociationChange(key, payload)
+  }
+
   // List all entities - used for reference data
   async list () {
     const result = await Client.request(Client.method.GET, this.path)

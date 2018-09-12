@@ -3,14 +3,18 @@
 /**
  * Validate the small catch
  */
-const apiErrors = require('./common').apiErrors
+const SubmissionsApi = require('../api/submissions')
+const ActivitiesApi = require('../api/activities')
+const SmallCatchesApi = require('../api/small-catches')
 const MethodsApi = require('../api/methods')
 const checkNumber = require('./common').checkNumber
-const SmallCatchesApi = require('../api/small-catches')
 const { logger } = require('defra-logging-facade')
+const apiErrors = require('./common').apiErrors
 
+const submissionsApi = new SubmissionsApi()
+const activitiesApi = new ActivitiesApi()
 const smallCatchesApi = new SmallCatchesApi()
-const mathodsApi = new MethodsApi()
+const methodsApi = new MethodsApi()
 
 module.exports = async (request) => {
   const payload = request.payload
@@ -29,18 +33,20 @@ module.exports = async (request) => {
   }
 
   // Check methods
-  const methods = await mathodsApi.list()
+  const methods = await methodsApi.list()
   methods.forEach(m => checkNumber(m.name.toLowerCase(), payload[m.name.toLowerCase()], errors))
 
   // Check released
   checkNumber('released', payload.released, errors)
 
   if (!errors.length) {
+    const submission = await submissionsApi.getById(cache.submissionId)
+    const activities = await activitiesApi.getFromLink(submission._links.activities.href)
     try {
       if (cache.smallCatch) {
         await smallCatchesApi.change(cache.smallCatch.id,
           cache.submissionId,
-          payload.river,
+          activities.find(a => a.river.id === payload.river).id,
           payload.month,
           payload.fly,
           payload.spinner,
@@ -49,7 +55,7 @@ module.exports = async (request) => {
         )
       } else {
         await smallCatchesApi.add(cache.submissionId,
-          payload.river,
+          activities.find(a => a.river.id === payload.river).id,
           payload.month,
           payload.fly,
           payload.spinner,

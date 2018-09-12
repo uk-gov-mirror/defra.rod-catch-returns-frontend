@@ -10,6 +10,7 @@ require('dotenv').config()
 
 const Glue = require('glue')
 const Nunjucks = require('nunjucks')
+const Uuid = require('uuid')
 const { logger } = require('defra-logging-facade')
 
 const manifest = {
@@ -179,7 +180,14 @@ const options = {
         'src/views',
         'node_modules/govuk-frontend/',
         'node_modules/govuk-frontend/components/'
-      ]
+      ],
+
+      // Set up the common view data
+      context: () => {
+        return {
+          pgid: Uuid.v4()
+        }
+      }
     })
 
     // Set up the route handlers for static resources

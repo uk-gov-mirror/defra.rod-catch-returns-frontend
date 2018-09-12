@@ -56,17 +56,17 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
       cache.largeCatch = { id: largeCatch.id }
       await request.cache().set(cache)
 
+      // Prepare a the payload
+      const ctch = await catchesApi.doMap(largeCatch)
+
       // Check they are not messing about with somebody else's submission
-      if (cache.submissionId !== submission.id) {
+      if (ctch.submissionId !== submission.id) {
         throw new Error('Action attempted on not owned submission')
       }
 
-      // Prepare a the payload
-      const ctch = await catchesApi.doMap(largeCatch)
       const dateCaught = Moment(ctch.dateCaught)
-
       const payload = {
-        river: ctch.river.id,
+        river: ctch.activity.river.id,
         'date-day': dateCaught.format('DD'),
         'date-month': dateCaught.format('MM'),
         type: ctch.species.id,
@@ -78,7 +78,7 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
         released: ctch.released ? 'true' : 'false'
       }
 
-      return this.readCacheAndDisplayView(request, h,  {
+      return this.readCacheAndDisplayView(request, h, {
         rivers: rivers,
         year: cache.year,
         types: await speciesApi.list(),

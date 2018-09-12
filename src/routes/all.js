@@ -81,7 +81,7 @@ module.exports = [
 
   // Activity handler
   {
-    path: '/activity',
+    path: '/activities/{id}',
     method: ['GET', 'POST'],
     handler: activityHandler.handler
   },

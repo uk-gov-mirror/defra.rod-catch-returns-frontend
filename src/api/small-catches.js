@@ -1,9 +1,13 @@
 'use strict'
 
 const EntityApi = require('./entity-api')
+const SubmissionApi = require('../api/submissions')
+const ActivityApi = require('../api/activities')
 const RiversApi = require('../api/rivers')
 const MethodsApi = require('../api/methods')
 
+const submissionApi = new SubmissionApi()
+const activityApi = new ActivityApi()
 const riversApi = new RiversApi()
 const methodsApi = new MethodsApi()
 
@@ -11,10 +15,30 @@ const methodsApi = new MethodsApi()
  * Small catches entity handler
  *
  */
+
+const flatternCounts = (methods, fly, spinner, bait) => {
+  return [
+    {
+      method: methods.find(m => m.name.toLowerCase() === 'fly').id,
+      count: fly
+    },
+    {
+      method: methods.find(m => m.name.toLowerCase() === 'spinner').id,
+      count: spinner
+    },
+    {
+      method: methods.find(m => m.name.toLowerCase() === 'bait').id,
+      count: bait
+    }
+  ]
+}
+
 module.exports = class CatchesApi extends EntityApi {
   constructor () {
     super('smallCatches', async (c) => {
-      const river = await riversApi.getFromLink(c._links.river.href)
+      const activity = await activityApi.getFromLink(c._links.activity.href)
+      const submission = await submissionApi.getFromLink(c._links.submission.href)
+      const river = await riversApi.getFromLink(activity._links.river.href)
 
       const counts = await Promise.all(c.counts.map(async m => {
         return { method: await methodsApi.doMap(await methodsApi.getFromLink(m._links.method.href)), count: m.count }
@@ -22,62 +46,46 @@ module.exports = class CatchesApi extends EntityApi {
 
       return {
         id: this.keyFromLink(c),
+        submissionId: submissionApi.keyFromLink(submission),
         month: c.month,
         counts: counts,
         released: c.released,
-        river: {
-          id: this.keyFromLink(river),
-          name: river.name
+        activity: {
+          id: activityApi.keyFromLink(activity),
+          days: activity.days,
+          river: {
+            id: riversApi.keyFromLink(river),
+            name: river.name
+          }
         }
       }
     })
   }
 
-  async add (submissionId, riverId, month, fly, spinner, bait, released) {
+  async add (submissionId, activityId, month, fly, spinner, bait, released) {
     const methods = await methodsApi.list()
     return super.add({
       submission: submissionId,
-      river: riverId,
+      activity: activityId,
       month: month,
       released: released,
-      counts: [
-        {
-          method: methods.find(m => m.name.toLowerCase() === 'fly').id,
-          count: fly
-        },
-        {
-          method: methods.find(m => m.name.toLowerCase() === 'spinner').id,
-          count: spinner
-        },
-        {
-          method: methods.find(m => m.name.toLowerCase() === 'bait').id,
-          count: bait
-        }
-      ]
+      counts: flatternCounts(methods, fly, spinner, bait)
     })
   }
 
-  async change (catchId, submissionId, riverId, month, fly, spinner, bait, released) {
+  async change (catchId, submissionId, activityId, month, fly, spinner, bait, released) {
     const methods = await methodsApi.list()
-    return super.change(catchId, {
-      submission: submissionId,
-      river: riverId,
+    const result = await super.change(catchId, {
       month: month,
       released: released,
-      counts: [
-        {
-          method: methods.find(m => m.name.toLowerCase() === 'fly').id,
-          count: fly
-        },
-        {
-          method: methods.find(m => m.name.toLowerCase() === 'spinner').id,
-          count: spinner
-        },
-        {
-          method: methods.find(m => m.name.toLowerCase() === 'bait').id,
-          count: bait
-        }
-      ]
+      counts: flatternCounts(methods, fly, spinner, bait)
     })
+
+    const mappedResult = await this.doMap(result)
+
+    // Change the activity if necessary
+    if (mappedResult.activity.id !== activityId) {
+      await super.changeAssoc(catchId + '/activity', activityId)
+    }
   }
 }

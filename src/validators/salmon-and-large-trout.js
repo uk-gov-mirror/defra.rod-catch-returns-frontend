@@ -6,10 +6,15 @@
 const moment = require('moment')
 const apiErrors = require('./common').apiErrors
 const checkNumber = require('./common').checkNumber
+const SubmissionsApi = require('../api/submissions')
+const ActivitiesApi = require('../api/activities')
 const CatchesApi = require('../api/catches')
+
 const { logger } = require('defra-logging-facade')
 
 const catchesApi = new CatchesApi()
+const submissionsApi = new SubmissionsApi()
+const activitiesApi = new ActivitiesApi()
 
 module.exports = async (request) => {
   const payload = request.payload
@@ -70,6 +75,8 @@ module.exports = async (request) => {
   }
 
   if (!errors.length) {
+    const submission = await submissionsApi.getById(cache.submissionId)
+    const activities = await activitiesApi.getFromLink(submission._links.activities.href)
     try {
       const dateCaught = moment({ year: cache.year, month: payload['date-month'] - 1, day: payload['date-day'] })
 
@@ -83,7 +90,7 @@ module.exports = async (request) => {
       if (cache.largeCatch) {
         await catchesApi.change(cache.largeCatch.id,
           cache.submissionId,
-          payload.river,
+          activities.find(a => a.river.id === payload.river).id,
           dateCaught.format(),
           payload.type,
           mass,
@@ -92,7 +99,7 @@ module.exports = async (request) => {
         )
       } else {
         await catchesApi.add(cache.submissionId,
-          payload.river,
+          activities.find(a => a.river.id === payload.river).id,
           dateCaught.format(),
           payload.type,
           mass,

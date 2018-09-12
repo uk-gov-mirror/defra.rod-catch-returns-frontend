@@ -64,7 +64,7 @@ module.exports = class SummaryHandler extends BaseHandler {
 
     const smallCatches = (await smallCatchesApi.getFromLink(submission._links.smallCatches.href)).map(c => {
       c.month = months.find(m => m.value === c.month).text
-      c.river = c.river.name
+      c.river = c.activity.river.name
       c.bait = c.counts.find(c => c.method.name.toLowerCase() === 'bait').count
       c.spinner = c.counts.find(c => c.method.name.toLowerCase() === 'spinner').count
       c.fly = c.counts.find(c => c.method.name.toLowerCase() === 'fly').count

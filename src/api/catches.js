@@ -1,10 +1,14 @@
 'use strict'
 
 const EntityApi = require('./entity-api')
+const SubmissionApi = require('../api/submissions')
+const ActivityApi = require('../api/activities')
 const RiversApi = require('../api/rivers')
-const SpeciesApi = require('../api/species')
 const MethodsApi = require('../api/methods')
+const SpeciesApi = require('../api/species')
 
+const submissionApi = new SubmissionApi()
+const activityApi = new ActivityApi()
 const riversApi = new RiversApi()
 const methodsApi = new MethodsApi()
 const speciesApi = new SpeciesApi()
@@ -16,34 +20,41 @@ const speciesApi = new SpeciesApi()
 module.exports = class CatchesApi extends EntityApi {
   constructor () {
     super('catches', async (c) => {
-      const river = await riversApi.getFromLink(c._links.river.href)
+      const activity = await activityApi.getFromLink(c._links.activity.href)
+      const submission = await submissionApi.getFromLink(c._links.submission.href)
+      const river = await riversApi.getFromLink(activity._links.river.href)
       const species = await speciesApi.getFromLink(c._links.species.href)
       const method = await methodsApi.getFromLink(c._links.method.href)
       return {
         id: this.keyFromLink(c),
+        submissionId: submissionApi.keyFromLink(submission),
         dateCaught: c.dateCaught,
         released: c.released,
         mass: c.mass,
-        river: {
-          id: this.keyFromLink(river),
-          name: river.name
+        activity: {
+          id: activityApi.keyFromLink(activity),
+          days: activity.days,
+          river: {
+            id: riversApi.keyFromLink(river),
+            name: river.name
+          }
         },
         species: {
-          id: this.keyFromLink(species),
+          id: speciesApi.keyFromLink(species),
           name: species.name
         },
         method: {
-          id: this.keyFromLink(method),
+          id: methodsApi.keyFromLink(method),
           name: method.name
         }
       }
     })
   }
 
-  async add (submissionId, riverId, dateCaught, speciesId, mass, methodId, released) {
+  async add (submissionId, activityId, dateCaught, speciesId, mass, methodId, released) {
     return super.add({
       submission: submissionId,
-      river: riverId,
+      activity: activityId,
       dateCaught: dateCaught,
       species: speciesId,
       mass: mass,
@@ -52,15 +63,30 @@ module.exports = class CatchesApi extends EntityApi {
     })
   }
 
-  async change (catchId, submissionId, riverId, dateCaught, speciesId, mass, methodId, released) {
-    return super.change(catchId, {
-      submission: submissionId,
-      river: riverId,
+  async change (catchId, submissionId, activityId, dateCaught, speciesId, mass, methodId, released) {
+    const result = await super.change(catchId, {
       dateCaught: dateCaught,
-      species: speciesId,
       mass: mass,
-      method: methodId,
       released: released
     })
+
+    const mappedResult = await this.doMap(result)
+
+    // Change the activity if necessary
+    if (mappedResult.activity.id !== activityId) {
+      await super.changeAssoc(catchId + '/activity', activityId)
+    }
+
+    // Change the activity if necessary
+    if (mappedResult.species.id !== speciesId) {
+      await super.changeAssoc(catchId + '/species', speciesId)
+    }
+
+    // Change the activity if necessary
+    if (mappedResult.method.id !== methodId) {
+      await super.changeAssoc(catchId + '/method', methodId)
+    }
+
+    return result
   }
 }
