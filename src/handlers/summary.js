@@ -42,11 +42,7 @@ module.exports = class SummaryHandler extends BaseHandler {
     const cache = await this.clearCacheErrorsAndPayload(request)
 
     // Find or create a submission object
-    let submission = await submissionsApi.getByContactIdAndYear(cache.contactId, cache.year)
-
-    if (!submission) {
-      submission = await submissionsApi.add(cache.contactId, cache.year)
-    }
+    let submission = await submissionsApi.getById(cache.submissionId)
 
     // Set the submissionId in the cache
     cache.submissionId = submission.id
