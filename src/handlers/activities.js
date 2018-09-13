@@ -36,24 +36,23 @@ module.exports = class ActivitiesHandler extends BaseHandler {
         rivers: rivers.filter(r => !activities.map(a => a.river.id).includes(r.id))
       })
     } else {
-      const activity = await activitiesApi.getById(`activities/${request.params.id}`)
+      let activity = await activitiesApi.getById(`activities/${request.params.id}`)
+      const activitySubmission = await submissionsApi.getFromLink(activity._links.submission.href)
+      activity = await activitiesApi.doMap(activity)
+
+      // Check they are not messing about with somebody else's activity
+      if (activitySubmission.id !== submission.id) {
+        throw new Error('Action attempted on not owned submission')
+      }
 
       // Write the catch id onto the cache
       cache.activity = { id: activity.id }
       await request.cache().set(cache)
 
-      // Run the mapper
-      const a = await activitiesApi.doMap(activity)
-
-      // Check they are not messing about with somebody else's activity
-      if (a.submissionId !== submission.id) {
-        throw new Error('Action attempted on not owned submission')
-      }
-
       // Prepare a the payload
       const payload = {
-        river: a.river.id,
-        days: a.days
+        river: activity.river.id,
+        days: activity.days
       }
 
       /*
@@ -62,7 +61,7 @@ module.exports = class ActivitiesHandler extends BaseHandler {
        */
       return this.readCacheAndDisplayView(request, h, {
         rivers: rivers.filter(r => ![].concat(...activities.map(a => a.river))
-          .filter(r => r.id !== a.river.id).map(r2 => r2.id).includes(r.id)),
+          .filter(r => r.id !== activity.river.id).map(r2 => r2.id).includes(r.id)),
         payload: payload
       })
     }

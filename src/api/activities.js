@@ -1,30 +1,25 @@
 'use strict'
 
 const EntityApi = require('./entity-api')
-const SubmissionApi = require('../api/submissions')
 const RiversApi = require('../api/rivers')
 
-const submissionApi = new SubmissionApi()
 const riversApi = new RiversApi()
 
 /**
  * Activities entity handler
  *
  */
-
 module.exports = class ActivitiesApi extends EntityApi {
   constructor () {
     super('activities', async (a) => {
       const river = await riversApi.getFromLink(a._links.river.href)
-      const submission = await submissionApi.getFromLink(a._links.submission.href)
       return {
         id: this.keyFromLink(a),
         days: a.days,
         river: {
           id: this.keyFromLink(river),
           name: river.name
-        },
-        submissionId: submissionApi.keyFromLink(submission)
+        }
       }
     })
   }

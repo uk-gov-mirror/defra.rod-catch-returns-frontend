@@ -31,7 +31,7 @@ module.exports = class YearHandler extends BaseHandler {
       let cache = await request.cache().get()
       cache.year = now.year()
       await request.cache().set(cache)
-      return h.redirect('/summary')
+      return h.redirect('/did-you-fish')
     }
   }
 
@@ -50,6 +50,6 @@ module.exports = class YearHandler extends BaseHandler {
       await request.cache().set(cache)
     }
 
-    return this.writeCacheAndRedirect(request, h, errors, '/summary', '/select-year')
+    return this.writeCacheAndRedirect(request, h, errors, '/summary', '/did-you-fish')
   }
 }

@@ -1,13 +1,11 @@
 'use strict'
 
 const EntityApi = require('./entity-api')
-const SubmissionApi = require('../api/submissions')
 const ActivityApi = require('../api/activities')
 const RiversApi = require('../api/rivers')
 const MethodsApi = require('../api/methods')
 const SpeciesApi = require('../api/species')
 
-const submissionApi = new SubmissionApi()
 const activityApi = new ActivityApi()
 const riversApi = new RiversApi()
 const methodsApi = new MethodsApi()
@@ -21,13 +19,11 @@ module.exports = class CatchesApi extends EntityApi {
   constructor () {
     super('catches', async (c) => {
       const activity = await activityApi.getFromLink(c._links.activity.href)
-      const submission = await submissionApi.getFromLink(c._links.submission.href)
       const river = await riversApi.getFromLink(activity._links.river.href)
       const species = await speciesApi.getFromLink(c._links.species.href)
       const method = await methodsApi.getFromLink(c._links.method.href)
       return {
         id: this.keyFromLink(c),
-        submissionId: submissionApi.keyFromLink(submission),
         dateCaught: c.dateCaught,
         released: c.released,
         mass: c.mass,

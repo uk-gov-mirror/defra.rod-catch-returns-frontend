@@ -1,12 +1,10 @@
 'use strict'
 
 const EntityApi = require('./entity-api')
-const SubmissionApi = require('../api/submissions')
 const ActivityApi = require('../api/activities')
 const RiversApi = require('../api/rivers')
 const MethodsApi = require('../api/methods')
 
-const submissionApi = new SubmissionApi()
 const activityApi = new ActivityApi()
 const riversApi = new RiversApi()
 const methodsApi = new MethodsApi()
@@ -37,7 +35,6 @@ module.exports = class CatchesApi extends EntityApi {
   constructor () {
     super('smallCatches', async (c) => {
       const activity = await activityApi.getFromLink(c._links.activity.href)
-      const submission = await submissionApi.getFromLink(c._links.submission.href)
       const river = await riversApi.getFromLink(activity._links.river.href)
 
       const counts = await Promise.all(c.counts.map(async m => {
@@ -46,7 +43,6 @@ module.exports = class CatchesApi extends EntityApi {
 
       return {
         id: this.keyFromLink(c),
-        submissionId: submissionApi.keyFromLink(submission),
         month: c.month,
         counts: counts,
         released: c.released,

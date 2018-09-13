@@ -56,29 +56,28 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
       })
     } else {
       // Modify an existing catch
-      const smallCatch = await smallCatchesApi.getById(`smallCatches/${request.params.id}`)
+      let smallCatch = await smallCatchesApi.getById(`smallCatches/${request.params.id}`)
+      const smallCatchSubmission = await submissionsApi.getFromLink(smallCatch._links.submission.href)
+      smallCatch = await smallCatchesApi.doMap(smallCatch)
+
+      // Check they are not messing about with somebody else's activity
+      if (smallCatchSubmission.id !== submission.id) {
+        throw new Error('Action attempted on not owned submission')
+      }
 
       // Write the catch id onto the cache
       cache.smallCatch = { id: smallCatch.id }
       await request.cache().set(cache)
 
-      // Prepare a the payload
-      const ctch = await smallCatchesApi.doMap(smallCatch)
-
-      // Check they are not messing about with somebody else's submission
-      if (ctch.submissionId !== submission.id) {
-        throw new Error('Action attempted on not owned submission')
-      }
-
       const payload = {
-        river: ctch.activity.river.id,
-        released: ctch.released,
-        month: ctch.month
+        river: smallCatch.activity.river.id,
+        released: smallCatch.released,
+        month: smallCatch.month
       }
 
-      payload.bait = ctch.counts.find(c => c.method.name.toLowerCase() === 'bait').count
-      payload.spinner = ctch.counts.find(c => c.method.name.toLowerCase() === 'spinner').count
-      payload.fly = ctch.counts.find(c => c.method.name.toLowerCase() === 'fly').count
+      payload.bait = smallCatch.counts.find(c => c.method.name.toLowerCase() === 'bait').count
+      payload.spinner = smallCatch.counts.find(c => c.method.name.toLowerCase() === 'spinner').count
+      payload.fly = smallCatch.counts.find(c => c.method.name.toLowerCase() === 'fly').count
 
       return this.readCacheAndDisplayView(request, h, {
         rivers: rivers,

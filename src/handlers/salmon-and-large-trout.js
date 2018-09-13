@@ -50,32 +50,31 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
       })
     } else {
       // Modify an existing catch
-      const largeCatch = await catchesApi.getById(`catches/${request.params.id}`)
+      let largeCatch = await catchesApi.getById(`catches/${request.params.id}`)
+      const largeCatchSubmission = await submissionsApi.getFromLink(largeCatch._links.submission.href)
+      largeCatch = await catchesApi.doMap(largeCatch)
+
+      // Check they are not messing about with somebody else's activity
+      if (largeCatchSubmission.id !== submission.id) {
+        throw new Error('Action attempted on not owned submission')
+      }
 
       // Write the catch id onto the cache
       cache.largeCatch = { id: largeCatch.id }
       await request.cache().set(cache)
 
-      // Prepare a the payload
-      const ctch = await catchesApi.doMap(largeCatch)
-
-      // Check they are not messing about with somebody else's submission
-      if (ctch.submissionId !== submission.id) {
-        throw new Error('Action attempted on not owned submission')
-      }
-
-      const dateCaught = Moment(ctch.dateCaught)
+      const dateCaught = Moment(largeCatch.dateCaught)
       const payload = {
-        river: ctch.activity.river.id,
+        river: largeCatch.activity.river.id,
         'date-day': dateCaught.format('DD'),
         'date-month': dateCaught.format('MM'),
-        type: ctch.species.id,
-        pounds: Math.floor(ctch.mass.oz / 16),
-        ounces: Math.round(ctch.mass.oz % 16),
-        system: ctch.mass.type,
-        kilograms: ctch.mass.kg,
-        method: ctch.method.id,
-        released: ctch.released ? 'true' : 'false'
+        type: largeCatch.species.id,
+        pounds: Math.floor(largeCatch.mass.oz / 16),
+        ounces: Math.round(largeCatch.mass.oz % 16),
+        system: largeCatch.mass.type,
+        kilograms: largeCatch.mass.kg,
+        method: largeCatch.method.id,
+        released: largeCatch.released ? 'true' : 'false'
       }
 
       return this.readCacheAndDisplayView(request, h, {

@@ -5,6 +5,7 @@
  */
 const LicenceHandler = require('../handlers/licence')
 const LicenceNotFoundHandler = require('../handlers/licence-not-found')
+const DidYouFishHandler = require('../handlers/did-you-fish')
 const YearHandler = require('../handlers/year')
 const SummaryHandler = require('../handlers/summary')
 const ActivityHandler = require('../handlers/activities')
@@ -19,6 +20,7 @@ const SubmissionHandler = require('../handlers/submission')
 // Define the validators
 const licenceValidator = require('../validators/licence')
 const yearValidator = require('../validators/year')
+const didYouFishValidator = require('../validators/did-you-fish')
 const activityValidator = require('../validators/activity')
 const salmonAndLargeTroutValidator = require('../validators/salmon-and-large-trout')
 const smallCatchValidator = require('../validators/small-catch')
@@ -27,6 +29,7 @@ const smallCatchValidator = require('../validators/small-catch')
 const licenceHandler = new LicenceHandler('licence', licenceValidator)
 const licenceNotFound = new LicenceNotFoundHandler('licence', licenceValidator)
 const yearHandler = new YearHandler('select-year', yearValidator)
+const didYouFishHandler = new DidYouFishHandler('did-you-fish', didYouFishValidator)
 const summaryHandler = new SummaryHandler('summary')
 const activityHandler = new ActivityHandler('activity', activityValidator)
 const deleteActivityHandler = new DeleteActivityHandler('delete-activity', activityValidator)
@@ -70,6 +73,13 @@ module.exports = [
     path: '/select-year',
     method: ['GET', 'POST'],
     handler: yearHandler.handler
+  },
+
+  // Did you fish
+  {
+    path: '/did-you-fish',
+    method: ['GET', 'POST'],
+    handler: didYouFishHandler.handler
   },
 
   // Summary handler
