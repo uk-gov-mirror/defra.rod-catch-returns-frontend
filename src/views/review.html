@@ -1,40 +1,17 @@
 {% extends "layout.html" %}
-
 {% from "back-link/macro.njk" import govukBackLink %}
 {% from "button/macro.njk" import govukButton %}
 {% from "table/macro.njk" import govukTable %}
-{% from "fieldset/macro.njk" import govukFieldset %}
-
-{% block beforeContent %}
-    {{ govukBackLink({
-        href: "/licence",
-        text: "Back"
-    }) }}
-{% endblock %}
-
-{% block pageTitle %}Your catch return report for {{ year }}{% endblock %}
 
 {% set riverRows = [] %}
 {% set salmonAndLargeTroutItems = [] %}
 {% set smallCatchItems = [] %}
 
-{% macro riverLinks(id) %}
-    {% set deleteurl = "/delete/" + id %}
-    <a id="delete-river-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete</a>
-{% endmacro %}
-
-{% macro renderLinks(id) %}
-    {% set editurl = id %}
-    {% set deleteurl = "/delete/" + id %}
-    <span><a id="edit-{{ id }}" class="govuk-link" href="{{ editurl }}">Edit</a> | <a id="delete-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete</a></span>
-{% endmacro %}
-
 {% if activities.length %}
     {% for activity in activities %}
         {{ riverRows.push([
             { text: activity.river.name },
-            { text: activity.days, format: "numeric" },
-            { html: renderLinks(activity.id), format: "numeric" }
+            { text: activity.days, format: "numeric" }
         ]) }}
     {% endfor %}
 {% endif %}
@@ -47,8 +24,7 @@
             { text: fish.species.name },
             { text: fish.weight },
             { text: fish.method.name },
-            { text: "Yes" if fish.released else "No" },
-            { html: renderLinks(fish.id), format: "numeric" }
+            { text: "Yes" if fish.released else "No" }
         ]) }}
     {% endfor %}
 {% endif %}
@@ -61,32 +37,45 @@
             { text: catch.fly },
             { text: catch.spinner },
             { text: catch.bait },
-            { text: catch.released },
-            { html: renderLinks(catch.id | replace("smallCatches", "small-catches")), format: "numeric" }
+            { text: catch.released }
         ]) }}
     {% endfor %}
 {% endif %}
 
+{% set title = "Your catch return report for " + year %}
+{% block pageTitle %}{{ title }}{% endblock %}
+
+{% block beforeContent %}
+    {{ govukBackLink({
+        href: "/summary",
+        text: "Back"
+    }) }}
+{% endblock %}
+
 {% block content %}
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
+    <div class="govuk-grid-column-two-thirds">
         <form method="post">
-            <h1 class="govuk-heading-l">Your catch return report for {{ year }}</h1>
-            {{ govukTable({
+            <h1 class="govuk-heading-l">{{ title }}</h1>
+
+            <p class="govuk-body">
+                Check that your return is accurate, then submit. Once submitted, your return cannot be changed.
+            </p>
+
+            <p class="govuk-body">
+                If you need to make changes, select 'Cancel and return to the catch returns report'
+            </p>
+
+             {{ govukTable({
                 caption: "Rivers fished",
                 captionClasses: "govuk-heading-m",
                 firstCellIsHeader: false,
                 head: [
                     { text: "River" },
-                    { text: "Days fished in total", format: "numeric" },
-                    { text: "Actions", format: "numeric" }
+                    { text: "Days fished in total", format: "numeric" }
                 ],
                 rows: riverRows
             }) }}
-
-            <p class="govuk-body" style="text-align:right">
-                <a id="activities-add" class="govuk-link " href="/activities/add">Add river</a>
-            </p>
 
             {% if activities.length %}
                 {{ govukTable({
@@ -99,15 +88,10 @@
                         { text: "Fly" },
                         { text: "Spinner" },
                         { text: "Bait" },
-                        { text: "Released" },
-                        { text: "Actions", format: "numeric" }
+                        { text: "Released" }
                     ],
                     rows: smallCatchItems
                 }) }}
-
-                <p class="govuk-body" style="text-align:right">
-                    <a id="small-catches-add" class="govuk-link " href="small-catches/add">Add a small catch of under 1 lb</a>
-                </p>
 
                 {{ govukTable({
                     caption: "Salmon and large sea trout caught",
@@ -119,29 +103,20 @@
                         { text: "Type" },
                         { text: "Weight" },
                         { text: "Method" },
-                        { text: "Released" },
-                        { text: "Actions", format: "numeric" }
+                        { text: "Released" }
                     ],
                     rows: salmonAndLargeTroutItems
                 }) }}
-
-                <p class="govuk-body" style="text-align:right">
-                    <a id="catches-add" class="govuk-link " href="catches/add">Add a salmon or large sea trout</a>
-                </p>
             {% endif %}
 
             {{ govukButton({
                 name: "continue",
-                text: "Review catch return"
+                text: "Submit catch return"
             }) }}
 
             {{ extra() }}
         </form>
-
-        <div>
-            <a class="govuk-link govuk-body-m" href="/save">Save and return to catch return later</a>
-        </div>
+        {{ summaryLink() }}
     </div>
 </div>
-
 {% endblock %}

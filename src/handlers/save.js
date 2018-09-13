@@ -1,17 +1,17 @@
 'use strict'
 
 /**
- * Display the confirmation page
+ * Display the saved data message
  */
 const BaseHandler = require('./base')
 
-module.exports = class ConfirmHandler extends BaseHandler {
+module.exports = class SaveHandler extends BaseHandler {
   constructor (...args) {
     super(args)
   }
 
   /**
-   * Get handler for main page
+   * Get handler for select year page
    * @param request
    * @param h
    * @param user

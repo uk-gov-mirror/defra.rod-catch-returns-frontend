@@ -3,26 +3,35 @@
 {% from "back-link/macro.njk" import govukBackLink %}
 {% from "fieldset/macro.njk" import govukFieldset %}
 {% from "button/macro.njk" import govukButton %}
-{% from "radios/macro.njk" import govukRadios %}
 {% from "input/macro.njk" import govukInput %}
 {% from "error-summary/macro.njk" import govukErrorSummary %}
-
+{% from "select/macro.njk" import govukSelect %}
 
 {% set riverItems = [] %}
+
+{% if not payload or not payload.river %}
+    {{ riverItems.push(null) }}
+{% endif %}
+
 {% for river in rivers %}
     {{ riverItems.push({
         text: river.name,
         value: river.id,
-        checked: river.id.toString() === payload.river
+        selected: river.id.toString() === payload.river
     }) }}
 {% endfor %}
 
 {% set monthItems = [] %}
+
+{% if not payload or not payload.month %}
+    {{ monthItems.push(null) }}
+{% endif %}
+
 {% for month in months %}
     {{ monthItems.push({
         text: month.text,
         value: month.value,
-        checked: month.value === payload.month
+        selected: month.value === payload.month
     }) }}
 {% endfor %}
 
@@ -124,21 +133,26 @@
               }
             }) %}
 
-                {{ govukRadios({
-                    idPrefix: "river",
-                    name: "river",
-                    fieldset: {
-                        legend: {
-                            text: "River",
-                            isPageHeading: false,
-                            classes: "govuk-fieldset__legend govuk-!-font-weight-bold"
-                        }
-                    },
-                    items: riverItems,
-                    errorMessage: riverErrorMessage
-                }) }}
+                {% if rivers.length > 1 %}
+                    {{ govukSelect({
+                        idPrefix: "river",
+                        name: "river",
+                        fieldset: {
+                            legend: {
+                                text: "River",
+                                isPageHeading: false,
+                                classes: "govuk-fieldset__legend govuk-!-font-weight-bold"
+                            }
+                        },
+                        items: riverItems,
+                        errorMessage: riverErrorMessage
+                    }) }}
+                {% else %}
+                    <p class="govuk-body-l">River {{ rivers[0].name }}</p>
+                    <input type="hidden" id="river" name="river" value="{{ rivers[0].id }}"/>
+                {% endif %}
 
-                {{ govukRadios({
+                {{ govukSelect({
                     idPrefix: "month",
                     name: "month",
                     hint: { text: "Click below to select the month of your small catch" },
@@ -213,7 +227,7 @@
             {% endcall %}
             {{ extra() }}
         </form>
-        <a class="govuk-link govuk-body-m" href="/summary">Cancel and return to summary page</a>
+        {{ summaryLink() }}
     </div>
 </div>
 

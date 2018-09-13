@@ -6,14 +6,20 @@
 {% from "radios/macro.njk" import govukRadios %}
 {% from "date-input/macro.njk" import govukDateInput %}
 {% from "input/macro.njk" import govukInput %}
+{% from "select/macro.njk" import govukSelect %}
 {% from "error-summary/macro.njk" import govukErrorSummary %}
 
 {% set riverItems = [] %}
+
+{% if not payload or not payload.river %}
+    {{ riverItems.push(null) }}
+{% endif %}
+
 {% for river in rivers %}
     {{ riverItems.push({
         text: river.name,
         value: river.id,
-        checked: river.id.toString() === payload.river
+        selected: river.id.toString() === payload.river
     }) }}
 {% endfor %}
 
@@ -202,19 +208,24 @@
               }
             }) %}
 
-                {{ govukRadios({
-                    idPrefix: "river",
-                    name: "river",
-                    fieldset: {
-                        legend: {
-                            text: "River",
-                            isPageHeading: false,
-                            classes: "govuk-fieldset__legend govuk-!-font-weight-bold"
-                        }
-                    },
-                    items: riverItems,
-                    errorMessage: riverErrorMessage
-                }) }}
+                {% if rivers.length > 1 %}
+                    {{ govukSelect({
+                        idPrefix: "river",
+                        name: "river",
+                        fieldset: {
+                            legend: {
+                                text: "River",
+                                isPageHeading: false,
+                                classes: "govuk-fieldset__legend govuk-!-font-weight-bold"
+                            }
+                        },
+                        items: riverItems,
+                        errorMessage: riverErrorMessage
+                    }) }}
+                {% else %}
+                    <p class="govuk-body-l">River {{ rivers[0].name }}</p>
+                    <input type="hidden" id="river" name="river" value="{{ rivers[0].id }}"/>
+                {% endif %}
 
                 {{ govukDateInput({
                     id: "date",
@@ -333,7 +344,7 @@
             {% endcall %}
             {{ extra() }}
         </form>
-        <a class="govuk-link govuk-body-m" href="/summary">Cancel and return to summary page</a>
+        {{ summaryLink() }}
     </div>
 </div>
 {% endblock %}

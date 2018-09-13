@@ -15,7 +15,8 @@ const DeleteSalmonAndLargeTroutHandler = require('../handlers/delete-salmon-and-
 const SmallCatchHandler = require('../handlers/small-catches')
 const DeleteSmallCatchHandler = require('../handlers/delete-small-catch')
 const ConfirmationHandler = require('../handlers/confirmation')
-const SubmissionHandler = require('../handlers/submission')
+const ReviewHandler = require('../handlers/review')
+const SaveHandler = require('../handlers/save')
 
 // Define the validators
 const licenceValidator = require('../validators/licence')
@@ -37,8 +38,9 @@ const salmonAndLargeTroutHandler = new SalmonAndLargeTroutHandler('salmon-and-la
 const deleteSalmonAndLargeTroutHandler = new DeleteSalmonAndLargeTroutHandler('delete-salmon-and-large-trout')
 const smallCatchHandler = new SmallCatchHandler('small-catches', smallCatchValidator)
 const deleteSmallCatchHandler = new DeleteSmallCatchHandler('delete-small-catch')
-const submissionHandler = new SubmissionHandler('submission')
+const reviewHandler = new ReviewHandler('review')
 const confirmationHandler = new ConfirmationHandler('confirmation')
+const saveHandler = new SaveHandler('save')
 
 module.exports = [
 
@@ -133,9 +135,16 @@ module.exports = [
 
   // Submission handler
   {
-    path: '/submission',
+    path: '/review',
     method: ['GET', 'POST'],
-    handler: submissionHandler.handler
+    handler: reviewHandler.handler
+  },
+
+  // Confirmation handler
+  {
+    path: '/save',
+    method: 'GET',
+    handler: saveHandler.handler
   },
 
   // Confirmation handler

@@ -4,11 +4,15 @@
 
 {% block content %}
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-full">
+
         {{ govukPanel({
-            titleText: "Rod catch return complete",
-            html: "Your reference number<br><strong>" + reference + "</strong>"
+            titleText: "Rod catch return complete"
         }) }}
+
+        <p class="govuk-body-l">Thank you for entering your salmon and sea trout catch return. This data helps the Environment Agency monitor, assess and manage fish stocks in a sustainable way.</p>
+        <p class="govuk-body-l">We recommend downloading a copy of your return to show you’ve complied with the national byelaws.</p>
+
         {{ extra() }}
     </div>
 </div>

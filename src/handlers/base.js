@@ -90,5 +90,6 @@ module.exports = class BaseHandler {
       delete cache.payload
       await request.cache().set(cache)
     }
+    return cache
   }
 }

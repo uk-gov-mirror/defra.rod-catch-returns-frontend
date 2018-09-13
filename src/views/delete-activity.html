@@ -33,13 +33,13 @@
 
                 {{ govukButton({
                     name: "continue",
-                    text: "Delete River"
+                    text: "Delete river"
                 }) }}
 
             {% endcall %}
             {{ extra() }}
         </form>
-        <a class="govuk-link govuk-body-m" href="/summary">Cancel and return to summary page</a>
+        {{ summaryLink() }}
     </div>
 </div>
 {% endblock %}
