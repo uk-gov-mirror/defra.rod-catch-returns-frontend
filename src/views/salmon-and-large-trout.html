@@ -133,6 +133,15 @@
                 href: "#released"
             }) }}
         {% endif %}
+
+        {% if error.Catch === 'CATCH_MASS_MAX_EXCEEDED' %}
+            {% set systemErrorMessage = { text: "Select released" } %}
+            {{ errorList.push({
+                text: "This fish is too big",
+                href: "#system"
+            }) }}
+        {% endif %}
+
     {% endfor %}
 {% endif %}
 

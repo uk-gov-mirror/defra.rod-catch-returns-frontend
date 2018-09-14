@@ -1,7 +1,8 @@
 'use strict'
 
 /**
- * Display the saved data message
+ * Display the saved data message.
+ * N.B. This does not save anything!
  */
 const BaseHandler = require('./base')
 

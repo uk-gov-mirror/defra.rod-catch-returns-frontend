@@ -63,7 +63,12 @@ module.exports = class ReviewHandler extends BaseHandler {
     })
 
     // Return the summary view
-    return h.view(this.path, { year: cache.year, activities, catches, smallCatches })
+    return h.view(this.path, { year: cache.year,
+      activities,
+      catches,
+      smallCatches,
+      locked: !!cache.locked
+    })
   }
 
   /**
@@ -73,6 +78,8 @@ module.exports = class ReviewHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doPost (request, h) {
+    const cache = await request.cache().get()
+    await submissionsApi.setSubmitted(cache.submissionId)
     return h.redirect('/confirmation')
   }
 }

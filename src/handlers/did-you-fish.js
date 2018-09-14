@@ -6,6 +6,7 @@
 const BaseHandler = require('./base')
 const SubmissionsApi = require('../api/submissions')
 const ActivitiesApi = require('../api/activities')
+const testLocked = require('./common').testLocked
 
 const submissionsApi = new SubmissionsApi()
 const activitiesApi = new ActivitiesApi()
@@ -30,6 +31,11 @@ module.exports = class DidYouFishHandler extends BaseHandler {
 
     if (!submission) {
       submission = await submissionsApi.add(cache.contactId, cache.year)
+    } else {
+      // Test if the submission is locked and if so redirect to the review screen
+      if (await testLocked(request, cache, submission)) {
+        return h.redirect('/review')
+      }
     }
 
     // Set the submissionId in the cache

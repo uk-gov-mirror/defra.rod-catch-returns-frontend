@@ -11,7 +11,10 @@ module.exports = {
       if (err.error && err.error.errors && Array.isArray(err.error.errors)) {
         err.error.errors.forEach(e => {
           const apiErr = {}
-          apiErr[e.entity] = apiErr[e.entity] = e.message
+          apiErr[e.entity] = e.message
+          if (e.property) {
+            apiErr.property = e.property
+          }
           errors.push(apiErr)
         })
         return errors
@@ -23,7 +26,7 @@ module.exports = {
     }
   },
 
-  checkNumber: (label, num, errors) => {
+  checkNumber: (label, num, errors, max) => {
     if (!num || !num.trim()) {
       let err = {}
       err[label] = 'EMPTY'
@@ -32,6 +35,12 @@ module.exports = {
       let err = {}
       err[label] = 'NOT_A_NUMBER'
       errors.push(err)
+    } else {
+      if (max && num > max) {
+        let err = {}
+        err[label] = 'EXCEEDS_MAXIMUM'
+        errors.push(err)
+      }
     }
   }
 }

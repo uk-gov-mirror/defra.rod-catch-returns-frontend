@@ -18,7 +18,7 @@ module.exports = async (request) => {
   // Test the licence number
   if (!payload.licence) {
     errors.push({ licence: 'EMPTY' })
-  } else if (String(payload.licence).toUpperCase() !== 'B7A718') {
+  } else if (String(payload.licence).trim().toUpperCase() !== 'B7A718') {
     errors.push({ licence: 'NOT_FOUND' })
   }
 

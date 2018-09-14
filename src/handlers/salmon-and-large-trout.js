@@ -11,6 +11,7 @@ const SpeciesApi = require('../api/species')
 const SubmissionsApi = require('../api/submissions')
 const CatchesApi = require('../api/catches')
 const ActivitiesApi = require('../api/activities')
+const testLocked = require('./common').testLocked
 
 const submissionsApi = new SubmissionsApi()
 const catchesApi = new CatchesApi()
@@ -35,6 +36,11 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
     const submission = await submissionsApi.getById(cache.submissionId)
     const activities = await activitiesApi.getFromLink(submission._links.activities.href)
     const rivers = activities.map(a => a.river)
+
+    // Test if the submission is locked and if so redirect to the review screen
+    if (await testLocked(request, cache, submission)) {
+      return h.redirect('/review')
+    }
 
     if (request.params.id === 'add') {
       // Clear any existing catch id

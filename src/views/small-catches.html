@@ -94,12 +94,39 @@
             }) }}
         {% endif %}
 
-        {% if error.SmallCatch === 'SMALL_CATCH_RELEASED_MORE_THAN_CAUGHT' %}
+        {% if error.SmallCatch.entity === 'SMALL_CATCH_RELEASED_EXCEEDS_COUNTS' and error.SmallCatch.property === 'counts[0]' %}
             {% set releasedErrorMessage = { text: "Enter the number of small fish released back into the water" } %}
             {{ errorList.push({
                 text: "You have released more fish than you have caught",
                 href: "#fly"
             }) }}
+        {% endif %}
+
+        {% if error.SmallCatch === 'SMALL_CATCH_COUNTS_NOT_GREATER_THAN_ZERO' %}
+            {% if error.property === 'counts[0]' %}
+                {% set flyErrorMessage = { text: "The number released on the fly must be greater than zero" } %}
+                {{ errorList.push({
+                    text: "You have released more fish than you have caught",
+                    href: "#fly"
+                }) }}
+            {% endif %}
+
+
+            {% if error.property === 'counts[1]' %}
+                {% set spinnerErrorMessage = { text: "The number released on the spinner must be greater than zero" } %}
+                {{ errorList.push({
+                    text: "You have released more fish than you have caught",
+                    href: "#spinner"
+                }) }}
+            {% endif %}
+
+            {% if error.property === 'counts[2]' %}
+                {% set baitErrorMessage = { text: "The number released on the bait must be greater than zero" } %}
+                {{ errorList.push({
+                    text: "You have released more fish than you have caught",
+                    href: "#bait"
+                }) }}
+            {% endif %}
         {% endif %}
 
     {% endfor %}
@@ -132,6 +159,8 @@
                 isPageHeading: true
               }
             }) %}
+
+            {{errors|dump}}
 
                 {% if rivers.length > 1 %}
                     {{ govukSelect({

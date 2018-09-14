@@ -4,6 +4,7 @@ const BaseHandler = require('./base')
 const RiversApi = require('../api/rivers')
 const SubmissionsApi = require('../api/submissions')
 const ActivitiesApi = require('../api/activities')
+const testLocked = require('./common').testLocked
 
 const submissionsApi = new SubmissionsApi()
 const riversApi = new RiversApi()
@@ -26,6 +27,11 @@ module.exports = class ActivitiesHandler extends BaseHandler {
     let submission = await submissionsApi.getById(cache.submissionId)
     const activities = await activitiesApi.getFromLink(submission._links.activities.href)
     const rivers = await riversApi.list()
+
+    // Test if the submission is locked and if so redirect to the review screen
+    if (await testLocked(request, cache, submission)) {
+      return h.redirect('/review')
+    }
 
     if (request.params.id === 'add') {
       delete cache.activity

@@ -32,12 +32,18 @@ module.exports = async (request) => {
     errors.push({ months: 'EMPTY' })
   }
 
-  // Check methods
+  // Check methods - allow blanks here
   const methods = await methodsApi.list()
-  methods.forEach(m => checkNumber(m.name.toLowerCase(), payload[m.name.toLowerCase()], errors))
+  methods.forEach(m => {
+    if (payload[m.name.toLowerCase()].trim()) {
+      checkNumber(m.name.toLowerCase(), payload[m.name.toLowerCase()], errors)
+    }
+  })
 
   // Check released
-  checkNumber('released', payload.released, errors)
+  if (payload.released.trim()) {
+    checkNumber('released', payload.released, errors)
+  }
 
   if (!errors.length) {
     const submission = await submissionsApi.getById(cache.submissionId)

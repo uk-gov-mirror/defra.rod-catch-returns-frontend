@@ -45,12 +45,14 @@
 {% set title = "Your catch return report for " + year %}
 {% block pageTitle %}{{ title }}{% endblock %}
 
-{% block beforeContent %}
-    {{ govukBackLink({
-        href: "/summary",
-        text: "Back"
-    }) }}
-{% endblock %}
+{% if not locked %}
+    {% block beforeContent %}
+        {{ govukBackLink({
+            href: "/summary",
+            text: "Back"
+        }) }}
+    {% endblock %}
+{% endif %}
 
 {% block content %}
 <div class="govuk-grid-row">
@@ -109,14 +111,18 @@
                 }) }}
             {% endif %}
 
-            {{ govukButton({
-                name: "continue",
-                text: "Submit catch return"
-            }) }}
+            {% if not locked %}
+                {{ govukButton({
+                    name: "continue",
+                    text: "Submit catch return"
+                }) }}
+            {% endif %}
 
             {{ extra() }}
         </form>
-        {{ summaryLink() }}
+
+        {% if not locked %} {{ summaryLink() }} {% endif %}
+
     </div>
 </div>
 {% endblock %}

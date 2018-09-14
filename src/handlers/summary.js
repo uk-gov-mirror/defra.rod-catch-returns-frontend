@@ -9,7 +9,7 @@ const SubmissionsApi = require('../api/submissions')
 const CatchesApi = require('../api/catches')
 const SmallCatchesApi = require('../api/small-catches')
 const ActivitiesApi = require('../api/activities')
-const printWeight = require('./common').printWeight
+const { printWeight, testLocked } = require('./common')
 
 const submissionsApi = new SubmissionsApi()
 const catchesApi = new CatchesApi()
@@ -44,6 +44,11 @@ module.exports = class SummaryHandler extends BaseHandler {
     // Find or create a submission object
     let submission = await submissionsApi.getById(cache.submissionId)
 
+    // Test if the submission is locked and if so redirect to the review screen
+    if (await testLocked(request, cache, submission)) {
+      return h.redirect('/review')
+    }
+
     // Set the submissionId in the cache
     cache.submissionId = submission.id
     await request.cache().set(cache)
@@ -66,9 +71,16 @@ module.exports = class SummaryHandler extends BaseHandler {
     const smallCatches = (await smallCatchesApi.getFromLink(submission._links.smallCatches.href)).map(c => {
       c.month = months.find(m => m.value === c.month).text
       c.river = c.activity.river.name
-      c.bait = c.counts.find(c => c.method.name.toLowerCase() === 'bait').count
-      c.spinner = c.counts.find(c => c.method.name.toLowerCase() === 'spinner').count
-      c.fly = c.counts.find(c => c.method.name.toLowerCase() === 'fly').count
+
+      const flyCount = c.counts.find(c => c.method.name.toLowerCase() === 'fly')
+      c.fly = flyCount ? flyCount.count : null
+
+      const baitCount = c.counts.find(c => c.method.name.toLowerCase() === 'bait')
+      c.bait = baitCount ? baitCount.count : null
+
+      const spinnerCount = c.counts.find(c => c.method.name.toLowerCase() === 'spinner')
+      c.spinner = spinnerCount ? spinnerCount.count : null
+
       delete c.counts
       return c
     })

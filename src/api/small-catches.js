@@ -15,20 +15,46 @@ const methodsApi = new MethodsApi()
  */
 
 const flatternCounts = (methods, fly, spinner, bait) => {
-  return [
-    {
+  const result = []
+
+  if (fly > 0) {
+    result.push({
       method: methods.find(m => m.name.toLowerCase() === 'fly').id,
       count: fly
-    },
-    {
-      method: methods.find(m => m.name.toLowerCase() === 'spinner').id,
-      count: spinner
-    },
-    {
+    })
+  }
+
+  if (bait > 0) {
+    result.push({
       method: methods.find(m => m.name.toLowerCase() === 'bait').id,
       count: bait
-    }
-  ]
+    })
+  }
+
+  if (spinner > 0) {
+    result.push({
+      method: methods.find(m => m.name.toLowerCase() === 'spinner').id,
+      count: spinner
+    })
+  }
+
+  return result
+  /*
+   * return [
+   *   {
+   *     method: methods.find(m => m.name.toLowerCase() === 'fly').id,
+   *     count: fly
+   *   },
+   *   {
+   *     method: methods.find(m => m.name.toLowerCase() === 'spinner').id,
+   *     count: spinner
+   *   },
+   *   {
+   *     method: methods.find(m => m.name.toLowerCase() === 'bait').id,
+   *     count: bait
+   *   }
+   * ]
+   */
 }
 
 module.exports = class CatchesApi extends EntityApi {

@@ -10,5 +10,16 @@ module.exports = {
     } else {
       return (Math.round(c.mass.kg * 10) / 10).toString() + 'Kg'
     }
+  },
+
+  testLocked: async (request, cache, submission) => {
+    if (submission.status === 'SUBMITTED') {
+      cache.submissionId = submission.id
+      cache.locked = true
+      await request.cache().set(cache)
+      return true
+    }
+
+    return false
   }
 }

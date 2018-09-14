@@ -48,7 +48,7 @@
         {% endif %}
 
         {% if error.Activity === "NOT_A_NUMBER" or error.Activity === 'ACTIVITY_DAYS_MAX_EXCEEDED' or error.Activity === 'ACTIVITY_DAYS_NOT_GREATER_THAN_ZERO' %}
-            {% set daysErrorMessage = { text: "Enter a number between 1 and 366" } %}
+            {% set daysErrorMessage = { text: "Enter a number between 1 and 365" } %}
             {{ errorList.push({
                 text: "You have not entered a valid number of days you fished the river",
                 href: "#days"
@@ -78,8 +78,6 @@
                 isPageHeading: true
               }
             }) %}
-
-            {{errors|dump}}
 
                 {{ govukSelect({
                     id: "river",

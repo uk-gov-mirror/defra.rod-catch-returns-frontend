@@ -7,6 +7,7 @@ const BaseHandler = require('./base')
 const SubmissionsApi = require('../api/submissions')
 const ActivitiesApi = require('../api/activities')
 const RiversApi = require('../api/rivers')
+const testLocked = require('./common').testLocked
 
 const submissionsApi = new SubmissionsApi()
 const activitiesApi = new ActivitiesApi()
@@ -35,6 +36,11 @@ module.exports = class DeleteActivityHandler extends BaseHandler {
 
     if (cache.submissionId !== submission.id) {
       throw new Error('Action attempted on not owned submission')
+    }
+
+    // Test if the submission is locked and if so redirect to the review screen
+    if (await testLocked(request, cache, submission)) {
+      return h.redirect('/review')
     }
 
     cache.delete = activity.id

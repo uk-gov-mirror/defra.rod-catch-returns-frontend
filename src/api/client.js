@@ -89,7 +89,7 @@ const internals = {
     } catch (err) {
       /*
        * Not found is ok on searches - its the empty object and a legitimate response
-       * but links should always return a result in HATEOAS
+       * but link GETS or id GETS should always return a result in HATEOAS
        */
       if (err.statusCode === 404) {
         if (throwOnNotFound) {

@@ -7,7 +7,7 @@ const BaseHandler = require('./base')
 const SubmissionsApi = require('../api/submissions')
 const CatchesApi = require('../api/catches')
 const Moment = require('moment')
-const printWeight = require('./common').printWeight
+const { printWeight, testLocked } = require('./common').printWeight
 
 const submissionsApi = new SubmissionsApi()
 const catchesApi = new CatchesApi()
@@ -32,6 +32,11 @@ module.exports = class DeleteRiverHandler extends BaseHandler {
     // Check they are not messing about with somebody else's submission
     if (cache.submissionId !== submission.id) {
       throw new Error('Action attempted on not owned submission')
+    }
+
+    // Test if the submission is locked and if so redirect to the review screen
+    if (await testLocked(request, cache, submission)) {
+      return h.redirect('/review')
     }
 
     const c = await catchesApi.doMap(largeCatch)
