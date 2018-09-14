@@ -102,28 +102,47 @@
             }) }}
         {% endif %}
 
+        {% if error.SmallCatch === 'SMALL_CATCH_DUPLICATE_FOUND' %}
+            {% set riverErrorMessage = { text: "Select a river" } %}
+            {% set monthsErrorMessage = { text: "Select the month your caught the fish" } %}
+            {{ errorList.push({
+                text: "You have already added a record for this river and this month - choose a different river or month",
+                href: "#river"
+            }) }}
+        {% endif %}
+
+        {% if error.SmallCatch === 'SMALL_CATCH_COUNTS_REQUIRED' %}
+            {% set spinnerErrorMessage = { text: "The number caught with a spinner, bait or fly must be greater than zero" } %}
+            {% set baitErrorMessage = { text: "The number caught with a spinner, bait or fly must be greater than zero" } %}
+            {% set flyErrorMessage = { text: "The number caught with a spinner, bait or fly must be greater than zero" } %}
+            {{ errorList.push({
+                text: "You must enter the number of fish caught by fly, bait or spinner",
+                href: "#river"
+            }) }}
+        {% endif %}
+
         {% if error.SmallCatch === 'SMALL_CATCH_COUNTS_NOT_GREATER_THAN_ZERO' %}
             {% if error.property === 'counts[0]' %}
-                {% set flyErrorMessage = { text: "The number released on the fly must be greater than zero" } %}
+                {% set flyErrorMessage = { text: "The number caught with a fly must be greater than zero" } %}
                 {{ errorList.push({
-                    text: "You have released more fish than you have caught",
+                    text: "Enter the number caught with a fly",
                     href: "#fly"
                 }) }}
             {% endif %}
 
 
             {% if error.property === 'counts[1]' %}
-                {% set spinnerErrorMessage = { text: "The number released on the spinner must be greater than zero" } %}
+                {% set spinnerErrorMessage = { text: "The number caught with a spinner must be greater than zero" } %}
                 {{ errorList.push({
-                    text: "You have released more fish than you have caught",
+                    text: "Enter the number caught with a spinner",
                     href: "#spinner"
                 }) }}
             {% endif %}
 
             {% if error.property === 'counts[2]' %}
-                {% set baitErrorMessage = { text: "The number released on the bait must be greater than zero" } %}
+                {% set baitErrorMessage = { text: "The number caught with a bait must be greater than zero" } %}
                 {{ errorList.push({
-                    text: "You have released more fish than you have caught",
+                    text: "Enter the number caught with a bait",
                     href: "#bait"
                 }) }}
             {% endif %}
@@ -159,8 +178,6 @@
                 isPageHeading: true
               }
             }) %}
-
-            {{errors|dump}}
 
                 {% if rivers.length > 1 %}
                     {{ govukSelect({

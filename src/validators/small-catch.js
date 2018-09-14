@@ -43,6 +43,8 @@ module.exports = async (request) => {
   // Check released
   if (payload.released.trim()) {
     checkNumber('released', payload.released, errors)
+  } else {
+    payload.released = 0
   }
 
   if (!errors.length) {

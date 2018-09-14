@@ -61,7 +61,7 @@
             { text: catch.fly },
             { text: catch.spinner },
             { text: catch.bait },
-            { text: catch.released },
+            { text: catch.released | replace("0", "") },
             { html: renderLinks(catch.id | replace("smallCatches", "small-catches")), format: "numeric" }
         ]) }}
     {% endfor %}

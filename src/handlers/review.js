@@ -55,9 +55,16 @@ module.exports = class ReviewHandler extends BaseHandler {
     const smallCatches = (await smallCatchesApi.getFromLink(submission._links.smallCatches.href)).map(c => {
       c.month = months.find(m => m.value === c.month).text
       c.river = c.activity.river.name
-      c.bait = c.counts.find(c => c.method.name.toLowerCase() === 'bait').count
-      c.spinner = c.counts.find(c => c.method.name.toLowerCase() === 'spinner').count
-      c.fly = c.counts.find(c => c.method.name.toLowerCase() === 'fly').count
+
+      const flyCount = c.counts.find(c => c.method.name.toLowerCase() === 'fly')
+      c.fly = flyCount ? flyCount.count : null
+
+      const baitCount = c.counts.find(c => c.method.name.toLowerCase() === 'bait')
+      c.bait = baitCount ? baitCount.count : null
+
+      const spinnerCount = c.counts.find(c => c.method.name.toLowerCase() === 'spinner')
+      c.spinner = spinnerCount ? spinnerCount.count : null
+
       delete c.counts
       return c
     })

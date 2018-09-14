@@ -37,7 +37,7 @@
             { text: catch.fly },
             { text: catch.spinner },
             { text: catch.bait },
-            { text: catch.released }
+            { text: catch.released | replace("0", "") }
         ]) }}
     {% endfor %}
 {% endif %}
