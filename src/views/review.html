@@ -60,14 +60,16 @@
         <form method="post">
             <h1 class="govuk-heading-l">{{ title }}</h1>
 
-            <p class="govuk-body">
-                Check that your return is accurate, then submit. Once submitted, your return cannot be changed.
-            </p>
+            {% if not locked %}
+                <p class="govuk-body">
+                    Check that your return is accurate, then submit. Once submitted, your return cannot be changed.
+                </p>
 
-            <p class="govuk-body">
-                If you need to make changes, select 'Cancel and return to the catch returns report'
-            </p>
-
+                <p class="govuk-body">
+                    If you need to make changes, select 'Cancel and return to the catch returns report'
+                </p>
+            {% endif %}
+            
              {{ govukTable({
                 caption: "Rivers fished",
                 captionClasses: "govuk-heading-m",
