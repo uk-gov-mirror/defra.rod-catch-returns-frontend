@@ -94,8 +94,8 @@
             }) }}
         {% endif %}
 
-        {% if error.SmallCatch.entity === 'SMALL_CATCH_RELEASED_EXCEEDS_COUNTS' and error.SmallCatch.property === 'counts[0]' %}
-            {% set releasedErrorMessage = { text: "Enter the number of small fish released back into the water" } %}
+        {% if error.SmallCatch === 'SMALL_CATCH_RELEASED_EXCEEDS_COUNTS' %}
+            {% set releasedErrorMessage = { text: "Enter the number of small fish released back into the water less than the total you caught" } %}
             {{ errorList.push({
                 text: "You have released more fish than you have caught",
                 href: "#fly"
