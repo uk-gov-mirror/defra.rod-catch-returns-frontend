@@ -45,14 +45,14 @@
 {% set title = "Your catch return report for " + year %}
 {% block pageTitle %}{{ title }}{% endblock %}
 
-{% if not locked %}
-    {% block beforeContent %}
+{% block beforeContent %}
+    {% if not locked %}
         {{ govukBackLink({
             href: "/summary",
             text: "Back"
         }) }}
-    {% endblock %}
-{% endif %}
+    {% endif %}
+{% endblock %}
 
 {% block content %}
 <div class="govuk-grid-row">
@@ -120,9 +120,7 @@
 
             {{ extra() }}
         </form>
-
         {% if not locked %} {{ summaryLink() }} {% endif %}
-
     </div>
 </div>
 {% endblock %}
