@@ -24,7 +24,7 @@ module.exports = class DidYouFishHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
-    const cache = await this.clearCacheErrorsAndPayload(request)
+    const cache = await request.cache().get()
 
     // Find or create a submission object
     let submission = await submissionsApi.getByContactIdAndYear(cache.contactId, cache.year)
