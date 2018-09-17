@@ -20,8 +20,6 @@ before_install:
   - npm install -g gulp-cli
   - git clone https://github.com/DEFRA/rod-catch-returns-api.git
   - cd ./rod-catch-returns-api
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-  - ./launches/dbctl reset
   - ./launches/serverctl start --spring.profiles.active=h2
 
 before_script:
