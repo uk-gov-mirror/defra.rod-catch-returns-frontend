@@ -7,7 +7,7 @@ const BaseHandler = require('./base')
 const SubmissionsApi = require('../api/submissions')
 const CatchesApi = require('../api/catches')
 const Moment = require('moment')
-const { printWeight, testLocked } = require('./common').printWeight
+const { printWeight, testLocked } = require('./common')
 
 const submissionsApi = new SubmissionsApi()
 const catchesApi = new CatchesApi()
@@ -27,6 +27,12 @@ module.exports = class DeleteRiverHandler extends BaseHandler {
   async doGet (request, h) {
     const cache = await request.cache().get()
     const largeCatch = await catchesApi.getById(`catches/${request.params.id}`)
+
+    // The back button on the browser can cause this
+    if (!largeCatch) {
+      return h.redirect('/summary')
+    }
+
     const submission = await submissionsApi.getFromLink(largeCatch._links.submission.href)
 
     // Check they are not messing about with somebody else's submission

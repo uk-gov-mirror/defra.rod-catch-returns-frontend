@@ -135,13 +135,20 @@
         {% endif %}
 
         {% if error.Catch === 'CATCH_MASS_MAX_EXCEEDED' %}
-            {% set systemErrorMessage = { text: "Select released" } %}
+            {% set systemErrorMessage = { text: "Enter a valid weight" } %}
             {{ errorList.push({
                 text: "This fish is too big",
                 href: "#system"
             }) }}
         {% endif %}
 
+        {% if error.Catch === 'CATCH_MASS_BELOW_MINIMUM' %}
+            {% set systemErrorMessage = { text: "Enter a valid weight above 1 lb" } %}
+            {{ errorList.push({
+                text: "This fish is too small",
+                href: "#system"
+            }) }}
+        {% endif %}
     {% endfor %}
 {% endif %}
 

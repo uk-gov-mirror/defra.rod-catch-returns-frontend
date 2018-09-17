@@ -28,6 +28,11 @@ module.exports = class DeleteActivityHandler extends BaseHandler {
   async doGet (request, h) {
     const activityId = `activities/${request.params.id}`
     const activity = await activitiesApi.getById(activityId)
+
+    if (!activity) {
+      return h.redirect('/summary')
+    }
+
     const river = await riversApi.getFromLink(activity._links.river.href)
 
     // Check they are not messing about with somebody else's submission

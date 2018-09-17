@@ -37,6 +37,12 @@ module.exports = class DeleteRiverHandler extends BaseHandler {
   async doGet (request, h) {
     const cache = await request.cache().get()
     const smallCatch = await smallCatchesApi.getById(`smallCatches/${request.params.id}`)
+
+    // The back button on the browser can cause this
+    if (!smallCatch) {
+      return h.redirect('/summary')
+    }
+
     const submission = await submissionsApi.getFromLink(smallCatch._links.submission.href)
 
     // Check they are not messing about with somebody else's submission

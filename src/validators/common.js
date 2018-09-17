@@ -31,7 +31,7 @@ module.exports = {
       let err = {}
       err[label] = 'EMPTY'
       errors.push(err)
-    } else if (Number.isNaN(Number.parseInt(num))) {
+    } else if (isNaN(num)) {
       let err = {}
       err[label] = 'NOT_A_NUMBER'
       errors.push(err)

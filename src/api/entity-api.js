@@ -72,10 +72,12 @@ module.exports = class EntityApi {
     }
   }
 
-  // Get a single entity by its id. Throws on a 404
+  // Get a single entity by its id.
   async getById (id) {
-    const result = await Client.request(Client.method.GET, id, null, null, true)
-    result.id = this.keyFromLink(result)
+    const result = await Client.request(Client.method.GET, id, null, null, false)
+    if (result) {
+      result.id = this.keyFromLink(result)
+    }
     return result
   }
 
