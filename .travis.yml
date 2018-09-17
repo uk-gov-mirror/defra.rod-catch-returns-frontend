@@ -23,6 +23,10 @@ before_install:
   - ./mvnw compile
   - ./launches/serverctl start --spring.profiles.active=h2
 
+install:
+  - npm install
+  - gulp
+
 before_script:
   - redis-cli FLUSHDB
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter

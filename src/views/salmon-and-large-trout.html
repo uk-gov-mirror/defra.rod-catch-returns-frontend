@@ -219,8 +219,11 @@
 
                 {% if rivers.length > 1 %}
                     {{ govukSelect({
-                        idPrefix: "river",
+                        id: "river",
                         name: "river",
+                        label: {
+                            text: "River"
+                        },
                         fieldset: {
                             legend: {
                                 text: "River",
