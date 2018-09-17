@@ -122,7 +122,11 @@
 
             {{ extra() }}
         </form>
-        {% if not locked %} {{ summaryLink() }} {% endif %}
+        {% if not locked %}
+            {{ summaryLink() }}
+        {% else %}
+            <a id="print-link" class="govuk-link govuk-body-m" href="#" onclick="window.print();return false;">Print your catch return report</a>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

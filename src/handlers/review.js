@@ -86,6 +86,8 @@ module.exports = class ReviewHandler extends BaseHandler {
    */
   async doPost (request, h) {
     const cache = await request.cache().get()
+    cache.locked = true
+    await request.cache().set(cache)
     await submissionsApi.setSubmitted(cache.submissionId)
     return h.redirect('/confirmation')
   }

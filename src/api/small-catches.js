@@ -39,22 +39,6 @@ const flatternCounts = (methods, fly, spinner, bait) => {
   }
 
   return result
-  /*
-   * return [
-   *   {
-   *     method: methods.find(m => m.name.toLowerCase() === 'fly').id,
-   *     count: fly
-   *   },
-   *   {
-   *     method: methods.find(m => m.name.toLowerCase() === 'spinner').id,
-   *     count: spinner
-   *   },
-   *   {
-   *     method: methods.find(m => m.name.toLowerCase() === 'bait').id,
-   *     count: bait
-   *   }
-   * ]
-   */
 }
 
 module.exports = class CatchesApi extends EntityApi {

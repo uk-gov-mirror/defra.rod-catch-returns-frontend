@@ -28,8 +28,11 @@ module.exports = class ConfirmHandler extends BaseHandler {
       throw new Error('Illegal access of the confirmation page')
     }
 
-    await request.cache().drop()
-    request.cookieAuth.clear()
+    /*
+     * Leave the session open so that they can print
+     * await request.cache().drop()
+     * request.cookieAuth.clear()
+     */
     return h.view(this.path)
   }
 }
