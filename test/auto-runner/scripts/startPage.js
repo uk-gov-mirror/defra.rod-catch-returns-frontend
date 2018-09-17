@@ -13,9 +13,24 @@ module.exports = [
     'status': 302,
     'method': 'POST',
     'payload': {
-      'licence': 'Gibberish',
-      'postcode': 'blah'
+      'licence': 'B7A718',
+      'postcode': 'WA4 1HT'
     },
-    'redirect': '/return'
+    'redirect': '/select-year'
+  },
+
+  {
+    'path': '/select-year',
+    'status': 302,
+    'method': 'GET',
+    'redirect': '/did-you-fish'
+  },
+
+  {
+    'path': '/did-you-fish',
+    'status': 302,
+    'method': 'POST',
+    'payload': { 'dyf': 'YES' },
+    'redirect': '/summary'
   }
 ]
