@@ -56,8 +56,11 @@ module.exports = class SummaryHandler extends BaseHandler {
     // Get the activities
     const activities = await activitiesApi.getFromLink(submission._links.activities.href)
 
-    // If there are no activities go straight to teh activities-add page
-    if (!activities.length) {
+    /*
+     * If there are no activities go straight to the activities-add page
+     * (unless using the force link)
+     */
+    if (!activities.length && !request.query.force) {
       return h.redirect('/activities/add')
     }
 
