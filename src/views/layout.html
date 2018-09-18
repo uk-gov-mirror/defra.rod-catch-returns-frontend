@@ -14,9 +14,9 @@
 {% macro summaryLink(force) %}
 <div>
     {% if force %}
-        <a class="govuk-link govuk-body-m" href="/summary?force=true">Cancel and return to the catch returns report</a>
+        <a id="return-summary-f" class="govuk-link govuk-body-m" href="/summary?force=true">Cancel and return to the catch returns report</a>
     {% else %}
-        <a class="govuk-link govuk-body-m" href="/summary">Cancel and return to the catch returns report</a>
+        <a id="return-summary" class="govuk-link govuk-body-m" href="/summary">Cancel and return to the catch returns report</a>
     {% endif %}
 </div>
 {% endmacro %}
