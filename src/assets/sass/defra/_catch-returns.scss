@@ -1,6 +1,7 @@
 // Remove links from footer
 @media print {
-  .govuk-footer__inline-list {
+  .govuk-footer__inline-list,
+  #print-link  {
     display: none;
   }
 
