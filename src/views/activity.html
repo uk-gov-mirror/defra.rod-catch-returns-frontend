@@ -14,7 +14,7 @@
     }) }}
 {% endblock %}
 
-{% block pageTitle %}Details for the river where you fished{% endblock %}
+{% block pageTitle %}Add a river where you fished{% endblock %}
 
 {% set items = [] %}
 {% for river in rivers %}
@@ -73,7 +73,7 @@
 
             {% call govukFieldset({
               legend: {
-                text: "Details for the river where you fished",
+                text: "Add a river where you fished",
                 classes: "govuk-fieldset__legend--l",
                 isPageHeading: true
               }
@@ -85,7 +85,7 @@
                     label: {
                         text: "Name of river"
                     },
-                    hint: { text: "e.g. Derwent (Cumbria)" },
+                    hint: { text: "For example, Derwent (Cumbria)" },
                     items: [ { value: null } ].concat(items),
                     errorMessage: riverErrorMessage
                 }) }}
@@ -94,7 +94,7 @@
                     id: "days",
                     name: "days",
                     label: {
-                        text: "How many days did you fish this river?"
+                        text: "How many days did you fish this in river?"
                     },
                     hint: { text: "Include days without a catch" },
                     value: payload.days,
