@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * Delete Activity Handler
+ * Did you fish Handler
  */
 const BaseHandler = require('./base')
 const SubmissionsApi = require('../api/submissions')
@@ -17,7 +17,7 @@ module.exports = class DidYouFishHandler extends BaseHandler {
   }
 
   /**
-   * Get handler for delete activity page
+   * Get handler for the did you fish? page
    * @param request
    * @param h
    * @param user
@@ -57,7 +57,7 @@ module.exports = class DidYouFishHandler extends BaseHandler {
   }
 
   /**
-   * Post handler for the delete activity page
+   * Post handler for the did you fish? page
    * @param request
    * @param h
    * @returns {Promise<*>}

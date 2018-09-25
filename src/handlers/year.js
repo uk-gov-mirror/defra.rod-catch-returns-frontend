@@ -22,7 +22,7 @@ module.exports = class YearHandler extends BaseHandler {
   async doGet (request, h) {
     const now = moment()
     const years = []
-    if ([0, 1, 2].includes(now.month())) {
+    if ([0, 1, 2].includes(now.month()) || process.argv.includes('--force-year-choose')) {
       // Select the year
       years.push({ value: now.year() - 1, text: (now.year() - 1).toString() })
       years.push({ value: now.year(), text: (now.year()).toString() })
@@ -50,6 +50,6 @@ module.exports = class YearHandler extends BaseHandler {
       await request.cache().set(cache)
     }
 
-    return this.writeCacheAndRedirect(request, h, errors, '/summary', '/did-you-fish')
+    return this.writeCacheAndRedirect(request, h, errors, '/did-you-fish', '/year')
   }
 }
