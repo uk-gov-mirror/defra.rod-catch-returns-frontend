@@ -50,6 +50,6 @@ module.exports = class YearHandler extends BaseHandler {
       await request.cache().set(cache)
     }
 
-    return this.writeCacheAndRedirect(request, h, errors, '/did-you-fish', '/year')
+    return this.writeCacheAndRedirect(request, h, errors, '/did-you-fish', '/select-year')
   }
 }
