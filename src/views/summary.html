@@ -12,8 +12,7 @@
     }) }}
 {% endblock %}
 
-{% block pageTitle %}Your catch return report for {{ year }}{% endblock %}
-
+{% block pageTitle %}Your {{ year }} catch return {% endblock %}
 {% set riverRows = [] %}
 {% set salmonAndLargeTroutItems = [] %}
 {% set smallCatchItems = [] %}
@@ -71,7 +70,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <form method="post">
-            <h1 class="govuk-heading-l">Your catch return report for {{ year }}</h1>
+            <h1 class="govuk-heading-l">Your {{ year }} catch return</h1>
             {{ govukTable({
                 caption: "Rivers fished",
                 captionClasses: "govuk-heading-m",
@@ -106,7 +105,7 @@
                 }) }}
 
                 <p class="govuk-body" style="text-align:right">
-                    <a id="small-catches-add" class="govuk-link " href="small-catches/add">Add a small catch (1lb and under)</a>
+                    <a id="small-catches-add" class="govuk-link " href="small-catches/add">Add a small catch (sea trout 1lb and under)</a>
                 </p>
 
                 {{ govukTable({
