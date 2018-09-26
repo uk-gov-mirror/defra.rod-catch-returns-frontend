@@ -74,18 +74,12 @@
 
             {% call govukFieldset({
               legend: {
-                text: "Add a river",
+                html: "<h1 class=\"govuk-heading-l\">Add a river</h1><span class=\"govuk-caption-l\">If you fished in more than one river, you can add another afterwards</span>",
                 classes: "govuk-fieldset__legend--l",
                 isPageHeading: true
               }
             }) %}
-            {% call govukFieldset({
-              legend: {
-                text: "If you fished in more than one river, you can add another afterwards",
-                classes: "govuk-fieldset__legend--l",
-                isPageHeading: true
-              }
-            }) %}
+
                 {{ govukSelect({
                     id: "river",
                     name: "river",
