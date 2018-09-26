@@ -54,7 +54,7 @@
         {% endif %}
 
         {% if error.months %}
-            {% set monthsErrorMessage = { text: "Select the month your caught the fish" } %}
+            {% set monthsErrorMessage = { text: "Select the month you caught the fish" } %}
             {{ errorList.push({
                 text: "You have not selected a month",
                 href: "#month-1"
@@ -64,7 +64,7 @@
         {% if error.released %}
             {% set releasedErrorMessage = { text: "Enter the number of small fish released back into the water" } %}
             {{ errorList.push({
-                text: "You have not entered a valid number for how many small fish you released back into the river",
+                text: "You have not entered a valid number for how many small fish you released back into the water",
                 href: "#released"
             }) }}
         {% endif %}
@@ -87,15 +87,15 @@
         {% endif %}
 
         {% if error.bait %}
-            {% set baitErrorMessage = { text: "Enter the number of small fish caught using a bait" } %}
+            {% set baitErrorMessage = { text: "Enter the number of small fish caught using bait" } %}
             {{ errorList.push({
-                text: "You have not entered a valid number for how many fish you caught using the bait",
+                text: "You have not entered a valid number for how many fish you caught using bait",
                 href: "#bait"
             }) }}
         {% endif %}
 
         {% if error.SmallCatch === 'SMALL_CATCH_RELEASED_EXCEEDS_COUNTS' %}
-            {% set releasedErrorMessage = { text: "Enter the number of small fish released back into the water less than the total you caught" } %}
+            {% set releasedErrorMessage = { text: "The number of fish released cannot exceed the number of fish caught" } %}
             {{ errorList.push({
                 text: "You have released more fish than you have caught",
                 href: "#fly"
@@ -140,9 +140,9 @@
             {% endif %}
 
             {% if error.property === 'counts[2]' %}
-                {% set baitErrorMessage = { text: "The number caught with a bait must be greater than zero" } %}
+                {% set baitErrorMessage = { text: "The number caught with bait must be greater than zero" } %}
                 {{ errorList.push({
-                    text: "Enter the number caught with a bait",
+                    text: "Enter the number caught with bait",
                     href: "#bait"
                 }) }}
             {% endif %}
@@ -158,10 +158,10 @@
     }) }}
 {% endblock %}
 
-{% block pageTitle %}{% if add %}Add{% else %}Edit{% endif %} a small fish catch{% endblock %}
+{% block pageTitle %}{% if add %}Add{% else %}Edit{% endif %} small fish catch{% endblock %}
 
 {% if add %}
-    {% set title = "<h1 class=\"govuk-heading-l\">Add small fish catch</h1><span class=\"govuk-caption-l\">Add details of small fish (1lb and under)</span>" %}
+    {% set title = "<h1 class=\"govuk-heading-l\">Add small fish catch</h1><span class=\"govuk-caption-l\">Add your small sea trout (1lb and under) catches by month, giving details of method and release</span>" %}
 {% else %}
     {% set title = "<h1 class=\"govuk-heading-l\">Edit small fish catch</h1>" %}
 {% endif %}
@@ -213,7 +213,7 @@
                     label: {
                         text: "Month"
                     },
-                    hint: { text: "Click below to select the month of your small catch" },
+                    hint: { text: "Select month" },
                     fieldset: {
                         legend: {
                             text: "Month the fish were caught",
@@ -228,7 +228,7 @@
                 {{ govukInput({
                     id: "fly",
                     name: "fly",
-                    hint: { text: "Enter the number of small fish caught using the fly" },
+                    hint: { text: "Enter the number of small fish caught using a fly" },
                     label: {
                         text: "Fly"
                     },
@@ -241,7 +241,7 @@
                 {{ govukInput({
                     id: "spinner",
                     name: "spinner",
-                    hint: { text: "Enter the number of small fish caught using the spinner" },
+                    hint: { text: "Enter the number of small fish caught using a spinner" },
                     label: {
                         text: "Spinner"
                     },
@@ -254,7 +254,7 @@
                 {{ govukInput({
                     id: "bait",
                     name: "bait",
-                    hint: { text: "Enter the number of small fish caught using the bait" },
+                    hint: { text: "Enter the number of small fish caught using bait" },
                     label: {
                         text: "Bait"
                     },
