@@ -66,7 +66,7 @@
                 </p>
 
                 <p class="govuk-body">
-                    If you need to make changes, select 'Cancel and return to the catch returns report'
+                    If you need to make changes, select 'Cancel and return to catch return report'.
                 </p>
             {% endif %}
 
@@ -76,14 +76,14 @@
                 firstCellIsHeader: false,
                 head: [
                     { text: "River" },
-                    { text: "Days fished in total", format: "numeric" }
+                    { text: "Total days fished", format: "numeric" }
                 ],
                 rows: riverRows
             }) }}
 
             {% if activities.length %}
                 {{ govukTable({
-                    caption: "Small sea trout under 1 lb",
+                    caption: "Small sea trout (1lb and under)",
                     captionClasses: "govuk-heading-m",
                     firstCellIsHeader: false,
                     head: [
@@ -98,7 +98,7 @@
                 }) }}
 
                 {{ govukTable({
-                    caption: "Salmon and large sea trout caught",
+                    caption: "Salmon and large sea trout",
                     captionClasses: "govuk-heading-m",
                     firstCellIsHeader: false,
                     head: [

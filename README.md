@@ -60,3 +60,8 @@ API_REQUEST_TIMEOUT_MS=10000
 npm start
 http://localhost:3000
 ```
+
+For automated testing, to force the user to choose this or the previous year run with the --force-year-choose argument
+```
+node index.js --force-year-choose
+```
