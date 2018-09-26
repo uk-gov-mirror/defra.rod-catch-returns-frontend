@@ -63,17 +63,17 @@
         {% endif %}
 
         {% if error.date === 'EMPTY' %}
-            {% set dateErrorMessage = { text: "Enter the date you fished the river" } %}
+            {% set dateErrorMessage = { text: "Enter the date you fished" } %}
             {{ errorList.push({
-                text: "You have not entered the date when you fished the river",
+                text: "You have not entered the date when you fished",
                 href: "#date-day"
             }) }}
         {% endif %}
 
         {% if error.date === 'INVALID' %}
-            {% set dateErrorMessage = { text: "Enter the date you fished the river" } %}
+            {% set dateErrorMessage = { text: "Enter the date you fished" } %}
             {{ errorList.push({
-                text: "You have not entered a valid date when you fished the river",
+                text: "You have not entered a valid date when you fished",
                 href: "#date-day"
             }) }}
         {% endif %}
@@ -129,7 +129,7 @@
         {% if error.released %}
             {% set releasedErrorMessage = { text: "Select released" } %}
             {{ errorList.push({
-                text: "You have not selected weather you released this fish back into the river",
+                text: "You have not told us whether you released this fish or not",
                 href: "#released"
             }) }}
         {% endif %}
@@ -143,7 +143,7 @@
         {% endif %}
 
         {% if error.Catch === 'CATCH_MASS_BELOW_MINIMUM' %}
-            {% set systemErrorMessage = { text: "Enter a valid weight above 1 lb" } %}
+            {% set systemErrorMessage = { text: "Enter a valid weight (1lb or over)" } %}
             {{ errorList.push({
                 text: "This fish is too small",
                 href: "#system"
@@ -203,7 +203,7 @@
     }) }}
 {% endblock %}
 
-{% block pageTitle %}Details of the fish you caught{% endblock %}
+{% block pageTitle %}Add a fish{% endblock %}
 
 {% block content %}
 <div class="govuk-grid-row">
@@ -218,7 +218,7 @@
 
             {% call govukFieldset({
               legend: {
-                text: "Details of the fish you caught",
+                text: "Add a fish",
                 classes: "govuk-fieldset__legend--l",
                 isPageHeading: true
               }

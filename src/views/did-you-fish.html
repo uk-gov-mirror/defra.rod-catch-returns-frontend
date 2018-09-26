@@ -22,7 +22,7 @@
 {% if errors %}
     {% set dyfErrorMessage = { text: "Did you fish" } %}
     {{ errorList.push({
-        text: "You have not selected whether you did fish or you did not fish in the year " + year,
+        text: "Please select whether you fished in " + year,
         href: "#dyf"
     }) }}
 {% endif %}
