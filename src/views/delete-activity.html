@@ -12,7 +12,7 @@
     }) }}
 {% endblock %}
 
-{% block pageTitle %}Confirm deleting river {{ river.name }}{% endblock %}
+{% block pageTitle %}Delete river {{ river.name }}{% endblock %}
 
 {% block content %}
 <div class="govuk-grid-row">
@@ -21,14 +21,14 @@
 
             {% call govukFieldset({
               legend: {
-                text: "Confirm deleting river " + river.name,
+                text: "Do you want to delete river " + river.name,
                 classes: "govuk-fieldset__legend--l",
                 isPageHeading: true
               }
             }) %}
 
                 {{ govukInsetText({
-                    text: "Deleting a river will also delete all the fish associated with it in your catch return."
+                    text: "Deleting a river will also delete all the fish added to it."
                 }) }}
 
                 {{ govukButton({
