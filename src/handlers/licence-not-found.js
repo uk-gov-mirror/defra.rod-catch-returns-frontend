@@ -36,6 +36,6 @@ module.exports = class LicenceHandler extends BaseHandler {
       return h.redirect('/licence-not-found')
     }
 
-    return authentication(request, h, request.payload.licence)
+    return authentication(request, h, request.payload.contact)
   }
 }

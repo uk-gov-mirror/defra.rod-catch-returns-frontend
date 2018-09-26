@@ -9,12 +9,12 @@ const { logger } = require('defra-logging-facade')
  * @param h
  * @returns {Promise<*>}
  */
-module.exports = async (request, h, licence) => {
+module.exports = async (request, h, contact) => {
   // Generate a new session identifier
   const sid = uuid()
 
   // Assign a new user
-  const user = { contactId: licence }
+  const user = { contactId: contact.contact.id }
 
   // Set the cookie to the session identifier
   request.cookieAuth.set({ sid: sid })

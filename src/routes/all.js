@@ -20,6 +20,7 @@ const SaveHandler = require('../handlers/save')
 
 // Define the validators
 const licenceValidator = require('../validators/licence')
+const licenceCheck = require('../validators/licence-check')
 const yearValidator = require('../validators/year')
 const didYouFishValidator = require('../validators/did-you-fish')
 const activityValidator = require('../validators/activity')
@@ -27,8 +28,8 @@ const salmonAndLargeTroutValidator = require('../validators/salmon-and-large-tro
 const smallCatchValidator = require('../validators/small-catch')
 
 // Define the handlers
-const licenceHandler = new LicenceHandler('licence', licenceValidator)
-const licenceNotFound = new LicenceNotFoundHandler('licence', licenceValidator)
+const licenceHandler = new LicenceHandler('licence', licenceValidator, licenceCheck)
+const licenceNotFound = new LicenceNotFoundHandler('licence', licenceValidator, licenceCheck)
 const yearHandler = new YearHandler('select-year', yearValidator)
 const didYouFishHandler = new DidYouFishHandler('did-you-fish', didYouFishValidator)
 const summaryHandler = new SummaryHandler('summary')
