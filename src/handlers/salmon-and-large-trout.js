@@ -52,7 +52,8 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
         rivers: rivers,
         year: cache.year,
         types: await speciesApi.list(),
-        methods: await methodsApi.list()
+        methods: await methodsApi.list(),
+        add: true
       })
     } else {
       // Modify an existing catch

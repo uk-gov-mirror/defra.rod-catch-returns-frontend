@@ -58,7 +58,8 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
       return this.readCacheAndDisplayView(request, h, {
         rivers: rivers,
         months: months,
-        methods: await methodsApi.list()
+        methods: await methodsApi.list(),
+        add: true
       })
     } else {
       // Modify an existing catch

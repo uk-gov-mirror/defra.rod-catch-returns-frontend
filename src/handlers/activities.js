@@ -39,7 +39,8 @@ module.exports = class ActivitiesHandler extends BaseHandler {
 
       // Filter out the rivers already selected
       return this.readCacheAndDisplayView(request, h, {
-        rivers: rivers.filter(r => !activities.map(a => a.river.id).includes(r.id))
+        rivers: rivers.filter(r => !activities.map(a => a.river.id).includes(r.id)),
+        add: true
       })
     } else {
       let activity = await activitiesApi.getById(`activities/${request.params.id}`)

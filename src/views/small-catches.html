@@ -158,7 +158,13 @@
     }) }}
 {% endblock %}
 
-{% block pageTitle %}Monthly details of the small fish you caught weighing under 1 lb{% endblock %}
+{% block pageTitle %}{% if add %}Add{% else %}Edit{% endif %} a small fish catch{% endblock %}
+
+{% if add %}
+    {% set title = "<h1 class=\"govuk-heading-l\">Add small fish catch</h1><span class=\"govuk-caption-l\">Add details of small fish (1lb and under)</span>" %}
+{% else %}
+    {% set title = "<h1 class=\"govuk-heading-l\">Edit small fish catch</h1>" %}
+{% endif %}
 
 {% block content %}
 <div class="govuk-grid-row">
@@ -173,7 +179,7 @@
 
             {% call govukFieldset({
               legend: {
-                text: "Monthly details of the small fish you caught weighing under 1 lb",
+                html: title,
                 classes: "govuk-fieldset__legend--l",
                 isPageHeading: true
               }
