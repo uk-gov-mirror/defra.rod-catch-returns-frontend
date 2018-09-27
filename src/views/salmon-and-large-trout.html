@@ -205,12 +205,6 @@
 
 {% block pageTitle %}{% if add %}Add{% else %}Edit{% endif %} a salmon or large sea trout{% endblock %}
 
-{% if add %}
-    {% set title = "<h1 class=\"govuk-heading-l\">Add a salmon or large sea trout</h1>" %}
-{% else %}
-    {% set title = "<h1 class=\"govuk-heading-l\">Edit a salmon or large sea trout</h1>" %}
-{% endif %}
-
 {% block content %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -222,13 +216,14 @@
                 }) }}
             {% endif %}
 
-            {% call govukFieldset({
-              legend: {
-                html: title,
-                classes: "govuk-fieldset__legend--l",
-                isPageHeading: true
-              }
-            }) %}
+            {% if add %}
+                <h1 class="govuk-heading-l">Add a salmon or large sea trout</h1>
+            {% else %}
+                <h1 class="govuk-heading-l">Edit a salmon or large sea trout</h1>
+            {% endif %}
+
+
+            {% call govukFieldset({}) %}
 
                 {% if rivers.length > 1 %}
                     {{ govukSelect({
@@ -248,7 +243,7 @@
                         errorMessage: riverErrorMessage
                     }) }}
                 {% else %}
-                    <p class="govuk-body-l">River {{ rivers[0].name }}</p>
+                    <h1 class="govuk-heading-m">River {{ rivers[0].name }}</h1>
                     <input type="hidden" id="river" name="river" value="{{ rivers[0].id }}"/>
                 {% endif %}
 

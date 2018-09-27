@@ -36,13 +36,9 @@
                 }) }}
             {% endif %}
 
-            {% call govukFieldset({
-              legend: {
-                text: "Which season does your catch return cover?",
-                classes: "govuk-fieldset__legend--l",
-                isPageHeading: true
-              }
-            }) %}
+            <h1 class="govuk-heading-l">Which season does your catch return cover?</h1>
+
+            {% call govukFieldset({ }) %}
 
                 {{ govukRadios({
                     idPrefix: "year",
