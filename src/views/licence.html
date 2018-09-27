@@ -30,14 +30,14 @@
                 }) }}
             {% endif %}
 
-            <h1 class="govuk-heading-xl">
+            <h1 class="govuk-heading-l">
                 Sign in
             </h1>
 
             {% call govukFieldset({
                 legend: {
                     html: "Enter your licence details and postcode",
-                    classes: "govuk-fieldset__legend--l",
+                    classes: "govuk-fieldset__legend--m",
                     isPageHeading: false
                 }
             }) %}
@@ -75,7 +75,9 @@
 
                 {{ govukDetails({
                     summaryText: "I don't know my licence number",
-                    html: "Your licence number can be found on any related correspondence from us. If you can’t find it, call us on 03708 506 506 (open 8am to 6pm, Monday to Friday) or email us at <a href=\"mailto:enquiries@environment-agency.gov.uk\">@environment-agency.gov.uk."
+                    html: "<p>Your licence number can be found on any related correspondence from us.
+                            If you can’t find it, call us on 03708 506 506 (open 8am to 6pm, Monday to Friday) or email us at
+                            <a href=\"mailto:enquiries@environment-agency.gov.uk\">TODO@environment-agency.gov.uk</a></p>"
                 }) }}
 
             {% endcall %}
