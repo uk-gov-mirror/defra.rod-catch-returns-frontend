@@ -12,7 +12,9 @@
     }) }}
 {% endblock %}
 
-{% block pageTitle %}Your {{ year }} catch return {% endblock %}
+
+{% block pageTitle %}Your {{ year }} catch return{% endblock %}
+
 {% set riverRows = [] %}
 {% set salmonAndLargeTroutItems = [] %}
 {% set smallCatchItems = [] %}
@@ -89,7 +91,7 @@
 
             {% if activities.length %}
                 {{ govukTable({
-                    caption: "Small sea trout (1lb and under)",
+                    caption: "Small catches (sea trout 1lb and under)",
                     captionClasses: "govuk-heading-m",
                     firstCellIsHeader: false,
                     head: [
@@ -138,7 +140,7 @@
         </form>
 
         <div>
-            <a id="save" class="govuk-link govuk-body-m" href="/save">Save and return to catch return later</a>
+            <a id="save" class="govuk-link govuk-body-m" href="/save">Save draft</a>
         </div>
     </div>
 </div>
