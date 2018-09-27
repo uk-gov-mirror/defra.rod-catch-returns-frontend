@@ -64,7 +64,7 @@
         {% if error.released %}
             {% set releasedErrorMessage = { text: "Enter the number of small fish released back into the water" } %}
             {{ errorList.push({
-                text: "You have not entered a valid number for how many small fish you released back into the water",
+                text: "You have not entered a valid number of small fish released back into the water",
                 href: "#released"
             }) }}
         {% endif %}
@@ -73,7 +73,7 @@
         {% if error.fly %}
             {% set flyErrorMessage = { text: "Enter the number of small fish caught using a fly" } %}
             {{ errorList.push({
-                text: "You have not entered a valid number for how many fish you caught using the fly",
+                text: "You have not entered a valid number of fish caught using a fly",
                 href: "#fly"
             }) }}
         {% endif %}
@@ -81,7 +81,7 @@
         {% if error.spinner %}
             {% set spinnerErrorMessage = { text: "Enter the number of small fish caught using a spinner" } %}
             {{ errorList.push({
-                text: "You have not entered a valid number for how many fish you caught using the spinner",
+                text: "You have not entered a valid number of fish caught using a spinner",
                 href: "#spinner"
             }) }}
         {% endif %}
@@ -89,7 +89,7 @@
         {% if error.bait %}
             {% set baitErrorMessage = { text: "Enter the number of small fish caught using bait" } %}
             {{ errorList.push({
-                text: "You have not entered a valid number for how many fish you caught using bait",
+                text: "You have not entered a valid number of fish caught using bait",
                 href: "#bait"
             }) }}
         {% endif %}
@@ -116,7 +116,7 @@
             {% set baitErrorMessage = { text: "The number caught with a spinner, bait or fly must be greater than zero" } %}
             {% set flyErrorMessage = { text: "The number caught with a spinner, bait or fly must be greater than zero" } %}
             {{ errorList.push({
-                text: "You must enter the number of fish caught by fly, bait or spinner",
+                text: "You must enter the number of fish caught by spinner, bait or fly",
                 href: "#river"
             }) }}
         {% endif %}
@@ -161,9 +161,9 @@
 {% block pageTitle %}{% if add %}Add{% else %}Edit{% endif %} small fish catch{% endblock %}
 
 {% if add %}
-    {% set title = "<h1 class=\"govuk-heading-l\">Add small fish catch</h1><span class=\"govuk-caption-l\">Add your small sea trout (1lb and under)catch totals by month, giving details of method and release</span>" %}
+    {% set title = "<h1 class=\"govuk-heading-xl\">Add a small fish catch</h1><span class=\"govuk-fieldset__legend--l\">Add details of small fish catches (sea trout 1lb and under) per month</span>" %}
 {% else %}
-    {% set title = "<h1 class=\"govuk-heading-l\">Edit small fish catch</h1>" %}
+    {% set title = "<h1 class=\"govuk-heading-xl\">Edit a small fish catch</h1>" %}
 {% endif %}
 
 {% block content %}
