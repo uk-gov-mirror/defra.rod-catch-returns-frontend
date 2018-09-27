@@ -14,6 +14,11 @@
             { text: activity.days, format: "numeric" }
         ]) }}
     {% endfor %}
+{% else %}
+        {{ riverRows.push([
+            { text: "None" },
+            { text: "0", format: "numeric" }
+        ]) }}
 {% endif %}
 
 {% if catches.length %}
@@ -66,7 +71,7 @@
                 </p>
 
                 <p class="govuk-body">
-                    If you need to make changes, select 'Save as draft'.
+                    If you need to make changes, select 'Cancel'.
                 </p>
             {% endif %}
 
@@ -79,38 +84,42 @@
                     { text: "Total days fished", format: "numeric" }
                 ],
                 rows: riverRows
-            }) }}
+             }) }}
 
-            {% if activities.length %}
-                {{ govukTable({
-                    caption: "Small catches (sea trout 1lb and under)",
-                    captionClasses: "govuk-heading-m",
-                    firstCellIsHeader: false,
-                    head: [
-                        { text: "Month" },
-                        { text: "River" },
-                        { text: "Fly" },
-                        { text: "Spinner" },
-                        { text: "Bait" },
-                        { text: "Released" }
-                    ],
-                    rows: smallCatchItems
-                }) }}
+             {% if activities.length %}
+                {% if smallCatches.length %}
+                    {{ govukTable({
+                        caption: "Small catches (sea trout 1lb and under)",
+                        captionClasses: "govuk-heading-m",
+                        firstCellIsHeader: false,
+                        head: [
+                            { text: "Month" },
+                            { text: "River" },
+                            { text: "Fly" },
+                            { text: "Spinner" },
+                            { text: "Bait" },
+                            { text: "Released" }
+                        ],
+                        rows: smallCatchItems
+                    }) }}
+                {% endif %}
 
-                {{ govukTable({
-                    caption: "Salmon and large sea trout",
-                    captionClasses: "govuk-heading-m",
-                    firstCellIsHeader: false,
-                    head: [
-                        { text: "River" },
-                        { text: "Date" },
-                        { text: "Type" },
-                        { text: "Weight" },
-                        { text: "Method" },
-                        { text: "Released" }
-                    ],
-                    rows: salmonAndLargeTroutItems
-                }) }}
+                {% if catches.length %}
+                    {{ govukTable({
+                        caption: "Salmon and large sea trout",
+                        captionClasses: "govuk-heading-m",
+                        firstCellIsHeader: false,
+                        head: [
+                            { text: "River" },
+                            { text: "Date" },
+                            { text: "Type" },
+                            { text: "Weight" },
+                            { text: "Method" },
+                            { text: "Released" }
+                        ],
+                        rows: salmonAndLargeTroutItems
+                    }) }}
+                {% endif %}
             {% endif %}
 
             {% if not locked %}
@@ -125,7 +134,9 @@
         {% if not locked %}
             {{ summaryLink() }}
         {% else %}
-            <a id="print-link" class="govuk-link govuk-body-m" href="#" onclick="window.print();return false;">Print your catch return report</a>
+            <div>
+                <a id="print-link" class="govuk-link govuk-body-m" href="#" onclick="window.print();return false;">Print your catch return report</a>
+            </div>
         {% endif %}
     </div>
 </div>

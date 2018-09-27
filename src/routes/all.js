@@ -155,13 +155,13 @@ module.exports = [
     handler: confirmationHandler.handler
   },
 
-  // Error handler
+  // Error 500 handler
   {
-    path: '/error',
+    path: '/error500',
     method: 'GET',
     options: { auth: false },
     handler: (request, h) => {
-      return h.view('error')
+      return h.view('error500')
     }
   },
 

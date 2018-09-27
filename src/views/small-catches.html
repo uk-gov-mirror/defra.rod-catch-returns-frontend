@@ -161,9 +161,10 @@
 {% block pageTitle %}{% if add %}Add{% else %}Edit{% endif %} small fish catch{% endblock %}
 
 {% if add %}
-    {% set title = "<h1 class=\"govuk-heading-xl\">Add a small fish catch</h1><span class=\"govuk-fieldset__legend--l\">Add details of small fish catches (sea trout 1lb and under) per month</span>" %}
+    {% set title = "<h1 class=\"govuk-heading-l\">Add a small fish catch</h1>
+        <span class=\"govuk-fieldset__legend--m\">Add details of small fish catches (sea trout 1lb and under) per month</span>" %}
 {% else %}
-    {% set title = "<h1 class=\"govuk-heading-xl\">Edit a small fish catch</h1>" %}
+    {% set title = "<h1 class=\"govuk-heading-l\">Edit a small fish catch</h1>" %}
 {% endif %}
 
 {% block content %}

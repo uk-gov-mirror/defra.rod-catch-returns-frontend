@@ -30,7 +30,7 @@ module.exports = class BaseHandler {
         }
       } catch (err) {
         logger.error(err)
-        return h.redirect('/error')
+        return h.redirect('/error500')
       }
     }
   }
