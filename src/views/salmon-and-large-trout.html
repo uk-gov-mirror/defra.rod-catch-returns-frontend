@@ -65,7 +65,7 @@
         {% if error.date === 'EMPTY' %}
             {% set dateErrorMessage = { text: "Enter the date you fished" } %}
             {{ errorList.push({
-                text: "You have not entered the date when you fished",
+                text: "You have not entered a date",
                 href: "#date-day"
             }) }}
         {% endif %}
@@ -73,7 +73,7 @@
         {% if error.date === 'INVALID' %}
             {% set dateErrorMessage = { text: "Enter the date you fished" } %}
             {{ errorList.push({
-                text: "You have not entered a valid date when you fished",
+                text: "You have not entered a valid date",
                 href: "#date-day"
             }) }}
         {% endif %}
@@ -87,7 +87,7 @@
         {% endif %}
 
         {% if error.system %}
-            {% set systemErrorMessage = { text: "Select either pounds and ounces or kilograms for the weight" } %}
+            {% set systemErrorMessage = { text: "Select either pounds and ounces or kilograms" } %}
             {{ errorList.push({
                 text: "You have not selected pounds and ounces or kilograms",
                 href: "#system"
@@ -143,7 +143,7 @@
         {% endif %}
 
         {% if error.Catch === 'CATCH_MASS_BELOW_MINIMUM' %}
-            {% set systemErrorMessage = { text: "Enter a valid weight (1lb or over)" } %}
+            {% set systemErrorMessage = { text: "Enter a valid weight (over 1lb)" } %}
             {{ errorList.push({
                 text: "This fish is too small",
                 href: "#system"
@@ -203,12 +203,12 @@
     }) }}
 {% endblock %}
 
-{% block pageTitle %}{% if add %}Add{% else %}Edit{% endif %} a fish{% endblock %}
+{% block pageTitle %}{% if add %}Add{% else %}Edit{% endif %} a salmon or large sea trout{% endblock %}
 
 {% if add %}
-    {% set title = "<h1 class=\"govuk-heading-l\">Add a fish</h1>" %}
+    {% set title = "<h1 class=\"govuk-heading-xl\">Add a salmon or large sea trout</h1>" %}
 {% else %}
-    {% set title = "<h1 class=\"govuk-heading-l\">Edit a fish</h1>" %}
+    {% set title = "<h1 class=\"govuk-heading-xl\">Edit a salmon or large sea trout</h1>" %}
 {% endif %}
 
 {% block content %}
@@ -257,7 +257,7 @@
                     name: "date",
                     fieldset: {
                         legend: {
-                            text: "Date caught in the " + year + " season",
+                            text: "Date caught (in " + year + " )",
                             isPageHeading: false,
                             classes: "govuk-fieldset__legend govuk-!-font-weight-bold"
                         }
