@@ -22,7 +22,7 @@ module.exports = class YearHandler extends BaseHandler {
   async doGet (request, h) {
     const now = moment()
     const years = []
-    if ([0, 1, 2].includes(now.month()) || process.argv.includes('--force-year-choose')) {
+    if ([0, 1, 2].includes(now.month()) || process.argv.includes('--force-year-choose') || process.env.NODE_ENV === 'test') {
       // Select the year
       years.push({ value: now.year() - 1, text: (now.year() - 1).toString() })
       years.push({ value: now.year(), text: (now.year()).toString() })

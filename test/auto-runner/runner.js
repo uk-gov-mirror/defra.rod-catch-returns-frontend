@@ -1,5 +1,6 @@
 'use strict'
 
+const Nunjucks = require('nunjucks')
 const Glue = require('glue')
 const { logger } = require('defra-logging-facade')
 const Code = require('code')
@@ -22,6 +23,9 @@ const manifest = {
     plugins: [
       {
         plugin: require('hapi-auth-cookie')
+      },
+      {
+        plugin: require('vision')
       }
     ]
   }
@@ -57,6 +61,29 @@ const internals = {
     server.app.cache = server.cache({
       segment: 'sessions',
       expiresIn: 20000
+    })
+
+    server.views({
+      relativeTo: require('../../defaults').ROOT_PATH,
+      engines: {
+        html: {
+          compile: function (src, options) {
+            const template = Nunjucks.compile(src, options.environment)
+            return function (context) {
+              return template.render(context)
+            }
+          },
+          prepare: (options, next) => {
+            options.compileOptions.environment = Nunjucks.configure(options.path, { watch: false })
+            return next()
+          }
+        }
+      },
+      path: [
+        'src/views',
+        'node_modules/govuk-frontend/',
+        'node_modules/govuk-frontend/components/'
+      ]
     })
 
     // Set up default authentication strategy using cookies
