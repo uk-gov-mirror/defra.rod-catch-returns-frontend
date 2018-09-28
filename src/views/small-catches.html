@@ -62,16 +62,16 @@
         {% endif %}
 
         {% if error.released %}
-            {% set releasedErrorMessage = { text: "Enter the number of small fish released back into the water" } %}
+            {% set releasedErrorMessage = { text: "Enter the number of fish released back into the water" } %}
             {{ errorList.push({
-                text: "You have not entered a valid number of small fish released back into the water",
+                text: "You have not entered a valid number of fish released back into the water",
                 href: "#released"
             }) }}
         {% endif %}
 
         <!--Shame you cannot do arbitrary object assignment out of the box in nunjunks-->
         {% if error.fly %}
-            {% set flyErrorMessage = { text: "Enter the number of small fish caught using a fly" } %}
+            {% set flyErrorMessage = { text: "Enter the number of fish caught using a fly" } %}
             {{ errorList.push({
                 text: "You have not entered a valid number of fish caught using a fly",
                 href: "#fly"
@@ -87,7 +87,7 @@
         {% endif %}
 
         {% if error.bait %}
-            {% set baitErrorMessage = { text: "Enter the number of small fish caught using bait" } %}
+            {% set baitErrorMessage = { text: "Enter the number of fish caught using bait" } %}
             {{ errorList.push({
                 text: "You have not entered a valid number of fish caught using bait",
                 href: "#bait"
@@ -158,7 +158,7 @@
     }) }}
 {% endblock %}
 
-{% block pageTitle %}{% if add %}Add{% else %}Edit{% endif %} small fish catch{% endblock %}
+{% block pageTitle %}{% if add %}Add{% else %}Edit{% endif %} small adult sea trout catch{% endblock %}
 
 {% block content %}
 <div class="govuk-grid-row">
@@ -172,9 +172,9 @@
             {% endif %}
 
             {% if add %}
-                <h1 class="govuk-heading-l">Add a small fish catch</h1><p class="govuk-body-l">Add details of small fish catches (sea trout 1lb and under) per month</p>
+                <h1 class="govuk-heading-l">Add a small adult sea trout catch</h1><p class="govuk-body-l">Add details of small adult sea trout (1lb and under) catches by month</p>
             {% else %}
-                <h1 class="govuk-heading-l">Edit a small fish catch</h1>
+                <h1 class="govuk-heading-l">Edit a small adult sea trout catch</h1>
             {% endif %}
 
             {% call govukFieldset({}) %}
@@ -222,7 +222,7 @@
                 {{ govukInput({
                     id: "fly",
                     name: "fly",
-                    hint: { text: "Enter the number of small fish caught using a fly" },
+                    hint: { text: "Enter the number of fish caught using a fly" },
                     label: {
                         text: "Fly"
                     },
@@ -235,7 +235,7 @@
                 {{ govukInput({
                     id: "spinner",
                     name: "spinner",
-                    hint: { text: "Enter the number of small fish caught using a spinner" },
+                    hint: { text: "Enter the number of fish caught using a spinner" },
                     label: {
                         text: "Spinner"
                     },
@@ -248,7 +248,7 @@
                 {{ govukInput({
                     id: "bait",
                     name: "bait",
-                    hint: { text: "Enter the number of small fish caught using bait" },
+                    hint: { text: "Enter the number of fish caught using bait" },
                     label: {
                         text: "Bait"
                     },
@@ -261,7 +261,7 @@
                 {{ govukInput({
                     id: "released",
                     name: "released",
-                    hint: { text: "Enter the number of small fish released back into the water" },
+                    hint: { text: "Enter the number of fish released back into the water" },
                     label: {
                         text: "Number released"
                     },
