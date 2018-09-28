@@ -1,9 +1,11 @@
 'use strict'
 
 const requests = require('./requests')
+const signIn = require('./sign-in')
 
-module.exports = requests.start
-  .concat(requests.signInSuccess)
-  .concat(requests.addActivityRiverSwaddle)
+module.exports = signIn.first
+  .concat(requests.addActivityRiverSawdde)
   .concat(requests.addActivityRiverErrors)
-  .concat(requests.editActivityRiverSwaddle)
+  .concat(requests.editActivityRiverSawdde)
+  .concat(requests.addActivityRiverEbbw)
+  .concat(requests.deleteActivityRiverEbbw)

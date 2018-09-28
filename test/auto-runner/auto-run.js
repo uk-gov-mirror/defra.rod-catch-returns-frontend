@@ -25,16 +25,20 @@ experiment('Scripted regression tests', () => {
     const contact = await getContactFromLicenceKey(licence)
     let submission = await submissionsApi.getByContactIdAndYear(contact.contact.id, Moment().year())
     if (submission) {
-      logger.info(`Deleting submission: ${submission.id}`)
-      submissionsApi.deleteById(submission.id)
+      logger.error('Tests require API to be restarted in in-memory mode for each test run')
+      process.exit(-1)
     }
   })
 
   test('Start page', async () => {
-    await Runner.run(require('./scripts/sign-in'))
+    await Runner.run(require('./scripts/sign-in').first)
   })
 
   test('Activity', async () => {
     await Runner.run(require('./scripts/activity'))
+  })
+
+  test('Small catch', async () => {
+    await Runner.run(require('./scripts/small-catch'))
   })
 })
