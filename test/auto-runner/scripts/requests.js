@@ -89,5 +89,110 @@ module.exports = {
   deleteSmallCatchJuly: [
     { method: 'GET', path: '/delete/small-catches/2', status: 200 },
     { method: 'POST', path: '/delete/small-catches/2', payload: {}, status: 302, redirect: '/summary' }
+  ],
+  addLargeCatchJune: [
+    { method: 'GET', path: '/catches/add', status: 200 },
+    { method: 'POST',
+      path: '/catches/add',
+      payload: {
+        river: 'rivers/189',
+        'date-day': '1',
+        'date-month': '6',
+        type: 'species/1',
+        system: 'IMPERIAL',
+        pounds: '1',
+        ounces: '2',
+        kilograms: '',
+        method: 'methods/2',
+        released: 'true'
+      },
+      status: 302,
+      redirect: '/summary' }
+  ],
+  addLargeCatchErrors: [
+    { method: 'GET', path: '/catches/add', status: 200 },
+    { method: 'POST',
+      path: '/catches/add',
+      payload: {
+        river: 'rivers/189',
+        'date-day': '1',
+        'date-month': '13',
+        type: 'species/1',
+        system: 'IMPERIAL',
+        pounds: '1',
+        ounces: '2',
+        kilograms: '',
+        method: 'methods/2',
+        released: 'true'
+      },
+      status: 302,
+      redirect: '/catches/add' }
+  ],
+  addLargeCatchErrors2: [
+    { method: 'GET', path: '/catches/add', status: 200 },
+    { method: 'POST',
+      path: '/catches/add',
+      payload: {
+        river: 'rivers/189',
+        'date-day': '1',
+        'date-month': '6',
+        type: 'species/1',
+        system: 'METRIC',
+        pounds: '',
+        ounces: '',
+        kilograms: '150',
+        method: 'methods/2',
+        released: 'true'
+      },
+      status: 302,
+      redirect: '/catches/add' }
+  ],
+  editLargeCatchJune: [
+    { method: 'GET', path: '/catches/1', status: 200 },
+    { method: 'POST',
+      path: '/catches/1',
+      payload: {
+        river: 'rivers/189',
+        'date-day': '1',
+        'date-month': '6',
+        type: 'species/1',
+        system: 'METRIC',
+        pounds: '',
+        ounces: '',
+        kilograms: '11',
+        method: 'methods/1',
+        released: 'false'
+      },
+      status: 302,
+      redirect: '/summary' }
+  ],
+  addLargeCatchJuly: [
+    { method: 'GET', path: '/catches/add', status: 200 },
+    { method: 'POST',
+      path: '/catches/add',
+      payload: {
+        river: 'rivers/189',
+        'date-day': '1',
+        'date-month': '7',
+        type: 'species/1',
+        system: 'METRIC',
+        pounds: '',
+        ounces: '',
+        kilograms: '8',
+        method: 'methods/2',
+        released: 'true'
+      },
+      status: 302,
+      redirect: '/summary' }
+  ],
+  deleteLargeCatchJuly: [
+    { method: 'GET', path: '/delete/catches/2', status: 200 },
+    { method: 'POST', path: '/delete/catches/2', payload: {}, status: 302, redirect: '/summary' }
+  ],
+  reviewAndSubmit: [
+    { method: 'GET', path: '/summary', status: 200 },
+    { method: 'POST', path: '/summary', payload: {}, status: 302, redirect: '/review' },
+    { method: 'GET', path: '/review', status: 200 },
+    { method: 'POST', path: '/review', payload: {}, status: 302, redirect: '/confirmation' }
   ]
 }

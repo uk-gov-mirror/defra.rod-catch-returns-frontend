@@ -24,6 +24,6 @@ module.exports = class SubmissionsApi extends EntityApi {
   }
 
   async setSubmitted (submissionId) {
-    return super.patch(submissionId, { status: 'SUBMITTED' })
+    return super.change(submissionId, { status: 'SUBMITTED' })
   }
 }

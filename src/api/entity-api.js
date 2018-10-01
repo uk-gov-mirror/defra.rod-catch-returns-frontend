@@ -33,15 +33,8 @@ module.exports = class EntityApi {
     return result
   }
 
-  // Change (PUT) an entity. The key encodes the entity path
+  // Change (PATCH) an entity. The key encodes the entity path
   async change (key, payload) {
-    const result = await Client.request(Client.method.PUT, key, null, payload)
-    result.id = this.keyFromLink(result)
-    return result
-  }
-
-  // Change (PUT) an entity. The key encodes the entity path
-  async patch (key, payload) {
     const result = await Client.request(Client.method.PATCH, key, null, payload)
     result.id = this.keyFromLink(result)
     return result
