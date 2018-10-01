@@ -12,6 +12,14 @@ env:
   - NODE_VERSION="8.9.1"
   - DYNAMICS_IMPL=mock
   - COOKIE_PW=562fhgfqaj626ba87212ausaiqjqw112
+  - API_HOSTNAME=localhost
+  - API_PORT=9580
+  - API_PATH=/api
+  - API_REQUEST_TIMEOUT_MS=10000
+  - HTTPS=false
+  - REDIS_HOSTNAME=localhost
+  - REDIS_PORT=6379
+  - SESSION_TTL_MS=3600000
 
 before_install:
   - nvm install $NODE_VERSION
