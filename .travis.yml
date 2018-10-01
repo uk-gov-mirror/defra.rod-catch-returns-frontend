@@ -5,7 +5,8 @@ jdk:
 
 env:
   - NODE_VERSION="8.9.1"
-
+  - DYNAMICS_IMPL=mock
+  
 before_install:
   - nvm install $NODE_VERSION
 
@@ -22,7 +23,6 @@ before_install:
   - cd ./rod-catch-returns-api
   - ./mvnw compile
   - ./launches/serverctl start --spring.profiles.active=h2
-  - sleep 20
 
 install:
   - npm install
