@@ -1,4 +1,5 @@
 'use strict'
+const Moment = require('moment')
 
 const EntityApi = require('./entity-api')
 const ActivityApi = require('../api/activities')
@@ -8,6 +9,17 @@ const MethodsApi = require('../api/methods')
 const activityApi = new ActivityApi()
 const riversApi = new RiversApi()
 const methodsApi = new MethodsApi()
+
+// Calculate calendar months
+const months = [ ...Array(12).keys() ].map(m => {
+  const mth = Moment({ month: m }).format('MMMM')
+  return {
+    value: m,
+    text: mth.toUpperCase()
+  }
+})
+
+const mthVal = (o) => months.find(m => m.text === o.month.toUpperCase()).value
 
 /**
  * Small catches entity handler
@@ -93,5 +105,25 @@ module.exports = class CatchesApi extends EntityApi {
     if (mappedResult.activity.id !== activityId) {
       await super.changeAssoc(catchId + '/activity', activityId)
     }
+  }
+
+  sort (a, b) {
+    if (mthVal(a) < mthVal(b)) {
+      return -1
+    }
+
+    if (mthVal(a) > mthVal(b)) {
+      return 1
+    }
+
+    if (a.river.name < b.river.name) {
+      return -1
+    }
+
+    if (a.river.name > b.river.name) {
+      return 1
+    }
+
+    return 0
   }
 }

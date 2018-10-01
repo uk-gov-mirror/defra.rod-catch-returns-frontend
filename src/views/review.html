@@ -24,8 +24,8 @@
 {% if catches.length %}
     {% for fish in catches %}
         {{ salmonAndLargeTroutItems.push([
-            { text: fish.activity.river.name },
             { text: fish.dateCaught },
+            { text: fish.activity.river.name },
             { text: fish.species.name },
             { text: fish.weight },
             { text: fish.method.name },
@@ -39,10 +39,10 @@
         {{ smallCatchItems.push([
             { text: catch.month },
             { text: catch.river },
-            { text: catch.fly },
-            { text: catch.spinner },
-            { text: catch.bait },
-            { text: catch.released | replace("0", "") }
+            { text: catch.fly, format: "numeric" },
+            { text: catch.spinner, format: "numeric" },
+            { text: catch.bait, format: "numeric" },
+            { text: catch.released | replace("0", ""), format: "numeric" }
         ]) }}
     {% endfor %}
 {% endif %}
@@ -65,16 +65,6 @@
         <form method="post">
             <h1 class="govuk-heading-l">{{ title }}</h1>
 
-            {% if not locked %}
-                <p class="govuk-body">
-                    Check that your return is accurate, then submit. Once submitted, your return cannot be changed.
-                </p>
-
-                <p class="govuk-body">
-                    If you need to make changes, select 'Cancel'.
-                </p>
-            {% endif %}
-
              {{ govukTable({
                 caption: "Rivers fished",
                 captionClasses: "govuk-heading-m",
@@ -89,16 +79,16 @@
              {% if activities.length %}
                 {% if smallCatches.length %}
                     {{ govukTable({
-                        caption: "Small catches (sea trout 1lb and under)",
+                        caption: "Small adult sea trout (1lb and under) catches",
                         captionClasses: "govuk-heading-m",
                         firstCellIsHeader: false,
                         head: [
                             { text: "Month" },
                             { text: "River" },
-                            { text: "Fly" },
-                            { text: "Spinner" },
-                            { text: "Bait" },
-                            { text: "Released" }
+                            { text: "Fly", format: "numeric" },
+                            { text: "Spinner", format: "numeric" },
+                            { text: "Bait", format: "numeric" },
+                            { text: "Released", format: "numeric" }
                         ],
                         rows: smallCatchItems
                     }) }}
@@ -106,12 +96,12 @@
 
                 {% if catches.length %}
                     {{ govukTable({
-                        caption: "Salmon and large sea trout",
+                        caption: "Salmon and large adult sea trout",
                         captionClasses: "govuk-heading-m",
                         firstCellIsHeader: false,
                         head: [
-                            { text: "River" },
                             { text: "Date" },
+                            { text: "River" },
                             { text: "Type" },
                             { text: "Weight" },
                             { text: "Method" },
