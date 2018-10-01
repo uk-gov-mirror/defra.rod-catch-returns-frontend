@@ -49,6 +49,7 @@ script:
   - npm test
 
 after_script:
+  - redis-cli --scan | while read line; do echo $line; redis-cli get $line; done;
   - ./cc-test-reporter after-build -t lcov --exit-code $TRAVIS_TEST_RESULT
 
 addons:
