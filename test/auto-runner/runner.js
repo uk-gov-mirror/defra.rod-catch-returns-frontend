@@ -60,7 +60,7 @@ const internals = {
     // Point the server plugin cache to an application cache to hold authenticated session data
     server.app.cache = server.cache({
       segment: 'sessions',
-      expiresIn: 20000
+      expiresIn: process.env.SESSION_TTL_MS || 20000
     })
 
     server.views({
