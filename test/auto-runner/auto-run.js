@@ -25,7 +25,7 @@ experiment('Scripted regression tests', () => {
   lab.before(async () => {
     const contact = await getContactFromLicenceKey(licence)
     if (!contact) {
-      logger.error('Ensure the API is started in mock-mode and caf find a contact for the licence: ' + LICENCE)
+      logger.error('Ensure the API is started in mock-mode and can find a contact for the licence: ' + LICENCE)
       process.exit(-1)
     }
     let submission = await submissionsApi.getByContactIdAndYear(contact.contact.id, Moment().year())
