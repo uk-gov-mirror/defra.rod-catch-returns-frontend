@@ -47,4 +47,16 @@ module.exports = class ActivitiesApi extends EntityApi {
 
     return result
   }
+
+  sort (a, b) {
+    if (a.river.name < b.river.name) {
+      return -1
+    }
+
+    if (a.river.name > b.river.name) {
+      return 1
+    }
+
+    return 0
+  }
 }

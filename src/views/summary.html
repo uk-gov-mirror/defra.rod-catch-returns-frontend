@@ -43,8 +43,8 @@
 {% if catches.length %}
     {% for fish in catches %}
         {{ salmonAndLargeTroutItems.push([
-            { text: fish.activity.river.name },
             { text: fish.dateCaught },
+            { text: fish.activity.river.name },
             { text: fish.species.name },
             { text: fish.weight },
             { text: fish.method.name },
@@ -73,6 +73,8 @@
     <div class="govuk-grid-column-full">
         <form method="post">
             <h1 class="govuk-heading-l">Your {{ year }} catch return</h1>
+            <p class="govuk-body-l">If you’ve finished fishing for salmon and sea trout this season, select ‘Review catch return’. If you plan to fish again for salmon or sea trout this season, click 'Save as draft'.</p>
+
             {{ govukTable({
                 caption: "Rivers fished",
                 captionClasses: "govuk-heading-m",
@@ -115,8 +117,8 @@
                     captionClasses: "govuk-heading-m",
                     firstCellIsHeader: false,
                     head: [
-                        { text: "River" },
                         { text: "Date" },
+                        { text: "River" },
                         { text: "Type" },
                         { text: "Weight" },
                         { text: "Method" },
@@ -126,6 +128,7 @@
                     rows: salmonAndLargeTroutItems
                 }) }}
 
+
                 <p class="govuk-body" style="text-align:right">
                     <a id="catches-add" class="govuk-link " href="catches/add">Add a salmon or large adult sea trout</a>
                 </p>
@@ -133,7 +136,7 @@
 
             {{ govukButton({
                 name: "continue",
-                text: "Submit catch return"
+                text: "Review catch return"
             }) }}
 
             {{ extra() }}

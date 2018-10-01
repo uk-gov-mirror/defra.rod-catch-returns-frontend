@@ -85,4 +85,24 @@ module.exports = class CatchesApi extends EntityApi {
 
     return result
   }
+
+  sort (a, b) {
+    if (a.dateCaught < b.dateCaught) {
+      return -1
+    }
+
+    if (a.dateCaught > b.dateCaught) {
+      return 1
+    }
+
+    if (a.activity.river.name < b.activity.river.name) {
+      return -1
+    }
+
+    if (a.activity.river.name > b.activity.river.name) {
+      return 1
+    }
+
+    return 0
+  }
 }
