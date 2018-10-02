@@ -11,6 +11,8 @@ const testLocked = require('./common').testLocked
 const submissionsApi = new SubmissionsApi()
 const activitiesApi = new ActivitiesApi()
 
+const { logger } = require('defra-logging-facade')
+
 module.exports = class DidYouFishHandler extends BaseHandler {
   constructor (...args) {
     super(args)
@@ -26,11 +28,16 @@ module.exports = class DidYouFishHandler extends BaseHandler {
   async doGet (request, h) {
     const cache = await request.cache().get()
 
+    logger.debug('DYF: Cache: ' + JSON.stringify(cache))
+
     // Find or create a submission object
     let submission = await submissionsApi.getByContactIdAndYear(cache.contactId, cache.year)
 
+    logger.debug('DYF: Submission: ' + JSON.stringify(cache))
+
     if (!submission) {
       submission = await submissionsApi.add(cache.contactId, cache.year)
+      logger.debug('DYF: New submission: ' + JSON.stringify(cache))
     } else {
       // Test if the submission is locked and if so redirect to the review screen
       if (await testLocked(request, cache, submission)) {
