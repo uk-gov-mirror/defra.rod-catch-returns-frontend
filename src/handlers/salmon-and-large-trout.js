@@ -19,6 +19,8 @@ const activitiesApi = new ActivitiesApi()
 const methodsApi = new MethodsApi()
 const speciesApi = new SpeciesApi()
 
+const { logger } = require('defra-logging-facade')
+
 module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
   constructor (...args) {
     super(args)
@@ -33,8 +35,14 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
    */
   async doGet (request, h) {
     const cache = await request.cache().get()
+    logger.debug('*** Cache: ' + JSON.stringify(cache))
+
     const submission = await submissionsApi.getById(cache.submissionId)
+    logger.debug('DYF: Submission: ' + JSON.stringify(submission))
+
     const activities = await activitiesApi.getFromLink(submission._links.activities.href)
+
+    logger.debug('DYF: Activities: ' + JSON.stringify(activities))
     const rivers = activities.map(a => a.river)
 
     // Test if the submission is locked and if so redirect to the review screen
