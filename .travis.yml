@@ -1,6 +1,6 @@
 language: java
 
-sudo: required
+sudo: false
 
 cache:
   directories:
@@ -14,11 +14,11 @@ env:
   - >
     NODE_VERSION="8.9.1"
     DYNAMICS_IMPL=mock
-    COOKIE_PW=562fhgfqaj626ba87212ausaiqjqw112
+    COOKIE_PW=532fdfghdf62645872aaau121qsqw112
     API_PATH=/api
     REDIS_HOSTNAME=localhost
     REDIS_PORT=6379
-    LOG_LEVEL=debug
+    LOG_LEVEL=info
     SESSION_TTL_MS=3600000
     API_REQUEST_TIMEOUT_MS=20000
     CONTEXT=ANGLER
@@ -34,8 +34,8 @@ before_install:
   - cd ./rod-catch-returns-api
   - ./mvnw compile
   - ./launches/serverctl start --spring.profiles.active=h2
-  - cd ..
   - curl http://localhost:9580/api/licence/B7A718
+  - cd ..
 
 install:
   - npm install
@@ -52,6 +52,7 @@ script:
 
 after_script:
   - redis-cli --scan | while read line; do echo $line; redis-cli get $line; done;
+  - ./launches/serverctl stop
   - ./cc-test-reporter after-build -t lcov --exit-code $TRAVIS_TEST_RESULT
 
 addons:
