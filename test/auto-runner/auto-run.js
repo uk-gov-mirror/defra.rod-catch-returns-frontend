@@ -42,10 +42,10 @@ experiment('Scripted regression tests', () => {
   test('Activity', async () => {
     await Runner.run(require('./scripts/activity'))
   })
-  //
-  // test('Small catch', async () => {
-  //   await Runner.run(require('./scripts/small-catch'))
-  // })
+
+  test('Small catch', async () => {
+    await Runner.run(require('./scripts/small-catch'))
+  })
   //
   // test('Large catch', async () => {
   //   await Runner.run(require('./scripts/large-catch'))
