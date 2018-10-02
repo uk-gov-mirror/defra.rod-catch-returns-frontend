@@ -15,7 +15,8 @@ module.exports = class SubmissionsApi extends EntityApi {
     return super.add({
       contactId: contactId,
       season: year,
-      status: 'INCOMPLETE'
+      status: 'INCOMPLETE',
+      source: process.env.CONTEXT === 'ANGLER' ? 'WEB' : 'PAPER'
     })
   }
 
