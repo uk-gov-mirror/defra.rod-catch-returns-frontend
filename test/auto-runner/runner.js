@@ -133,6 +133,9 @@ const internals = {
         },
         set: async (obj) => {
           await this.server.app.cache.set(this.auth.artifacts.sid, obj)
+        },
+        drop: async () => {
+          await this.server.app.cache.drop(this.auth.artifacts.sid)
         }
       }
     })
