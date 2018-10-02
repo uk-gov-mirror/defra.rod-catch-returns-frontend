@@ -2,10 +2,10 @@ language: java
 
 sudo: false
 
-cache:
-  directories:
-  - "$HOME/.m2"
-  - node_modules
+#cache:
+#  directories:
+#  - "$HOME/.m2"
+#  - node_modules
 
 jdk:
   - oraclejdk8
@@ -51,9 +51,11 @@ script:
   - npm test
 
 after_script:
-  - redis-cli --scan | while read line; do echo $line; redis-cli get $line; done;
+  - cd ./rod-catch-returns-api
   - ./launches/serverctl stop
+  - cd ..
   - ./cc-test-reporter after-build -t lcov --exit-code $TRAVIS_TEST_RESULT
+  - redis-cli --scan | while read line; do echo $line; redis-cli get $line; done;
 
 addons:
   code_climate:
