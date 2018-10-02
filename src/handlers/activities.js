@@ -10,6 +10,8 @@ const submissionsApi = new SubmissionsApi()
 const riversApi = new RiversApi()
 const activitiesApi = new ActivitiesApi()
 
+const { logger } = require('defra-logging-facade')
+
 module.exports = class ActivitiesHandler extends BaseHandler {
   constructor (...args) {
     super(args)
@@ -24,8 +26,17 @@ module.exports = class ActivitiesHandler extends BaseHandler {
    */
   async doGet (request, h) {
     const cache = await request.cache().get()
+
+    logger.debug('Activities: Cache: ' + JSON.stringify(cache))
+
     let submission = await submissionsApi.getById(cache.submissionId)
+
+    logger.debug('Activities: Submission: ' + JSON.stringify(submission))
+
     const activities = await activitiesApi.getFromLink(submission._links.activities.href)
+
+    logger.debug('Activities: Activities: ' + JSON.stringify(submission))
+
     const rivers = await riversApi.list()
 
     // Test if the submission is locked and if so redirect to the review screen
