@@ -51,7 +51,7 @@ experiment('Scripted regression tests', () => {
     await Runner.run(require('./scripts/large-catch'))
   })
 
-  // test('Review and submit', async () => {
-  //   await Runner.run(require('./scripts/review-and-submit'))
-  // })
+  test('Review and submit', async () => {
+    await Runner.run(require('./scripts/review-and-submit'))
+  })
 })
