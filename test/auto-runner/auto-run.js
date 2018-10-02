@@ -39,9 +39,9 @@ experiment('Scripted regression tests', () => {
     await Runner.run(require('./scripts/sign-in').first)
   })
 
-  // test('Activity', async () => {
-  //   await Runner.run(require('./scripts/activity'))
-  // })
+  test('Activity', async () => {
+    await Runner.run(require('./scripts/activity'))
+  })
   //
   // test('Small catch', async () => {
   //   await Runner.run(require('./scripts/small-catch'))
