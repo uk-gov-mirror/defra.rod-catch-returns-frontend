@@ -16,6 +16,43 @@ const catchesApi = new CatchesApi()
 const submissionsApi = new SubmissionsApi()
 const activitiesApi = new ActivitiesApi()
 
+function validateDate (payload, errors, dateCaught, cache) {
+  if (!payload['date-month'] || !payload['date-day']) {
+    errors.push({date: 'EMPTY'})
+  } else if (Number.isNaN(Number.parseInt(payload['date-month'])) || Number.isNaN(Number.parseInt(payload['date-day']))) {
+    errors.push({date: 'INVALID'})
+    payload['date-day'] = payload['date-month'] = null
+  } else {
+    dateCaught = moment({year: cache.year, month: payload['date-month'] - 1, day: payload['date-day']})
+    if (!dateCaught.isValid()) {
+      errors.push({date: 'INVALID'})
+      payload['date-day'] = payload['date-month'] = null
+    }
+  }
+}
+
+function validateWeight (payload, errors) {
+  if (!payload.system) {
+    errors.push({system: 'EMPTY'})
+  } else if (payload.system === 'IMPERIAL') {
+    checkNumber('pounds', payload.pounds, errors)
+    checkNumber('ounces', payload.ounces, errors, 16)
+  } else if (payload.system === 'METRIC') {
+    checkNumber('kilograms', payload.kilograms, errors)
+  }
+}
+
+function conversion (payload, errors) {
+  if (payload.system === 'METRIC' && errors.filter(e => e['kilograms']).length === 0) {
+    const oz = 35.274 * Number.parseFloat(payload.kilograms)
+    payload.pounds = Math.floor(oz / 16)
+    payload.ounces = Math.round(oz % 16)
+  } else if (payload.system === 'IMPERIAL' && errors.filter(e => e['pounds']).length === 0 && errors.filter(e => e['ounces']).length === 0) {
+    const oz = (16 * Number.parseInt(payload.pounds)) + Number.parseInt(payload.ounces)
+    payload.kilograms = Math.round(0.0283495 * oz * 10) / 10
+  }
+}
+
 module.exports = async (request) => {
   const payload = request.payload
   const errors = []
@@ -30,31 +67,14 @@ module.exports = async (request) => {
   }
 
   // Validate the date
-  if (!payload['date-month'] || !payload['date-day']) {
-    errors.push({ date: 'EMPTY' })
-  } else if (Number.isNaN(Number.parseInt(payload['date-month'])) || Number.isNaN(Number.parseInt(payload['date-day']))) {
-    errors.push({ date: 'INVALID' })
-    payload['date-day'] = payload['date-month'] = null
-  } else {
-    dateCaught = moment({ year: cache.year, month: payload['date-month'] - 1, day: payload['date-day'] })
-    if (!dateCaught.isValid()) {
-      errors.push({ date: 'INVALID' })
-      payload['date-day'] = payload['date-month'] = null
-    }
-  }
+  validateDate(payload, errors, dateCaught, cache)
 
   if (!payload.type) {
     errors.push({ type: 'EMPTY' })
   }
 
-  if (!payload.system) {
-    errors.push({ system: 'EMPTY' })
-  } else if (payload.system === 'IMPERIAL') {
-    checkNumber('pounds', payload.pounds, errors)
-    checkNumber('ounces', payload.ounces, errors, 16)
-  } else if (payload.system === 'METRIC') {
-    checkNumber('kilograms', payload.kilograms, errors)
-  }
+  // Validate the weight
+  validateWeight(payload, errors)
 
   if (!payload.method) {
     errors.push({ method: 'EMPTY' })
@@ -65,14 +85,7 @@ module.exports = async (request) => {
   }
 
   // Do the conversion
-  if (payload.system === 'METRIC' && errors.filter(e => e['kilograms']).length === 0) {
-    const oz = 35.274 * Number.parseFloat(payload.kilograms)
-    payload.pounds = Math.floor(oz / 16)
-    payload.ounces = Math.round(oz % 16)
-  } else if (payload.system === 'IMPERIAL' && errors.filter(e => e['pounds']).length === 0 && errors.filter(e => e['ounces']).length === 0) {
-    const oz = (16 * Number.parseInt(payload.pounds)) + Number.parseInt(payload.ounces)
-    payload.kilograms = Math.round(0.0283495 * oz * 10) / 10
-  }
+  conversion(payload, errors)
 
   if (!errors.length) {
     const submission = await submissionsApi.getById(cache.submissionId)
