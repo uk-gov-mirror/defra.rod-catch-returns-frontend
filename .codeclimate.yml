@@ -26,3 +26,11 @@ exclude_paths:
   - "**.json"
   - gulpfile.js
   - LICENSE
+
+checks:
+  method-lines:
+    config:
+      threshold: 50
+  method-complexity:
+    config:
+      threshold: 15
