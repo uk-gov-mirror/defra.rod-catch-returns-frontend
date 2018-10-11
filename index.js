@@ -13,6 +13,9 @@ const Nunjucks = require('nunjucks')
 const Uuid = require('uuid')
 const { logger } = require('defra-logging-facade')
 
+const AuthorizationSchemes = require('./src/lib/authorization-schemes')
+const AuthorizationStrategies = require('./src/lib/authorization-strategies')
+
 const manifest = {
 
   // Configure Hapi server and server-caching subsystem
@@ -210,34 +213,16 @@ const options = {
       expiresIn: process.env.SESSION_TTL_MS
     })
 
-    // Set up default authentication strategy using cookies
-    server.auth.strategy('session', 'cookie', {
-      password: process.env.COOKIE_PW,
-      cookie: 'sid',
-      redirectTo: '/licence',
-      isSecure: process.env.HTTPS === 'true' || false,
-      clearInvalid: true,
-      /**
-       * validation function called on every request
-       * When the cache-entry expires the user has to re-authenticate
-       */
-      validateFunc: async (request, session) => {
-        const server = request.server
-        const cached = await server.app.cache.get(session.sid)
+    server.auth.scheme('active-dir-scheme', AuthorizationSchemes.activeDirScheme)
+    server.auth.scheme('licence-scheme', AuthorizationSchemes.licenceScheme)
+    server.auth.strategy('active-dir-strategy', 'active-dir-scheme')
+    server.auth.strategy('licence-strategy', 'licence-scheme')
+    // server.auth.strategy('session', 'cookie', AuthorizationStrategies.sessionCookie)
 
-        const out = {
-          valid: !!cached
-        }
-
-        if (out.valid) {
-          out.credentials = cached.user
-        }
-
-        return out
-      }
-    })
-
-    server.auth.default('session')
+    /*
+     * Set up default authentication strategy using cookies
+     * server.auth.default('session')
+     */
 
     /*
      * Plugin to automatically load the routes based on their file location

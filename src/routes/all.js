@@ -5,6 +5,8 @@
  */
 const LicenceHandler = require('../handlers/licence')
 const LicenceNotFoundHandler = require('../handlers/licence-not-found')
+const LoginHandler = require('../handlers/login')
+const FailedLogin = require('../handlers/login-fail')
 const DidYouFishHandler = require('../handlers/did-you-fish')
 const YearHandler = require('../handlers/year')
 const SummaryHandler = require('../handlers/summary')
@@ -19,8 +21,7 @@ const ReviewHandler = require('../handlers/review')
 const SaveHandler = require('../handlers/save')
 
 // Define the validators
-const licenceValidator = require('../validators/licence')
-const licenceCheck = require('../validators/licence-check')
+const loginValidator = require('../validators/login')
 const yearValidator = require('../validators/year')
 const didYouFishValidator = require('../validators/did-you-fish')
 const activityValidator = require('../validators/activity')
@@ -28,8 +29,10 @@ const salmonAndLargeTroutValidator = require('../validators/salmon-and-large-tro
 const smallCatchValidator = require('../validators/small-catch')
 
 // Define the handlers
-const licenceHandler = new LicenceHandler('licence', licenceValidator, licenceCheck)
-const licenceNotFound = new LicenceNotFoundHandler('licence', licenceValidator, licenceCheck)
+const licenceHandler = new LicenceHandler('licence', loginValidator)
+const licenceNotFound = new LicenceNotFoundHandler('licence', loginValidator)
+const loginHandler = new LoginHandler('login', loginValidator)
+const failedLogin = new FailedLogin('login', loginValidator)
 const yearHandler = new YearHandler('select-year', yearValidator)
 const didYouFishHandler = new DidYouFishHandler('did-you-fish', didYouFishValidator)
 const summaryHandler = new SummaryHandler('summary')
@@ -51,24 +54,54 @@ module.exports = [
     method: 'GET',
     options: { auth: false },
     handler: (request, h) => {
-      return h.redirect('/licence')
+      return process.env.CONTEXT === 'ANGLER' ? h.redirect('/licence') : h.redirect('/login')
     }
+  },
+
+  // Login handler
+  {
+    path: '/login',
+    method: ['GET', 'POST'],
+    handler: loginHandler.handler,
+    options: { auth: 'active-dir-strategy' }
+  },
+
+  // Failed Login login
+  {
+    path: '/login-fail',
+    method: ['GET', 'POST'],
+    handler: failedLogin.handler,
+    options: { auth: 'active-dir-strategy' }
   },
 
   // Licence handler
   {
     path: '/licence',
-    method: ['GET', 'POST'],
-    handler: licenceHandler.handler,
-    options: { auth: false }
+    method: 'GET',
+    handler: licenceHandler.handler
   },
 
   // Licence not found handler
   {
     path: '/licence-not-found',
-    method: ['GET', 'POST'],
+    method: 'GET',
+    handler: licenceNotFound.handler
+  },
+
+  // Licence handler
+  {
+    path: '/licence',
+    method: 'POST',
+    handler: licenceHandler.handler,
+    options: { auth: 'licence-strategy' }
+  },
+
+  // Licence not found handler
+  {
+    path: '/licence-not-found',
+    method: 'POST',
     handler: licenceNotFound.handler,
-    options: { auth: false }
+    options: { auth: 'licence-strategy' }
   },
 
   // Year handler

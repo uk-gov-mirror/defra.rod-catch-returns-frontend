@@ -9,6 +9,6 @@ const getContactFromLicenceKey = require('../api/licence').getContactFromLicence
  * @returns {Promise<*>}
  */
 module.exports = async (payload) => {
-  logger.debug('Getting contact for: ' + JSON.stringify(payload.licence))
-  payload.contact = await getContactFromLicenceKey(payload.licence.toUpperCase().trim())
+  // logger.debug('Getting contact for: ' + JSON.stringify(payload.licence))
+  // payload.contact = await getContactFromLicenceKey(payload.licence.toUpperCase().trim())
 }

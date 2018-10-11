@@ -10,19 +10,15 @@
 const { logger } = require('defra-logging-facade')
 
 module.exports = class BaseHandler {
-  constructor ([viewpath, validator, preValidateFunction]) {
+  constructor ([viewpath, validator]) {
     this.path = viewpath
     this.validator = validator
-    this.preValidateFunction = preValidateFunction
     this.handler = async (request, h) => {
       try {
         let errors
         if (request.method.toUpperCase() === 'GET') {
           return await this.doGet(request, h)
         } else {
-          if (this.preValidateFunction) {
-            await this.preValidateFunction(request.payload)
-          }
           if (this.validator) {
             errors = await this.validator(request, h)
           }
@@ -40,7 +36,7 @@ module.exports = class BaseHandler {
    * cache and redirect to the errorPath. Otherwise remove the errors and payload
    * object from the cache and rewrite the cache
    */
-  async writeCacheAndRedirect (request, h, errors, successPath, errorPath) {
+  static async writeCacheAndRedirect (request, h, errors, successPath, errorPath) {
     if (errors) {
       // Write the errors into the cache
       let cache = await request.cache().get()
@@ -48,15 +44,14 @@ module.exports = class BaseHandler {
       cache.payload = request.payload
       await request.cache().set(cache)
       return h.redirect(errorPath)
-    } else {
-      let cache = await request.cache().get()
-      if (cache.errors || cache.payload) {
-        delete cache.errors
-        delete cache.payload
-        await request.cache().set(cache)
-      }
-      return h.redirect(successPath)
     }
+    let cache = await request.cache().get()
+    if (cache.errors || cache.payload) {
+      delete cache.errors
+      delete cache.payload
+      await request.cache().set(cache)
+    }
+    return h.redirect(successPath)
   }
 
   /*
@@ -83,7 +78,7 @@ module.exports = class BaseHandler {
    * Allow handlers to clear the cache for a
    * canceled activity
    */
-  async clearCacheErrorsAndPayload (request) {
+  static async clearCacheErrorsAndPayload (request) {
     let cache = await request.cache().get()
     if (cache.errors || cache.payload) {
       delete cache.errors

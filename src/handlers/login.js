@@ -1,18 +1,18 @@
 'use strict'
 
 /**
- * Ask the user for their fish licence number and postcode
+ * Ask the FMT user for their authorization details
  */
 const BaseHandler = require('./base')
 const authentication = require('./authentication')
 
-module.exports = class LicenceHandler extends BaseHandler {
+module.exports = class LoginHandler extends BaseHandler {
   constructor (...args) {
     super(args)
   }
 
   /**
-   * Display the licence/postcode authentication page
+   * Display the authentication page
    * @param request
    * @param h
    * @returns {Promise<*>}
@@ -22,7 +22,7 @@ module.exports = class LicenceHandler extends BaseHandler {
   }
 
   /**
-   * If the licence and postcode have been authenticated using the
+   * If the user has been authenticated using the
    * validator then assign a session identifier to the authorization cookie
    * and redirect to the start of the authenticated journey
    * @param request
@@ -32,7 +32,7 @@ module.exports = class LicenceHandler extends BaseHandler {
    */
   async doPost (request, h, errors) {
     if (errors) {
-      return h.redirect('/licence-not-found')
+      return h.redirect('/login-fail')
     }
 
     return authentication(request, h, request.payload.contact)
