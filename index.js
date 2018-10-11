@@ -217,7 +217,7 @@ const options = {
     server.auth.scheme('licence-scheme', AuthorizationSchemes.licenceScheme)
     server.auth.strategy('active-dir-strategy', 'active-dir-scheme')
     server.auth.strategy('licence-strategy', 'licence-scheme')
-    // server.auth.strategy('session', 'cookie', AuthorizationStrategies.sessionCookie)
+    server.auth.strategy('session', 'cookie', AuthorizationStrategies.sessionCookie)
 
     /*
      * Set up default authentication strategy using cookies

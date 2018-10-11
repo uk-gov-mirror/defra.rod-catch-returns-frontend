@@ -35,6 +35,6 @@ module.exports = class LoginHandler extends BaseHandler {
       return h.redirect('/login-fail')
     }
 
-    return authentication(request, h, request.payload.contact)
+    return authentication(request, h, request.authorization)
   }
 }

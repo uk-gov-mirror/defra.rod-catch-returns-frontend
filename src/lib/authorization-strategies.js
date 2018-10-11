@@ -7,7 +7,7 @@ module.exports = {
   sessionCookie: {
     password: process.env.COOKIE_PW,
     cookie: 'sid',
-    redirectTo: '/licence',
+    redirectTo: process.env.CONTEXT === 'ANGLER' ? '/licence' : '/login',
     isSecure: process.env.HTTPS === 'true' || false,
     clearInvalid: true,
     /**
