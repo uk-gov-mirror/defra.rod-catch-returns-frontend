@@ -4,9 +4,9 @@
  * Handler for invalid licence entry. This is used because until the licence is validated there
  * is no session cache so a separate handler is needed to handle the errors
  */
-const LicenceHandler = require('./licence')
+const LicenceHandler = require('./licence-login')
 
-module.exports = class LicenceNotFoundHandler extends LicenceHandler {
+module.exports = class LicenceAuthNotFoundHandler extends LicenceHandler {
   /**
    * Display the licence/postcode authentication page
    * @param request

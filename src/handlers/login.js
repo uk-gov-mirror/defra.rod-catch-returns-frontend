@@ -4,7 +4,7 @@
  * Ask the FMT user for their authorization details
  */
 const BaseHandler = require('./base')
-const authentication = require('./authentication')
+const authenticateUser = require('../lib/authenticate-user')
 
 module.exports = class LoginHandler extends BaseHandler {
   constructor (...args) {
@@ -35,6 +35,7 @@ module.exports = class LoginHandler extends BaseHandler {
       return h.redirect('/login-fail')
     }
 
-    return authentication(request, h, request.authorization)
+    authenticateUser(request)
+    return h.redirect('/licence')
   }
 }

@@ -3,10 +3,12 @@
 /**
  * These routes are scanned automatically by the hapi-router
  */
-const LicenceHandler = require('../handlers/licence')
-const LicenceNotFoundHandler = require('../handlers/licence-not-found')
+const LicenceAuthHandler = require('../handlers/licence-login')
+const LicenceAuthNotFoundHandler = require('../handlers/licence-login-fail')
+
 const LoginHandler = require('../handlers/login')
 const FailedLogin = require('../handlers/login-fail')
+
 const DidYouFishHandler = require('../handlers/did-you-fish')
 const YearHandler = require('../handlers/year')
 const SummaryHandler = require('../handlers/summary')
@@ -29,8 +31,8 @@ const salmonAndLargeTroutValidator = require('../validators/salmon-and-large-tro
 const smallCatchValidator = require('../validators/small-catch')
 
 // Define the handlers
-const licenceHandler = new LicenceHandler('licence', loginValidator)
-const licenceNotFound = new LicenceNotFoundHandler('licence', loginValidator)
+const licenceAuthHandler = new LicenceAuthHandler('licence', loginValidator)
+const licenceAuthNotFound = new LicenceAuthNotFoundHandler('licence', loginValidator)
 const loginHandler = new LoginHandler('login', loginValidator)
 const failedLogin = new FailedLogin('login', loginValidator)
 const yearHandler = new YearHandler('select-year', yearValidator)
@@ -54,55 +56,88 @@ module.exports = [
     method: 'GET',
     options: { auth: false },
     handler: (request, h) => {
-      return process.env.CONTEXT === 'ANGLER' ? h.redirect('/licence') : h.redirect('/login')
+      return process.env.CONTEXT === 'ANGLER' ? h.redirect('/licence-auth') : h.redirect('/login')
     }
   },
 
-  // Login handler
+  /*
+   * The following set of handlers are concerned with the FMT login - those users authenticated
+   * by AAD
+   */
+
+  // Login GET handler
   {
     path: '/login',
-    method: ['GET', 'POST'],
+    method: 'GET',
     handler: loginHandler.handler,
-    options: { auth: 'active-dir-strategy' }
+    options: { auth: false }
   },
 
-  // Failed Login login
+  // Login POST handler
+  {
+    path: '/login',
+    method: 'POST',
+    handler: loginHandler.handler,
+    options: { auth: { strategies: ['active-dir-strategy', 'session'] } }
+  },
+
+  // Failed Login GET handler
   {
     path: '/login-fail',
-    method: ['GET', 'POST'],
+    method: 'GET',
     handler: failedLogin.handler,
-    options: { auth: 'active-dir-strategy' }
+    options: { auth: false }
   },
 
-  // Licence handler
+  // Failed Login POST handler
   {
-    path: '/licence',
-    method: 'GET',
-    handler: licenceHandler.handler
-  },
-
-  // Licence not found handler
-  {
-    path: '/licence-not-found',
-    method: 'GET',
-    handler: licenceNotFound.handler
-  },
-
-  // Licence handler
-  {
-    path: '/licence',
+    path: '/login-fail',
     method: 'POST',
-    handler: licenceHandler.handler,
-    options: { auth: 'licence-strategy' }
+    handler: failedLogin.handler,
+    options: { auth: { strategies: ['active-dir-strategy', 'session'] } }
   },
 
-  // Licence not found handler
+  /*
+   * The following set of handlers are concerned with angler login - those users authenticated
+   * by the CRM using their licence and postcode
+   */
+
+  // Licence auth handler
   {
-    path: '/licence-not-found',
-    method: 'POST',
-    handler: licenceNotFound.handler,
-    options: { auth: 'licence-strategy' }
+    path: '/licence-auth',
+    method: 'GET',
+    handler: licenceAuthHandler.handler,
+    options: { auth: false }
   },
+
+  // Licence auth POST handler
+  {
+    path: '/licence-auth',
+    method: 'POST',
+    handler: licenceAuthHandler.handler,
+    options: { auth: { strategies: ['licence-strategy', 'session'] } }
+  },
+
+  // Licence not found GET handler
+  {
+    path: '/licence-auth-fail',
+    method: 'GET',
+    handler: licenceAuthNotFound.handler,
+    options: { auth: false }
+  },
+
+  // Licence not found POST handler
+  {
+    path: '/licence-auth-fail',
+    method: 'POST',
+    handler: licenceAuthHandler.handler,
+    options: { auth: { strategies: ['licence-strategy', 'session'] } }
+  },
+
+  /*
+   * The remaining set of handlers are secured by the default authorization strategy -
+   * using hapi-auth-cookie
+   */
 
   // Year handler
   {
@@ -204,7 +239,8 @@ module.exports = [
     path: '/{p*}',
     handler: function (request, h) {
       return h.redirect('/')
-    }
+    },
+    options: { auth: false }
   }
 
 ]

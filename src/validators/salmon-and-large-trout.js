@@ -88,8 +88,8 @@ module.exports = async (request) => {
   conversion(payload, errors)
 
   if (!errors.length) {
-    const submission = await submissionsApi.getById(cache.submissionId)
-    const activities = await activitiesApi.getFromLink(submission._links.activities.href)
+    const submission = await submissionsApi.getById(request, cache.submissionId)
+    const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
     try {
       const dateCaught = moment({ year: cache.year, month: payload['date-month'] - 1, day: payload['date-day'] })
 
@@ -101,7 +101,7 @@ module.exports = async (request) => {
 
       // Test if we are adding or updating
       if (cache.largeCatch) {
-        await catchesApi.change(cache.largeCatch.id,
+        await catchesApi.change(request, cache.largeCatch.id,
           cache.submissionId,
           activities.find(a => a.river.id === payload.river).id,
           dateCaught.format(),
@@ -111,7 +111,7 @@ module.exports = async (request) => {
           payload.released === 'true'
         )
       } else {
-        await catchesApi.add(cache.submissionId,
+        await catchesApi.add(request, cache.submissionId,
           activities.find(a => a.river.id === payload.river).id,
           dateCaught.format(),
           payload.type,

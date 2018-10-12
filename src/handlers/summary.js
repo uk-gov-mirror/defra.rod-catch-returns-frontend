@@ -39,10 +39,10 @@ module.exports = class SummaryHandler extends BaseHandler {
    */
   async doGet (request, h) {
     // Clean the cache
-    const cache = await this.clearCacheErrorsAndPayload(request)
+    const cache = await SummaryHandler.clearCacheErrorsAndPayload(request)
 
     // Find or create a submission object
-    let submission = await submissionsApi.getById(cache.submissionId)
+    let submission = await submissionsApi.getById(request, cache.submissionId)
 
     // Test if the submission is locked and if so redirect to the review screen
     if (await testLocked(request, cache, submission)) {
@@ -54,7 +54,7 @@ module.exports = class SummaryHandler extends BaseHandler {
     await request.cache().set(cache)
 
     // Get the activities
-    const activities = await activitiesApi.getFromLink(submission._links.activities.href)
+    const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
 
     /*
      * If there are no activities go straight to the activities-add page
@@ -65,13 +65,13 @@ module.exports = class SummaryHandler extends BaseHandler {
     }
 
     // Process the catches for the summary view
-    const catches = (await catchesApi.getFromLink(submission._links.catches.href)).map(c => {
+    const catches = (await catchesApi.getFromLink(request, submission._links.catches.href)).map(c => {
       c.dateCaught = Moment(c.dateCaught).format('DD/MM')
       c.weight = printWeight(c)
       return c
     })
 
-    const smallCatches = (await smallCatchesApi.getFromLink(submission._links.smallCatches.href)).map(c => {
+    const smallCatches = (await smallCatchesApi.getFromLink(request, submission._links.smallCatches.href)).map(c => {
       c.month = months.find(m => m.value === c.month).text
       c.river = c.activity.river.name
 

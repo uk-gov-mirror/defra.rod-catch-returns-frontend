@@ -27,16 +27,16 @@ module.exports = class DeleteActivityHandler extends BaseHandler {
    */
   async doGet (request, h) {
     const activityId = `activities/${request.params.id}`
-    const activity = await activitiesApi.getById(activityId)
+    const activity = await activitiesApi.getById(request, activityId)
 
     if (!activity) {
       return h.redirect('/summary')
     }
 
-    const river = await riversApi.getFromLink(activity._links.river.href)
+    const river = await riversApi.getFromLink(request, activity._links.river.href)
 
     // Check they are not messing about with somebody else's submission
-    const submission = await submissionsApi.getFromLink(activity._links.submission.href)
+    const submission = await submissionsApi.getFromLink(request, activity._links.submission.href)
     const cache = await request.cache().get()
 
     if (cache.submissionId !== submission.id) {
@@ -61,7 +61,7 @@ module.exports = class DeleteActivityHandler extends BaseHandler {
    */
   async doPost (request, h) {
     const cache = await request.cache().get()
-    await activitiesApi.deleteById(cache.delete)
+    await activitiesApi.deleteById(request, cache.delete)
     delete cache.delete
     await request.cache().set(cache)
     return h.redirect('/summary')

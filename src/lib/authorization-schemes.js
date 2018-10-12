@@ -41,7 +41,7 @@ module.exports = {
         }
 
         try {
-          await Client.request(Client.method.GET, null, null, null, true, auth)
+          await Client.request(auth, Client.method.GET)
           request.app = {
             authorization: auth
           }
@@ -92,7 +92,7 @@ module.exports = {
         }
 
         try {
-          await Client.request(Client.method.GET, null, null, null, true, auth)
+          await Client.request(auth, Client.method.GET, null, null, null)
           request.app = {
             authorization: auth
           }

@@ -11,8 +11,8 @@ module.exports = class SubmissionsApi extends EntityApi {
     super('submissions')
   }
 
-  async add (contactId, year) {
-    return super.add({
+  async add (request, contactId, year) {
+    return super.add(request, {
       contactId: contactId,
       season: year,
       status: 'INCOMPLETE',
@@ -20,11 +20,11 @@ module.exports = class SubmissionsApi extends EntityApi {
     })
   }
 
-  async getByContactIdAndYear (contactId, year) {
-    return super.searchFunction('getByContactIdAndSeason', `contact_id=${contactId}&season=${year}`)
+  async getByContactIdAndYear (request, contactId, year) {
+    return super.searchFunction(request, 'getByContactIdAndSeason', `contact_id=${contactId}&season=${year}`)
   }
 
-  async setSubmitted (submissionId) {
-    return super.change(submissionId, { status: 'SUBMITTED' })
+  async setSubmitted (request, submissionId) {
+    return super.change(request, submissionId, { status: 'SUBMITTED' })
   }
 }

@@ -218,11 +218,7 @@ const options = {
     server.auth.strategy('active-dir-strategy', 'active-dir-scheme')
     server.auth.strategy('licence-strategy', 'licence-scheme')
     server.auth.strategy('session', 'cookie', AuthorizationStrategies.sessionCookie)
-
-    /*
-     * Set up default authentication strategy using cookies
-     * server.auth.default('session')
-     */
+    server.auth.default('session')
 
     /*
      * Plugin to automatically load the routes based on their file location
@@ -269,6 +265,16 @@ const options = {
         }
       }
     })
+
+    /*
+     * Test that cryptographic support is enabled on the build
+     */
+    try {
+      require('crypto')
+    } catch (err) {
+      logger.error('Crypto support disabled: ' + err)
+      process.exit(1)
+    }
 
     await server.start()
 

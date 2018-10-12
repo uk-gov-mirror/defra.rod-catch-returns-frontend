@@ -36,14 +36,14 @@ module.exports = class DeleteRiverHandler extends BaseHandler {
    */
   async doGet (request, h) {
     const cache = await request.cache().get()
-    const smallCatch = await smallCatchesApi.getById(`smallCatches/${request.params.id}`)
+    const smallCatch = await smallCatchesApi.getById(request, `smallCatches/${request.params.id}`)
 
     // The back button on the browser can cause this
     if (!smallCatch) {
       return h.redirect('/summary')
     }
 
-    const submission = await submissionsApi.getFromLink(smallCatch._links.submission.href)
+    const submission = await submissionsApi.getFromLink(request, smallCatch._links.submission.href)
 
     // Check they are not messing about with somebody else's submission
     if (cache.submissionId !== submission.id) {
@@ -55,7 +55,7 @@ module.exports = class DeleteRiverHandler extends BaseHandler {
       return h.redirect('/review')
     }
 
-    const c = await smallCatchesApi.doMap(smallCatch)
+    const c = await smallCatchesApi.doMap(request, smallCatch)
     c.month = months.find(m => m.value === c.month).text
 
     // Save the id to delete
@@ -72,7 +72,7 @@ module.exports = class DeleteRiverHandler extends BaseHandler {
    */
   async doPost (request, h) {
     const cache = await request.cache().get()
-    await smallCatchesApi.deleteById(cache.delete)
+    await smallCatchesApi.deleteById(request, cache.delete)
     delete cache.delete
     await request.cache().set(cache)
     return h.redirect('/summary')

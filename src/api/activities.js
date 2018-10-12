@@ -11,38 +11,38 @@ const riversApi = new RiversApi()
  */
 module.exports = class ActivitiesApi extends EntityApi {
   constructor () {
-    super('activities', async (a) => {
-      const river = await riversApi.getFromLink(a._links.river.href)
+    super('activities', async (request, a) => {
+      const river = await riversApi.getFromLink(request, a._links.river.href)
       return {
-        id: this.keyFromLink(a),
+        id: EntityApi.keyFromLink(a),
         days: a.days,
         river: {
-          id: this.keyFromLink(river),
+          id: EntityApi.keyFromLink(river),
           name: river.name
         }
       }
     })
   }
 
-  async add (submissionId, river, days) {
-    return super.add({
+  async add (request, submissionId, river, days) {
+    return super.add(request, {
       submission: submissionId,
       river: river,
       days: days
     })
   }
 
-  async change (activityId, submissionId, riverId, days) {
+  async change (request, activityId, submissionId, riverId, days) {
     // Change the days
-    const result = await super.change(activityId, {
+    const result = await super.change(request, activityId, {
       days: days
     })
 
-    const mappedResult = await this.doMap(result)
+    const mappedResult = await this.doMap(request, result)
 
     // Change the river if necessary
     if (mappedResult.river.id !== riverId) {
-      await super.changeAssoc(activityId + '/river', riverId)
+      await super.changeAssoc(request, activityId + '/river', riverId)
     }
 
     return result

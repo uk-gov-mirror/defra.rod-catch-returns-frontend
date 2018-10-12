@@ -4,9 +4,10 @@
  * Ask the user for their fish licence number and postcode
  */
 const BaseHandler = require('./base')
-const authentication = require('./authentication')
+const authenticateUser = require('../lib/authenticate-user')
+const getContactFromLicenceKey = require('../api/licence').getContactFromLicenceKey
 
-module.exports = class LicenceHandler extends BaseHandler {
+module.exports = class LicenceAuthHandler extends BaseHandler {
   constructor (...args) {
     super(args)
   }
@@ -32,9 +33,19 @@ module.exports = class LicenceHandler extends BaseHandler {
    */
   async doPost (request, h, errors) {
     if (errors) {
-      return h.redirect('/licence-not-found')
+      return h.redirect('/licence-auth-fail')
     }
 
-    return authentication(request, h, request.authorization)
+    // No errors so we can authenticate this user
+    authenticateUser(request)
+
+    // Set up the contact id for the licence in the cache
+    const contact = await getContactFromLicenceKey(request, request.payload.licence.toUpperCase().trim())
+
+    const cache = await request.cache().get()
+    cache.contactId = contact.contact.id
+    await request.cache().set(cache)
+
+    return h.redirect('/select-year')
   }
 }

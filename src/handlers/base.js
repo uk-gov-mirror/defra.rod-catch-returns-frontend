@@ -26,6 +26,9 @@ module.exports = class BaseHandler {
         }
       } catch (err) {
         logger.error(err)
+        if (err instanceof require('../lib/crypto').cryptoError) {
+          return h.redirect('/')
+        }
         return h.redirect('/error500')
       }
     }

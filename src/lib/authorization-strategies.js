@@ -7,7 +7,7 @@ module.exports = {
   sessionCookie: {
     password: process.env.COOKIE_PW,
     cookie: 'sid',
-    redirectTo: process.env.CONTEXT === 'ANGLER' ? '/licence' : '/login',
+    redirectTo: process.env.CONTEXT === 'ANGLER' ? '/licence-auth' : '/login',
     isSecure: process.env.HTTPS === 'true' || false,
     clearInvalid: true,
     /**
@@ -23,7 +23,7 @@ module.exports = {
       }
 
       if (out.valid) {
-        out.credentials = cached.user
+        out.credentials = cached.authorization
       }
 
       return out

@@ -41,6 +41,9 @@ LOG_LEVEL=debug
 # Cookie **CHANGE THIS** encryption key for the user authorization cookie session key
 COOKIE_PW=562fhgfqaj626ba87212ausaiqjqw112
 
+# **CHANGE THIS** Cypher key for authorization details in redis - requires 16 byte key
+AUTH_PW=1234567890123456
+
 # Set true in secure environments
 HTTPS=false
 

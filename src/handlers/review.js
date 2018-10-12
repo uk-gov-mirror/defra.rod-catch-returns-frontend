@@ -40,19 +40,19 @@ module.exports = class ReviewHandler extends BaseHandler {
    */
   async doGet (request, h) {
     const cache = await request.cache().get()
-    let submission = await submissionsApi.getById(cache.submissionId)
+    let submission = await submissionsApi.getById(request, cache.submissionId)
 
     // Get the activities
-    const activities = await activitiesApi.getFromLink(submission._links.activities.href)
+    const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
 
     // Process the catches for the summary view
-    const catches = (await catchesApi.getFromLink(submission._links.catches.href)).map(c => {
+    const catches = (await catchesApi.getFromLink(request, submission._links.catches.href)).map(c => {
       c.dateCaught = Moment(c.dateCaught).format('DD/MM')
       c.weight = printWeight(c)
       return c
     })
 
-    const smallCatches = (await smallCatchesApi.getFromLink(submission._links.smallCatches.href)).map(c => {
+    const smallCatches = (await smallCatchesApi.getFromLink(request, submission._links.smallCatches.href)).map(c => {
       c.month = months.find(m => m.value === c.month).text
       c.river = c.activity.river.name
 
@@ -88,7 +88,7 @@ module.exports = class ReviewHandler extends BaseHandler {
     const cache = await request.cache().get()
     cache.locked = true
     await request.cache().set(cache)
-    await submissionsApi.setSubmitted(cache.submissionId)
+    await submissionsApi.setSubmitted(request, cache.submissionId)
     return h.redirect('/confirmation')
   }
 }

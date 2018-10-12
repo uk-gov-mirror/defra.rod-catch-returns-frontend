@@ -55,24 +55,24 @@ const flatternCounts = (methods, fly, spinner, bait) => {
 
 module.exports = class CatchesApi extends EntityApi {
   constructor () {
-    super('smallCatches', async (c) => {
-      const activity = await activityApi.getFromLink(c._links.activity.href)
-      const river = await riversApi.getFromLink(activity._links.river.href)
+    super('smallCatches', async (request, c) => {
+      const activity = await activityApi.getFromLink(request, c._links.activity.href)
+      const river = await riversApi.getFromLink(request, activity._links.river.href)
 
       const counts = await Promise.all(c.counts.map(async m => {
-        return { method: await methodsApi.doMap(await methodsApi.getFromLink(m._links.method.href)), count: m.count }
+        return { method: await methodsApi.doMap(request, await methodsApi.getFromLink(request, m._links.method.href)), count: m.count }
       }))
 
       return {
-        id: this.keyFromLink(c),
+        id: EntityApi.keyFromLink(c),
         month: c.month,
         counts: counts,
         released: c.released,
         activity: {
-          id: activityApi.keyFromLink(activity),
+          id: EntityApi.keyFromLink(activity),
           days: activity.days,
           river: {
-            id: riversApi.keyFromLink(river),
+            id: EntityApi.keyFromLink(river),
             name: river.name
           }
         }
@@ -80,9 +80,9 @@ module.exports = class CatchesApi extends EntityApi {
     })
   }
 
-  async add (submissionId, activityId, month, fly, spinner, bait, released) {
-    const methods = await methodsApi.list()
-    return super.add({
+  async add (request, submissionId, activityId, month, fly, spinner, bait, released) {
+    const methods = await methodsApi.list(request)
+    return super.add(request, {
       submission: submissionId,
       activity: activityId,
       month: month,
@@ -91,19 +91,19 @@ module.exports = class CatchesApi extends EntityApi {
     })
   }
 
-  async change (catchId, submissionId, activityId, month, fly, spinner, bait, released) {
-    const methods = await methodsApi.list()
-    const result = await super.change(catchId, {
+  async change (request, catchId, submissionId, activityId, month, fly, spinner, bait, released) {
+    const methods = await methodsApi.list(request)
+    const result = await super.change(request, catchId, {
       month: month,
       released: released,
       counts: flatternCounts(methods, fly, spinner, bait)
     })
 
-    const mappedResult = await this.doMap(result)
+    const mappedResult = await this.doMap(request, result)
 
     // Change the activity if necessary
     if (mappedResult.activity.id !== activityId) {
-      await super.changeAssoc(catchId + '/activity', activityId)
+      await super.changeAssoc(request, catchId + '/activity', activityId)
     }
   }
 

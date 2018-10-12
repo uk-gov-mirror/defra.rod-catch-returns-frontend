@@ -64,7 +64,7 @@ const internals = {
    * @param assoc - if true will operate on associations (using the text/uri-list header)
    * @returns {Promise<void>}
    */
-  makeRequest: async (uri, method, body, throwOnNotFound = false, assoc = false, auth) => {
+  makeRequest: async (auth, uri, method, body, throwOnNotFound = false, assoc = false) => {
     // The request library throws an exception on an error status response
     try {
       Hoek.assert(internals.method[method], `Method not allowed: ${method}`)
@@ -109,18 +109,18 @@ const internals = {
 }
 
 module.exports = {
-  request: async (method, path, search, body, throwOnNotFound = false, auth) => {
+  request: async (auth, method, path, search, body, throwOnNotFound = false) => {
     const request = internals.createRequest(path, search)
-    return internals.makeRequest(request, method, body, throwOnNotFound, false, auth)
+    return internals.makeRequest(auth, request, method, body, throwOnNotFound, false)
   },
 
-  requestAssociationChange: async (path, payload, auth) => {
+  requestAssociationChange: async (auth, path, payload) => {
     const request = internals.createRequest(path)
-    return internals.makeRequest(request, internals.method.PUT, payload, true, true, auth)
+    return internals.makeRequest(auth, request, internals.method.PUT, payload, true, true)
   },
 
-  requestFromLink: async (link, auth) => {
-    return internals.makeRequest(link, internals.method.GET, null, true, false, auth)
+  requestFromLink: async (auth, link) => {
+    return internals.makeRequest(auth, link, internals.method.GET, null, true, false)
   },
 
   method: internals.method

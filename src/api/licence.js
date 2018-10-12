@@ -1,6 +1,7 @@
 'use strict'
 
 const Client = require('./client')
+const Crypto = require('../lib/crypto')
 
 /**
  * Licence handler - note licence is not an entity in the API model
@@ -12,7 +13,9 @@ module.exports = {
    * @param licence
    * @returns {Promise<*>}
    */
-  getContactFromLicenceKey: async (licence) => {
-    return Client.request(Client.method.GET, `licence/${licence}`)
+  getContactFromLicenceKey: async (request, licence) => {
+    const cache = await request.cache().get()
+    const auth = Crypto.readObj(cache.authorization)
+    return Client.request(auth, Client.method.GET, `licence/${licence}`)
   }
 }
