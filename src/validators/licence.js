@@ -10,10 +10,24 @@ module.exports = async (request) => {
   const payload = request.payload
   logger.debug('Validate licence: ' + JSON.stringify(payload))
 
-  // Set up the contact id for the licence in the cache
-  const contact = await getContactFromLicenceKey(request, request.payload.licence.toUpperCase().trim())
+  const errors = []
 
-  if (!payload) {
-    return { year: 'EMPTY' }
+  // Set up the contact id for the licence in the cache
+  payload.contact = await getContactFromLicenceKey(request, request.payload.licence.toUpperCase().trim())
+
+  // Unmatched licence number
+  if (!payload.licence) {
+    errors.push({ licence: 'EMPTY' })
+  } else if (!payload.postcode) {
+    errors.push({ postcode: 'EMPTY' })
+  } else if (!payload.contact) {
+    errors.push({ licence: 'NOT_FOUND' })
+  } else if (payload.postcode.toUpperCase().replace(/\s/g, '') !==
+      payload.contact.contact.postcode.toUpperCase().replace(/\s/g, '')) {
+    errors.push({ postcode: 'NOT_FOUND' })
+  } else {
+    return null
   }
+
+  return errors
 }

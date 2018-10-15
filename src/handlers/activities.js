@@ -10,8 +10,6 @@ const submissionsApi = new SubmissionsApi()
 const riversApi = new RiversApi()
 const activitiesApi = new ActivitiesApi()
 
-const { logger } = require('defra-logging-facade')
-
 module.exports = class ActivitiesHandler extends BaseHandler {
   constructor (...args) {
     super(args)

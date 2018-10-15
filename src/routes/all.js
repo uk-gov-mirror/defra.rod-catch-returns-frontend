@@ -145,7 +145,7 @@ module.exports = [
   // Licence not found GET handler
   {
     path: '/licence',
-    method: 'GET',
+    method: ['GET', 'POST'],
     handler: licenceHandler.handler
   },
 

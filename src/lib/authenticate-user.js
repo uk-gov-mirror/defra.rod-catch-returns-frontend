@@ -11,7 +11,6 @@ const { logger } = require('defra-logging-facade')
  * @returns {Promise<*>}
  */
 module.exports = async (request) => {
-
   if (!request.app.authorization) {
     throw new Error('Cannot set up session cookie and cache for an unauthenticated user')
   }

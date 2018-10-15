@@ -3,26 +3,45 @@
 /**
  * The non-authenticating licence handler (FMT)
  */
-const LicenceAuthHandler = require('./licence-login')
+const BaseHandler = require('./base')
 
-module.exports = class LicenceHandler extends LicenceAuthHandler {
+module.exports = class LicenceHandler extends BaseHandler {
+  constructor (...args) {
+    super(args)
+  }
+
   /**
-   * If the licence and postcode have been authenticated using the
-   * validator then assign a session identifier to the authorization cookie
-   * and redirect to the start of the authenticated journey
+   * Display the licence/postcode authentication page
+   * @param request
+   * @param h
+   * @returns {Promise<*>}
+   */
+  async doGet (request, h) {
+    return this.readCacheAndDisplayView(request, h, {})
+  }
+  /**
+   * If the licence and postcode have been validated save the contact id
+   * redirect to the start of the authenticated journey
    * @param request
    * @param h
    * @param errors
    * @returns {Promise<*>}
    */
   async doPost (request, h, errors) {
-    // Set up the contact id for the licence in the cache
-    const contact = await getContactFromLicenceKey(request, request.payload.licence.toUpperCase().trim())
-
-    const cache = await request.cache().get()
-    cache.contactId = contact.contact.id
-    await request.cache().set(cache)
-
-    return h.redirect('/select-year')
+    let cache = await request.cache().get()
+    if (!errors) {
+      cache.contactId = request.payload.contact.contact.id
+      if (cache.errors || cache.payload) {
+        delete cache.errors
+        delete cache.payload
+      }
+      await request.cache().set(cache)
+      return h.redirect('/select-year')
+    } else {
+      cache.errors = errors
+      cache.payload = request.payload
+      await request.cache().set(cache)
+      return h.redirect('/licence')
+    }
   }
 }
