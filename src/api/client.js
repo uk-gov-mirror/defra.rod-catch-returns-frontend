@@ -37,13 +37,11 @@ const internals = {
    */
   createRequest: (path, search) => {
     try {
-      Hoek.assert(path, 'A path must be supplied')
-
       const uriObj = {
         protocol: 'http',
         hostname: process.env.API_HOSTNAME || 'localhost',
         port: Number.parseInt(process.env.API_PORT || 9580),
-        pathname: process.env.API_PATH + '/' + path
+        pathname: path ? process.env.API_PATH + '/' + path : process.env.API_PATH
       }
 
       if (search) {
@@ -66,7 +64,7 @@ const internals = {
    * @param assoc - if true will operate on associations (using the text/uri-list header)
    * @returns {Promise<void>}
    */
-  makeRequest: async (uri, method, body, throwOnNotFound = false, assoc = false) => {
+  makeRequest: async (auth, uri, method, body, throwOnNotFound = false, assoc = false) => {
     // The request library throws an exception on an error status response
     try {
       Hoek.assert(internals.method[method], `Method not allowed: ${method}`)
@@ -77,6 +75,14 @@ const internals = {
         method: method,
         timeout: Number.parseInt(process.env.API_REQUEST_TIMEOUT_MS) || 10000,
         json: !assoc
+      }
+
+      if (auth) {
+        requestObject.auth = {
+          user: auth.username,
+          pass: auth.password,
+          sendImmediately: true
+        }
       }
 
       if (body) {
@@ -103,18 +109,18 @@ const internals = {
 }
 
 module.exports = {
-  request: async (method, path, search, body, throwOnNotFound = false) => {
+  request: async (auth, method, path, search, body, throwOnNotFound = false) => {
     const request = internals.createRequest(path, search)
-    return internals.makeRequest(request, method, body, throwOnNotFound)
+    return internals.makeRequest(auth, request, method, body, throwOnNotFound, false)
   },
 
-  requestAssociationChange: async (path, payload) => {
+  requestAssociationChange: async (auth, path, payload) => {
     const request = internals.createRequest(path)
-    return internals.makeRequest(request, internals.method.PUT, payload, true, true)
+    return internals.makeRequest(auth, request, internals.method.PUT, payload, true, true)
   },
 
-  requestFromLink: async (link) => {
-    return internals.makeRequest(link, internals.method.GET, null, true)
+  requestFromLink: async (auth, link) => {
+    return internals.makeRequest(auth, link, internals.method.GET, null, true, false)
   },
 
   method: internals.method

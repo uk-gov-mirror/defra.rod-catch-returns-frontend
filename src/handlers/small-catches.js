@@ -26,7 +26,7 @@ const months = [ ...Array(12).keys() ].map(m => {
   }
 })
 
-module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
+module.exports = class SmallCatchHandler extends BaseHandler {
   constructor (...args) {
     super(args)
   }
@@ -40,8 +40,8 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
    */
   async doGet (request, h) {
     const cache = await request.cache().get()
-    const submission = await submissionsApi.getById(cache.submissionId)
-    const activities = await activitiesApi.getFromLink(submission._links.activities.href)
+    const submission = await submissionsApi.getById(request, cache.submissionId)
+    const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
     const rivers = activities.map(a => a.river)
 
     // Test if the submission is locked and if so redirect to the review screen
@@ -58,14 +58,14 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
       return this.readCacheAndDisplayView(request, h, {
         rivers: rivers,
         months: months,
-        methods: await methodsApi.list(),
+        methods: await methodsApi.list(request),
         add: true
       })
     } else {
       // Modify an existing catch
-      let smallCatch = await smallCatchesApi.getById(`smallCatches/${request.params.id}`)
-      const smallCatchSubmission = await submissionsApi.getFromLink(smallCatch._links.submission.href)
-      smallCatch = await smallCatchesApi.doMap(smallCatch)
+      let smallCatch = await smallCatchesApi.getById(request, `smallCatches/${request.params.id}`)
+      const smallCatchSubmission = await submissionsApi.getFromLink(request, smallCatch._links.submission.href)
+      smallCatch = await smallCatchesApi.doMap(request, smallCatch)
 
       // Check they are not messing about with somebody else's activity
       if (smallCatchSubmission.id !== submission.id) {
@@ -94,7 +94,7 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
       return this.readCacheAndDisplayView(request, h, {
         rivers: rivers,
         months: months,
-        methods: await methodsApi.list(),
+        methods: await methodsApi.list(request),
         payload: payload
       })
     }
@@ -108,7 +108,7 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doPost (request, h, errors) {
-    return this.writeCacheAndRedirect(request, h, errors, '/summary',
+    return SmallCatchHandler.writeCacheAndRedirect(request, h, errors, '/summary',
       `/small-catches/${encodeURIComponent(request.params.id)}`)
   }
 }

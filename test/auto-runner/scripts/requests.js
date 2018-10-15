@@ -6,33 +6,33 @@
  */
 
 const LICENCE = String('B7A718')
-const POSTCODE = String('WA4 1HT')
+const POSTCODE = String('WA41HT')
 const YEAR = require('moment')().year()
 
 module.exports = {
   LICENCE: LICENCE,
   POSTCODE: POSTCODE,
   start: [
-    { method: 'GET', path: '/', status: 302, redirect: '/licence' },
-    { method: 'GET', path: '/licence', status: 200 }
+    { method: 'GET', path: '/', status: 302, redirect: '/licence-auth' },
+    { method: 'GET', path: '/licence-auth', status: 200 }
   ],
   signInSuccess: [
-    { method: 'GET', path: '/licence', status: 200 },
-    { method: 'POST', path: '/licence', status: 302, payload: { licence: LICENCE, postcode: POSTCODE }, redirect: '/select-year' },
+    { method: 'GET', path: '/licence-auth', status: 200 },
+    { method: 'POST', path: '/licence-auth', status: 302, payload: { licence: LICENCE, postcode: POSTCODE }, redirect: '/select-year' },
     { method: 'GET', path: '/select-year', status: 200 },
     { method: 'POST', path: '/select-year', status: 302, payload: { year: YEAR }, redirect: '/did-you-fish' },
     { method: 'GET', path: '/did-you-fish', status: 200 },
     { method: 'POST', path: '/did-you-fish', status: 302, payload: { dyf: 'YES' }, redirect: '/summary' }
   ],
   signInWithActivity: [
-    { method: 'GET', path: '/licence', status: 200 },
-    { method: 'POST', path: '/licence', status: 302, payload: { licence: LICENCE, postcode: POSTCODE }, redirect: '/select-year' },
+    { method: 'GET', path: '/licence-auth', status: 200 },
+    { method: 'POST', path: '/licence-auth', status: 302, payload: { licence: LICENCE, postcode: POSTCODE }, redirect: '/select-year' },
     { method: 'GET', path: '/select-year', status: 200 },
     { method: 'POST', path: '/select-year', status: 302, payload: { year: YEAR }, redirect: '/did-you-fish' },
     { method: 'GET', path: '/did-you-fish', status: 302, redirect: '/summary' }
   ],
   signInFail: [
-    { method: 'POST', path: '/licence', status: 302, payload: { licence: 'A7A718', postcode: 'WA4 1HT' }, redirect: '/licence-not-found' }
+    { method: 'POST', path: '/licence-auth', status: 302, payload: { licence: 'A7A718', postcode: 'WA4 1HT' }, redirect: '/licence-auth-fail' }
   ],
   addActivityRiverSawdde: [
     { method: 'GET', path: '/activities/add', status: 200 },

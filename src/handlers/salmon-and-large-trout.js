@@ -33,8 +33,8 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
    */
   async doGet (request, h) {
     const cache = await request.cache().get()
-    const submission = await submissionsApi.getById(cache.submissionId)
-    const activities = await activitiesApi.getFromLink(submission._links.activities.href)
+    const submission = await submissionsApi.getById(request, cache.submissionId)
+    const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
     const rivers = activities.map(a => a.river)
 
     // Test if the submission is locked and if so redirect to the review screen
@@ -51,15 +51,15 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
       return this.readCacheAndDisplayView(request, h, {
         rivers: rivers,
         year: cache.year,
-        types: await speciesApi.list(),
-        methods: await methodsApi.list(),
+        types: await speciesApi.list(request),
+        methods: await methodsApi.list(request),
         add: true
       })
     } else {
       // Modify an existing catch
-      let largeCatch = await catchesApi.getById(`catches/${request.params.id}`)
-      const largeCatchSubmission = await submissionsApi.getFromLink(largeCatch._links.submission.href)
-      largeCatch = await catchesApi.doMap(largeCatch)
+      let largeCatch = await catchesApi.getById(request, `catches/${request.params.id}`)
+      const largeCatchSubmission = await submissionsApi.getFromLink(request, largeCatch._links.submission.href)
+      largeCatch = await catchesApi.doMap(request, largeCatch)
 
       // Check they are not messing about with somebody else's activity
       if (largeCatchSubmission.id !== submission.id) {
@@ -87,8 +87,8 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
       return this.readCacheAndDisplayView(request, h, {
         rivers: rivers,
         year: cache.year,
-        types: await speciesApi.list(),
-        methods: await methodsApi.list(),
+        types: await speciesApi.list(request),
+        methods: await methodsApi.list(request),
         payload: payload
       })
     }
@@ -102,7 +102,7 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doPost (request, h, errors) {
-    return this.writeCacheAndRedirect(request, h, errors, '/summary',
+    return SalmonAndLargeTroutHandler.writeCacheAndRedirect(request, h, errors, '/summary',
       `/catches/${encodeURIComponent(request.params.id)}`)
   }
 }

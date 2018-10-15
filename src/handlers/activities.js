@@ -10,8 +10,6 @@ const submissionsApi = new SubmissionsApi()
 const riversApi = new RiversApi()
 const activitiesApi = new ActivitiesApi()
 
-const { logger } = require('defra-logging-facade')
-
 module.exports = class ActivitiesHandler extends BaseHandler {
   constructor (...args) {
     super(args)
@@ -26,18 +24,9 @@ module.exports = class ActivitiesHandler extends BaseHandler {
    */
   async doGet (request, h) {
     const cache = await request.cache().get()
-
-    logger.debug('Activities: Cache: ' + JSON.stringify(cache))
-
-    let submission = await submissionsApi.getById(cache.submissionId)
-
-    logger.debug('Activities: Submission: ' + JSON.stringify(submission))
-
-    const activities = await activitiesApi.getFromLink(submission._links.activities.href)
-
-    logger.debug('Activities: Activities: ' + JSON.stringify(submission))
-
-    const rivers = await riversApi.list()
+    let submission = await submissionsApi.getById(request, cache.submissionId)
+    const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
+    const rivers = await riversApi.list(request)
 
     // Test if the submission is locked and if so redirect to the review screen
     if (await testLocked(request, cache, submission)) {
@@ -54,9 +43,9 @@ module.exports = class ActivitiesHandler extends BaseHandler {
         add: true
       })
     } else {
-      let activity = await activitiesApi.getById(`activities/${request.params.id}`)
-      const activitySubmission = await submissionsApi.getFromLink(activity._links.submission.href)
-      activity = await activitiesApi.doMap(activity)
+      let activity = await activitiesApi.getById(request, `activities/${request.params.id}`)
+      const activitySubmission = await submissionsApi.getFromLink(request, activity._links.submission.href)
+      activity = await activitiesApi.doMap(request, activity)
 
       // Check they are not messing about with somebody else's activity
       if (activitySubmission.id !== submission.id) {
@@ -93,7 +82,7 @@ module.exports = class ActivitiesHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doPost (request, h, errors) {
-    return this.writeCacheAndRedirect(request, h, errors, '/summary',
+    return ActivitiesHandler.writeCacheAndRedirect(request, h, errors, '/summary',
       `/activities/${encodeURIComponent(request.params.id)}`)
   }
 }

@@ -33,7 +33,7 @@ module.exports = async (request) => {
   }
 
   // Check methods - allow blanks here
-  const methods = await methodsApi.list()
+  const methods = await methodsApi.list(request)
   methods.forEach(m => {
     if (payload[m.name.toLowerCase()].trim()) {
       checkNumber(m.name.toLowerCase(), payload[m.name.toLowerCase()], errors)
@@ -48,11 +48,11 @@ module.exports = async (request) => {
   }
 
   if (!errors.length) {
-    const submission = await submissionsApi.getById(cache.submissionId)
-    const activities = await activitiesApi.getFromLink(submission._links.activities.href)
+    const submission = await submissionsApi.getById(request, cache.submissionId)
+    const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
     try {
       if (cache.smallCatch) {
-        await smallCatchesApi.change(cache.smallCatch.id,
+        await smallCatchesApi.change(request, cache.smallCatch.id,
           cache.submissionId,
           activities.find(a => a.river.id === payload.river).id,
           payload.month,
@@ -62,7 +62,7 @@ module.exports = async (request) => {
           payload.released
         )
       } else {
-        await smallCatchesApi.add(cache.submissionId,
+        await smallCatchesApi.add(request, cache.submissionId,
           activities.find(a => a.river.id === payload.river).id,
           payload.month,
           payload.fly,

@@ -31,12 +31,12 @@ module.exports = class DidYouFishHandler extends BaseHandler {
     logger.debug('DYF: Cache: ' + JSON.stringify(cache))
 
     // Find or create a submission object
-    let submission = await submissionsApi.getByContactIdAndYear(cache.contactId, cache.year)
+    let submission = await submissionsApi.getByContactIdAndYear(request, cache.contactId, cache.year)
 
     logger.debug('DYF: Submission: ' + JSON.stringify(cache))
 
     if (!submission) {
-      submission = await submissionsApi.add(cache.contactId, cache.year)
+      submission = await submissionsApi.add(request, cache.contactId, cache.year)
       logger.debug('DYF: New submission: ' + JSON.stringify(cache))
     } else {
       // Test if the submission is locked and if so redirect to the review screen
@@ -50,7 +50,7 @@ module.exports = class DidYouFishHandler extends BaseHandler {
     await request.cache().set(cache)
 
     // If we have any activity go straight to the summary screen
-    const activities = await activitiesApi.getFromLink(submission._links.activities.href)
+    const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
 
     // If there are no activities go straight to teh activities-add page
     if (activities.length) {
@@ -78,6 +78,6 @@ module.exports = class DidYouFishHandler extends BaseHandler {
       }
     }
 
-    return this.writeCacheAndRedirect(request, h, errors, '/summary', this.path)
+    return DidYouFishHandler.writeCacheAndRedirect(request, h, errors, '/summary', this.path)
   }
 }

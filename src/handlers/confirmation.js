@@ -21,7 +21,7 @@ module.exports = class ConfirmHandler extends BaseHandler {
    */
   async doGet (request, h) {
     const cache = await request.cache().get()
-    const submission = await submissionsApi.getById(cache.submissionId)
+    const submission = await submissionsApi.getById(request, cache.submissionId)
 
     // If the submission status is not submitted, throw an error
     if (submission.status !== 'SUBMITTED') {

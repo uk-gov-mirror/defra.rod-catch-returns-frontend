@@ -5,9 +5,6 @@
  * test runner
  */
 const { logger } = require('defra-logging-facade')
-const SubmissionsApi = require('../../src/api/submissions')
-const submissionsApi = new SubmissionsApi()
-
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
 
@@ -15,20 +12,24 @@ const experiment = lab.experiment
 const test = lab.test
 const Moment = require('moment')
 
-const LICENCE = require('./scripts/requests').LICENCE
 const Runner = require('./runner')
 
-const getContactFromLicenceKey = require('../../src/api/licence').getContactFromLicenceKey
+const Client = require('../../src/api/client')
 const licence = require('./scripts/requests').LICENCE
+const postcode = require('./scripts/requests').POSTCODE
+require('dotenv').config()
 
 experiment('Scripted regression tests', () => {
   lab.before(async () => {
-    const contact = await getContactFromLicenceKey(licence)
+    const auth = { username: licence, password: postcode }
+    const contact = await Client.request(auth, Client.method.GET, `licence/${licence}`)
+
     if (!contact) {
-      logger.error('Ensure the API is started in mock-mode and can find a contact for the licence: ' + LICENCE)
+      logger.error('Ensure the API is started in mock-mode and can find a contact for the licence: ' + licence)
       process.exit(-1)
     }
-    let submission = await submissionsApi.getByContactIdAndYear(contact.contact.id, Moment().year())
+
+    let submission = await Client.request(auth, Client.method.GET, this.path + `/search/getByContactIdAndSeason`, `contact_id=${contact.contact.id}&season=${Moment().year()}`)
     if (submission) {
       logger.error('Tests require API to be restarted in in-memory mode for each test run')
       process.exit(-1)
