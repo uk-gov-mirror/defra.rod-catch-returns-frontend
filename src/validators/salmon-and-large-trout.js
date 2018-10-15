@@ -18,14 +18,14 @@ const activitiesApi = new ActivitiesApi()
 
 function validateDate (payload, errors, dateCaught, cache) {
   if (!payload['date-month'] || !payload['date-day']) {
-    errors.push({date: 'EMPTY'})
+    errors.push({ date: 'EMPTY' })
   } else if (Number.isNaN(Number.parseInt(payload['date-month'])) || Number.isNaN(Number.parseInt(payload['date-day']))) {
-    errors.push({date: 'INVALID'})
+    errors.push({ date: 'INVALID' })
     payload['date-day'] = payload['date-month'] = null
   } else {
-    dateCaught = moment({year: cache.year, month: payload['date-month'] - 1, day: payload['date-day']})
+    dateCaught = moment({ year: cache.year, month: payload['date-month'] - 1, day: payload['date-day'] })
     if (!dateCaught.isValid()) {
-      errors.push({date: 'INVALID'})
+      errors.push({ date: 'INVALID' })
       payload['date-day'] = payload['date-month'] = null
     }
   }
@@ -33,7 +33,7 @@ function validateDate (payload, errors, dateCaught, cache) {
 
 function validateWeight (payload, errors) {
   if (!payload.system) {
-    errors.push({system: 'EMPTY'})
+    errors.push({ system: 'EMPTY' })
   } else if (payload.system === 'IMPERIAL') {
     checkNumber('pounds', payload.pounds, errors)
     checkNumber('ounces', payload.ounces, errors, 16)

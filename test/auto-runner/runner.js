@@ -54,7 +54,7 @@ const internals = {
   },
 
   run: async (request) => {
-    const {status, redirect} = request
+    const { status, redirect } = request
     internals.counter++
 
     // Set up a minimal server to run the tests
