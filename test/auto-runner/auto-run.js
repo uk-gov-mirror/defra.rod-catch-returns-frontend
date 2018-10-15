@@ -29,7 +29,7 @@ experiment('Scripted regression tests', () => {
       process.exit(-1)
     }
 
-    let submission = await Client.request(auth, Client.method.GET, this.path + `/search/getByContactIdAndSeason`, `contact_id=${contact.contact.id}&season=${Moment().year()}`)
+    let submission = await Client.request(auth, Client.method.GET, 'submissions/search/getByContactIdAndSeason', `contact_id=${contact.contact.id}&season=${Moment().year()}`)
     if (submission) {
       logger.error('Tests require API to be restarted in in-memory mode for each test run')
       process.exit(-1)
