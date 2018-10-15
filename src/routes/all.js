@@ -9,6 +9,7 @@ const LicenceAuthNotFoundHandler = require('../handlers/licence-login-fail')
 const LoginHandler = require('../handlers/login')
 const FailedLogin = require('../handlers/login-fail')
 
+const LicenceHandler = require('../handlers/licence')
 const DidYouFishHandler = require('../handlers/did-you-fish')
 const YearHandler = require('../handlers/year')
 const SummaryHandler = require('../handlers/summary')
@@ -24,6 +25,7 @@ const SaveHandler = require('../handlers/save')
 
 // Define the validators
 const loginValidator = require('../validators/login')
+const licenceValidator = require('../validators/licence')
 const yearValidator = require('../validators/year')
 const didYouFishValidator = require('../validators/did-you-fish')
 const activityValidator = require('../validators/activity')
@@ -36,6 +38,8 @@ const licenceAuthNotFound = new LicenceAuthNotFoundHandler('licence', loginValid
 const loginHandler = new LoginHandler('login', loginValidator)
 const failedLogin = new FailedLogin('login', loginValidator)
 const yearHandler = new YearHandler('select-year', yearValidator)
+
+const licenceHandler = new LicenceHandler('licence', licenceValidator)
 const didYouFishHandler = new DidYouFishHandler('did-you-fish', didYouFishValidator)
 const summaryHandler = new SummaryHandler('summary')
 const activityHandler = new ActivityHandler('activity', activityValidator)
@@ -138,6 +142,12 @@ module.exports = [
    * The remaining set of handlers are secured by the default authorization strategy -
    * using hapi-auth-cookie
    */
+  // Licence not found GET handler
+  {
+    path: '/licence',
+    method: 'GET',
+    handler: licenceHandler.handler
+  },
 
   // Year handler
   {
