@@ -41,7 +41,7 @@ before_install:
   - git clone https://github.com/DEFRA/rod-catch-returns-api.git
   - cd ./rod-catch-returns-api
   - ./mvnw compile
-  - ./launches/serverctl start --spring.profiles.active=h2
+  - ./mvnw -Dcheckstyle.skip=true -Ddependency-check.skip=true -DskipTests=true -Dspring-boot-plugin.fork.wait=5000 -Dspring-boot-plugin.fork.attempts=24 spring-boot:start
   - curl http://localhost:9580/api/licence/B7A718
   - cd ..
 
