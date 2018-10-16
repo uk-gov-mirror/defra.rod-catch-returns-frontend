@@ -11,10 +11,12 @@ require('dotenv').config()
 const Glue = require('glue')
 const Nunjucks = require('nunjucks')
 const Uuid = require('uuid')
+const Joi = require('joi')
 const { logger } = require('defra-logging-facade')
 
 const AuthorizationSchemes = require('./src/lib/authorization-schemes')
 const AuthorizationStrategies = require('./src/lib/authorization-strategies')
+const environmentSchema = require('./environment-schema')
 
 const manifest = {
 
@@ -149,6 +151,15 @@ const options = {
 
 ;(async () => {
   try {
+    /**
+     * Test that the environment is set up correctly
+     */
+    Joi.validate(process.env, environmentSchema, { allowUnknown: true }, (err) => {
+      if (err) {
+        throw new Error('Schema validation error: ' + err.message)
+      }
+    })
+
     const server = await Glue.compose(manifest, options)
     /*
      * Set up the nunjunks rendering engine and include the new gov.uk
