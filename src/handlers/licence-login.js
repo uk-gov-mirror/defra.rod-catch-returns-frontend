@@ -37,7 +37,7 @@ module.exports = class LicenceAuthHandler extends BaseHandler {
     }
 
     // No errors so we can authenticate this user
-    authenticateUser(request)
+    await authenticateUser(request)
 
     // Set up the contact id for the licence in the cache
     const contact = await getContactFromLicenceKey(request, request.payload.licence.toUpperCase().trim())

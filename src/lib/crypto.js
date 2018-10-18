@@ -7,9 +7,7 @@
  */
 const crypto = require('crypto')
 const algorithm = 'aes128'
-
 const keyBuffer = Buffer.from(process.env.AUTH_PW)
-const iv = crypto.randomBytes(16)
 
 class CryptoError extends Error {
   constructor (message) {
@@ -19,20 +17,28 @@ class CryptoError extends Error {
 }
 
 const internals = {
-  encrypt: (text) => {
+  encrypt: async (cache, text) => {
     try {
-      const cipher = crypto.createCipheriv(algorithm, keyBuffer, iv)
+      const hubId = await cache.get('hub-identity')
+      if (!hubId) {
+        throw new CryptoError('Expected hub identifier')
+      }
+      const cipher = crypto.createCipheriv(algorithm, keyBuffer, Buffer.from(hubId.data))
       let result = cipher.update(text, 'utf8', 'base64')
       result += cipher.final('base64')
       return result
     } catch (err) {
-      throw new CryptoError('Encryption error')
+      throw new CryptoError('Encryption error' + err)
     }
   },
 
-  decrypt: (text) => {
+  decrypt: async (cache, text) => {
     try {
-      const decipher = crypto.createDecipheriv(algorithm, keyBuffer, iv)
+      const hubId = await cache.get('hub-identity')
+      if (!hubId) {
+        throw new CryptoError('Expected hub identifier')
+      }
+      const decipher = crypto.createDecipheriv(algorithm, keyBuffer, Buffer.from(hubId.data))
       let result = decipher.update(text, 'base64')
       result += decipher.final()
       return result
@@ -43,13 +49,13 @@ const internals = {
 }
 
 module.exports = {
-  writeObj: (obj) => {
-    return internals.encrypt(JSON.stringify(obj))
+  writeObj: async (cache, obj) => {
+    return internals.encrypt(cache, JSON.stringify(obj))
   },
 
-  readObj: (str) => {
+  readObj: async (cache, str) => {
     try {
-      return JSON.parse(internals.decrypt(str))
+      return JSON.parse(await internals.decrypt(cache, str))
     } catch (err) {
       throw new CryptoError('Deserialization error')
     }

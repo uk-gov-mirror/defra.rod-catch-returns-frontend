@@ -15,7 +15,7 @@ module.exports = {
    */
   getContactFromLicenceKey: async (request, licence) => {
     const cache = await request.cache().get()
-    const auth = Crypto.readObj(cache.authorization)
+    const auth = await Crypto.readObj(request.server.app.cache, cache.authorization)
     return Client.request(auth, Client.method.GET, `licence/${licence}`)
   }
 }

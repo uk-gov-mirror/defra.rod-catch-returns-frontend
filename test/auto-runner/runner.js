@@ -5,10 +5,13 @@ const Glue = require('glue')
 const { logger } = require('defra-logging-facade')
 const Code = require('code')
 const expect = Code.expect
+const Crypto = require('crypto')
+
 require('dotenv').config()
 
 const AuthorizationSchemes = require('../../src/lib/authorization-schemes')
 const AuthorizationStrategies = require('../../src/lib/authorization-strategies')
+const CacheDecorator = require('./src/lib/cache-decorator')
 
 // Minimal hapi configuration for tests
 const manifest = {
@@ -103,44 +106,18 @@ const internals = {
       }
     })
 
-    /*
-     * Decorator to retrieve make access to the session cache available as.
-     * simple setters and getters hiding the session key
-     */
-    server.decorate('request', 'cache', function () {
-      return {
-        get: async () => {
-          try {
-            const result = await this.server.app.cache.get(this.auth.artifacts.sid)
-            logger.debug(`cache read: ${this.auth.artifacts.sid}: ${JSON.stringify(result)}`)
-            return result
-          } catch (err) {
-            throw new Error('Cache fetch error')
-          }
-        },
-        set: async (obj) => {
-          try {
-            logger.debug(`cache write: ${this.auth.artifacts.sid}: ${JSON.stringify(obj)}`)
-            await this.server.app.cache.set(this.auth.artifacts.sid, obj)
-          } catch (err) {
-            throw new Error('Cache put error')
-          }
-        },
-        drop: async () => {
-          try {
-            await this.server.app.cache.drop(this.auth.artifacts.sid)
-            logger.debug(`cache drop: ${this.auth.artifacts.sid}`)
-          } catch (err) {
-            throw new Error('Cache drop error')
-          }
-        }
-      }
-    })
+    server.decorate('request', 'cache', CacheDecorator)
 
     logger.debug(`Request: request (${internals.counter}) ${JSON.stringify(request, null, 4)}`)
 
     // Initialize the server to get access to the cache
     await server.initialize()
+
+    // Set a random cache key good for 30 years - shared between the nodes
+    if (!await server.app.cache.get('hub-identity')) {
+      await server.app.cache.set('hub-identity', Crypto.randomBytes(16), 1000 * 3600 * 24 * 365 * 30)
+    }
+
     const response = await server.inject(internals.toInjectionObject(request))
     internals.sid = internals.getCookies(response)['sid'] || internals.sid
 

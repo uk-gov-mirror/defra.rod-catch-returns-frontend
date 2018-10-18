@@ -12,11 +12,13 @@ const Glue = require('glue')
 const Nunjucks = require('nunjucks')
 const Uuid = require('uuid')
 const Joi = require('joi')
-const { logger } = require('defra-logging-facade')
+const Crypto = require('crypto')
 
+const { logger } = require('defra-logging-facade')
 const AuthorizationSchemes = require('./src/lib/authorization-schemes')
 const AuthorizationStrategies = require('./src/lib/authorization-strategies')
-const environmentSchema = require('./environment-schema')
+const EnvironmentSchema = require('./environment-schema')
+const CacheDecorator = require('./src/lib/cache-decorator')
 
 const manifest = {
 
@@ -154,7 +156,7 @@ const options = {
     /**
      * Test that the environment is set up correctly
      */
-    Joi.validate(process.env, environmentSchema, { allowUnknown: true }, (err) => {
+    Joi.validate(process.env, EnvironmentSchema, { allowUnknown: true }, (err) => {
       if (err) {
         throw new Error('Schema validation error: ' + err.message)
       }
@@ -247,35 +249,7 @@ const options = {
      * Decorator to make access to the session cache available as
      * simple setters and getters hiding the session key.
      */
-    server.decorate('request', 'cache', function () {
-      return {
-        get: async () => {
-          try {
-            const result = await this.server.app.cache.get(this.auth.artifacts.sid)
-            logger.debug(`cache read: ${this.auth.artifacts.sid}: ${JSON.stringify(result)}`)
-            return result
-          } catch (err) {
-            throw new Error('Cache fetch error')
-          }
-        },
-        set: async (obj) => {
-          try {
-            logger.debug(`cache write: ${this.auth.artifacts.sid}: ${JSON.stringify(obj)}`)
-            await this.server.app.cache.set(this.auth.artifacts.sid, obj)
-          } catch (err) {
-            throw new Error('Cache put error')
-          }
-        },
-        drop: async () => {
-          try {
-            await this.server.app.cache.drop(this.auth.artifacts.sid)
-            logger.debug(`cache drop: ${this.auth.artifacts.sid}`)
-          } catch (err) {
-            throw new Error('Cache drop error')
-          }
-        }
-      }
-    })
+    server.decorate('request', 'cache', CacheDecorator)
 
     /*
      * Test that cryptographic support is enabled on the build
@@ -287,7 +261,14 @@ const options = {
       process.exit(1)
     }
 
+    // Start the server
     await server.start()
+
+    // Set a random cache key good for 30 years - shared between the nodes
+    if (!await server.app.cache.get('hub-identity')) {
+      logger.info('Assigning a new hub identity')
+      await server.app.cache.set('hub-identity', Crypto.randomBytes(16), 1000 * 3600 * 24 * 365 * 30)
+    }
 
     // Handle shutdown gracefully
     process.on('SIGINT', async () => {

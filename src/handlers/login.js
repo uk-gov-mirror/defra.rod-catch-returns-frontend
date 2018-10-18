@@ -35,7 +35,7 @@ module.exports = class LoginHandler extends BaseHandler {
       return h.redirect('/login-fail')
     }
 
-    authenticateUser(request)
+    await authenticateUser(request)
     return h.redirect('/licence')
   }
 }

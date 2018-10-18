@@ -19,12 +19,12 @@ module.exports = async (request) => {
   const sid = uuid()
 
   // Assign a new user
-  const cache = { authorization: Crypto.writeObj(request.app.authorization) }
+  const cache = { authorization: await Crypto.writeObj(request.server.app.cache, request.app.authorization) }
 
   // Set the cookie to the session identifier
   request.cookieAuth.set({ sid: sid })
 
   // Set the server cache to the contact details
   await request.cache().set(cache)
-  logger.debug('User is authenticated: ' + JSON.stringify(request.app.authorization))
+  logger.debug('User is authenticated: ' + JSON.stringify(request.app.authorization.username))
 }
