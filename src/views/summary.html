@@ -35,6 +35,7 @@
         {{ riverRows.push([
             { text: activity.river.name },
             { text: activity.days, format: "numeric" },
+            { text: activity.count, format: "numeric" },
             { html: renderLinks(activity.id), format: "numeric" }
         ]) }}
     {% endfor %}
@@ -83,6 +84,7 @@
                 head: [
                     { text: "River" },
                     { text: "Total days fished", format: "numeric" },
+                    { text: "Fish caught", format: "numeric" },
                     { text: "Actions", format: "numeric" }
                 ],
                 rows: riverRows

@@ -11,7 +11,8 @@
     {% for activity in activities %}
         {{ riverRows.push([
             { text: activity.river.name },
-            { text: activity.days, format: "numeric" }
+            { text: activity.days, format: "numeric" },
+            { text: activity.count, format: "numeric" }
         ]) }}
     {% endfor %}
 {% else %}
@@ -71,7 +72,8 @@
                 firstCellIsHeader: false,
                 head: [
                     { text: "River" },
-                    { text: "Total days fished", format: "numeric" }
+                    { text: "Total days fished", format: "numeric" },
+                    { text: "Fish caught", format: "numeric" }
                 ],
                 rows: riverRows
              }) }}

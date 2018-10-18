@@ -45,10 +45,15 @@ module.exports = class ReviewHandler extends BaseHandler {
     // Get the activities
     const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
 
+    // Add a count to the activities
+    activities.map(a => { a.count = 0 })
+
     // Process the catches for the summary view
     const catches = (await catchesApi.getFromLink(request, submission._links.catches.href)).map(c => {
       c.dateCaught = Moment(c.dateCaught).format('DD/MM')
       c.weight = printWeight(c)
+      const activity = activities.find(a => a.id === c.activity.id)
+      activity.count++
       return c
     })
 
@@ -64,6 +69,11 @@ module.exports = class ReviewHandler extends BaseHandler {
 
       const spinnerCount = c.counts.find(c => c.method.name.toLowerCase() === 'spinner')
       c.spinner = spinnerCount ? spinnerCount.count : null
+
+      const activity = activities.find(a => a.id === c.activity.id)
+      activity.count = activity.count + (flyCount ? flyCount.count : 0)
+      activity.count = activity.count + (baitCount ? baitCount.count : 0)
+      activity.count = activity.count + (spinnerCount ? spinnerCount.count : 0)
 
       delete c.counts
       return c
