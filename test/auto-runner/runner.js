@@ -11,7 +11,7 @@ require('dotenv').config()
 
 const AuthorizationSchemes = require('../../src/lib/authorization-schemes')
 const AuthorizationStrategies = require('../../src/lib/authorization-strategies')
-const CacheDecorator = require('./src/lib/cache-decorator')
+const CacheDecorator = require('../../src/lib/cache-decorator')
 
 // Minimal hapi configuration for tests
 const manifest = {
