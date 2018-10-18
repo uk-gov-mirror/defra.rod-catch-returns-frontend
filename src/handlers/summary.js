@@ -56,14 +56,6 @@ module.exports = class SummaryHandler extends BaseHandler {
     // Get the activities
     const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
 
-    /*
-     * If there are no activities go straight to the activities-add page
-     * (unless using the force link)
-     */
-    if (!activities.length && !request.query.force) {
-      return h.redirect('/activities/add')
-    }
-
     // Process the catches for the summary view
     const catches = (await catchesApi.getFromLink(request, submission._links.catches.href)).map(c => {
       c.dateCaught = Moment(c.dateCaught).format('DD/MM')

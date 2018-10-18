@@ -11,13 +11,9 @@
 </div>
 {% endmacro %}
 
-{% macro summaryLink(force) %}
+{% macro summaryLink() %}
 <div>
-    {% if force %}
-        <a id="return-summary-f" class="govuk-link govuk-body-m" href="/summary?force=true">Cancel</a>
-    {% else %}
-        <a id="return-summary" class="govuk-link govuk-body-m" href="/summary">Cancel</a>
-    {% endif %}
+    <a id="return-summary" class="govuk-link govuk-body-m" href="/summary">Cancel</a>
 </div>
 {% endmacro %}
 

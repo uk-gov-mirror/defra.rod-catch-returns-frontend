@@ -139,7 +139,8 @@
 
             {{ govukButton({
                 name: "continue",
-                text: "Review catch return"
+                text: "Review catch return",
+                disabled: activities.length === 0
             }) }}
 
             {{ extra() }}
