@@ -73,7 +73,7 @@ const internals = {
       const requestObject = {
         uri: uri,
         method: method,
-        timeout: Number.parseInt(process.env.API_REQUEST_TIMEOUT_MS) || 10000,
+        timeout: Number.parseInt(process.env.API_REQUEST_TIMEOUT_MS) || 60000,
         json: !assoc
       }
 
