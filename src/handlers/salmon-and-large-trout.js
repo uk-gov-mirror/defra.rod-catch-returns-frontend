@@ -35,7 +35,7 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
     const cache = await request.cache().get()
     const submission = await submissionsApi.getById(request, cache.submissionId)
     const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
-    const rivers = activities.map(a => a.river)
+    let rivers = activities.map(a => a.river)
 
     // Test if the submission is locked and if so redirect to the review screen
     if (await testLocked(request, cache, submission)) {
@@ -46,6 +46,12 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
       // Clear any existing catch id
       delete cache.largeCatch
       await request.cache().set(cache)
+
+      // If are doing add again then filter the rivers
+      if (cache.add) {
+        // Filter to single river and filter the allowed months
+        rivers = rivers.filter(r => r.id === cache.add.river)
+      }
 
       // Add a new salmon and large trout
       return this.readCacheAndDisplayView(request, h, {
@@ -102,7 +108,18 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doPost (request, h, errors) {
-    return SalmonAndLargeTroutHandler.writeCacheAndRedirect(request, h, errors, '/summary',
-      `/catches/${encodeURIComponent(request.params.id)}`)
+    let next
+    const cache = await request.cache().get()
+
+    if (Object.keys(request.payload).includes('add')) {
+      next = '/catches/add'
+      cache.add = { river: request.payload.river }
+    } else {
+      next = '/summary'
+      delete cache.add
+    }
+
+    return SalmonAndLargeTroutHandler.writeCacheAndRedirect(request, h, errors, next,
+      `/catches/${encodeURIComponent(request.params.id)}`, cache)
   }
 }

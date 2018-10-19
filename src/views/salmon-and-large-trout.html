@@ -361,6 +361,13 @@
                     text: "Continue"
                 }) }}
 
+                {% if add %}
+                    {{ govukButton({
+                        name: "add",
+                        text: "Save and add another",
+                        classes: "govuk-button-secondary"
+                    }) }}
+                {% endif %}
             {% endcall %}
             {{ extra() }}
         </form>

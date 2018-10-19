@@ -42,7 +42,7 @@ module.exports = class SmallCatchHandler extends BaseHandler {
     const cache = await request.cache().get()
     const submission = await submissionsApi.getById(request, cache.submissionId)
     const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
-    const rivers = activities.map(a => a.river)
+    let rivers = activities.map(a => a.river)
 
     // Test if the submission is locked and if so redirect to the review screen
     if (await testLocked(request, cache, submission)) {
@@ -53,11 +53,27 @@ module.exports = class SmallCatchHandler extends BaseHandler {
       // Clear any existing catch id
       delete cache.smallCatch
       await request.cache().set(cache)
+      let monthsFiltered
+
+      // If we only have one river or we are doing add again then filter the months
+      if (rivers.length === 1 || cache.add) {
+        if (cache.add) {
+          // Filter to single river and filter the allowed months
+          rivers = rivers.filter(r => r.id === cache.add.river)
+        }
+        const smallCatches = await smallCatchesApi.getFromLink(request, submission._links.smallCatches.href)
+        const activity = activities.find(a => a.river.id === rivers[0].id)
+        const monthsSelected = smallCatches.filter(s => s.activity.id === activity.id).map(m => m.month)
+        monthsFiltered = months.filter(m => !monthsSelected.includes(m.value))
+        if (monthsFiltered.length === 0) {
+          return h.redirect('/summary')
+        }
+      }
 
       // Add a new salmon and large trout
       return this.readCacheAndDisplayView(request, h, {
         rivers: rivers,
-        months: months,
+        months: monthsFiltered || months,
         methods: await methodsApi.list(request),
         add: true
       })
@@ -108,7 +124,19 @@ module.exports = class SmallCatchHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doPost (request, h, errors) {
-    return SmallCatchHandler.writeCacheAndRedirect(request, h, errors, '/summary',
-      `/small-catches/${encodeURIComponent(request.params.id)}`)
+    // If we are adding again store the river
+    let next
+    const cache = await request.cache().get()
+
+    if (Object.keys(request.payload).includes('add')) {
+      next = '/small-catches/add'
+      cache.add = { river: request.payload.river }
+    } else {
+      next = '/summary'
+      delete cache.add
+    }
+
+    return SmallCatchHandler.writeCacheAndRedirect(request, h, errors, next,
+      `/small-catches/${encodeURIComponent(request.params.id)}`, cache)
   }
 }

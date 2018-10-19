@@ -29,19 +29,11 @@ module.exports = class LicenceHandler extends BaseHandler {
    */
   async doPost (request, h, errors) {
     let cache = await request.cache().get()
+
     if (!errors) {
       cache.contactId = request.payload.contact.contact.id
-      if (cache.errors || cache.payload) {
-        delete cache.errors
-        delete cache.payload
-      }
-      await request.cache().set(cache)
-      return h.redirect('/select-year')
-    } else {
-      cache.errors = errors
-      cache.payload = request.payload
-      await request.cache().set(cache)
-      return h.redirect('/licence')
     }
+
+    return LicenceHandler.writeCacheAndRedirect(request, h, errors, '/select-year', '/licence', cache)
   }
 }

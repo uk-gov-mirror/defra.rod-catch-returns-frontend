@@ -9,3 +9,13 @@
     text-decoration: none;
   }
 }
+
+.govuk-button-secondary {
+  @extend .govuk-button;
+  background-color: govuk-colour("grey-1");
+  margin-left: govuk-spacing(3);
+  &:hover {
+    background-color: govuk-colour("grey-2");
+  }
+}
+

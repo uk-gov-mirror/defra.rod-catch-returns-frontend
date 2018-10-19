@@ -39,16 +39,16 @@ module.exports = class BaseHandler {
    * cache and redirect to the errorPath. Otherwise remove the errors and payload
    * object from the cache and rewrite the cache
    */
-  static async writeCacheAndRedirect (request, h, errors, successPath, errorPath) {
+  static async writeCacheAndRedirect (request, h, errors, successPath, errorPath, c) {
     if (errors) {
       // Write the errors into the cache
-      let cache = await request.cache().get()
+      let cache = c || await request.cache().get()
       cache.errors = errors
       cache.payload = request.payload
       await request.cache().set(cache)
       return h.redirect(errorPath)
     }
-    let cache = await request.cache().get()
+    let cache = c || await request.cache().get()
     if (cache.errors || cache.payload) {
       delete cache.errors
       delete cache.payload
@@ -83,9 +83,10 @@ module.exports = class BaseHandler {
    */
   static async clearCacheErrorsAndPayload (request) {
     let cache = await request.cache().get()
-    if (cache.errors || cache.payload) {
+    if (cache.errors || cache.payload || cache.add) {
       delete cache.errors
       delete cache.payload
+      delete cache.add
       await request.cache().set(cache)
     }
     return cache
