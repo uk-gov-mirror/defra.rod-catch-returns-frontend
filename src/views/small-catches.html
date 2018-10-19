@@ -152,6 +152,7 @@
 {% endif %}
 
 {% block beforeContent %}
+    {{ super() }}
     {{ govukBackLink({
         href: "/summary",
         text: "Back"

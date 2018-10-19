@@ -6,6 +6,7 @@
 {% from "inset-text/macro.njk" import govukInsetText %}
 
 {% block beforeContent %}
+    {{ super() }}
     {{ govukBackLink({
         href: "/summary",
         text: "Back"

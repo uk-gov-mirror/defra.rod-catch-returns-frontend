@@ -8,6 +8,7 @@
 {% from "input/macro.njk" import govukInput %}
 
 {% block beforeContent %}
+    {{ super() }}
     {{ govukBackLink({
         href: "/summary",
         text: "Back"

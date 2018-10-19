@@ -47,6 +47,7 @@
 {% block pageTitle %}{{ title }}{% endblock %}
 
 {% block beforeContent %}
+    {{ super() }}
     {% if not locked %}
         {{ govukBackLink({
             href: "/summary",

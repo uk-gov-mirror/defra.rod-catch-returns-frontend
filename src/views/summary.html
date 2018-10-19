@@ -6,6 +6,7 @@
 {% from "fieldset/macro.njk" import govukFieldset %}
 
 {% block beforeContent %}
+    {{ super() }}
     {{ govukBackLink({
         href: "/licence",
         text: "Back"
@@ -74,7 +75,10 @@
     <div class="govuk-grid-column-full">
         <form method="post">
             <h1 class="govuk-heading-l">Your {{ year }} catch return</h1>
-            <p class="govuk-body-l">If you’ve finished fishing for salmon and sea trout this season, click ‘Review catch return’. If you plan to fish again for salmon or sea trout this season, click 'Save as draft'.</p>
+
+            {% if activities.length %}
+                <p class="govuk-body-l">If you’ve finished fishing for salmon and sea trout this season, click ‘Review catch return’. If you plan to fish again for salmon or sea trout this season, click 'Save as draft'.</p>
+            {% endif %}
 
             {{ govukTable({
                 caption: "Rivers fished",
