@@ -13,6 +13,12 @@ module.exports = {
   },
 
   testLocked: async (request, cache, submission) => {
+    if (!submission) {
+      await request.cache().drop()
+      request.cookieAuth.clear()
+      return false
+    }
+
     if (submission.status === 'SUBMITTED') {
       cache.submissionId = submission.id
       cache.locked = true

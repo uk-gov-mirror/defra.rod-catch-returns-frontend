@@ -15,11 +15,6 @@
             { text: activity.count, format: "numeric" }
         ]) }}
     {% endfor %}
-{% else %}
-        {{ riverRows.push([
-            { text: "None" },
-            { text: "0", format: "numeric" }
-        ]) }}
 {% endif %}
 
 {% if catches.length %}
@@ -66,19 +61,20 @@
         <form method="post">
             <h1 class="govuk-heading-l">{{ title }}</h1>
 
-             {{ govukTable({
-                caption: "Rivers fished",
-                captionClasses: "govuk-heading-m",
-                firstCellIsHeader: false,
-                head: [
-                    { text: "River" },
-                    { text: "Total days fished", format: "numeric" },
-                    { text: "Fish caught", format: "numeric" }
-                ],
-                rows: riverRows
-             }) }}
+            {% if activities.length %}
+                 {{ govukTable({
+                    caption: "Rivers fished",
+                    captionClasses: "govuk-heading-m",
+                    firstCellIsHeader: false,
+                    head: [
+                        { text: "River" },
+                        { text: "Total days fished", format: "numeric" },
+                        { text: "Fish caught", format: "numeric" }
+                    ],
+                    rows: riverRows
+                 }) }}
 
-             {% if activities.length %}
+
                 {% if smallCatches.length %}
                     {{ govukTable({
                         caption: "Small adult sea trout (1lb and under) catches",
@@ -111,6 +107,12 @@
                         ],
                         rows: salmonAndLargeTroutItems
                     }) }}
+                {% endif %}
+            {% else %}
+                {% if not locked %}
+                    <p class="govuk-body-m">I confirm that I did not fish for salmon or seatrout in {{ year }}</p>
+                {% else %}
+                    <p class="govuk-body-m">I did not fish for salmon or seatrout in {{ year }}</p>
                 {% endif %}
             {% endif %}
 
