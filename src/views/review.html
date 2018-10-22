@@ -11,7 +11,8 @@
     {% for activity in activities %}
         {{ riverRows.push([
             { text: activity.river.name },
-            { text: activity.days, format: "numeric" },
+            { text: activity.daysFishedWithMandatoryRelease, format: "numeric" },
+            { text: activity.daysFishedOther, format: "numeric" },
             { text: activity.count, format: "numeric" }
         ]) }}
     {% endfor %}
@@ -58,7 +59,7 @@
 
 {% block content %}
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-full">
         <form method="post">
             <h1 class="govuk-heading-l">{{ title }}</h1>
 
@@ -69,7 +70,8 @@
                     firstCellIsHeader: false,
                     head: [
                         { text: "River" },
-                        { text: "Total days fished", format: "numeric" },
+                        { text: "Days fished (1 Jan-16 June)", format: "numeric" },
+                        { text: "Days fished (17 June-31 Dec)", format: "numeric" },
                         { text: "Fish caught", format: "numeric" }
                     ],
                     rows: riverRows

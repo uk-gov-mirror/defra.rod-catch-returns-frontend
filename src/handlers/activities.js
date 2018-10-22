@@ -59,7 +59,8 @@ module.exports = class ActivitiesHandler extends BaseHandler {
       // Prepare a the payload
       const payload = {
         river: activity.river.id,
-        days: activity.days
+        daysFishedOther: activity.daysFishedOther,
+        daysFishedWithMandatoryRelease: activity.daysFishedWithMandatoryRelease
       }
 
       /*

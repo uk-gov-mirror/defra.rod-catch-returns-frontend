@@ -35,7 +35,8 @@
     {% for activity in activities %}
         {{ riverRows.push([
             { text: activity.river.name },
-            { text: activity.days, format: "numeric" },
+            { text: activity.daysFishedWithMandatoryRelease, format: "numeric" },
+            { text: activity.daysFishedOther, format: "numeric" },
             { text: activity.count, format: "numeric" },
             { html: renderLinks(activity.id), format: "numeric" }
         ]) }}
@@ -83,7 +84,8 @@
                 attributes: { id: "river" },
                 head: [
                     { text: "River" },
-                    { text: "Total days fished", format: "numeric" },
+                    { text: "Days fished (1 Jan-16 June)", format: "numeric" },
+                    { text: "Days fished (17 June-31 Dec)", format: "numeric" },
                     { text: "Fish caught", format: "numeric" },
                     { text: "Actions", format: "numeric" }
                 ],
@@ -140,7 +142,6 @@
                     ],
                     rows: salmonAndLargeTroutItems
                 }) }}
-
 
                 <p class="govuk-body" style="text-align:right">
                     {% if catches.length === 0 %}

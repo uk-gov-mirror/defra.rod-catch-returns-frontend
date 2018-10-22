@@ -20,7 +20,8 @@ module.exports = async (request) => {
     errors.push({ River: 'NOT_SELECTED' })
   }
 
-  checkNumber('Activity', payload.days, errors)
+  checkNumber('daysFishedOther', payload.daysFishedOther, errors)
+  checkNumber('daysFishedWithMandatoryRelease', payload.daysFishedWithMandatoryRelease, errors)
 
   // if there are no errors try to persist the activity
   if (!errors.length) {
@@ -29,10 +30,12 @@ module.exports = async (request) => {
     try {
       // Test if we are adding or updating
       if (cache.activity) {
-        await activitiesApi.change(request, cache.activity.id, cache.submissionId, payload.river, payload.days)
+        await activitiesApi.change(request, cache.activity.id, cache.submissionId, payload.river,
+          payload.daysFishedWithMandatoryRelease, payload.daysFishedOther)
         return null
       } else {
-        await activitiesApi.add(request, cache.submissionId, payload.river, payload.days)
+        await activitiesApi.add(request, cache.submissionId, payload.river,
+          payload.daysFishedWithMandatoryRelease, payload.daysFishedOther)
         return null
       }
     } catch (err) {

@@ -15,7 +15,8 @@ module.exports = class ActivitiesApi extends EntityApi {
       const river = await riversApi.getFromLink(request, a._links.river.href)
       return {
         id: EntityApi.keyFromLink(a),
-        days: a.days,
+        daysFishedOther: a.daysFishedOther,
+        daysFishedWithMandatoryRelease: a.daysFishedWithMandatoryRelease,
         river: {
           id: EntityApi.keyFromLink(river),
           name: river.name
@@ -24,18 +25,20 @@ module.exports = class ActivitiesApi extends EntityApi {
     })
   }
 
-  async add (request, submissionId, river, days) {
+  async add (request, submissionId, river, daysFishedWithMandatoryRelease, daysFishedOther) {
     return super.add(request, {
       submission: submissionId,
       river: river,
-      days: days
+      daysFishedWithMandatoryRelease: daysFishedWithMandatoryRelease,
+      daysFishedOther: daysFishedOther
     })
   }
 
-  async change (request, activityId, submissionId, riverId, days) {
+  async change (request, activityId, submissionId, riverId, daysFishedWithMandatoryRelease, daysFishedOther) {
     // Change the days
     const result = await super.change(request, activityId, {
-      days: days
+      daysFishedWithMandatoryRelease: daysFishedWithMandatoryRelease,
+      daysFishedOther: daysFishedOther
     })
 
     const mappedResult = await this.doMap(request, result)
