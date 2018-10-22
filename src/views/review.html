@@ -127,7 +127,11 @@
             {{ extra() }}
         </form>
         {% if not locked %}
-            {{ summaryLink() }}
+            {% if activities.length %}
+                {{ summaryLink() }}
+            {% else %}
+                <a id="return-summary" class="govuk-link govuk-body-m" href="/did-you-fish">Cancel</a>
+            {% endif %}
         {% else %}
             <div>
                 <a id="print-link" class="govuk-link govuk-body-m" href="#" onclick="window.print();return false;">Print your catch return report</a>

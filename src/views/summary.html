@@ -28,7 +28,7 @@
 {% macro renderLinks(id) %}
     {% set editurl = id %}
     {% set deleteurl = "/delete/" + id %}
-    <span><a id="edit-{{ id }}" class="govuk-link" href="{{ editurl }}">Edit</a> | <a id="delete-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete</a></span>
+    <span><a id="edit-{{ id }}" class="govuk-link" href="{{ editurl }}">Change</a> | <a id="delete-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete</a></span>
 {% endmacro %}
 
 {% if activities.length %}
@@ -61,10 +61,10 @@
         {{ smallCatchItems.push([
             { text: catch.month },
             { text: catch.river },
-            { text: catch.fly },
-            { text: catch.spinner },
-            { text: catch.bait },
-            { text: catch.released | replace("0", "") },
+            { text: catch.fly, format: "numeric" },
+            { text: catch.spinner, format: "numeric" },
+            { text: catch.bait, format: "numeric" },
+            { text: catch.released | replace("0", ""), format: "numeric" },
             { html: renderLinks(catch.id | replace("smallCatches", "small-catches")), format: "numeric" }
         ]) }}
     {% endfor %}
@@ -75,10 +75,6 @@
     <div class="govuk-grid-column-full">
         <form method="post">
             <h1 class="govuk-heading-l">Your {{ year }} catch return</h1>
-
-            {% if activities.length %}
-                <p class="govuk-body-l">If you’ve finished fishing for salmon and sea trout this season, click ‘Review catch return’. If you plan to fish again for salmon or sea trout this season, click 'Save as draft'.</p>
-            {% endif %}
 
             {{ govukTable({
                 caption: "Rivers fished",
@@ -111,10 +107,10 @@
                     head: [
                         { text: "Month" },
                         { text: "River" },
-                        { text: "Fly" },
-                        { text: "Spinner" },
-                        { text: "Bait" },
-                        { text: "Released" },
+                        { text: "Fly", format: "numeric" },
+                        { text: "Spinner", format: "numeric" },
+                        { text: "Bait", format: "numeric" },
+                        { text: "Released", format: "numeric" },
                         { text: "Actions", format: "numeric" }
                     ],
                     rows: smallCatchItems
@@ -153,6 +149,10 @@
                         <a id="catches-add2" class="govuk-link " href="catches/add">Add another salmon or large adult sea trout</a>
                     {% endif %}
                 </p>
+            {% endif %}
+
+            {% if activities.length %}
+                <p class="govuk-body-m govuk-!-margin-top-6">If you’ve finished fishing for salmon and sea trout this season, click ‘Review catch return’. If you plan to fish again for salmon or sea trout this season, click 'Save as draft'.</p>
             {% endif %}
 
             {{ govukButton({
