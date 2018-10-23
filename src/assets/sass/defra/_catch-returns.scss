@@ -1,15 +1,36 @@
-// Remove links from footer
+// Media print for the review and confirmation pages
 @media print {
   .govuk-footer__inline-list,
+
+  .govuk-phase-banner {
+    display: none;
+  }
+
+  .print-area *, #review * {
+    margin-bottom: govuk-spacing(6);
+  }
+
+  .no-print-area {
+    display: none;
+  }
+
   #print-link  {
     display: none;
   }
 
-  .govuk-footer__link {
-    text-decoration: none;
+  .govuk-footer {
+    display: none;
   }
 }
 
+// Hide print only areas on the screen
+@media screen {
+  .print-area, .print-area * {
+    display: none;
+  }
+}
+
+// For secondary buttons such as the add-another actions
 .govuk-button-secondary {
   @extend .govuk-button;
   background-color: govuk-colour("grey-1");
@@ -18,4 +39,5 @@
     background-color: #606060;
   }
 }
+
 

@@ -36,19 +36,19 @@ module.exports = {
   ],
   addActivityRiverSawdde: [
     { method: 'GET', path: '/activities/add', status: 200 },
-    { method: 'POST', path: '/activities/add', payload: { river: 'rivers/189', days: '7' }, status: 302, redirect: '/summary' }
+    { method: 'POST', path: '/activities/add', payload: { river: 'rivers/189', daysFishedOther: '7', daysFishedWithMandatoryRelease: '0' }, status: 302, redirect: '/summary' }
   ],
   addActivityRiverErrors: [
     { method: 'GET', path: '/activities/add', status: 200 },
-    { method: 'POST', path: '/activities/add', payload: { river: '', days: '' }, status: 302, redirect: '/activities/add' }
+    { method: 'POST', path: '/activities/add', payload: { river: '', daysFishedOther: '', daysFishedWithMandatoryRelease: '' }, status: 302, redirect: '/activities/add' }
   ],
   editActivityRiverSawdde: [
     { method: 'GET', path: '/activities/1', status: 200 },
-    { method: 'POST', path: '/activities/1', payload: { river: 'rivers/189', days: '3' }, status: 302, redirect: '/summary' }
+    { method: 'POST', path: '/activities/1', payload: { river: 'rivers/189', daysFishedOther: '3', daysFishedWithMandatoryRelease: '10' }, status: 302, redirect: '/summary' }
   ],
   addActivityRiverEbbw: [
     { method: 'GET', path: '/activities/add', status: 200 },
-    { method: 'POST', path: '/activities/add', payload: { river: 'rivers/87', days: '2' }, status: 302, redirect: '/summary' }
+    { method: 'POST', path: '/activities/add', payload: { river: 'rivers/87', daysFishedOther: '6', daysFishedWithMandatoryRelease: '2' }, status: 302, redirect: '/summary' }
   ],
   deleteActivityRiverEbbw: [
     { method: 'GET', path: '/delete/activities/2', status: 200 },

@@ -1,48 +1,7 @@
 {% extends "layout.html" %}
 {% from "back-link/macro.njk" import govukBackLink %}
 {% from "button/macro.njk" import govukButton %}
-{% from "table/macro.njk" import govukTable %}
-
-{% set riverRows = [] %}
-{% set salmonAndLargeTroutItems = [] %}
-{% set smallCatchItems = [] %}
-
-{% if activities.length %}
-    {% for activity in activities %}
-        {{ riverRows.push([
-            { text: activity.river.name },
-            { text: activity.daysFishedWithMandatoryRelease, format: "numeric" },
-            { text: activity.daysFishedOther, format: "numeric" },
-            { text: activity.count, format: "numeric" }
-        ]) }}
-    {% endfor %}
-{% endif %}
-
-{% if catches.length %}
-    {% for fish in catches %}
-        {{ salmonAndLargeTroutItems.push([
-            { text: fish.dateCaught },
-            { text: fish.activity.river.name },
-            { text: fish.species.name },
-            { text: fish.weight },
-            { text: fish.method.name },
-            { text: "Yes" if fish.released else "No" }
-        ]) }}
-    {% endfor %}
-{% endif %}
-
-{% if smallCatches.length %}
-    {% for catch in smallCatches %}
-        {{ smallCatchItems.push([
-            { text: catch.month },
-            { text: catch.river },
-            { text: catch.fly, format: "numeric" },
-            { text: catch.spinner, format: "numeric" },
-            { text: catch.bait, format: "numeric" },
-            { text: catch.released | replace("0", ""), format: "numeric" }
-        ]) }}
-    {% endfor %}
-{% endif %}
+{% import "review-macro.html" as review %}
 
 {% set title = "Your catch return report for " + year %}
 {% block pageTitle %}{{ title }}{% endblock %}
@@ -63,61 +22,9 @@
         <form method="post">
             <h1 class="govuk-heading-l">{{ title }}</h1>
 
-            {% if activities.length %}
-                 {{ govukTable({
-                    caption: "Rivers fished",
-                    captionClasses: "govuk-heading-m",
-                    firstCellIsHeader: false,
-                    head: [
-                        { text: "River" },
-                        { text: "Days fished (1 Jan-16 June)", format: "numeric" },
-                        { text: "Days fished (17 June-31 Dec)", format: "numeric" },
-                        { text: "Fish caught", format: "numeric" }
-                    ],
-                    rows: riverRows
-                 }) }}
-
-
-                {% if smallCatches.length %}
-                    {{ govukTable({
-                        caption: "Small adult sea trout (1lb and under) catches",
-                        captionClasses: "govuk-heading-m",
-                        firstCellIsHeader: false,
-                        head: [
-                            { text: "Month" },
-                            { text: "River" },
-                            { text: "Fly", format: "numeric" },
-                            { text: "Spinner", format: "numeric" },
-                            { text: "Bait", format: "numeric" },
-                            { text: "Released", format: "numeric" }
-                        ],
-                        rows: smallCatchItems
-                    }) }}
-                {% endif %}
-
-                {% if catches.length %}
-                    {{ govukTable({
-                        caption: "Salmon and large adult sea trout",
-                        captionClasses: "govuk-heading-m",
-                        firstCellIsHeader: false,
-                        head: [
-                            { text: "Date" },
-                            { text: "River" },
-                            { text: "Type" },
-                            { text: "Weight" },
-                            { text: "Method" },
-                            { text: "Released" }
-                        ],
-                        rows: salmonAndLargeTroutItems
-                    }) }}
-                {% endif %}
-            {% else %}
-                {% if not locked %}
-                    <p class="govuk-body-m">I confirm that I did not fish for salmon or seatrout in {{ year }}</p>
-                {% else %}
-                    <p class="govuk-body-m">I did not fish for salmon or seatrout in {{ year }}</p>
-                {% endif %}
-            {% endif %}
+            <div id="review">
+                {{ review.show(activities, catches, smallCatches, locked) }}
+            </div>
 
             {% if not locked %}
                 {{ govukButton({

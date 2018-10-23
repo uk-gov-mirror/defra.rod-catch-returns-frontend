@@ -1,10 +1,13 @@
 {% extends "layout.html" %}
 
 {% from "panel/macro.njk" import govukPanel %}
+{% import "review-macro.html" as review %}
+{% set title = "Your catch return report for " + year %}
+{% block pageTitle %}{{ title }}{% endblock %}
 
 {% block content %}
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
+    <div class="govuk-grid-column-full no-print-area">
 
         {{ govukPanel({
             titleText: "Rod catch return complete"
@@ -14,13 +17,18 @@
         <p class="govuk-body-l">We recommend printing a copy of your return to show you’ve complied with the national byelaws.</p>
 
         <p class="govuk-body">
-            <a class="govuk-link govuk-body-m" href="/review">Review and print your catch return report</a>
+            <a id="print-link" class="govuk-link govuk-body-m" href="#" onclick="window.print();return false;">Print your catch return report</a>
         </p>
 
         <p class="govuk-body">
             <a href="https://www.smartsurvey.co.uk/s/QQJ22/" class="govuk-link">What did you think of this service?</a> (takes 30 seconds)
         </p>
         {{ extra() }}
+    </div>
+
+    <div class="govuk-grid-column-full print-area">
+        <h1 class="govuk-heading-l">{{ title }}</h1>
+        {{ review.show(activities, catches, smallCatches, locked) }}
     </div>
 </div>
 {% endblock %}

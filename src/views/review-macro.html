@@ -1,0 +1,96 @@
+{% from "table/macro.njk" import govukTable %}
+
+{% macro show(activities, catches, smallCatches, locked) %}
+    <span hidden="hidden">
+        {% set riverRows = [] %}
+        {% set salmonAndLargeTroutItems = [] %}
+        {% set smallCatchItems = [] %}
+
+        {% for activity in activities %}
+            {{ riverRows.push([
+                { text: activity.river.name },
+                { text: activity.daysFishedWithMandatoryRelease, format: "numeric" },
+                { text: activity.daysFishedOther, format: "numeric" },
+                { text: activity.count, format: "numeric" }
+            ]) }}
+        {% endfor %}
+
+        {% for fish in catches %}
+            {{ salmonAndLargeTroutItems.push([
+                { text: fish.dateCaught },
+                { text: fish.activity.river.name },
+                { text: fish.species.name },
+                { text: fish.weight },
+                { text: fish.method.name },
+                { text: "Yes" if fish.released else "No" }
+            ]) }}
+        {% endfor %}
+
+        {% for catch in smallCatches %}
+            {{ smallCatchItems.push([
+                { text: catch.month },
+                { text: catch.river },
+                { text: catch.fly, format: "numeric" },
+                { text: catch.spinner, format: "numeric" },
+                { text: catch.bait, format: "numeric" },
+                { text: catch.released | replace("0", ""), format: "numeric" }
+            ]) }}
+        {% endfor %}
+    </span>
+
+    {% if riverRows.length %}
+        {{ govukTable({
+            caption: "Rivers fished",
+            captionClasses: "govuk-heading-m",
+            firstCellIsHeader: false,
+            head: [
+                { text: "River" },
+                { text: "Days fished (1 Jan-16 June)", format: "numeric" },
+                { text: "Days fished (17 June-31 Dec)", format: "numeric" },
+                { text: "Fish caught", format: "numeric" }
+            ],
+            rows: riverRows
+        }) }}
+
+        {% if smallCatchItems.length %}
+            {{ govukTable({
+                caption: "Small adult sea trout (1lb and under) catches",
+                captionClasses: "govuk-heading-m",
+                firstCellIsHeader: false,
+                head: [
+                    { text: "Month" },
+                    { text: "River" },
+                    { text: "Fly", format: "numeric" },
+                    { text: "Spinner", format: "numeric" },
+                    { text: "Bait", format: "numeric" },
+                    { text: "Released", format: "numeric" }
+                ],
+                rows: smallCatchItems
+            }) }}
+        {% endif %}
+
+        {% if smallCatchItems.length %}
+            {{ govukTable({
+                caption: "Salmon and large adult sea trout",
+                captionClasses: "govuk-heading-m",
+                firstCellIsHeader: false,
+                head: [
+                    { text: "Date" },
+                    { text: "River" },
+                    { text: "Type" },
+                    { text: "Weight" },
+                    { text: "Method" },
+                    { text: "Released" }
+                ],
+                rows: smallCatchItems
+            }) }}
+        {% endif %}
+
+    {% else %}
+        {% if not locked %}
+            <p class="govuk-body-m">I confirm that I did not fish for salmon or seatrout in {{ year }}</p>
+        {% else %}
+            <p class="govuk-body-m">I did not fish for salmon or seatrout in {{ year }}</p>
+        {% endif %}
+    {% endif %}
+{% endmacro %}

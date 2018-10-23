@@ -39,6 +39,10 @@ module.exports = class ReviewHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
+    return this.reviewReturn(request, h)
+  }
+
+  async reviewReturn (request, h) {
     const cache = await request.cache().get()
     let submission = await submissionsApi.getById(request, cache.submissionId)
 
@@ -80,7 +84,8 @@ module.exports = class ReviewHandler extends BaseHandler {
     })
 
     // Return the summary view
-    return h.view(this.path, { year: cache.year,
+    return h.view(this.path, {
+      year: cache.year,
       activities: activities.sort(activitiesApi.sort),
       catches: catches.sort(catchesApi.sort),
       smallCatches: smallCatches.sort(smallCatchesApi.sort),

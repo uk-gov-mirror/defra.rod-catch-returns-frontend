@@ -3,17 +3,13 @@
 /**
  * Display the confirmation page
  */
-const BaseHandler = require('./base')
+const ReviewHandler = require('./review')
 const SubmissionsApi = require('../api/submissions')
 const submissionsApi = new SubmissionsApi()
 
-module.exports = class ConfirmHandler extends BaseHandler {
-  constructor (...args) {
-    super(args)
-  }
-
+module.exports = class ConfirmHandler extends ReviewHandler {
   /**
-   * Get handler for main page
+   * Get handler confirmation page. This reuses the review details in a hidden page so that they can be easily printed
    * @param request
    * @param h
    * @param user
@@ -28,11 +24,6 @@ module.exports = class ConfirmHandler extends BaseHandler {
       throw new Error('Illegal access of the confirmation page')
     }
 
-    /*
-     * Leave the session open so that they can print
-     * await request.cache().drop()
-     * request.cookieAuth.clear()
-     */
-    return h.view(this.path)
+    return this.reviewReturn(request, h)
   }
 }

@@ -59,22 +59,32 @@
             }) }}
         {% endif %}
 
-        {% if error.daysFishedWithMandatoryRelease === "NOT_A_NUMBER" or error.Activity === 'ACTIVITY_DAYS_FISHED_WITH_MANDATORY_RELEASE_MAX_EXCEEDED' or error.Activity === 'ACTIVITY_DAYS_FISHED_NOT_GREATER_THAN_ZERO' %}
-            {% set daysMandatoryErrorMessage = { text: "Enter a number between 1 and 166" } %}
+        {% if error.daysFishedWithMandatoryRelease === "NOT_A_NUMBER" or error.Activity === 'ACTIVITY_DAYS_FISHED_WITH_MANDATORY_RELEASE_MAX_EXCEEDED' or
+            error.Activity === 'ACTIVITY_DAYS_FISHED_WITH_MANDATORY_RELEASE_NEGATIVE' %}
+            {% set daysMandatoryErrorMessage = { text: "Enter a number between 1 and 167" } %}
             {{ errorList.push({
                 text: "You have not entered a valid number of days you fished between 1 January and 16 June",
                 href: "#days"
             }) }}
         {% endif %}
 
-        {% if error.daysFishedOther === "NOT_A_NUMBER" or error.Activity === 'ACTIVITY_DAYS_FISHED_OTHER_MAX_EXCEEDED' or error.daysFishedOther === 'ACTIVITY_DAYS_FISHED_NOT_GREATER_THAN_ZERO' %}
-            {% set daysOtherErrorMessage = { text: "Enter a number between 1 and 197" } %}
+        {% if error.daysFishedOther === "NOT_A_NUMBER" or error.Activity === 'ACTIVITY_DAYS_FISHED_OTHER_MAX_EXCEEDED' or
+            error.Activity === 'ACTIVITY_DAYS_FISHED_OTHER_NEGATIVE' %}
+            {% set daysOtherErrorMessage = { text: "Enter a number between 1 and 198" } %}
             {{ errorList.push({
                 text: "You have not entered a valid number of days you fished between 17 June and 31 Dec",
                 href: "#days"
             }) }}
         {% endif %}
 
+        {% if error.Activity === 'ACTIVITY_DAYS_FISHED_NOT_GREATER_THAN_ZERO' %}
+            {% set daysOtherErrorMessage = { text: "Enter a number between 1 and 198" } %}
+            {% set daysMandatoryErrorMessage = { text: "Enter a number between 1 and 198" } %}
+            {{ errorList.push({
+                text: "You have not entered a number of days you fished greater than zero",
+                href: "#days"
+            }) }}
+        {% endif %}
     {% endfor %}
 {% endif %}
 
@@ -83,8 +93,6 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <form method="post">
-
-            {{ errors | dump }}
 
             {% if errors %}
                 {{ govukErrorSummary({
