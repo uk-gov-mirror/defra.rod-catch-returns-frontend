@@ -102,7 +102,7 @@ const internals = {
     await server.register({
       plugin: require('hapi-router'),
       options: {
-        routes: './src/routes/**/*.js' // uses glob to include files
+        routes: process.env.CONTEXT === 'FMT' ? './src/routes/*.js' : './src/routes/angler.js'
       }
     })
 

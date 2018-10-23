@@ -1,15 +1,12 @@
 'use strict'
 
 /**
- * These routes are scanned automatically by the hapi-router
+ * These routes are scanned automatically by the hapi-router.
+ * This is the standard set of routes used by the angler interface
  */
 const LicenceAuthHandler = require('../handlers/licence-login')
 const LicenceAuthNotFoundHandler = require('../handlers/licence-login-fail')
 
-const LoginHandler = require('../handlers/login')
-const FailedLogin = require('../handlers/login-fail')
-
-const LicenceHandler = require('../handlers/licence')
 const DidYouFishHandler = require('../handlers/did-you-fish')
 const YearHandler = require('../handlers/year')
 const SummaryHandler = require('../handlers/summary')
@@ -25,7 +22,6 @@ const SaveHandler = require('../handlers/save')
 
 // Define the validators
 const loginValidator = require('../validators/login')
-const licenceValidator = require('../validators/licence')
 const yearValidator = require('../validators/year')
 const didYouFishValidator = require('../validators/did-you-fish')
 const activityValidator = require('../validators/activity')
@@ -35,11 +31,8 @@ const smallCatchValidator = require('../validators/small-catch')
 // Define the handlers
 const licenceAuthHandler = new LicenceAuthHandler('licence', loginValidator)
 const licenceAuthNotFound = new LicenceAuthNotFoundHandler('licence', loginValidator)
-const loginHandler = new LoginHandler('login', loginValidator)
-const failedLogin = new FailedLogin('login', loginValidator)
 const yearHandler = new YearHandler('select-year', yearValidator)
 
-const licenceHandler = new LicenceHandler('licence', licenceValidator)
 const didYouFishHandler = new DidYouFishHandler('did-you-fish', didYouFishValidator)
 const summaryHandler = new SummaryHandler('summary')
 const activityHandler = new ActivityHandler('activity', activityValidator)
@@ -62,43 +55,6 @@ module.exports = [
     handler: (request, h) => {
       return process.env.CONTEXT === 'ANGLER' ? h.redirect('/licence-auth') : h.redirect('/login')
     }
-  },
-
-  /*
-   * The following set of handlers are concerned with the FMT login - those users authenticated
-   * by AAD
-   */
-
-  // Login GET handler
-  {
-    path: '/login',
-    method: 'GET',
-    handler: loginHandler.handler,
-    options: { auth: false }
-  },
-
-  // Login POST handler
-  {
-    path: '/login',
-    method: 'POST',
-    handler: loginHandler.handler,
-    options: { auth: { strategies: ['active-dir-strategy', 'session'] } }
-  },
-
-  // Failed Login GET handler
-  {
-    path: '/login-fail',
-    method: 'GET',
-    handler: failedLogin.handler,
-    options: { auth: false }
-  },
-
-  // Failed Login POST handler
-  {
-    path: '/login-fail',
-    method: 'POST',
-    handler: failedLogin.handler,
-    options: { auth: { strategies: ['active-dir-strategy', 'session'] } }
   },
 
   /*
@@ -136,17 +92,6 @@ module.exports = [
     method: 'POST',
     handler: licenceAuthHandler.handler,
     options: { auth: { strategies: ['licence-strategy', 'session'] } }
-  },
-
-  /*
-   * The remaining set of handlers are secured by the default authorization strategy -
-   * using hapi-auth-cookie
-   */
-  // Licence not found GET handler
-  {
-    path: '/licence',
-    method: ['GET', 'POST'],
-    handler: licenceHandler.handler
   },
 
   // Year handler
