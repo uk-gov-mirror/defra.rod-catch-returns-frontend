@@ -69,7 +69,7 @@
             }) }}
         {% endif %}
 
-        {% if smallCatchItems.length %}
+        {% if salmonAndLargeTroutItems.length %}
             {{ govukTable({
                 caption: "Salmon and large adult sea trout",
                 captionClasses: "govuk-heading-m",
@@ -82,7 +82,7 @@
                     { text: "Method" },
                     { text: "Released" }
                 ],
-                rows: smallCatchItems
+                rows: salmonAndLargeTroutItems
             }) }}
         {% endif %}
 
