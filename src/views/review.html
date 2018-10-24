@@ -23,8 +23,8 @@
         <form method="post">
             <h1 class="govuk-heading-l">{{ title }}</h1>
 
-            <div id="review">
-                {{ review.show(activities, catches, smallCatches, locked) }}
+            <div id="review" class="govuk-!-margin-bottom-9">
+                {{ review.show(activities, catches, smallCatches, locked, year) }}
             </div>
 
             {% if not locked %}

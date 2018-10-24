@@ -48,7 +48,7 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
       await request.cache().set(cache)
 
       // If are doing add again then filter the rivers
-      if (cache.add) {
+      if (cache.add && cache.add.river) {
         // Filter to single river and filter the allowed months
         rivers = rivers.filter(r => r.id === cache.add.river)
       }

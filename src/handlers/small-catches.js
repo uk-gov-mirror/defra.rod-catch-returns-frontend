@@ -57,7 +57,7 @@ module.exports = class SmallCatchHandler extends BaseHandler {
 
       // If we only have one river or we are doing add again then filter the months
       if (rivers.length === 1 || cache.add) {
-        if (cache.add) {
+        if (cache.add && cache.add.river) {
           // Filter to single river and filter the allowed months
           rivers = rivers.filter(r => r.id === cache.add.river)
         }

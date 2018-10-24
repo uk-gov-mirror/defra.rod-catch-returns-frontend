@@ -47,7 +47,7 @@
             {% set daysMandatoryErrorMessage = { text: "Enter a number between 0 and 167" } %}
             {{ errorList.push({
                 text: "You have not entered the number of days fished between 1 January and 16 June",
-                href: "#days"
+                href: "#daysFishedWithMandatoryRelease"
             }) }}
         {% endif %}
 
@@ -55,7 +55,7 @@
             {% set daysOtherErrorMessage = { text: "Enter a number between 0 and 198" } %}
             {{ errorList.push({
                 text: "You have not entered the number of days fished between 17 June and 31 Dec",
-                href: "#days"
+                href: "#daysFishedOther"
             }) }}
         {% endif %}
 
@@ -64,7 +64,7 @@
             {% set daysMandatoryErrorMessage = { text: "Enter a number between 0 and 167" } %}
             {{ errorList.push({
                 text: "You have not entered a valid number of days fished between 1 January and 16 June",
-                href: "#days"
+                href: "#daysFishedWithMandatoryRelease"
             }) }}
         {% endif %}
 
@@ -73,7 +73,7 @@
             {% set daysOtherErrorMessage = { text: "Enter a number between 0 and 198" } %}
             {{ errorList.push({
                 text: "You have not entered a valid number of days fished between 17 June and 31 Dec",
-                href: "#days"
+                href: "#daysFishedOther"
             }) }}
         {% endif %}
 
@@ -81,8 +81,8 @@
             {% set daysOtherErrorMessage = { text: "Enter a number between 0 and 198" } %}
             {% set daysMandatoryErrorMessage = { text: "Enter a number between 0 and 167" } %}
             {{ errorList.push({
-                text: "The number of days fished must be greater than zero",
-                href: "#days"
+                text: "The number of days fished must be greater than 0",
+                href: "#daysFishedOther"
             }) }}
         {% endif %}
     {% endfor %}
@@ -148,7 +148,7 @@
 
                 {{ govukButton({
                     name: "continue",
-                    text: "Continue"
+                    text: "Save"
                 }) }}
 
             {% endcall %}

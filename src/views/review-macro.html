@@ -1,6 +1,6 @@
 {% from "table/macro.njk" import govukTable %}
 
-{% macro show(activities, catches, smallCatches, locked) %}
+{% macro show(activities, catches, smallCatches, locked, year) %}
     <span hidden="hidden">
         {% set riverRows = [] %}
         {% set salmonAndLargeTroutItems = [] %}
@@ -30,9 +30,9 @@
             {{ smallCatchItems.push([
                 { text: catch.month },
                 { text: catch.river },
-                { text: catch.fly, format: "numeric" },
-                { text: catch.spinner, format: "numeric" },
-                { text: catch.bait, format: "numeric" },
+                { text: catch.fly or 0, format: "numeric" },
+                { text: catch.spinner or 0, format: "numeric" },
+                { text: catch.bait or 0, format: "numeric" },
                 { text: catch.released, format: "numeric" }
             ]) }}
         {% endfor %}
@@ -42,6 +42,7 @@
         {{ govukTable({
             caption: "Rivers fished",
             captionClasses: "govuk-heading-m",
+            classes: "govuk-!-margin-bottom-9",
             firstCellIsHeader: false,
             head: [
                 { text: "River" },
@@ -56,6 +57,7 @@
             {{ govukTable({
                 caption: "Small adult sea trout (1lb and under) catches",
                 captionClasses: "govuk-heading-m",
+                classes: "govuk-!-margin-bottom-9",
                 firstCellIsHeader: false,
                 head: [
                     { text: "Month" },
@@ -73,6 +75,7 @@
             {{ govukTable({
                 caption: "Salmon and large adult sea trout",
                 captionClasses: "govuk-heading-m",
+                classes: "govuk-!-margin-bottom-9",
                 firstCellIsHeader: false,
                 head: [
                     { text: "Date" },
@@ -88,9 +91,9 @@
 
     {% else %}
         {% if not locked %}
-            <p class="govuk-body-m">I confirm that I did not fish for salmon or seatrout in {{ year }}</p>
+            <p class="govuk-body-m">I confirm that I did not fish for salmon or sea trout in {{ year }}.</p>
         {% else %}
-            <p class="govuk-body-m">I did not fish for salmon or seatrout in {{ year }}</p>
+            <p class="govuk-body-m">I did not fish for salmon or sea trout in {{ year }}.</p>
         {% endif %}
     {% endif %}
 {% endmacro %}

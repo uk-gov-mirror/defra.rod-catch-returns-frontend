@@ -49,7 +49,7 @@ function conversion (payload, errors) {
     payload.ounces = Math.round(oz % 16)
   } else if (payload.system === 'IMPERIAL' && errors.filter(e => e['pounds']).length === 0 && errors.filter(e => e['ounces']).length === 0) {
     const oz = (16 * Number.parseInt(payload.pounds)) + Number.parseInt(payload.ounces)
-    payload.kilograms = Math.round(0.0283495 * oz * 10) / 10
+    payload.kilograms = Math.round(0.0283495 * oz * 1000) / 1000
   }
 }
 

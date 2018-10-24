@@ -21,9 +21,9 @@
 {% set errorList = [] %}
 
 {% if errors %}
-    {% set dyfErrorMessage = { text: "Did you fish" } %}
+    {% set dyfErrorMessage = { text: "Select yes or no" } %}
     {{ errorList.push({
-        text: "Please select whether you fished in " + year,
+        text: "You have not told us whether you fished in " + year,
         href: "#dyf"
     }) }}
 {% endif %}

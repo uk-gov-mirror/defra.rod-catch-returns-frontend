@@ -112,12 +112,20 @@
         {% endif %}
 
         {% if error.SmallCatch === 'SMALL_CATCH_COUNTS_REQUIRED' %}
-            {% set spinnerErrorMessage = { text: "The number caught with a spinner, bait or fly must be greater than zero" } %}
-            {% set baitErrorMessage = { text: "The number caught with a spinner, bait or fly must be greater than zero" } %}
-            {% set flyErrorMessage = { text: "The number caught with a spinner, bait or fly must be greater than zero" } %}
+            {% set spinnerErrorMessage = { text: "The total number caught must be greater than 0" } %}
+            {% set baitErrorMessage = { text: "The number total caught must be greater than 0" } %}
+            {% set flyErrorMessage = { text: "The number total caught must be greater than 0" } %}
             {{ errorList.push({
-                text: "You must enter the number of fish caught by spinner, bait or fly",
+                text: "You have not entered the number of fish caught",
                 href: "#river"
+            }) }}
+        {% endif %}
+
+        {% if error.SmallCatch === 'SMALL_CATCH_RELEASED_NEGATIVE' %}
+            {% set releasedErrorMessage = { text: "The number released must be 0 or above" } %}
+            {{ errorList.push({
+                text: "You have not entered a valid number of fish released",
+                href: "#released"
             }) }}
         {% endif %}
 
@@ -179,7 +187,7 @@
             {% if add %}
                 <h1 class="govuk-heading-l">Add a small adult sea trout catch {{ suffix }}</h1><p class="govuk-body-l">Add details of small adult sea trout (1lb and under) catches by month</p>
             {% else %}
-                <h1 class="govuk-heading-l">Edit a small adult sea trout catch</h1>
+                <h1 class="govuk-heading-l">Edit a small adult sea trout catch {{ suffix }}</h1>
             {% endif %}
 
             {% call govukFieldset({}) %}
@@ -266,7 +274,7 @@
                     name: "released",
                     hint: { text: "Number of fish released back into the water" },
                     label: {
-                        text: "Number released"
+                        text: "Released"
                     },
                     value: payload.released,
                     attributes: { maxlength: 4 },
