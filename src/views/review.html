@@ -2,8 +2,9 @@
 {% from "back-link/macro.njk" import govukBackLink %}
 {% from "button/macro.njk" import govukButton %}
 {% import "review-macro.html" as review %}
+{% from "warning-text/macro.njk" import govukWarningText %}
 
-{% set title = "Your catch return report for " + year %}
+{% set title = "Your " + year + " catch return report" %}
 {% block pageTitle %}{{ title }}{% endblock %}
 
 {% block beforeContent %}
@@ -27,6 +28,11 @@
             </div>
 
             {% if not locked %}
+                {{ govukWarningText({
+                    text: "Only submit if you have finished fishing for salmon and sea trout this year.",
+                    iconFallbackText: "Warning"
+                }) }}
+
                 {{ govukButton({
                     name: "continue",
                     text: "Submit catch return"

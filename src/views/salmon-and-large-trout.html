@@ -206,6 +206,10 @@
 
 {% block pageTitle %}{% if add %}Add{% else %}Edit{% endif %} a salmon or large adult sea trout{% endblock %}
 
+{% if rivers.length === 1 %}
+    {% set suffix = "caught on river " + rivers[0].name %}
+{% endif %}
+
 {% block content %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -218,9 +222,9 @@
             {% endif %}
 
             {% if add %}
-                <h1 class="govuk-heading-l">Add a salmon or large adult sea trout</h1>
+                <h1 class="govuk-heading-l">Add a salmon or large adult sea trout {{ suffix }}</h1>
             {% else %}
-                <h1 class="govuk-heading-l">Edit a salmon or large adult sea trout</h1>
+                <h1 class="govuk-heading-l">Edit a salmon or large adult sea trout {{ suffix }}</h1>
             {% endif %}
 
             {% call govukFieldset({}) %}
@@ -243,7 +247,6 @@
                         errorMessage: riverErrorMessage
                     }) }}
                 {% else %}
-                    <h1 class="govuk-heading-m">River {{ rivers[0].name }}</h1>
                     <input type="hidden" id="river" name="river" value="{{ rivers[0].id }}"/>
                 {% endif %}
 

@@ -52,8 +52,8 @@ module.exports = class BaseHandler {
     if (cache.errors || cache.payload) {
       delete cache.errors
       delete cache.payload
-      await request.cache().set(cache)
     }
+    await request.cache().set(cache)
     return h.redirect(successPath)
   }
 
