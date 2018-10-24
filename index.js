@@ -105,6 +105,14 @@ const manifest = {
       },
 
       /*
+       * This plugin handles direct proxying through to the API
+       * See https://github.com/hapijs/h2o2
+       */
+      {
+        plugin: require('h2o2')
+      },
+
+      /*
        * To print routes on startup change showStart to true
        * See https://www.npmjs.com/package/blipp
        */

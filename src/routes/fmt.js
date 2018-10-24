@@ -17,6 +17,12 @@ const failedLogin = new FailedLogin('login', loginValidator)
 
 const licenceHandler = new LicenceHandler('licence', licenceValidator)
 
+const api = {
+  host: process.env.API_HOSTNAME || 'localhost',
+  port: Number.parseInt(process.env.API_PORT || 9580),
+  protocol: 'http'
+}
+
 module.exports = [
 
   /*
@@ -65,5 +71,17 @@ module.exports = [
     path: '/licence',
     method: ['GET', 'POST'],
     handler: licenceHandler.handler
+  },
+
+  {
+    method: 'GET',
+    path: '/reporting/catches/{season}',
+    handler: {
+      proxy: {
+        uri: `http://${api.host}:${api.port}/api/reporting/catches/{season}`,
+        passThrough: true,
+        xforward: true
+      }
+    }
   }
 ]
