@@ -50,7 +50,7 @@ module.exports = {
           if (err.statusCode === 401) {
             return h.continue
           } else {
-            throw err
+            return h.redirect('/error500').takeover()
           }
         }
       },
@@ -101,7 +101,7 @@ module.exports = {
           if (err.statusCode === 401) {
             return h.continue
           } else {
-            throw err
+            return h.redirect('/error500').takeover()
           }
         }
       },
