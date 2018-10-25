@@ -47,7 +47,7 @@ module.exports = {
           }
           return h.continue
         } catch (err) {
-          if (err.statusCode === 401) {
+          if (err.statusCode === 401 || err.statusCode === 403) {
             return h.continue
           } else {
             return h.redirect('/error500').takeover()
@@ -98,7 +98,7 @@ module.exports = {
           }
           return h.continue
         } catch (err) {
-          if (err.statusCode === 401) {
+          if (err.statusCode === 401 || err.statusCode === 403) {
             return h.continue
           } else {
             return h.redirect('/error500').takeover()
