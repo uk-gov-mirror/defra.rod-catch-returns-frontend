@@ -85,7 +85,7 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
         pounds: Math.floor(largeCatch.mass.oz / 16),
         ounces: Math.round(largeCatch.mass.oz % 16),
         system: largeCatch.mass.type,
-        kilograms: largeCatch.mass.kg,
+        kilograms: Math.round(largeCatch.mass.kg * 1000) / 1000,
         method: largeCatch.method.id,
         released: largeCatch.released ? 'true' : 'false'
       }

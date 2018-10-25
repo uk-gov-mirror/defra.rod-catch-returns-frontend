@@ -143,12 +143,21 @@
         {% endif %}
 
         {% if error.Catch === 'CATCH_MASS_BELOW_MINIMUM' %}
-            {% set systemErrorMessage = { text: "Enter a valid weight (over 1lb or 0.45 Kg)" } %}
+            {% set systemErrorMessage = { text: "Enter a valid weight in kilograms" } %}
             {{ errorList.push({
                 text: "This fish is too small",
                 href: "#system"
             }) }}
         {% endif %}
+
+        {% if error.Catch === 'CATCH_MASS_KG_REQUIRED' or error.Catch === 'CATCH_MASS_OZ_REQUIRED' %}
+            {% set systemErrorMessage = { text: "Enter a valid weight" } %}
+            {{ errorList.push({
+                text: "You have not entered a weight for this fish",
+                href: "#system"
+            }) }}
+        {% endif %}
+
     {% endfor %}
 {% endif %}
 

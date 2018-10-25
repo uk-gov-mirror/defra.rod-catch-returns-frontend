@@ -20,8 +20,8 @@ module.exports = async (request) => {
     errors.push({ River: 'NOT_SELECTED' })
   }
 
-  checkNumber('daysFishedOther', payload.daysFishedOther, errors)
-  checkNumber('daysFishedWithMandatoryRelease', payload.daysFishedWithMandatoryRelease, errors)
+  payload.daysFishedOther = checkNumber('daysFishedOther', payload.daysFishedOther, errors)
+  payload.daysFishedWithMandatoryRelease = checkNumber('daysFishedWithMandatoryRelease', payload.daysFishedWithMandatoryRelease, errors)
 
   // if there are no errors try to persist the activity
   if (!errors.length) {

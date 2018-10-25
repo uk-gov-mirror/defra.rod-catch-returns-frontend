@@ -35,10 +35,10 @@ function validateWeight (payload, errors) {
   if (!payload.system) {
     errors.push({ system: 'EMPTY' })
   } else if (payload.system === 'IMPERIAL') {
-    checkNumber('pounds', payload.pounds, errors)
-    checkNumber('ounces', payload.ounces, errors, 16)
+    payload.pounds = checkNumber('pounds', payload.pounds, errors)
+    payload.ounces = checkNumber('ounces', payload.ounces, errors)
   } else if (payload.system === 'METRIC') {
-    checkNumber('kilograms', payload.kilograms, errors)
+    payload.kilograms = checkNumber('kilograms', payload.kilograms, errors)
   }
 }
 

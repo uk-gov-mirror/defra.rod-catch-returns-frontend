@@ -26,21 +26,23 @@ module.exports = {
     }
   },
 
-  checkNumber: (label, num, errors, max) => {
+  /**
+   * Replaces blanks with zero.
+   * Tests for not a number.
+   * @param label - The label to assign to the error
+   * @param num - The number to test
+   * @param errors - Pushes the error onto errors
+   * @returns {*} The number you first thought of
+   */
+  checkNumber: (label, num, errors) => {
     if (!num || !num.trim()) {
-      let err = {}
-      err[label] = 'EMPTY'
-      errors.push(err)
+      return 0
     } else if (isNaN(num)) {
       let err = {}
       err[label] = 'NOT_A_NUMBER'
       errors.push(err)
-    } else {
-      if (max && num > max) {
-        let err = {}
-        err[label] = 'EXCEEDS_MAXIMUM'
-        errors.push(err)
-      }
+      return num
     }
+    return num
   }
 }
