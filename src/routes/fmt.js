@@ -6,6 +6,7 @@
 const LoginHandler = require('../handlers/login')
 const FailedLogin = require('../handlers/login-fail')
 const LicenceHandler = require('../handlers/licence')
+const ReportsHandler = require('../handlers/reports')
 
 // Define the validators
 const loginValidator = require('../validators/login')
@@ -14,7 +15,7 @@ const licenceValidator = require('../validators/licence')
 // Define the handlers
 const loginHandler = new LoginHandler('login', loginValidator)
 const failedLogin = new FailedLogin('login', loginValidator)
-
+const reportsHandler = new ReportsHandler('reports')
 const licenceHandler = new LicenceHandler('licence', licenceValidator)
 
 const api = {
@@ -71,6 +72,13 @@ module.exports = [
     path: '/licence',
     method: ['GET', 'POST'],
     handler: licenceHandler.handler
+  },
+
+  // Reports handler
+  {
+    path: '/reports',
+    method: 'GET',
+    handler: reportsHandler.handler
   },
 
   {

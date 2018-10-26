@@ -12,6 +12,22 @@
 {% set licenceErrorMessage = null %}
 {% set postcodeErrorMessage = null %}
 
+{% if fmt %}
+    {% block header %}
+        {{ headerBlock([
+            {
+              href: "/licence",
+              text: "Catch returns",
+              active: true
+            },
+            {
+              href: "/reports?back=/licence",
+              text: "Reports"
+            }
+        ]) }}
+    {% endblock %}
+{% endif %}
+
 {% block content %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">

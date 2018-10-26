@@ -74,7 +74,8 @@ module.exports = class BaseHandler {
     if (cache.payload || cache.errors) {
       pageObj = Object.assign(pageObj, { payload: cache.payload, errors: cache.errors })
     }
-    return h.view(this.path, pageObj)
+    // Tell the page if we are fmt
+    return h.view(this.path, Object.assign(pageObj, { fmt: process.env.CONTEXT === 'FMT' }))
   }
 
   /*

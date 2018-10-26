@@ -51,6 +51,16 @@
     }}
 {% endblock %}
 
+{% macro headerBlock(navigation) %}
+    {{ govukHeader({
+            homepageUrl: "#",
+            containerClasses: "govuk-width-container",
+            serviceName: "Report your salmon or sea trout catch",
+            navigation: navigation
+        })
+    }}
+{% endmacro %}
+
 {% block beforeContent %}
     {{ govukPhaseBanner({
             tag: {
