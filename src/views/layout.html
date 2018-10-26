@@ -3,6 +3,7 @@
 
 {% from "phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "footer/macro.njk" import govukFooter %}
+{% from "header/macro.njk" import govukHeader %}
 
 {% macro extra() %}
 <div class="field">
@@ -50,16 +51,6 @@
         })
     }}
 {% endblock %}
-
-{% macro headerBlock(navigation) %}
-    {{ govukHeader({
-            homepageUrl: "#",
-            containerClasses: "govuk-width-container",
-            serviceName: "Report your salmon or sea trout catch",
-            navigation: navigation
-        })
-    }}
-{% endmacro %}
 
 {% block beforeContent %}
     {{ govukPhaseBanner({

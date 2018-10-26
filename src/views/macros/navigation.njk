@@ -1,0 +1,21 @@
+{% from "header/macro.njk" import govukHeader %}
+
+{% macro navigationHeaderBlock(page) %}
+    {{ govukHeader({
+        homepageUrl: "#",
+        containerClasses: "govuk-width-container",
+        serviceName: "Report your salmon or sea trout catch",
+        navigation: [
+            {
+              href: page,
+              text: "Catch returns",
+              active: true
+            },
+            {
+              href: "/reports?back=" + page,
+              text: "Reports"
+            }
+        ]
+        })
+    }}
+{% endmacro %}

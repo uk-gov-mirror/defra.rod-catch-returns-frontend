@@ -5,6 +5,15 @@
 {% from "fieldset/macro.njk" import govukFieldset %}
 {% from "button/macro.njk" import govukButton %}
 {% from "error-summary/macro.njk" import govukErrorSummary %}
+{% from "navigation.njk" import navigationHeaderBlock %}
+
+{% block header %}
+    {% if fmt %}
+        {{ navigationHeaderBlock('/select-year') }}
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock %}
 
 {% block beforeContent %}
     {{ super() }}

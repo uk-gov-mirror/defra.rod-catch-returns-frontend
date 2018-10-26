@@ -1,6 +1,7 @@
 'use strict'
 
 const Nunjucks = require('nunjucks')
+const Uuid = require('uuid')
 const Glue = require('glue')
 const { logger } = require('defra-logging-facade')
 const Code = require('code')
@@ -89,7 +90,13 @@ const internals = {
         'src/views',
         'node_modules/govuk-frontend/',
         'node_modules/govuk-frontend/components/'
-      ]
+      ],
+      context: () => {
+        return {
+          pgid: Uuid.v4(),
+          fmt: process.env.CONTEXT === 'FMT'
+        }
+      }
     })
 
     server.auth.scheme('active-dir-scheme', AuthorizationSchemes.activeDirScheme)

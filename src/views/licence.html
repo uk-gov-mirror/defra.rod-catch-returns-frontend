@@ -6,32 +6,26 @@
 {% from "fieldset/macro.njk" import govukFieldset %}
 {% from "details/macro.njk" import govukDetails %}
 {% from "error-summary/macro.njk" import govukErrorSummary %}
+{% from "navigation.njk" import navigationHeaderBlock %}
 
 {% block pageTitle %}Report your salmon or sea trout catch{% endblock %}
 
 {% set licenceErrorMessage = null %}
 {% set postcodeErrorMessage = null %}
 
-{% if fmt %}
-    {% block header %}
-        {{ headerBlock([
-            {
-              href: "/licence",
-              text: "Catch returns",
-              active: true
-            },
-            {
-              href: "/reports?back=/licence",
-              text: "Reports"
-            }
-        ]) }}
-    {% endblock %}
-{% endif %}
+{% block header %}
+    {% if fmt %}
+        {{ navigationHeaderBlock('/licence') }}
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock %}
 
 {% block content %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <form method="post">
+
             {% if errors %}
                 {% set licenceErrorMessage = 'Enter the last 6 digits of your licence number' %}
                 {% set postcodeErrorMessage = 'Enter the postcode with which you applied for your licence' %}

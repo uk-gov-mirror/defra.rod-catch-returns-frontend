@@ -2,9 +2,12 @@
 
 {% block pageTitle %}Reports{% endblock %}
 
-{% if fmt %}
-    {% block header %}
-        {{ headerBlock([
+{% block header %}
+    {{ govukHeader({
+        homepageUrl: "#",
+        containerClasses: "govuk-width-container",
+        serviceName: "Report your salmon or sea trout catch",
+        navigation: [
             {
               href: back,
               text: "Catch returns",
@@ -15,9 +18,9 @@
               text: "Reports",
               active: true
             }
-        ]) }}
-    {% endblock %}
-{% endif %}
+        ]})
+    }}
+{% endblock %}
 
 {% block content %}
 <div class="govuk-grid-row">

@@ -4,6 +4,7 @@
 {% from "button/macro.njk" import govukButton %}
 {% from "table/macro.njk" import govukTable %}
 {% from "fieldset/macro.njk" import govukFieldset %}
+{% from "navigation.njk" import navigationHeaderBlock %}
 
 {% block beforeContent %}
     {{ super() }}
@@ -13,6 +14,13 @@
     }) }}
 {% endblock %}
 
+{% block header %}
+    {% if fmt %}
+        {{ navigationHeaderBlock('/summary') }}
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock %}
 
 {% block pageTitle %}Your {{ year }} catch return{% endblock %}
 

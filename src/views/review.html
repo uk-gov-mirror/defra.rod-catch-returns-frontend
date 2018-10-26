@@ -1,8 +1,18 @@
 {% extends "layout.html" %}
+
 {% from "back-link/macro.njk" import govukBackLink %}
 {% from "button/macro.njk" import govukButton %}
-{% import "review-macro.html" as review %}
+{% from "review.njk" import review %}
 {% from "warning-text/macro.njk" import govukWarningText %}
+{% from "navigation.njk" import navigationHeaderBlock %}
+
+{% block header %}
+    {% if fmt %}
+        {{ navigationHeaderBlock('/review') }}
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock %}
 
 {% set title = "Your " + year + " catch return report" %}
 {% block pageTitle %}{{ title }}{% endblock %}
@@ -24,7 +34,7 @@
             <h1 class="govuk-heading-l">{{ title }}</h1>
 
             <div id="review" class="govuk-!-margin-bottom-9">
-                {{ review.show(activities, catches, smallCatches, locked, year) }}
+                {{ review(activities, catches, smallCatches, locked, year) }}
             </div>
 
             {% if not locked %}

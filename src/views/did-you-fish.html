@@ -5,6 +5,7 @@
 {% from "button/macro.njk" import govukButton %}
 {% from "radios/macro.njk" import govukRadios %}
 {% from "error-summary/macro.njk" import govukErrorSummary %}
+{% from "navigation.njk" import navigationHeaderBlock %}
 
 {% block beforeContent %}
     {{ super() }}
@@ -12,6 +13,14 @@
         href: "/licence",
         text: "Back"
     }) }}
+{% endblock %}
+
+{% block header %}
+    {% if fmt %}
+        {{ navigationHeaderBlock('/did-you-fish') }}
+    {% else %}
+        {{ super() }}
+    {% endif %}
 {% endblock %}
 
 {% set title = "Did you fish for salmon or sea trout in " + year + "?" %}
