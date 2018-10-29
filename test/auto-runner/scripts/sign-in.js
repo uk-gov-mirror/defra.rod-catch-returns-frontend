@@ -8,5 +8,9 @@ module.exports = {
     .concat(requests.signInSuccess),
 
   subsequent: requests.start
-    .concat(requests.signInWithActivity)
+    .concat(requests.signInWithActivity),
+
+  locked: requests.start
+    .concat(requests.signInToLocked)
+
 }

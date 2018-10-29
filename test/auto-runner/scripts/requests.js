@@ -34,13 +34,21 @@ module.exports = {
   signInFail: [
     { method: 'POST', path: '/licence-auth', status: 302, payload: { licence: 'A7A718', postcode: 'WA4 1HT' }, redirect: '/licence-auth-fail' }
   ],
+  signInToLocked: [
+    { method: 'GET', path: '/licence-auth', status: 200 },
+    { method: 'POST', path: '/licence-auth', status: 302, payload: { licence: LICENCE, postcode: POSTCODE }, redirect: '/select-year' },
+    { method: 'GET', path: '/select-year', status: 200 },
+    { method: 'POST', path: '/select-year', status: 302, payload: { year: YEAR }, redirect: '/did-you-fish' },
+    { method: 'GET', path: '/did-you-fish', status: 302, redirect: '/review' },
+    { method: 'GET', path: '/review', status: 200 }
+  ],
   addActivityRiverSawdde: [
     { method: 'GET', path: '/activities/add', status: 200 },
     { method: 'POST', path: '/activities/add', payload: { river: 'rivers/189', daysFishedOther: '7', daysFishedWithMandatoryRelease: '0' }, status: 302, redirect: '/summary' }
   ],
   addActivityRiverErrors: [
     { method: 'GET', path: '/activities/add', status: 200 },
-    { method: 'POST', path: '/activities/add', payload: { river: '', daysFishedOther: '', daysFishedWithMandatoryRelease: '' }, status: 302, redirect: '/activities/add' }
+    { method: 'POST', path: '/activities/add', payload: { river: '', daysFishedOther: '1000', daysFishedWithMandatoryRelease: '' }, status: 302, redirect: '/activities/add' }
   ],
   editActivityRiverSawdde: [
     { method: 'GET', path: '/activities/1', status: 200 },
@@ -66,7 +74,7 @@ module.exports = {
     { method: 'GET', path: '/small-catches/add', status: 200 },
     { method: 'POST',
       path: '/small-catches/add',
-      payload: { river: 'rivers/189', month: '', fly: '', spinner: '', bait: '', released: '' },
+      payload: { river: 'rivers/189', month: '', fly: 'a', spinner: '', bait: '', released: '' },
       status: 302,
       redirect: '/small-catches/add' }
   ],
@@ -189,10 +197,15 @@ module.exports = {
     { method: 'GET', path: '/delete/catches/2', status: 200 },
     { method: 'POST', path: '/delete/catches/2', payload: {}, status: 302, redirect: '/summary' }
   ],
+  save: [
+    { method: 'GET', path: '/summary', status: 200 },
+    { method: 'GET', path: '/save', status: 200 }
+  ],
   reviewAndSubmit: [
     { method: 'GET', path: '/summary', status: 200 },
     { method: 'POST', path: '/summary', payload: {}, status: 302, redirect: '/review' },
     { method: 'GET', path: '/review', status: 200 },
-    { method: 'POST', path: '/review', payload: {}, status: 302, redirect: '/confirmation' }
+    { method: 'POST', path: '/review', payload: {}, status: 302, redirect: '/confirmation' },
+    { method: 'GET', path: '/confirmation', status: 200 }
   ]
 }
