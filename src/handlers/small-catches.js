@@ -75,7 +75,12 @@ module.exports = class SmallCatchHandler extends BaseHandler {
         rivers: rivers,
         months: monthsFiltered || months,
         methods: await methodsApi.list(request),
-        add: true
+        add: true,
+        details: {
+          licenceNumber: cache.licenceNumber,
+          postcode: cache.postcode,
+          year: cache.year
+        }
       })
     } else {
       // Modify an existing catch
@@ -111,7 +116,12 @@ module.exports = class SmallCatchHandler extends BaseHandler {
         rivers: rivers,
         months: months,
         methods: await methodsApi.list(request),
-        payload: payload
+        payload: payload,
+        details: {
+          licenceNumber: cache.licenceNumber,
+          postcode: cache.postcode,
+          year: cache.year
+        }
       })
     }
   }

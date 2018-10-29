@@ -50,7 +50,13 @@ module.exports = class DeleteActivityHandler extends BaseHandler {
 
     cache.delete = activity.id
     await request.cache().set(cache)
-    return h.view(this.path, { river })
+    return h.view(this.path, { river,
+      details: {
+        licenceNumber: cache.licenceNumber,
+        postcode: cache.postcode,
+        year: cache.year
+      }
+    })
   }
 
   /**

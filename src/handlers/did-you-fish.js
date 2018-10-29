@@ -59,7 +59,10 @@ module.exports = class DidYouFishHandler extends BaseHandler {
 
     // Display the view
     return this.readCacheAndDisplayView(request, h, {
-      year: cache.year
+      details: {
+        licenceNumber: cache.licenceNumber,
+        postcode: cache.postcode,
+        year: cache.year }
     })
   }
 

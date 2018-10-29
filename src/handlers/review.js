@@ -83,13 +83,18 @@ module.exports = class ReviewHandler extends BaseHandler {
       return c
     })
 
-    // Return the summary view
+    // Return the review details
     return h.view(this.path, {
       year: cache.year,
       activities: activities.sort(activitiesApi.sort),
       catches: catches.sort(catchesApi.sort),
       smallCatches: smallCatches.sort(smallCatchesApi.sort),
-      locked: !!cache.locked
+      locked: !!cache.locked,
+      details: {
+        licenceNumber: cache.licenceNumber,
+        postcode: cache.postcode,
+        year: cache.year
+      }
     })
   }
 

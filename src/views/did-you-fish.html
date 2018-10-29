@@ -23,7 +23,7 @@
     {% endif %}
 {% endblock %}
 
-{% set title = "Did you fish for salmon or sea trout in " + year + "?" %}
+{% set title = "Did you fish for salmon or sea trout in " + details.year + "?" %}
 
 {% block pageTitle %}{{ title }}{% endblock %}
 
@@ -32,7 +32,7 @@
 {% if errors %}
     {% set dyfErrorMessage = { text: "Select yes or no" } %}
     {{ errorList.push({
-        text: "You have not told us whether you fished in " + year,
+        text: "You have not told us whether you fished in " + details.year,
         href: "#dyf"
     }) }}
 {% endif %}

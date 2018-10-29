@@ -94,7 +94,12 @@ module.exports = class SummaryHandler extends BaseHandler {
     return h.view(this.path, { year: cache.year,
       activities: activities.sort(activitiesApi.sort),
       catches: catches.sort(catchesApi.sort),
-      smallCatches: smallCatches.sort(smallCatchesApi.sort)
+      smallCatches: smallCatches.sort(smallCatchesApi.sort),
+      details: {
+        licenceNumber: cache.licenceNumber,
+        postcode: cache.postcode,
+        year: cache.year
+      }
     })
   }
 
