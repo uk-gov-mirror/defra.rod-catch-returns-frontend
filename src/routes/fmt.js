@@ -81,6 +81,17 @@ module.exports = [
     handler: reportsHandler.handler
   },
 
+  // End session handler
+  {
+    path: '/logout',
+    method: 'GET',
+    handler: async (request, h) => {
+      await request.cache().drop()
+      request.cookieAuth.clear()
+      return h.redirect('/')
+    }
+  },
+
   {
     method: 'GET',
     path: '/reporting/catches/{season}',
