@@ -3,6 +3,7 @@
 {% from "panel/macro.njk" import govukPanel %}
 {% from "review.njk" import review %}
 {% from "navigation.njk" import navigationHeaderBlock %}
+{% from "button/macro.njk" import govukButton %}
 
 {% block header %}
     {% if fmt %}
@@ -30,11 +31,21 @@
             <a id="print-link" class="govuk-link govuk-body-m" href="#" onclick="window.print();return false;">Print your catch return</a>
         </p>
 
-        <p class="govuk-body">
-            <a href="https://www.smartsurvey.co.uk/s/QQJ22/" class="govuk-link">What did you think of this service?</a> (takes 30 seconds)
-        </p>
+        {% if fmt %}
+            {{ govukButton({
+              text: "Start a new catch return",
+              href: "/licence",
+              classes: "govuk-button--start"
+            }) }}
+        {% else %}
+            <p class="govuk-body">
+                <a href="https://www.smartsurvey.co.uk/s/QQJ22/" class="govuk-link">What did you think of this service?</a> (takes 30 seconds)
+            </p>
+        {% endif %}
+
         {{ extra() }}
     </div>
+
 
     <div class="govuk-grid-column-full print-area">
         <h1 class="govuk-heading-l">{{ title }}</h1>
