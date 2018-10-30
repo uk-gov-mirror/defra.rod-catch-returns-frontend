@@ -1,6 +1,5 @@
 {% extends "layout.html" %}
 
-{% from "back-link/macro.njk" import govukBackLink %}
 {% from "button/macro.njk" import govukButton %}
 {% from "review.njk" import review %}
 {% from "warning-text/macro.njk" import govukWarningText %}
@@ -16,16 +15,6 @@
 
 {% set title = "Your " + year + " catch return report" %}
 {% block pageTitle %}{{ title }}{% endblock %}
-
-{% block beforeContent %}
-    {{ super() }}
-    {% if not locked %}
-        {{ govukBackLink({
-            href: "/summary",
-            text: "Back"
-        }) }}
-    {% endif %}
-{% endblock %}
 
 {% block content %}
 <div class="govuk-grid-row">

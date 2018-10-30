@@ -1,6 +1,5 @@
 {% extends "layout.html" %}
 
-{% from "back-link/macro.njk" import govukBackLink %}
 {% from "fieldset/macro.njk" import govukFieldset %}
 {% from "button/macro.njk" import govukButton %}
 {% from "radios/macro.njk" import govukRadios %}
@@ -213,14 +212,6 @@
         }
     }) }}
 {% endset -%}
-
-{% block beforeContent %}
-    {{ super() }}
-    {{ govukBackLink({
-        href: "/summary",
-        text: "Back"
-    }) }}
-{% endblock %}
 
 {% block pageTitle %}{% if add %}Add{% else %}Edit{% endif %} a salmon or large adult sea trout{% endblock %}
 

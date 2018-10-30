@@ -1,6 +1,5 @@
 {% extends "layout.html" %}
 
-{% from "back-link/macro.njk" import govukBackLink %}
 {% from "radios/macro.njk" import govukRadios %}
 {% from "fieldset/macro.njk" import govukFieldset %}
 {% from "button/macro.njk" import govukButton %}
@@ -13,14 +12,6 @@
     {% else %}
         {{ super() }}
     {% endif %}
-{% endblock %}
-
-{% block beforeContent %}
-    {{ super() }}
-    {{ govukBackLink({
-        href: "/licence",
-        text: "Back"
-    }) }}
 {% endblock %}
 
 {% block pageTitle %}What season are you reporting for?{% endblock %}

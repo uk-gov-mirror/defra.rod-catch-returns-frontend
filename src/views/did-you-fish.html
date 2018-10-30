@@ -1,19 +1,10 @@
 {% extends "layout.html" %}
 
-{% from "back-link/macro.njk" import govukBackLink %}
 {% from "fieldset/macro.njk" import govukFieldset %}
 {% from "button/macro.njk" import govukButton %}
 {% from "radios/macro.njk" import govukRadios %}
 {% from "error-summary/macro.njk" import govukErrorSummary %}
 {% from "navigation.njk" import navigationHeaderBlock %}
-
-{% block beforeContent %}
-    {{ super() }}
-    {{ govukBackLink({
-        href: "/licence",
-        text: "Back"
-    }) }}
-{% endblock %}
 
 {% block header %}
     {% if fmt %}

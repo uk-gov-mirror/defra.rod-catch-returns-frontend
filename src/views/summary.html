@@ -1,18 +1,9 @@
 {% extends "layout.html" %}
 
-{% from "back-link/macro.njk" import govukBackLink %}
 {% from "button/macro.njk" import govukButton %}
 {% from "table/macro.njk" import govukTable %}
 {% from "fieldset/macro.njk" import govukFieldset %}
 {% from "navigation.njk" import navigationHeaderBlock %}
-
-{% block beforeContent %}
-    {{ super() }}
-    {{ govukBackLink({
-        href: "/licence",
-        text: "Back"
-    }) }}
-{% endblock %}
 
 {% block header %}
     {% if fmt %}
@@ -172,10 +163,15 @@
 
             {{ extra() }}
         </form>
-
-        <div>
-            <a id="save" class="govuk-link govuk-body-m" href="/save">Save as draft</a>
-        </div>
+        {% if activities.length %}
+            <div>
+                <a id="save" class="govuk-link govuk-body-m" href="/save">Save as draft</a>
+            </div>
+        {% else %}
+            <div>
+                <a id="cancel" class="govuk-link govuk-body-m" href="/">Cancel</a>
+            </div>
+        {% endif %}
     </div>
 </div>
 

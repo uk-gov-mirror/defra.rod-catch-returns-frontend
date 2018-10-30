@@ -1,6 +1,5 @@
 {% extends "layout.html" %}
 
-{% from "back-link/macro.njk" import govukBackLink %}
 {% from "fieldset/macro.njk" import govukFieldset %}
 {% from "button/macro.njk" import govukButton %}
 {% from "input/macro.njk" import govukInput %}
@@ -163,14 +162,6 @@
 
     {% endfor %}
 {% endif %}
-
-{% block beforeContent %}
-    {{ super() }}
-    {{ govukBackLink({
-        href: "/summary",
-        text: "Back"
-    }) }}
-{% endblock %}
 
 {% block pageTitle %}{% if add %}Add{% else %}Edit{% endif %} small adult sea trout catch{% endblock %}
 

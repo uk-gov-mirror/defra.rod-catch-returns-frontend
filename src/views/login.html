@@ -7,7 +7,7 @@
 {% from "details/macro.njk" import govukDetails %}
 {% from "error-summary/macro.njk" import govukErrorSummary %}
 
-{% block pageTitle %}Rod Catch Returns, FMT login{% endblock %}
+{% block pageTitle %}Fish movements team - Sign in{% endblock %}
 
 {% set licenceErrorMessage = null %}
 {% set postcodeErrorMessage = null %}
@@ -31,23 +31,17 @@
             {% endif %}
 
             <h1 class="govuk-heading-l">
-                Rod Catch Returns, FMT login
+                Enter your email address and network password
             </h1>
 
-            {% call govukFieldset({
-                legend: {
-                    html: "Enter your authorization details",
-                    classes: "govuk-fieldset__legend--m",
-                    isPageHeading: false
-                }
-            }) %}
+            {% call govukFieldset({}) %}
 
                 {{ govukInput({
                     label: {
                         text: "Email address"
                     },
                     hint: {
-                        text: "ryan.bird@environment-agency.gov.uk"
+                        text: "jon.ogroats@environment-agency.gov.uk"
                     },
                     id: "user",
                     name: "user",
@@ -59,9 +53,6 @@
                     label: {
                         text: "Password"
                     },
-                    hint: {
-                        text: "123456"
-                    },
                     id: "password",
                     type: "password",
                     name: "password",
@@ -71,7 +62,7 @@
 
                 {{ govukButton({
                     name: "continue",
-                    text: "Continue" })
+                    text: "Sign in" })
                 }}
 
             {% endcall %}
