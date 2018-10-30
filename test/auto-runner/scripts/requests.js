@@ -44,7 +44,8 @@ module.exports = {
   ],
   addActivityRiverSawdde: [
     { method: 'GET', path: '/activities/add', status: 200 },
-    { method: 'POST', path: '/activities/add', payload: { river: 'rivers/189', daysFishedOther: '7', daysFishedWithMandatoryRelease: '0' }, status: 302, redirect: '/summary' }
+    { method: 'POST', path: '/activities/add', payload: { river: 'rivers/189', daysFishedOther: '7', daysFishedWithMandatoryRelease: '0' }, status: 302, redirect: '/summary' },
+    { method: 'GET', path: '/summary', status: 200 }
   ],
   addActivityRiverErrors: [
     { method: 'GET', path: '/activities/add', status: 200 },
@@ -52,11 +53,17 @@ module.exports = {
   ],
   editActivityRiverSawdde: [
     { method: 'GET', path: '/activities/1', status: 200 },
-    { method: 'POST', path: '/activities/1', payload: { river: 'rivers/189', daysFishedOther: '3', daysFishedWithMandatoryRelease: '10' }, status: 302, redirect: '/summary' }
+    { method: 'POST', path: '/activities/1', payload: { river: 'rivers/190', daysFishedOther: '3', daysFishedWithMandatoryRelease: '10' }, status: 302, redirect: '/summary' }
   ],
   addActivityRiverEbbw: [
     { method: 'GET', path: '/activities/add', status: 200 },
-    { method: 'POST', path: '/activities/add', payload: { river: 'rivers/87', daysFishedOther: '6', daysFishedWithMandatoryRelease: '2' }, status: 302, redirect: '/summary' }
+    { method: 'POST', path: '/activities/add', payload: { river: 'rivers/87', daysFishedOther: '6', daysFishedWithMandatoryRelease: '2' }, status: 302, redirect: '/summary' },
+    { method: 'GET', path: '/summary', status: 200 }
+  ],
+  addActivityRiverAmman: [
+    { method: 'GET', path: '/activities/add', status: 200 },
+    { method: 'POST', path: '/activities/add', payload: { river: 'rivers/11', daysFishedOther: '2', daysFishedWithMandatoryRelease: '0' }, status: 302, redirect: '/summary' },
+    { method: 'GET', path: '/summary', status: 200 }
   ],
   deleteActivityRiverEbbw: [
     { method: 'GET', path: '/delete/activities/2', status: 200 },
@@ -66,15 +73,25 @@ module.exports = {
     { method: 'GET', path: '/small-catches/add', status: 200 },
     { method: 'POST',
       path: '/small-catches/add',
-      payload: { river: 'rivers/189', month: 'JUNE', fly: '5', spinner: '2', bait: '', released: '1' },
+      payload: { river: 'rivers/190', month: 'JUNE', fly: '5', spinner: '2', bait: '', released: '1' },
       status: 302,
-      redirect: '/summary' }
+      redirect: '/summary' },
+    { method: 'GET', path: '/summary', status: 200 }
+  ],
+  addSmallCatch2June: [
+    { method: 'GET', path: '/small-catches/add', status: 200 },
+    { method: 'POST',
+      path: '/small-catches/add',
+      payload: { river: 'rivers/11', month: 'JUNE', fly: '', spinner: '2', bait: '', released: '1' },
+      status: 302,
+      redirect: '/summary' },
+    { method: 'GET', path: '/summary', status: 200 }
   ],
   addSmallCatchErrors: [
     { method: 'GET', path: '/small-catches/add', status: 200 },
     { method: 'POST',
       path: '/small-catches/add',
-      payload: { river: 'rivers/189', month: '', fly: 'a', spinner: '', bait: '', released: '' },
+      payload: { river: 'rivers/190', month: '', fly: 'a', spinner: '', bait: '', released: '' },
       status: 302,
       redirect: '/small-catches/add' }
   ],
@@ -82,28 +99,31 @@ module.exports = {
     { method: 'GET', path: '/small-catches/1', status: 200 },
     { method: 'POST',
       path: '/small-catches/1',
-      payload: { river: 'rivers/189', month: 'JUNE', fly: '2', spinner: '2', bait: '1', released: '2' },
+      payload: { river: 'rivers/190', month: 'JUNE', fly: '2', spinner: '2', bait: '1', released: '2' },
       status: 302,
-      redirect: '/summary' }
+      redirect: '/summary' },
+    { method: 'GET', path: '/summary', status: 200 }
   ],
   addSmallCatchJuly: [
     { method: 'GET', path: '/small-catches/add', status: 200 },
     { method: 'POST',
       path: '/small-catches/add',
-      payload: { river: 'rivers/189', month: 'JULY', fly: '5', spinner: '2', bait: '', released: '1' },
+      payload: { river: 'rivers/190', month: 'JULY', fly: '5', spinner: '2', bait: '', released: '1' },
       status: 302,
-      redirect: '/summary' }
+      redirect: '/summary' },
+    { method: 'GET', path: '/summary', status: 200 }
   ],
   deleteSmallCatchJuly: [
     { method: 'GET', path: '/delete/small-catches/2', status: 200 },
-    { method: 'POST', path: '/delete/small-catches/2', payload: {}, status: 302, redirect: '/summary' }
+    { method: 'POST', path: '/delete/small-catches/2', payload: {}, status: 302, redirect: '/summary' },
+    { method: 'GET', path: '/summary', status: 200 }
   ],
   addLargeCatchJune: [
     { method: 'GET', path: '/catches/add', status: 200 },
     { method: 'POST',
       path: '/catches/add',
       payload: {
-        river: 'rivers/189',
+        river: 'rivers/190',
         'date-day': '1',
         'date-month': '6',
         type: 'species/1',
@@ -115,14 +135,35 @@ module.exports = {
         released: 'true'
       },
       status: 302,
-      redirect: '/summary' }
+      redirect: '/summary' },
+    { method: 'GET', path: '/summary', status: 200 }
+  ],
+  addLargeCatch2June: [
+    { method: 'GET', path: '/catches/add', status: 200 },
+    { method: 'POST',
+      path: '/catches/add',
+      payload: {
+        river: 'rivers/11',
+        'date-day': '1',
+        'date-month': '6',
+        type: 'species/1',
+        system: 'IMPERIAL',
+        pounds: '1',
+        ounces: '2',
+        kilograms: '',
+        method: 'methods/2',
+        released: 'true'
+      },
+      status: 302,
+      redirect: '/summary' },
+    { method: 'GET', path: '/summary', status: 200 }
   ],
   addLargeCatchErrors: [
     { method: 'GET', path: '/catches/add', status: 200 },
     { method: 'POST',
       path: '/catches/add',
       payload: {
-        river: 'rivers/189',
+        river: 'rivers/190',
         'date-day': '1',
         'date-month': '13',
         type: 'species/1',
@@ -141,7 +182,7 @@ module.exports = {
     { method: 'POST',
       path: '/catches/add',
       payload: {
-        river: 'rivers/189',
+        river: 'rivers/190',
         'date-day': '1',
         'date-month': '6',
         type: 'species/1',
@@ -160,38 +201,40 @@ module.exports = {
     { method: 'POST',
       path: '/catches/1',
       payload: {
-        river: 'rivers/189',
+        river: 'rivers/11',
         'date-day': '1',
         'date-month': '6',
-        type: 'species/1',
-        system: 'METRIC',
-        pounds: '',
-        ounces: '',
-        kilograms: '11',
+        type: 'species/2',
+        system: 'IMPERIAL',
+        pounds: '1',
+        ounces: '3',
+        kilograms: '',
         method: 'methods/1',
         released: 'false'
       },
       status: 302,
-      redirect: '/summary' }
+      redirect: '/summary' },
+    { method: 'GET', path: '/summary', status: 200 }
   ],
   addLargeCatchJuly: [
     { method: 'GET', path: '/catches/add', status: 200 },
     { method: 'POST',
       path: '/catches/add',
       payload: {
-        river: 'rivers/189',
+        river: 'rivers/190',
         'date-day': '1',
         'date-month': '7',
         type: 'species/1',
-        system: 'METRIC',
-        pounds: '',
-        ounces: '',
-        kilograms: '8',
+        system: 'IMPERIAL',
+        pounds: '0',
+        ounces: '9',
+        kilograms: '',
         method: 'methods/2',
         released: 'true'
       },
       status: 302,
-      redirect: '/summary' }
+      redirect: '/summary' },
+    { method: 'GET', path: '/summary', status: 200 }
   ],
   deleteLargeCatchJuly: [
     { method: 'GET', path: '/delete/catches/2', status: 200 },

@@ -8,4 +8,5 @@ module.exports = signIn.first
   .concat(requests.addActivityRiverErrors)
   .concat(requests.editActivityRiverSawdde)
   .concat(requests.addActivityRiverEbbw)
+  .concat(requests.addActivityRiverAmman)
   .concat(requests.deleteActivityRiverEbbw)
