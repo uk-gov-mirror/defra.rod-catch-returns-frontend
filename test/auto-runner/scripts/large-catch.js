@@ -8,5 +8,6 @@ module.exports = signIn.subsequent
   .concat(requests.addLargeCatchErrors)
   .concat(requests.addLargeCatchErrors2)
   .concat(requests.editLargeCatchJune)
+  .concat(requests.addLargeCatch2June)
   .concat(requests.addLargeCatchJuly)
   .concat(requests.deleteLargeCatchJuly)

@@ -59,7 +59,12 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
         year: cache.year,
         types: await speciesApi.list(request),
         methods: await methodsApi.list(request),
-        add: true
+        add: true,
+        details: {
+          licenceNumber: cache.licenceNumber,
+          postcode: cache.postcode,
+          year: cache.year
+        }
       })
     } else {
       // Modify an existing catch
@@ -95,7 +100,12 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
         year: cache.year,
         types: await speciesApi.list(request),
         methods: await methodsApi.list(request),
-        payload: payload
+        payload: payload,
+        details: {
+          licenceNumber: cache.licenceNumber,
+          postcode: cache.postcode,
+          year: cache.year
+        }
       })
     }
   }

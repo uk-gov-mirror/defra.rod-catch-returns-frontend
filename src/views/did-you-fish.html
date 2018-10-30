@@ -5,6 +5,7 @@
 {% from "button/macro.njk" import govukButton %}
 {% from "radios/macro.njk" import govukRadios %}
 {% from "error-summary/macro.njk" import govukErrorSummary %}
+{% from "navigation.njk" import navigationHeaderBlock %}
 
 {% block beforeContent %}
     {{ super() }}
@@ -14,7 +15,15 @@
     }) }}
 {% endblock %}
 
-{% set title = "Did you fish for salmon or sea trout in " + year + "?" %}
+{% block header %}
+    {% if fmt %}
+        {{ navigationHeaderBlock('/did-you-fish') }}
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock %}
+
+{% set title = "Did you fish for salmon or sea trout in " + details.year + "?" %}
 
 {% block pageTitle %}{{ title }}{% endblock %}
 
@@ -23,7 +32,7 @@
 {% if errors %}
     {% set dyfErrorMessage = { text: "Select yes or no" } %}
     {{ errorList.push({
-        text: "You have not told us whether you fished in " + year,
+        text: "You have not told us whether you fished in " + details.year,
         href: "#dyf"
     }) }}
 {% endif %}

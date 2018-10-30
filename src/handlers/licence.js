@@ -32,6 +32,8 @@ module.exports = class LicenceHandler extends BaseHandler {
 
     if (!errors) {
       cache.contactId = request.payload.contact.contact.id
+      cache.licenceNumber = request.payload.contact.licenceNumber
+      cache.postcode = request.payload.contact.contact.postcode
     }
 
     return LicenceHandler.writeCacheAndRedirect(request, h, errors, '/select-year', '/licence', cache)

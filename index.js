@@ -202,6 +202,7 @@ const options = {
       relativeTo: __dirname,
       path: [
         'src/views',
+        'src/views/macros',
         'node_modules/govuk-frontend/',
         'node_modules/govuk-frontend/components/'
       ],
@@ -209,7 +210,8 @@ const options = {
       // Set up the common view data
       context: () => {
         return {
-          pgid: Uuid.v4()
+          pgid: Uuid.v4(),
+          fmt: process.env.CONTEXT === 'FMT'
         }
       }
     })

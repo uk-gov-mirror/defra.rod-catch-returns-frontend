@@ -40,7 +40,12 @@ module.exports = class ActivitiesHandler extends BaseHandler {
       // Filter out the rivers already selected
       return this.readCacheAndDisplayView(request, h, {
         rivers: rivers.filter(r => !activities.map(a => a.river.id).includes(r.id)),
-        add: true
+        add: true,
+        details: {
+          licenceNumber: cache.licenceNumber,
+          postcode: cache.postcode,
+          year: cache.year
+        }
       })
     } else {
       let activity = await activitiesApi.getById(request, `activities/${request.params.id}`)
@@ -70,7 +75,12 @@ module.exports = class ActivitiesHandler extends BaseHandler {
       return this.readCacheAndDisplayView(request, h, {
         rivers: rivers.filter(r => ![].concat(...activities.map(a => a.river))
           .filter(r => r.id !== activity.river.id).map(r2 => r2.id).includes(r.id)),
-        payload: payload
+        payload: payload,
+        details: {
+          licenceNumber: cache.licenceNumber,
+          postcode: cache.postcode,
+          year: cache.year
+        }
       })
     }
   }

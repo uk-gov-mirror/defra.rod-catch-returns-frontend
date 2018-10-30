@@ -6,6 +6,15 @@
 {% from "input/macro.njk" import govukInput %}
 {% from "error-summary/macro.njk" import govukErrorSummary %}
 {% from "select/macro.njk" import govukSelect %}
+{% from "navigation.njk" import navigationHeaderBlock %}
+
+{% block header %}
+    {% if fmt %}
+        {{ navigationHeaderBlock('/summary') }}
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock %}
 
 {% set riverItems = [] %}
 

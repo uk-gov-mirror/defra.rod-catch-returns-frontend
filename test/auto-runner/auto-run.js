@@ -52,7 +52,15 @@ experiment('Scripted regression tests', () => {
     await Runner.run(require('./scripts/large-catch'))
   })
 
+  test('Save and exit', async () => {
+    await Runner.run(require('./scripts/save'))
+  })
+
   test('Review and submit', async () => {
     await Runner.run(require('./scripts/review-and-submit'))
+  })
+
+  test('Sign into locked', async () => {
+    await Runner.run(require('./scripts/sign-in').locked)
   })
 })

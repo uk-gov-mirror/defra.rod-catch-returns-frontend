@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}Reports{% endblock %}
+
+{% block header %}
+    {{ govukHeader({
+        homepageUrl: "#",
+        containerClasses: "govuk-width-container",
+        serviceName: "Report your salmon or sea trout catch",
+        navigation: [
+            {
+              href: back,
+              text: "Catch returns",
+              active: false
+            },
+            {
+              href: "/reports?back=/licence",
+              text: "Reports",
+              active: true
+            }
+        ]})
+    }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-l">Reports</h1>
+    </div>
+</div>
+{% endblock %}

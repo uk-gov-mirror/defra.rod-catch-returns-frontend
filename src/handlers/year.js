@@ -26,7 +26,13 @@ module.exports = class YearHandler extends BaseHandler {
       // Select the year
       years.push({ value: now.year() - 1, text: (now.year() - 1).toString() })
       years.push({ value: now.year(), text: (now.year()).toString() })
-      return this.readCacheAndDisplayView(request, h, { years })
+      let cache = await request.cache().get()
+      return this.readCacheAndDisplayView(request, h, {
+        years,
+        details: {
+          licenceNumber: cache.licenceNumber,
+          postcode: cache.postcode
+        } })
     } else {
       let cache = await request.cache().get()
       cache.year = now.year()
