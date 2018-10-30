@@ -35,8 +35,9 @@ module.exports = async (request) => {
   // Check methods - allow blanks here
   const methods = await methodsApi.list(request)
   methods.forEach(m => {
-    if (payload[m.name.toLowerCase()].trim()) {
-      checkNumber(m.name.toLowerCase(), payload[m.name.toLowerCase()], errors)
+    const name = m.name.toLowerCase()
+    if (payload[name] && payload[name].trim()) {
+      checkNumber(name, payload[name], errors)
     }
   })
 
