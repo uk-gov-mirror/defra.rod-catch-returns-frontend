@@ -87,6 +87,7 @@ module.exports = class SummaryHandler extends BaseHandler {
       activities: activities.sort(activitiesApi.sort),
       catches: catches.sort(catchesApi.sort),
       smallCatches: smallCatches.sort(smallCatchesApi.sort),
+      reportingExclude: submission.reportingExclude,
       details: {
         licenceNumber: cache.licenceNumber,
         postcode: cache.postcode,

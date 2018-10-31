@@ -43,6 +43,7 @@ module.exports = class CatchesApi extends EntityApi {
           const methodCount = counts.find(c => c.method.name === m.name)
           return { id: m.id, name: m.name, count: methodCount ? methodCount.count : null }
         }),
+        reportingExclude: c.reportingExclude,
         released: c.released,
         activity: {
           id: EntityApi.keyFromLink(activity),

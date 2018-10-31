@@ -27,6 +27,7 @@ module.exports = class CatchesApi extends EntityApi {
         dateCaught: c.dateCaught,
         released: c.released,
         mass: c.mass,
+        reportingExclude: c.reportingExclude,
         activity: {
           id: EntityApi.keyFromLink(activity),
           days: activity.days,

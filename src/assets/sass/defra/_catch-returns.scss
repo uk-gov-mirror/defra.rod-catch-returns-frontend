@@ -46,3 +46,9 @@
   padding-bottom: 10px;
   border-bottom: 1px solid #bfc1c3;
 }
+
+// Add a borderless container for checkboxes in tables
+.rcr-tab-checkboxes__item {
+  @extend .govuk-checkboxes__item;
+  padding: 0;
+}
