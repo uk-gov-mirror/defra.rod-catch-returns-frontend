@@ -64,21 +64,11 @@ module.exports = class ReviewHandler extends BaseHandler {
     const smallCatches = (await smallCatchesApi.getFromLink(request, submission._links.smallCatches.href)).map(c => {
       c.month = months.find(m => m.value === c.month).text
       c.river = c.activity.river.name
-
-      const flyCount = c.counts.find(c => c.method.name.toLowerCase() === 'fly')
-      c.fly = flyCount ? flyCount.count : null
-
-      const baitCount = c.counts.find(c => c.method.name.toLowerCase() === 'bait')
-      c.bait = baitCount ? baitCount.count : null
-
-      const spinnerCount = c.counts.find(c => c.method.name.toLowerCase() === 'spinner')
-      c.spinner = spinnerCount ? spinnerCount.count : null
-
       const activity = activities.find(a => a.id === c.activity.id)
-      activity.count = activity.count + (flyCount ? flyCount.count : 0)
-      activity.count = activity.count + (baitCount ? baitCount.count : 0)
-      activity.count = activity.count + (spinnerCount ? spinnerCount.count : 0)
-
+      c.counts.forEach(t => {
+        c[t.name.toLowerCase()] = t.count
+        activity.count += t.count || 0
+      })
       delete c.counts
       return c
     })
@@ -105,10 +95,20 @@ module.exports = class ReviewHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doPost (request, h) {
-    const cache = await request.cache().get()
-    cache.locked = true
-    await request.cache().set(cache)
-    await submissionsApi.setSubmitted(request, cache.submissionId)
-    return h.redirect('/confirmation')
+    if (Object.keys(request.payload).includes('continue')) {
+      const cache = await request.cache().get()
+      cache.locked = true
+      await request.cache().set(cache)
+      await submissionsApi.setSubmitted(request, cache.submissionId)
+      return h.redirect('/confirmation')
+    } else if (Object.keys(request.payload).includes('unlock') && process.env.CONTEXT === 'FMT') {
+      const cache = await request.cache().get()
+      cache.locked = false
+      await request.cache().set(cache)
+      await submissionsApi.setIncomplete(request, cache.submissionId)
+      return h.redirect('/summary')
+    } else {
+      throw new Error('Lock operation not permitted')
+    }
   }
 }

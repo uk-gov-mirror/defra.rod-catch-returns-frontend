@@ -64,6 +64,7 @@
             { text: catch.fly or 0, format: "numeric" },
             { text: catch.spinner or 0, format: "numeric" },
             { text: catch.bait or 0, format: "numeric" },
+            { text: catch.unknown or 0, format: "numeric" } if fmt,
             { text: catch.released, format: "numeric" },
             { html: renderLinks(catch.id | replace("smallCatches", "small-catches")), format: "numeric" }
         ]) }}
@@ -111,6 +112,7 @@
                         { text: "Fly", format: "numeric" },
                         { text: "Spinner", format: "numeric" },
                         { text: "Bait", format: "numeric" },
+                        { text: "Unknown", format: "numeric" } if fmt,
                         { text: "Released", format: "numeric" },
                         { text: "Actions", format: "numeric" }
                     ],

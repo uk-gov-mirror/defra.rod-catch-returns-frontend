@@ -23,7 +23,7 @@
             <h1 class="govuk-heading-l">{{ title }}</h1>
 
             <div id="review" class="govuk-!-margin-bottom-9">
-                {{ review(activities, catches, smallCatches, locked, year) }}
+                {{ review(activities, catches, smallCatches, locked, year, fmt) }}
             </div>
 
             {% if not locked %}
@@ -36,6 +36,13 @@
                     name: "continue",
                     text: "Submit catch return"
                 }) }}
+            {% else %}
+                {% if fmt %}
+                    {{ govukButton({
+                        name: "unlock",
+                        text: "Unlock catch return"
+                    }) }}
+                {% endif %}
             {% endif %}
 
             {{ extra() }}

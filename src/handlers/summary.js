@@ -9,6 +9,7 @@ const SubmissionsApi = require('../api/submissions')
 const CatchesApi = require('../api/catches')
 const SmallCatchesApi = require('../api/small-catches')
 const ActivitiesApi = require('../api/activities')
+
 const { printWeight, testLocked } = require('./common')
 
 const submissionsApi = new SubmissionsApi()
@@ -68,24 +69,15 @@ module.exports = class SummaryHandler extends BaseHandler {
       return c
     })
 
+    // Process the small catches flattening the counts
     const smallCatches = (await smallCatchesApi.getFromLink(request, submission._links.smallCatches.href)).map(c => {
       c.month = months.find(m => m.value === c.month).text
       c.river = c.activity.river.name
-
-      const flyCount = c.counts.find(c => c.method.name.toLowerCase() === 'fly')
-      c.fly = flyCount ? flyCount.count : null
-
-      const baitCount = c.counts.find(c => c.method.name.toLowerCase() === 'bait')
-      c.bait = baitCount ? baitCount.count : null
-
-      const spinnerCount = c.counts.find(c => c.method.name.toLowerCase() === 'spinner')
-      c.spinner = spinnerCount ? spinnerCount.count : null
-
       const activity = activities.find(a => a.id === c.activity.id)
-      activity.count = activity.count + (flyCount ? flyCount.count : 0)
-      activity.count = activity.count + (baitCount ? baitCount.count : 0)
-      activity.count = activity.count + (spinnerCount ? spinnerCount.count : 0)
-
+      c.counts.forEach(t => {
+        c[t.name.toLowerCase()] = t.count
+        activity.count += t.count || 0
+      })
       delete c.counts
       return c
     })

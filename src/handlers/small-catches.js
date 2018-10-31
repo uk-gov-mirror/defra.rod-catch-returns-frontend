@@ -103,14 +103,9 @@ module.exports = class SmallCatchHandler extends BaseHandler {
         month: smallCatch.month
       }
 
-      const flyCount = smallCatch.counts.find(c => c.method.name.toLowerCase() === 'fly')
-      payload.fly = flyCount ? flyCount.count : null
-
-      const baitCount = smallCatch.counts.find(c => c.method.name.toLowerCase() === 'bait')
-      payload.bait = baitCount ? baitCount.count : null
-
-      const spinnerCount = smallCatch.counts.find(c => c.method.name.toLowerCase() === 'spinner')
-      payload.spinner = spinnerCount ? spinnerCount.count : null
+      smallCatch.counts.forEach(t => {
+        payload[t.name.toLowerCase()] = t.count
+      })
 
       return this.readCacheAndDisplayView(request, h, {
         rivers: rivers,

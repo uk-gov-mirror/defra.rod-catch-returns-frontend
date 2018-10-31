@@ -26,10 +26,19 @@ module.exports = class BaseHandler {
         }
       } catch (err) {
         logger.error(err)
+
+        // Crypto error
         if (err instanceof require('../lib/crypto').cryptoError) {
           return h.redirect('/')
         }
-        return h.redirect('/error500')
+
+        if (err.statusCode === 403) {
+          // Attempt to access unauthorized resources
+          return h.redirect('/unauthorized')
+        } else {
+          // Server errors
+          return h.redirect('/error500')
+        }
       }
     }
   }

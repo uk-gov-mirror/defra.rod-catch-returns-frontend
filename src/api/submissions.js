@@ -27,4 +27,8 @@ module.exports = class SubmissionsApi extends EntityApi {
   async setSubmitted (request, submissionId) {
     return super.change(request, submissionId, { status: 'SUBMITTED' })
   }
+
+  async setIncomplete (request, submissionId) {
+    return super.change(request, submissionId, { status: 'INCOMPLETE' })
+  }
 }

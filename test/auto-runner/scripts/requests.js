@@ -248,7 +248,7 @@ module.exports = {
     { method: 'GET', path: '/summary', status: 200 },
     { method: 'POST', path: '/summary', payload: {}, status: 302, redirect: '/review' },
     { method: 'GET', path: '/review', status: 200 },
-    { method: 'POST', path: '/review', payload: {}, status: 302, redirect: '/confirmation' },
+    { method: 'POST', path: '/review', payload: { continue: '' }, status: 302, redirect: '/confirmation' },
     { method: 'GET', path: '/confirmation', status: 200 }
   ]
 }

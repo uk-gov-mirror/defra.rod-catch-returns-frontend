@@ -188,6 +188,16 @@ module.exports = [
     }
   },
 
+  // Error 403 unauthorized handler
+  {
+    path: '/unauthorized',
+    method: 'GET',
+    options: { auth: false },
+    handler: (request, h) => {
+      return h.view('unauthorized')
+    }
+  },
+
   // Catch all
   {
     method: '*',
