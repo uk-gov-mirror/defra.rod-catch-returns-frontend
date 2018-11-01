@@ -80,6 +80,7 @@ module.exports = class ReviewHandler extends BaseHandler {
       catches: catches.sort(catchesApi.sort),
       smallCatches: smallCatches.sort(smallCatchesApi.sort),
       locked: !!cache.locked,
+      reportingExclude: submission.reportingExclude,
       details: {
         licenceNumber: cache.licenceNumber,
         postcode: cache.postcode,

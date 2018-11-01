@@ -28,13 +28,13 @@
 {% macro renderLinks(id) %}
     {% set editurl = id %}
     {% set deleteurl = "/delete/" + id %}
-    <span><a id="edit-{{ id }}" class="govuk-link" href="{{ editurl }}">Change</a> | <a id="delete-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete</a></span>
+    <span><a id="edit-{{ id }}" class="govuk-link" href="{{ editurl }}">Change</a>&nbsp;&#x7c;&nbsp;<a id="delete-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete</a></span>
 {% endmacro %}
 
 {% macro renderCheck(id, name, checked) %}
-<div class="rcr-tab-checkboxes__item">
+<div class="govuk-checkboxes__item">
     <input class="govuk-checkboxes__input" type="checkbox" id="exclude-{{ id }}" name="{{ name }}" value="{{ id }}" {% if checked %}checked="checked"{% endif %}>
-    <label class="govuk-checkboxes__label"/>
+    <label for="exclude-{{ id }}" class="rcr-checkboxes__label"></label>
 </div>
 {% endmacro %}
 
@@ -52,59 +52,104 @@
 
 {% if catches.length %}
     {% for fish in catches %}
-        {{ salmonAndLargeTroutItems.push([
-            { text: fish.dateCaught },
-            { text: fish.activity.river.name },
-            { text: fish.species.name },
-            { text: fish.weight },
-            { text: fish.method.name },
-            { text: "Yes" if fish.released else "No" },
-            { html: renderLinks(fish.id), format: "numeric" },
-            { html: renderCheck(fish.id, "exclude-catch", fish.reportingExclude), format: "numeric" } if fmt
-        ]) }}
+        {% if fmt %}
+            {{ salmonAndLargeTroutItems.push([
+                { text: fish.dateCaught },
+                { text: fish.activity.river.name },
+                { text: fish.species.name },
+                { text: fish.weight },
+                { text: fish.method.name },
+                { text: "Yes" if fish.released else "No" },
+                { html: renderLinks(fish.id), format: "numeric" },
+                { html: renderCheck(fish.id, "exclude-catch", fish.reportingExclude), format: "numeric" }
+            ]) }}
+        {% else %}
+            {{ salmonAndLargeTroutItems.push([
+                { text: fish.dateCaught },
+                { text: fish.activity.river.name },
+                { text: fish.species.name },
+                { text: fish.weight },
+                { text: fish.method.name },
+                { text: "Yes" if fish.released else "No" },
+                { html: renderLinks(fish.id), format: "numeric" }
+            ]) }}
+        {% endif %}
     {% endfor %}
 {% endif %}
 
 {% if smallCatches.length %}
     {% for catch in smallCatches %}
-        {{ smallCatchItems.push([
-            { text: catch.month },
-            { text: catch.river },
-            { text: catch.fly or 0, format: "numeric" },
-            { text: catch.spinner or 0, format: "numeric" },
-            { text: catch.bait or 0, format: "numeric" },
-            { text: catch.unknown or 0, format: "numeric" } if fmt,
-            { text: catch.released, format: "numeric" },
-            { html: renderLinks(catch.id | replace("smallCatches", "small-catches")), format: "numeric" },
-            { html: renderCheck(catch.id, "exclude-small-catch", catch.reportingExclude), format: "numeric" } if fmt
-        ]) }}
+        {% if fmt %}
+            {{ smallCatchItems.push([
+                { text: catch.month },
+                { text: catch.river },
+                { text: catch.fly or 0, format: "numeric" },
+                { text: catch.spinner or 0, format: "numeric" },
+                { text: catch.bait or 0, format: "numeric" },
+                { text: catch.unknown or 0, format: "numeric" },
+                { text: catch.released, format: "numeric" },
+                { html: renderLinks(catch.id | replace("smallCatches", "small-catches")), format: "numeric" },
+                { html: renderCheck(catch.id, "exclude-small-catch", catch.reportingExclude), format: "numeric" }
+            ]) }}
+        {% else %}
+            {{ smallCatchItems.push([
+                { text: catch.month },
+                { text: catch.river },
+                { text: catch.fly or 0, format: "numeric" },
+                { text: catch.spinner or 0, format: "numeric" },
+                { text: catch.bait or 0, format: "numeric" },
+                { text: catch.released, format: "numeric" },
+                { html: renderLinks(catch.id | replace("smallCatches", "small-catches")), format: "numeric" }
+            ]) }}
+        {% endif %}
     {% endfor %}
 {% endif %}
 
-{% set largeCatchHeader = [
-    { text: "Date" },
-    { text: "River" },
-    { text: "Type" },
-    { text: "Weight" },
-    { text: "Method" },
-    { text: "Released" },
-    { text: "Actions", format: "numeric" }
-] %}
-
-{% set smallCatchHeader = [
-    { text: "Month" },
-    { text: "River" },
-    { text: "Fly", format: "numeric" },
-    { text: "Spinner", format: "numeric" },
-    { text: "Bait", format: "numeric" },
-    { text: "Unknown", format: "numeric" } if fmt,
-    { text: "Released", format: "numeric" },
-    { text: "Actions", format: "numeric" }
-] %}
+{% if fmt %}
+    {% set largeCatchHeader = [
+        { text: "Date" },
+        { text: "River" },
+        { text: "Type" },
+        { text: "Weight" },
+        { text: "Method" },
+        { text: "Released" },
+        { text: "Actions", format: "numeric" },
+        { text: "Ex.", format: "numeric" }
+    ] %}
+{% else %}
+    {% set largeCatchHeader = [
+        { text: "Date" },
+        { text: "River" },
+        { text: "Type" },
+        { text: "Weight" },
+        { text: "Method" },
+        { text: "Released" },
+        { text: "Actions", format: "numeric" }
+    ] %}
+{% endif %}
 
 {% if fmt %}
-    {{ largeCatchHeader.push({ text: "Ex.", format: "numeric" }) }}
-    {{ smallCatchHeader.push({ text: "Ex.", format: "numeric" }) }}
+    {% set smallCatchHeader = [
+        { text: "Month" },
+        { text: "River" },
+        { text: "Fly", format: "numeric" },
+        { text: "Spinner", format: "numeric" },
+        { text: "Bait", format: "numeric" },
+        { text: "Unknown", format: "numeric" },
+        { text: "Released", format: "numeric" },
+        { text: "Actions", format: "numeric" },
+        { text: "Ex.", format: "numeric" }
+    ] %}
+{% else %}
+    {% set smallCatchHeader = [
+        { text: "Month" },
+        { text: "River" },
+        { text: "Fly", format: "numeric" },
+        { text: "Spinner", format: "numeric" },
+        { text: "Bait", format: "numeric" },
+        { text: "Released", format: "numeric" },
+        { text: "Actions", format: "numeric" }
+    ] %}
 {% endif %}
 
 {% block content %}
