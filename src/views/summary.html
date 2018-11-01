@@ -34,7 +34,7 @@
 {% macro renderCheck(id, name, checked) %}
 <div class="govuk-checkboxes__item">
     <input class="govuk-checkboxes__input" type="checkbox" id="exclude-{{ id }}" name="{{ name }}" value="{{ id }}" {% if checked %}checked="checked"{% endif %}>
-    <label for="exclude-{{ id }}" class="rcr-checkboxes__label"></label>
+    <label for="exclude-{{ id }}" class="rcr-checkboxes__label"/>
 </div>
 {% endmacro %}
 
