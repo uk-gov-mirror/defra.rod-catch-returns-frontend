@@ -67,15 +67,16 @@ module.exports = async (request) => {
     const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
     try {
       if (cache.smallCatch) {
-        await smallCatchesApi.change(request, cache.smallCatch.id,
-          cache.submissionId,
+        await smallCatchesApi.change(request,
+          cache.smallCatch.id,
           activities.find(a => a.river.id === payload.river).id,
           payload.month,
           counts,
           payload.released
         )
       } else {
-        await smallCatchesApi.add(request, cache.submissionId,
+        await smallCatchesApi.add(request,
+          cache.submissionId,
           activities.find(a => a.river.id === payload.river).id,
           payload.month,
           counts,

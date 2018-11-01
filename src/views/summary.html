@@ -31,9 +31,9 @@
     <span><a id="edit-{{ id }}" class="govuk-link" href="{{ editurl }}">Change</a> | <a id="delete-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete</a></span>
 {% endmacro %}
 
-{% macro renderCheck(id) %}
+{% macro renderCheck(id, name, checked) %}
 <div class="rcr-tab-checkboxes__item">
-    <input class="govuk-checkboxes__input" type="checkbox" id="exclude-{{ id }}" checked="checked">
+    <input class="govuk-checkboxes__input" type="checkbox" id="exclude-{{ id }}" name="{{ name }}" value="{{ id }}" {% if checked %}checked="checked"{% endif %}>
     <label class="govuk-checkboxes__label"/>
 </div>
 {% endmacro %}
@@ -60,7 +60,7 @@
             { text: fish.method.name },
             { text: "Yes" if fish.released else "No" },
             { html: renderLinks(fish.id), format: "numeric" },
-            { html: renderCheck(fish.id | replace("smallCatches", "small-catches")), format: "numeric" } if fmt
+            { html: renderCheck(fish.id, "exclude-catch", fish.reportingExclude), format: "numeric" } if fmt
         ]) }}
     {% endfor %}
 {% endif %}
@@ -76,7 +76,7 @@
             { text: catch.unknown or 0, format: "numeric" } if fmt,
             { text: catch.released, format: "numeric" },
             { html: renderLinks(catch.id | replace("smallCatches", "small-catches")), format: "numeric" },
-            { html: renderCheck(catch.id | replace("smallCatches", "small-catches")), format: "numeric" } if fmt
+            { html: renderCheck(catch.id, "exclude-small-catch", catch.reportingExclude), format: "numeric" } if fmt
         ]) }}
     {% endfor %}
 {% endif %}
@@ -177,12 +177,11 @@
                     {{ govukCheckboxes({
                           idPrefix: "exclude",
                           name: "exclude",
-                          items: [
-                            {
-                              value: "submission",
-                              text: "Exclude this catch return from reports?"
-                            }
-                          ]
+                          items: [{
+                                value: "submission",
+                                text: "Exclude this catch return from reports?",
+                                checked: reportingExclude
+                          }]
                         })
                     }}
                 {% else %}
