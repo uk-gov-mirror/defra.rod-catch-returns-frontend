@@ -83,10 +83,12 @@ module.exports = class SummaryHandler extends BaseHandler {
     })
 
     // Return the summary view
-    return h.view(this.path, { year: cache.year,
+    return h.view(this.path, {
+      year: cache.year,
       activities: activities.sort(activitiesApi.sort),
       catches: catches.sort(catchesApi.sort),
       smallCatches: smallCatches.sort(smallCatchesApi.sort),
+      reportingExclude: submission.reportingExclude,
       details: {
         licenceNumber: cache.licenceNumber,
         postcode: cache.postcode,
@@ -96,13 +98,72 @@ module.exports = class SummaryHandler extends BaseHandler {
   }
 
   /**
-   * Post handler for the summary page
-   * @param request
+   * Post handler for the summary page. In the case of the FMT user the
+   * exclusions need to be saved, otherwise just progress to the review page
+   * @param request. No validation is required
    * @param h
    * @param errors
    * @returns {Promise<*>}
    */
   async doPost (request, h) {
+    if (process.env.CONTEXT === 'FMT') {
+      await this.exclusions(request)
+    }
+
     return h.redirect('/review')
+  }
+
+  async exclusions (request) {
+    const cache = await request.cache().get()
+    const submission = await submissionsApi.getById(request, cache.submissionId)
+
+    // Process the payload
+    const smallCatchExclusions = request.payload['exclude-small-catch']
+      ? request.payload['exclude-small-catch'].split(',')
+      : null
+    const catchExclusions = request.payload['exclude-catch']
+      ? request.payload['exclude-catch'].split(',')
+      : null
+
+    // Get the small and large catches
+    const catches = await catchesApi.getFromLink(request, submission._links.catches.href)
+    const smallCatches = await smallCatchesApi.getFromLink(request, submission._links.smallCatches.href)
+
+    // Change the submission level exclusion if necessary
+    if (Object.keys(request.payload).includes('exclude')) {
+      if (!submission.reportingExclude) {
+        await submissionsApi.changeExclusion(request, submission.id, true)
+      }
+    } else {
+      if (submission.reportingExclude) {
+        await submissionsApi.changeExclusion(request, submission.id, false)
+      }
+    }
+
+    // Change the large catch exclusions where necessary
+    await Promise.all(catches.map(async c => {
+      if (catchExclusions && catchExclusions.find(e => e === c.id)) {
+        if (!c.reportingExclude) {
+          await catchesApi.changeExclusion(request, c.id, true)
+        }
+      } else {
+        if (c.reportingExclude) {
+          await catchesApi.changeExclusion(request, c.id, false)
+        }
+      }
+    }))
+
+    // Change the small catch exclusions where necessary
+    await Promise.all(smallCatches.map(async c => {
+      if (smallCatchExclusions && smallCatchExclusions.find(e => e === c.id)) {
+        if (!c.reportingExclude) {
+          await smallCatchesApi.changeExclusion(request, c.id, true)
+        }
+      } else {
+        if (c.reportingExclude) {
+          await smallCatchesApi.changeExclusion(request, c.id, false)
+        }
+      }
+    }))
   }
 }

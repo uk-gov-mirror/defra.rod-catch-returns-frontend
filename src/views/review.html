@@ -23,7 +23,7 @@
             <h1 class="govuk-heading-l">{{ title }}</h1>
 
             <div id="review" class="govuk-!-margin-bottom-9">
-                {{ review(activities, catches, smallCatches, locked, year, fmt) }}
+                {{ review(activities, catches, smallCatches, locked, year, fmt, reportingExclude) }}
             </div>
 
             {% if not locked %}

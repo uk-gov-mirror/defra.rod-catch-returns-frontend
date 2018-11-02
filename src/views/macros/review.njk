@@ -1,6 +1,14 @@
 {% from "table/macro.njk" import govukTable %}
+{% from "checkboxes/macro.njk" import govukCheckboxes %}
 
-{% macro review(activities, catches, smallCatches, locked, year, fmt) %}
+{% macro renderCheck(id, name, checked) %}
+<div class="rcr-tab-checkboxes__item">
+    <input class="rcr-tab-checkboxes__input" type="checkbox" id="exclude-{{ id }}" name="{{ name }}" value="{{ id }}" {% if checked %}checked="checked"{% endif %} disabled=true>
+    <label for="exclude-{{ id }}" class="rcr-tab-checkboxes__label"/>
+</div>
+{% endmacro %}
+
+{% macro review(activities, catches, smallCatches, locked, year, fmt, reportingExclude) %}
     <span hidden="hidden">
         {% set riverRows = [] %}
         {% set salmonAndLargeTroutItems = [] %}
@@ -15,28 +23,99 @@
             ]) }}
         {% endfor %}
 
-        {% for fish in catches %}
-            {{ salmonAndLargeTroutItems.push([
-                { text: fish.dateCaught },
-                { text: fish.activity.river.name },
-                { text: fish.species.name },
-                { text: fish.weight },
-                { text: fish.method.name },
-                { text: "Yes" if fish.released else "No" }
-            ]) }}
-        {% endfor %}
+        {% if catches.length %}
+            {% for fish in catches %}
+                {% if fmt %}
+                    {{ salmonAndLargeTroutItems.push([
+                        { text: fish.dateCaught },
+                        { text: fish.activity.river.name },
+                        { text: fish.species.name },
+                        { text: fish.weight },
+                        { text: fish.method.name },
+                        { text: "Yes" if fish.released else "No" },
+                        { html: renderCheck(fish.id, "exclude-catch", fish.reportingExclude), format: "numeric" }
+                    ]) }}
+                {% else %}
+                    {{ salmonAndLargeTroutItems.push([
+                        { text: fish.dateCaught },
+                        { text: fish.activity.river.name },
+                        { text: fish.species.name },
+                        { text: fish.weight },
+                        { text: fish.method.name },
+                        { text: "Yes" if fish.released else "No" }
+                    ]) }}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
 
-        {% for catch in smallCatches %}
-            {{ smallCatchItems.push([
-                { text: catch.month },
-                { text: catch.river },
-                { text: catch.fly or 0, format: "numeric" },
-                { text: catch.spinner or 0, format: "numeric" },
-                { text: catch.bait or 0, format: "numeric" },
-                { text: catch.unknown or 0, format: "numeric" } if fmt,
-                { text: catch.released, format: "numeric" }
-            ]) }}
-        {% endfor %}
+        {% if smallCatches.length %}
+            {% for catch in smallCatches %}
+                {% if fmt %}
+                    {{ smallCatchItems.push([
+                        { text: catch.month },
+                        { text: catch.river },
+                        { text: catch.fly or 0, format: "numeric" },
+                        { text: catch.spinner or 0, format: "numeric" },
+                        { text: catch.bait or 0, format: "numeric" },
+                        { text: catch.unknown or 0, format: "numeric" },
+                        { text: catch.released, format: "numeric" },
+                        { html: renderCheck(catch.id, "exclude-small-catch", catch.reportingExclude), format: "numeric" }
+                    ]) }}
+                {% else %}
+                    {{ smallCatchItems.push([
+                        { text: catch.month },
+                        { text: catch.river },
+                        { text: catch.fly or 0, format: "numeric" },
+                        { text: catch.spinner or 0, format: "numeric" },
+                        { text: catch.bait or 0, format: "numeric" },
+                        { text: catch.released, format: "numeric" }
+                    ]) }}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        {% if fmt %}
+            {% set largeCatchHeader = [
+                { text: "Date" },
+                { text: "River" },
+                { text: "Type" },
+                { text: "Weight" },
+                { text: "Method" },
+                { text: "Released" },
+                { text: "Ex.", format: "numeric" }
+            ] %}
+        {% else %}
+            {% set largeCatchHeader = [
+                { text: "Date" },
+                { text: "River" },
+                { text: "Type" },
+                { text: "Weight" },
+                { text: "Method" },
+                { text: "Released", format: "numeric" }
+            ] %}
+        {% endif %}
+
+        {% if fmt %}
+            {% set smallCatchHeader = [
+                { text: "Month" },
+                { text: "River" },
+                { text: "Fly", format: "numeric" },
+                { text: "Spinner", format: "numeric" },
+                { text: "Bait", format: "numeric" },
+                { text: "Unknown", format: "numeric" },
+                { text: "Released", format: "numeric" },
+                { text: "Ex." }
+            ] %}
+        {% else %}
+            {% set smallCatchHeader = [
+                { text: "Month" },
+                { text: "River" },
+                { text: "Fly", format: "numeric" },
+                { text: "Spinner", format: "numeric" },
+                { text: "Bait", format: "numeric" },
+                { text: "Released", format: "numeric" }
+            ] %}
+        {% endif %}
     </span>
 
     {% if riverRows.length %}
@@ -60,15 +139,7 @@
                 captionClasses: "govuk-heading-m",
                 classes: "govuk-!-margin-bottom-9",
                 firstCellIsHeader: false,
-                head: [
-                    { text: "Month" },
-                    { text: "River" },
-                    { text: "Fly", format: "numeric" },
-                    { text: "Spinner", format: "numeric" },
-                    { text: "Bait", format: "numeric" },
-                    { text: "Unknown", format: "numeric" } if fmt,
-                    { text: "Released", format: "numeric" }
-                ],
+                head: smallCatchHeader,
                 rows: smallCatchItems
             }) }}
         {% endif %}
@@ -79,16 +150,22 @@
                 captionClasses: "govuk-heading-m",
                 classes: "govuk-!-margin-bottom-9",
                 firstCellIsHeader: false,
-                head: [
-                    { text: "Date" },
-                    { text: "River" },
-                    { text: "Type" },
-                    { text: "Weight" },
-                    { text: "Method" },
-                    { text: "Released" }
-                ],
+                head: largeCatchHeader,
                 rows: salmonAndLargeTroutItems
             }) }}
+        {% endif %}
+
+        {% if fmt %}
+            {{ govukCheckboxes({
+                  idPrefix: "exclude",
+                  name: "exclude",
+                  items: [{
+                        text: "Exclude this catch return from reports?",
+                        checked: reportingExclude,
+                        disabled: true
+                  }]
+                })
+            }}
         {% endif %}
 
     {% else %}

@@ -27,6 +27,7 @@ module.exports = class CatchesApi extends EntityApi {
         dateCaught: c.dateCaught,
         released: c.released,
         mass: c.mass,
+        reportingExclude: c.reportingExclude,
         activity: {
           id: EntityApi.keyFromLink(activity),
           days: activity.days,
@@ -59,7 +60,7 @@ module.exports = class CatchesApi extends EntityApi {
     })
   }
 
-  async change (request, catchId, submissionId, activityId, dateCaught, speciesId, mass, methodId, released) {
+  async change (request, catchId, activityId, dateCaught, speciesId, mass, methodId, released) {
     const result = await super.change(request, catchId, {
       dateCaught: dateCaught,
       mass: mass,
@@ -84,6 +85,12 @@ module.exports = class CatchesApi extends EntityApi {
     }
 
     return result
+  }
+
+  async changeExclusion (request, catchId, reportingExclude) {
+    return super.change(request, catchId, {
+      reportingExclude: reportingExclude
+    })
   }
 
   sort (a, b) {

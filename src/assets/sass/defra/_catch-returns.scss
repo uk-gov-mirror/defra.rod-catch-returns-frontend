@@ -34,7 +34,7 @@
 .govuk-button-secondary {
   @extend .govuk-button;
   background-color: govuk-colour("grey-1");
-  margin-left: govuk-spacing(3);
+//  margin-left: govuk-spacing(3);
   &:hover {
     background-color: #606060;
   }
@@ -46,3 +46,9 @@
   padding-bottom: 10px;
   border-bottom: 1px solid #bfc1c3;
 }
+
+//.rcr-checkboxes__label {
+//  @extend .govuk-checkboxes__label;
+//  padding: 0;
+//}
+

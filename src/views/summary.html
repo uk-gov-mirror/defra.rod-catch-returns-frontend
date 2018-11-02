@@ -3,6 +3,7 @@
 {% from "button/macro.njk" import govukButton %}
 {% from "table/macro.njk" import govukTable %}
 {% from "fieldset/macro.njk" import govukFieldset %}
+{% from "checkboxes/macro.njk" import govukCheckboxes %}
 {% from "navigation.njk" import navigationHeaderBlock %}
 
 {% block header %}
@@ -27,7 +28,14 @@
 {% macro renderLinks(id) %}
     {% set editurl = id %}
     {% set deleteurl = "/delete/" + id %}
-    <span><a id="edit-{{ id }}" class="govuk-link" href="{{ editurl }}">Change</a> | <a id="delete-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete</a></span>
+    <span><a id="edit-{{ id }}" class="govuk-link" href="{{ editurl }}">Change</a>&nbsp;&#x7c;&nbsp;<a id="delete-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete</a></span>
+{% endmacro %}
+
+{% macro renderCheck(id, name, checked) %}
+<div class="rcr-tab-checkboxes__item">
+    <input class="rcr-tab-checkboxes__input" type="checkbox" id="exclude-{{ id }}" name="{{ name }}" value="{{ id }}" {% if checked %}checked="checked"{% endif %}>
+    <label for="exclude-{{ id }}" class="rcr-tab-checkboxes__label"/>
+</div>
 {% endmacro %}
 
 {% if activities.length %}
@@ -44,31 +52,104 @@
 
 {% if catches.length %}
     {% for fish in catches %}
-        {{ salmonAndLargeTroutItems.push([
-            { text: fish.dateCaught },
-            { text: fish.activity.river.name },
-            { text: fish.species.name },
-            { text: fish.weight },
-            { text: fish.method.name },
-            { text: "Yes" if fish.released else "No" },
-            { html: renderLinks(fish.id), format: "numeric" }
-        ]) }}
+        {% if fmt %}
+            {{ salmonAndLargeTroutItems.push([
+                { text: fish.dateCaught },
+                { text: fish.activity.river.name },
+                { text: fish.species.name },
+                { text: fish.weight },
+                { text: fish.method.name },
+                { text: "Yes" if fish.released else "No" },
+                { html: renderLinks(fish.id), format: "numeric" },
+                { html: renderCheck(fish.id, "exclude-catch", fish.reportingExclude), format: "numeric" }
+            ]) }}
+        {% else %}
+            {{ salmonAndLargeTroutItems.push([
+                { text: fish.dateCaught },
+                { text: fish.activity.river.name },
+                { text: fish.species.name },
+                { text: fish.weight },
+                { text: fish.method.name },
+                { text: "Yes" if fish.released else "No" },
+                { html: renderLinks(fish.id), format: "numeric" }
+            ]) }}
+        {% endif %}
     {% endfor %}
 {% endif %}
 
 {% if smallCatches.length %}
     {% for catch in smallCatches %}
-        {{ smallCatchItems.push([
-            { text: catch.month },
-            { text: catch.river },
-            { text: catch.fly or 0, format: "numeric" },
-            { text: catch.spinner or 0, format: "numeric" },
-            { text: catch.bait or 0, format: "numeric" },
-            { text: catch.unknown or 0, format: "numeric" } if fmt,
-            { text: catch.released, format: "numeric" },
-            { html: renderLinks(catch.id | replace("smallCatches", "small-catches")), format: "numeric" }
-        ]) }}
+        {% if fmt %}
+            {{ smallCatchItems.push([
+                { text: catch.month },
+                { text: catch.river },
+                { text: catch.fly or 0, format: "numeric" },
+                { text: catch.spinner or 0, format: "numeric" },
+                { text: catch.bait or 0, format: "numeric" },
+                { text: catch.unknown or 0, format: "numeric" },
+                { text: catch.released, format: "numeric" },
+                { html: renderLinks(catch.id | replace("smallCatches", "small-catches")), format: "numeric" },
+                { html: renderCheck(catch.id, "exclude-small-catch", catch.reportingExclude), format: "numeric" }
+            ]) }}
+        {% else %}
+            {{ smallCatchItems.push([
+                { text: catch.month },
+                { text: catch.river },
+                { text: catch.fly or 0, format: "numeric" },
+                { text: catch.spinner or 0, format: "numeric" },
+                { text: catch.bait or 0, format: "numeric" },
+                { text: catch.released, format: "numeric" },
+                { html: renderLinks(catch.id | replace("smallCatches", "small-catches")), format: "numeric" }
+            ]) }}
+        {% endif %}
     {% endfor %}
+{% endif %}
+
+{% if fmt %}
+    {% set largeCatchHeader = [
+        { text: "Date" },
+        { text: "River" },
+        { text: "Type" },
+        { text: "Weight" },
+        { text: "Method" },
+        { text: "Released" },
+        { text: "Actions", format: "numeric" },
+        { text: "Ex.", format: "numeric" }
+    ] %}
+{% else %}
+    {% set largeCatchHeader = [
+        { text: "Date" },
+        { text: "River" },
+        { text: "Type" },
+        { text: "Weight" },
+        { text: "Method" },
+        { text: "Released" },
+        { text: "Actions", format: "numeric" }
+    ] %}
+{% endif %}
+
+{% if fmt %}
+    {% set smallCatchHeader = [
+        { text: "Month" },
+        { text: "River" },
+        { text: "Fly", format: "numeric" },
+        { text: "Spinner", format: "numeric" },
+        { text: "Bait", format: "numeric" },
+        { text: "Unknown", format: "numeric" },
+        { text: "Released", format: "numeric" },
+        { text: "Actions", format: "numeric" },
+        { text: "Ex.", format: "numeric" }
+    ] %}
+{% else %}
+    {% set smallCatchHeader = [
+        { text: "Month" },
+        { text: "River" },
+        { text: "Fly", format: "numeric" },
+        { text: "Spinner", format: "numeric" },
+        { text: "Bait", format: "numeric" },
+        { text: "Released", format: "numeric" },
+        { text: "Actions", format: "numeric" }
+    ] %}
 {% endif %}
 
 {% block content %}
@@ -106,16 +187,7 @@
                     captionClasses: "govuk-heading-m",
                     firstCellIsHeader: false,
                     attributes: { id: "small" },
-                    head: [
-                        { text: "Month" },
-                        { text: "River" },
-                        { text: "Fly", format: "numeric" },
-                        { text: "Spinner", format: "numeric" },
-                        { text: "Bait", format: "numeric" },
-                        { text: "Unknown", format: "numeric" } if fmt,
-                        { text: "Released", format: "numeric" },
-                        { text: "Actions", format: "numeric" }
-                    ],
+                    head: smallCatchHeader,
                     rows: smallCatchItems
                 }) }}
 
@@ -132,15 +204,7 @@
                     captionClasses: "govuk-heading-m",
                     firstCellIsHeader: false,
                     attributes: { id: "large" },
-                    head: [
-                        { text: "Date" },
-                        { text: "River" },
-                        { text: "Type" },
-                        { text: "Weight" },
-                        { text: "Method" },
-                        { text: "Released" },
-                        { text: "Actions", format: "numeric" }
-                    ],
+                    head: largeCatchHeader,
                     rows: salmonAndLargeTroutItems
                 }) }}
 
@@ -154,7 +218,20 @@
             {% endif %}
 
             {% if activities.length %}
-                <p class="govuk-body-m govuk-!-margin-top-7">If you plan to fish again for salmon or sea trout this year, click 'Save as draft', otherwise click 'Review catch return'.</p>
+                {% if fmt %}
+                    {{ govukCheckboxes({
+                          idPrefix: "exclude",
+                          name: "exclude",
+                          items: [{
+                                value: "submission",
+                                text: "Exclude this catch return from reports?",
+                                checked: reportingExclude
+                          }]
+                        })
+                    }}
+                {% else %}
+                    <p class="govuk-body-m govuk-!-margin-top-7">If you plan to fish again for salmon or sea trout this year, click 'Save as draft', otherwise click 'Review catch return'.</p>
+                {% endif %}
             {% endif %}
 
             {{ govukButton({

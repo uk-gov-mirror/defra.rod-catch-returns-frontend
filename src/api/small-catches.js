@@ -43,6 +43,7 @@ module.exports = class CatchesApi extends EntityApi {
           const methodCount = counts.find(c => c.method.name === m.name)
           return { id: m.id, name: m.name, count: methodCount ? methodCount.count : null }
         }),
+        reportingExclude: c.reportingExclude,
         released: c.released,
         activity: {
           id: EntityApi.keyFromLink(activity),
@@ -66,7 +67,7 @@ module.exports = class CatchesApi extends EntityApi {
     })
   }
 
-  async change (request, catchId, submissionId, activityId, month, counts, released) {
+  async change (request, catchId, activityId, month, counts, released) {
     const result = await super.change(request, catchId, {
       month: month,
       released: released,
@@ -79,6 +80,12 @@ module.exports = class CatchesApi extends EntityApi {
     if (mappedResult.activity.id !== activityId) {
       await super.changeAssoc(request, catchId + '/activity', activityId)
     }
+  }
+
+  async changeExclusion (request, catchId, reportingExclude) {
+    return super.change(request, catchId, {
+      reportingExclude: reportingExclude
+    })
   }
 
   sort (a, b) {

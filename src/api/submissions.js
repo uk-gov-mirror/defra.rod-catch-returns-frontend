@@ -31,4 +31,10 @@ module.exports = class SubmissionsApi extends EntityApi {
   async setIncomplete (request, submissionId) {
     return super.change(request, submissionId, { status: 'INCOMPLETE' })
   }
+
+  async changeExclusion (request, submissionId, reportingExclude) {
+    return super.change(request, submissionId, {
+      reportingExclude: reportingExclude
+    })
+  }
 }

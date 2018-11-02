@@ -101,8 +101,8 @@ module.exports = async (request) => {
 
       // Test if we are adding or updating
       if (cache.largeCatch) {
-        await catchesApi.change(request, cache.largeCatch.id,
-          cache.submissionId,
+        await catchesApi.change(request,
+          cache.largeCatch.id,
           activities.find(a => a.river.id === payload.river).id,
           dateCaught.format(),
           payload.type,
@@ -111,7 +111,8 @@ module.exports = async (request) => {
           payload.released === 'true'
         )
       } else {
-        await catchesApi.add(request, cache.submissionId,
+        await catchesApi.add(request,
+          cache.submissionId,
           activities.find(a => a.river.id === payload.river).id,
           dateCaught.format(),
           payload.type,
