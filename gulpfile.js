@@ -51,3 +51,7 @@ gulp.task('default', gulp.series(
   copyJs,
   buildSass
 ))
+
+gulp.task('watch', gulp.series(() => {
+  gulp.watch(paths.assets + 'sass/**/*.scss', gulp.series(buildSass))
+}))
