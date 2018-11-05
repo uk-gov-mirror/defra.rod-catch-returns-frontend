@@ -8,8 +8,8 @@
  */
 
 const Client = require('./client')
-const Url = require('url')
 const Crypto = require('../lib/crypto')
+const { URL } = require('url')
 
 module.exports = class EntityApi {
   constructor (path, mapper = async (request, e) => {
@@ -29,7 +29,8 @@ module.exports = class EntityApi {
 
   // Calculate the object key from the link. Used in payloads
   static keyFromLink (obj) {
-    return Url.parse(obj._links.self.href).path.replace(process.env.API_PATH + '/', '')
+    const url = new URL(obj._links.self.href)
+    return url.pathname.replace(process.env.API_PATH + '/', '')
   }
 
   // Add (POST) a new entity
