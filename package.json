@@ -1,6 +1,6 @@
 {
   "name": "rod-catch-returns-frontend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Rod catch returns webservice",
   "main": "index.js",
   "repository": "https://github.com/DEFRA/rod-catch-returns-frontend.git",
@@ -11,7 +11,8 @@
     "start": "node index.js",
     "postinstall": "gulp",
     "watch": "nohup gulp watch&",
-    "test": "./node_modules/lab/bin/lab --verbose"
+    "test": "./node_modules/lab/bin/lab --verbose",
+    "release": "standard-version"
   },
   "author": "Graham Willis, Druid Wood Ltd",
   "license": "ISC",
@@ -57,6 +58,7 @@
     "gulp-sass": "4.0.1",
     "gulp-sourcemaps": "2.6.4",
     "lab": "16.1.0",
-    "run-sequence": "2.2.1"
+    "run-sequence": "2.2.1",
+    "standard-version": "^4.4.0"
   }
 }
