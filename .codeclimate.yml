@@ -20,6 +20,9 @@ exclude_paths:
   - test/
   - node_modules/
   - public/
+  - coverage/
+  - .idea/
+  - volumes/
   - "**.yml"
   - "**.md"
   - "**.html"

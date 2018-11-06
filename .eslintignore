@@ -2,8 +2,10 @@
 !*.js
 !src/**/*.js
 
+.idea/*
 assets/*
 public/*
 node_modules/*
-govuk_modules/*
 volumes/*
+coverage/*
+test/*

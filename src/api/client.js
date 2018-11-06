@@ -5,7 +5,7 @@
  */
 const Url = require('url')
 const Hoek = require('hoek')
-const Request = require('request-promise')
+const Request = require('request-promise-native')
 const { logger } = require('defra-logging-facade')
 
 const internals = {

@@ -16,17 +16,17 @@ const catchesApi = new CatchesApi()
 const submissionsApi = new SubmissionsApi()
 const activitiesApi = new ActivitiesApi()
 
-function validateDate (payload, errors, dateCaught, cache) {
-  if (!payload['date-month'] || !payload['date-day']) {
+function validateDate (payload, errors, cache) {
+  if (!payload.month || !payload.day) {
     errors.push({ date: 'EMPTY' })
-  } else if (Number.isNaN(Number.parseInt(payload['date-month'])) || Number.isNaN(Number.parseInt(payload['date-day']))) {
+  } else if (Number.isNaN(Number.parseInt(payload.month)) || Number.isNaN(Number.parseInt(payload.day))) {
     errors.push({ date: 'INVALID' })
-    payload['date-day'] = payload['date-month'] = null
+    payload.day = payload.month = null
   } else {
-    dateCaught = moment({ year: cache.year, month: payload['date-month'] - 1, day: payload['date-day'] })
+    const dateCaught = moment({ year: cache.year, month: payload.month - 1, day: payload.day })
     if (!dateCaught.isValid()) {
       errors.push({ date: 'INVALID' })
-      payload['date-day'] = payload['date-month'] = null
+      payload.day = payload.month = null
     }
   }
 }
@@ -57,7 +57,6 @@ module.exports = async (request) => {
   const payload = request.payload
   const errors = []
   const cache = await request.cache().get()
-  let dateCaught
 
   logger.debug('Validate salmon and large trout: ' + JSON.stringify(payload))
 
@@ -67,7 +66,7 @@ module.exports = async (request) => {
   }
 
   // Validate the date
-  validateDate(payload, errors, dateCaught, cache)
+  validateDate(payload, errors, cache)
 
   if (!payload.type) {
     errors.push({ type: 'EMPTY' })
@@ -91,7 +90,7 @@ module.exports = async (request) => {
     const submission = await submissionsApi.getById(request, cache.submissionId)
     const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
     try {
-      const dateCaught = moment({ year: cache.year, month: payload['date-month'] - 1, day: payload['date-day'] })
+      const dateCaught = moment({ year: cache.year, month: payload.month - 1, day: payload.day })
 
       const mass = {
         kg: Number.parseFloat(payload.kilograms),

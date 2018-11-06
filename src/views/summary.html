@@ -34,7 +34,7 @@
 {% macro renderCheck(id, name, checked) %}
 <div class="rcr-tab-checkboxes__item">
     <input class="rcr-tab-checkboxes__input" type="checkbox" id="exclude-{{ id }}" name="{{ name }}" value="{{ id }}" {% if checked %}checked="checked"{% endif %}>
-    <label for="exclude-{{ id }}" class="rcr-tab-checkboxes__label"/>
+    <label for="exclude-{{ id }}" class="rcr-tab-checkboxes__label"></label>
 </div>
 {% endmacro %}
 
