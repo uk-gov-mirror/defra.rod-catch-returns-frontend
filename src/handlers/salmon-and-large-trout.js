@@ -84,8 +84,8 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
       const dateCaught = Moment(largeCatch.dateCaught)
       const payload = {
         river: largeCatch.activity.river.id,
-        'date-day': dateCaught.format('DD'),
-        'date-month': dateCaught.format('MM'),
+        day: dateCaught.format('DD'),
+        month: dateCaught.format('MM'),
         type: largeCatch.species.id,
         pounds: Math.floor(largeCatch.mass.oz / 16),
         ounces: Math.round(largeCatch.mass.oz % 16),
