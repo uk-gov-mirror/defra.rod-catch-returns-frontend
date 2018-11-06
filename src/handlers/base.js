@@ -37,7 +37,7 @@ module.exports = class BaseHandler {
           return h.redirect('/unauthorized')
         } else {
           // Server errors
-          return h.redirect('/error500')
+          return h.view('error500')
         }
       }
     }
