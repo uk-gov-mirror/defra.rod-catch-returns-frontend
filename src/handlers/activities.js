@@ -4,7 +4,8 @@ const BaseHandler = require('./base')
 const RiversApi = require('../api/rivers')
 const SubmissionsApi = require('../api/submissions')
 const ActivitiesApi = require('../api/activities')
-const UnauthorizedError = require('./unauthorized')
+const ResponseError = require('./response-error')
+const isAllowedParam = require('./common').isAllowedParam
 const testLocked = require('./common').testLocked
 
 const submissionsApi = new SubmissionsApi()
@@ -24,6 +25,10 @@ module.exports = class ActivitiesHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
+    if (!isAllowedParam(request.params.id)) {
+      throw new ResponseError.Error('Unknown activity', ResponseError.status.BAD_REQUEST)
+    }
+
     const cache = await request.cache().get()
     let submission = await submissionsApi.getById(request, cache.submissionId)
     const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
@@ -52,7 +57,7 @@ module.exports = class ActivitiesHandler extends BaseHandler {
       let activity = await activitiesApi.getById(request, `activities/${request.params.id}`)
 
       if (!activity) {
-        throw new UnauthorizedError('unknown activity')
+        throw new ResponseError.Error('unknown activity', ResponseError.status.UNAUTHORIZED)
       }
 
       const activitySubmission = await submissionsApi.getFromLink(request, activity._links.submission.href)
@@ -60,7 +65,7 @@ module.exports = class ActivitiesHandler extends BaseHandler {
 
       // Check they are not messing about with somebody else's activity
       if (activitySubmission.id !== submission.id) {
-        throw new UnauthorizedError('Action attempted on not owned submission')
+        throw new ResponseError.Error('Action attempted on not owned submission', ResponseError.status.UNAUTHORIZED)
       }
 
       // Write the catch id onto the cache

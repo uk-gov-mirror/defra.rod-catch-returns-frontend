@@ -11,8 +11,10 @@ const SpeciesApi = require('../api/species')
 const SubmissionsApi = require('../api/submissions')
 const CatchesApi = require('../api/catches')
 const ActivitiesApi = require('../api/activities')
+const ResponseError = require('./response-error')
+
 const testLocked = require('./common').testLocked
-const UnauthorizedError = require('./unauthorized')
+const isAllowedParam = require('./common').isAllowedParam
 
 const submissionsApi = new SubmissionsApi()
 const catchesApi = new CatchesApi()
@@ -33,6 +35,10 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
+    if (!isAllowedParam(request.params.id)) {
+      throw new ResponseError.Error('Unknown activity', ResponseError.status.BAD_REQUEST)
+    }
+
     const cache = await request.cache().get()
     const submission = await submissionsApi.getById(request, cache.submissionId)
     const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
@@ -72,7 +78,7 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
       let largeCatch = await catchesApi.getById(request, `catches/${request.params.id}`)
 
       if (!largeCatch) {
-        throw new UnauthorizedError('unknown large catch')
+        throw new ResponseError.Error('Unauthorized access to large catch', ResponseError.status.UNAUTHORIZED)
       }
 
       const largeCatchSubmission = await submissionsApi.getFromLink(request, largeCatch._links.submission.href)
@@ -80,7 +86,7 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
 
       // Check they are not messing about with somebody else's activity
       if (largeCatchSubmission.id !== submission.id) {
-        throw new Error('Action attempted on not owned submission')
+        throw new ResponseError.Error('Unauthorized access to large catch', ResponseError.status.UNAUTHORIZED)
       }
 
       // Write the catch id onto the cache

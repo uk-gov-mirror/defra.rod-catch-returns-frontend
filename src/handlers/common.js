@@ -27,5 +27,9 @@ module.exports = {
     }
 
     return false
+  },
+
+  isAllowedParam: (param) => {
+    return !isNaN(param) || param === 'add'
   }
 }

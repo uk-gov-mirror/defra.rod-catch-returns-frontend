@@ -5,7 +5,9 @@
  */
 const Url = require('url')
 const Hoek = require('hoek')
-const Request = require('request-promise-native')
+const Request = require('request')
+const ResponseError = require('../handlers/response-error')
+
 const { logger } = require('defra-logging-facade')
 
 const internals = {
@@ -64,9 +66,8 @@ const internals = {
    * @param assoc - if true will operate on associations (using the text/uri-list header)
    * @returns {Promise<void>}
    */
-  makeRequest: async (auth, uri, method, body, throwOnNotFound = false, assoc = false) => {
-    // The request library throws an exception on an error status response
-    try {
+  makeRequest: (auth, uri, method, body, throwOnNotFound = false, assoc = false) => {
+    return new Promise(function (resolve, reject) {
       Hoek.assert(internals.method[method], `Method not allowed: ${method}`)
       logger.debug(`API Call; ${method}:${uri} `)
 
@@ -91,20 +92,31 @@ const internals = {
       }
 
       requestObject.headers = internals.headers(method, assoc)
-      return await Request(requestObject)
-    } catch (err) {
-      /*
-       * Not found is ok on searches - its the empty object and a legitimate response
-       * but link GETS or id GETS should always return a result in HATEOAS
-       */
-      if (err.statusCode === 404) {
-        if (throwOnNotFound) {
-          throw err
+
+      Request(requestObject, (err, response, body) => {
+        if (err) {
+          return reject(new Error(err))
         }
-      } else {
-        throw err
-      }
-    }
+
+        // If not 2xx
+        if (Math.floor(Number.parseInt(response.statusCode) / 100) !== 2) {
+          /*
+           * Not found is ok on searches - its the empty object and a legitimate response
+           * but link GETS or id GETS should always return a result in HATEOAS
+           */
+          if (response.statusCode === ResponseError.status.NOT_FOUND) {
+            if (throwOnNotFound) {
+              reject(new ResponseError.Error(response.statusMessage, ResponseError.status.NOT_FOUND))
+            } else {
+              resolve()
+            }
+          } else {
+            reject(new ResponseError.Error(response.statusMessage, response.statusCode))
+          }
+        }
+        resolve(body)
+      })
+    })
   }
 }
 

@@ -6,7 +6,7 @@
 const BaseHandler = require('./base')
 const SubmissionsApi = require('../api/submissions')
 const SmallCatchesApi = require('../api/small-catches')
-const UnauthorizedError = require('./unauthorized')
+const ResponseError = require('./response-error')
 
 const testLocked = require('./common').testLocked
 
@@ -14,6 +14,7 @@ const Moment = require('moment')
 
 const submissionsApi = new SubmissionsApi()
 const smallCatchesApi = new SmallCatchesApi()
+const isAllowedParam = require('./common').isAllowedParam
 
 // Calculate calendar months
 const months = [ ...Array(12).keys() ].map(m => {
@@ -37,19 +38,23 @@ module.exports = class DeleteRiverHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
+    if (!isAllowedParam(request.params.id)) {
+      throw new ResponseError.Error('Unknown activity', ResponseError.status.BAD_REQUEST)
+    }
+
     const cache = await request.cache().get()
     const smallCatch = await smallCatchesApi.getById(request, `smallCatches/${request.params.id}`)
 
     // The back button on the browser can cause this
     if (!smallCatch) {
-      throw new UnauthorizedError('Unauthorized access to small catch')
+      throw new ResponseError.Error('Unauthorized access to small catch', ResponseError.status.UNAUTHORIZED)
     }
 
     const submission = await submissionsApi.getFromLink(request, smallCatch._links.submission.href)
 
     // Check they are not messing about with somebody else's submission
     if (cache.submissionId !== submission.id) {
-      throw new Error('Action attempted on not owned submission')
+      throw new ResponseError.Error('Unauthorized access to small catch', ResponseError.status.UNAUTHORIZED)
     }
 
     // Test if the submission is locked and if so redirect to the review screen
