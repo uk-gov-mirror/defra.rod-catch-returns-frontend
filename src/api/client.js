@@ -5,8 +5,16 @@
  */
 const Url = require('url')
 const Hoek = require('hoek')
-const Request = require('request')
 const ResponseError = require('../handlers/response-error')
+const ETagRequest = require('request-etag')
+
+const Request = new ETagRequest({
+  length: function () {
+    return 1 // Consider each entry size 1 (Used by max)
+  },
+  maxAge: process.env.LRU_TTL || 1800000,
+  max: process.env.LRU_ITEMS || 200000
+})
 
 const { logger } = require('defra-logging-facade')
 
@@ -94,12 +102,16 @@ const internals = {
       requestObject.headers = internals.headers(method, assoc)
 
       Request(requestObject, (err, response, body) => {
+        if (!err && response.statusCode === 304) {
+          logger.debug('Received 304 - body retrieved from cache: ' + JSON.stringify(body))
+        }
+
         if (err) {
           return reject(new Error(err))
         }
 
-        // If not 2xx
-        if (Math.floor(Number.parseInt(response.statusCode) / 100) !== 2) {
+        // If not 2xx - or a 304 (From the cache)
+        if (Math.floor(Number.parseInt(response.statusCode) / 100) !== 2 && response.statusCode !== 304) {
           // Bad requests can be validation errors which we should not reject here
           if (response.statusCode === ResponseError.status.BAD_REQUEST) {
             if (Object.keys(body).includes('errors')) {

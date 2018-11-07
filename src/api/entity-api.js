@@ -39,7 +39,7 @@ module.exports = class EntityApi {
    */
   async add (request, payload) {
     const result = await Client.request(await EntityApi.getAuth(request), Client.method.POST, this.path, null, payload)
-    if (Object.keys(result).includes('id')) {
+    if (!Object.keys(result).includes('errors')) {
       result.id = EntityApi.keyFromLink(result)
     }
     return result
@@ -51,7 +51,7 @@ module.exports = class EntityApi {
    */
   async change (request, key, payload) {
     const result = await Client.request(await EntityApi.getAuth(request), Client.method.PATCH, key, null, payload)
-    if (Object.keys(result).includes('id')) {
+    if (!Object.keys(result).includes('errors')) {
       result.id = EntityApi.keyFromLink(result)
     }
     return result
