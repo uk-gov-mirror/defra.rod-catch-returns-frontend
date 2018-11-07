@@ -11,6 +11,7 @@ const SubmissionsApi = require('../api/submissions')
 const SmallCatchesApi = require('../api/small-catches')
 const ActivitiesApi = require('../api/activities')
 const testLocked = require('./common').testLocked
+const UnauthorizedError = require('./unauthorized')
 
 const submissionsApi = new SubmissionsApi()
 const smallCatchesApi = new SmallCatchesApi()
@@ -85,6 +86,11 @@ module.exports = class SmallCatchHandler extends BaseHandler {
     } else {
       // Modify an existing catch
       let smallCatch = await smallCatchesApi.getById(request, `smallCatches/${request.params.id}`)
+
+      if (!smallCatch) {
+        throw new UnauthorizedError('unknown small catch')
+      }
+
       const smallCatchSubmission = await submissionsApi.getFromLink(request, smallCatch._links.submission.href)
       smallCatch = await smallCatchesApi.doMap(request, smallCatch)
 

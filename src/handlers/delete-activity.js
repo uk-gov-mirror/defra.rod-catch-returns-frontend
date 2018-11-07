@@ -7,6 +7,8 @@ const BaseHandler = require('./base')
 const SubmissionsApi = require('../api/submissions')
 const ActivitiesApi = require('../api/activities')
 const RiversApi = require('../api/rivers')
+const UnauthorizedError = require('./unauthorized')
+
 const testLocked = require('./common').testLocked
 
 const submissionsApi = new SubmissionsApi()
@@ -30,7 +32,7 @@ module.exports = class DeleteActivityHandler extends BaseHandler {
     const activity = await activitiesApi.getById(request, activityId)
 
     if (!activity) {
-      return h.redirect('/summary')
+      throw new UnauthorizedError('Unauthorized access to activity')
     }
 
     const river = await riversApi.getFromLink(request, activity._links.river.href)

@@ -4,6 +4,7 @@ const BaseHandler = require('./base')
 const RiversApi = require('../api/rivers')
 const SubmissionsApi = require('../api/submissions')
 const ActivitiesApi = require('../api/activities')
+const UnauthorizedError = require('./unauthorized')
 const testLocked = require('./common').testLocked
 
 const submissionsApi = new SubmissionsApi()
@@ -49,12 +50,17 @@ module.exports = class ActivitiesHandler extends BaseHandler {
       })
     } else {
       let activity = await activitiesApi.getById(request, `activities/${request.params.id}`)
+
+      if (!activity) {
+        throw new UnauthorizedError('unknown activity')
+      }
+
       const activitySubmission = await submissionsApi.getFromLink(request, activity._links.submission.href)
       activity = await activitiesApi.doMap(request, activity)
 
       // Check they are not messing about with somebody else's activity
       if (activitySubmission.id !== submission.id) {
-        throw new Error('Action attempted on not owned submission')
+        throw new UnauthorizedError('Action attempted on not owned submission')
       }
 
       // Write the catch id onto the cache

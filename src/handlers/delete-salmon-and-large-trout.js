@@ -6,6 +6,8 @@
 const BaseHandler = require('./base')
 const SubmissionsApi = require('../api/submissions')
 const CatchesApi = require('../api/catches')
+const UnauthorizedError = require('./unauthorized')
+
 const Moment = require('moment')
 const { printWeight, testLocked } = require('./common')
 
@@ -30,7 +32,7 @@ module.exports = class DeleteRiverHandler extends BaseHandler {
 
     // The back button on the browser can cause this
     if (!largeCatch) {
-      return h.redirect('/summary')
+      throw new UnauthorizedError('Unauthorized access to large catch')
     }
 
     const submission = await submissionsApi.getFromLink(request, largeCatch._links.submission.href)

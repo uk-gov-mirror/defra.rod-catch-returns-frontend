@@ -12,6 +12,7 @@ const SubmissionsApi = require('../api/submissions')
 const CatchesApi = require('../api/catches')
 const ActivitiesApi = require('../api/activities')
 const testLocked = require('./common').testLocked
+const UnauthorizedError = require('./unauthorized')
 
 const submissionsApi = new SubmissionsApi()
 const catchesApi = new CatchesApi()
@@ -69,6 +70,11 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
     } else {
       // Modify an existing catch
       let largeCatch = await catchesApi.getById(request, `catches/${request.params.id}`)
+
+      if (!largeCatch) {
+        throw new UnauthorizedError('unknown large catch')
+      }
+
       const largeCatchSubmission = await submissionsApi.getFromLink(request, largeCatch._links.submission.href)
       largeCatch = await catchesApi.doMap(request, largeCatch)
 

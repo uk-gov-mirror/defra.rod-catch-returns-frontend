@@ -190,11 +190,11 @@ module.exports = [
 
   // Error 403 unauthorized handler
   {
-    path: '/unauthorized',
+    path: '/error403',
     method: 'GET',
     options: { auth: false },
     handler: (request, h) => {
-      return h.view('unauthorized')
+      return h.view('error403')
     }
   },
 

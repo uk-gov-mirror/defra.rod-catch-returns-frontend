@@ -25,18 +25,18 @@ module.exports = class BaseHandler {
           return await this.doPost(request, h, errors)
         }
       } catch (err) {
-        logger.error(err)
-
         // Crypto error
         if (err instanceof require('../lib/crypto').cryptoError) {
+          logger.error(err)
           return h.redirect('/')
         }
 
         if (err.statusCode === 403) {
-          // Attempt to access unauthorized resources
-          return h.redirect('/unauthorized')
+          // Attempt to access unauthorized resources - don't log
+          return h.redirect('/error403')
         } else {
           // Server errors
+          logger.error(err)
           return h.view('error500')
         }
       }
