@@ -89,40 +89,43 @@ module.exports = async (request) => {
   if (!errors.length) {
     const submission = await submissionsApi.getById(request, cache.submissionId)
     const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
-    try {
-      const dateCaught = moment({ year: cache.year, month: payload.month - 1, day: payload.day })
+    const dateCaught = moment({ year: cache.year, month: payload.month - 1, day: payload.day })
 
-      const mass = {
-        kg: Number.parseFloat(payload.kilograms),
-        oz: (16 * Number.parseInt(payload.pounds)) + Number.parseInt(payload.ounces),
-        type: payload.system
-      }
+    const mass = {
+      kg: Number.parseFloat(payload.kilograms),
+      oz: (16 * Number.parseInt(payload.pounds)) + Number.parseInt(payload.ounces),
+      type: payload.system
+    }
 
-      // Test if we are adding or updating
-      if (cache.largeCatch) {
-        await catchesApi.change(request,
-          cache.largeCatch.id,
-          activities.find(a => a.river.id === payload.river).id,
-          dateCaught.format(),
-          payload.type,
-          mass,
-          payload.method,
-          payload.released === 'true'
-        )
-      } else {
-        await catchesApi.add(request,
-          cache.submissionId,
-          activities.find(a => a.river.id === payload.river).id,
-          dateCaught.format(),
-          payload.type,
-          mass,
-          payload.method,
-          payload.released === 'true'
-        )
-      }
+    let result
+
+    // Test if we are adding or updating
+    if (cache.largeCatch) {
+      result = await catchesApi.change(request,
+        cache.largeCatch.id,
+        activities.find(a => a.river.id === payload.river).id,
+        dateCaught.format(),
+        payload.type,
+        mass,
+        payload.method,
+        payload.released === 'true'
+      )
+    } else {
+      result = await catchesApi.add(request,
+        cache.submissionId,
+        activities.find(a => a.river.id === payload.river).id,
+        dateCaught.format(),
+        payload.type,
+        mass,
+        payload.method,
+        payload.released === 'true'
+      )
+    }
+
+    if (Object.keys(result).includes('errors')) {
+      return apiErrors(result)
+    } else {
       return null
-    } catch (err) {
-      return apiErrors(err, errors)
     }
   } else {
     return errors

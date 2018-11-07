@@ -43,7 +43,7 @@ module.exports = class SmallCatchHandler extends BaseHandler {
    */
   async doGet (request, h) {
     if (!isAllowedParam(request.params.id)) {
-      throw new ResponseError.Error('Unknown activity', ResponseError.status.BAD_REQUEST)
+      throw new ResponseError.Error('Unknown activity', ResponseError.status.UNAUTHORIZED)
     }
 
     const cache = await request.cache().get()

@@ -35,6 +35,7 @@ module.exports = class BaseHandler {
 
         // Response error
         if (err instanceof ResponseError.Error) {
+          logger.debug(err)
           return h.redirect(`/error4xx/${err.statusCode}`)
         } else {
           logger.error(err)

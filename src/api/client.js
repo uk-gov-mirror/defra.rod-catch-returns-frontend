@@ -100,18 +100,27 @@ const internals = {
 
         // If not 2xx
         if (Math.floor(Number.parseInt(response.statusCode) / 100) !== 2) {
-          /*
-           * Not found is ok on searches - its the empty object and a legitimate response
-           * but link GETS or id GETS should always return a result in HATEOAS
-           */
-          if (response.statusCode === ResponseError.status.NOT_FOUND) {
-            if (throwOnNotFound) {
-              reject(new ResponseError.Error(response.statusMessage, ResponseError.status.NOT_FOUND))
+          // Bad requests can be validation errors which we should not reject here
+          if (response.statusCode === ResponseError.status.BAD_REQUEST) {
+            if (Object.keys(body).includes('errors')) {
+              resolve(body)
             } else {
-              resolve()
+              reject(new ResponseError.Error(response.statusMessage, response.statusCode))
             }
           } else {
-            reject(new ResponseError.Error(response.statusMessage, response.statusCode))
+            /*
+             * Not found is ok on searches - its the empty object and a legitimate response
+             * but link GETS or id GETS should always return a result in HATEOAS
+             */
+            if (response.statusCode === ResponseError.status.NOT_FOUND) {
+              if (throwOnNotFound) {
+                reject(new ResponseError.Error(response.statusMessage, ResponseError.status.NOT_FOUND))
+              } else {
+                resolve()
+              }
+            } else {
+              reject(new ResponseError.Error(response.statusMessage, response.statusCode))
+            }
           }
         }
         resolve(body)

@@ -41,6 +41,11 @@ module.exports = class ActivitiesApi extends EntityApi {
       daysFishedOther: daysFishedOther
     })
 
+    // Return early with errors
+    if (Object.keys(result).includes('errors')) {
+      return result
+    }
+
     const mappedResult = await this.doMap(request, result)
 
     // Change the river if necessary

@@ -33,17 +33,27 @@ module.exports = class EntityApi {
     return url.pathname.replace(process.env.API_PATH + '/', '')
   }
 
-  // Add (POST) a new entity
+  /*
+   * Add (POST) a new entity
+   * The result may be the stored entity or the error array
+   */
   async add (request, payload) {
     const result = await Client.request(await EntityApi.getAuth(request), Client.method.POST, this.path, null, payload)
-    result.id = EntityApi.keyFromLink(result)
+    if (Object.keys(result).includes('id')) {
+      result.id = EntityApi.keyFromLink(result)
+    }
     return result
   }
 
-  // Change (PATCH) an entity. The key encodes the entity path
+  /*
+   * Change (PATCH) an entity. The key encodes the entity path
+   * The result may be the stored entity or the error array
+   */
   async change (request, key, payload) {
     const result = await Client.request(await EntityApi.getAuth(request), Client.method.PATCH, key, null, payload)
-    result.id = EntityApi.keyFromLink(result)
+    if (Object.keys(result).includes('id')) {
+      result.id = EntityApi.keyFromLink(result)
+    }
     return result
   }
 

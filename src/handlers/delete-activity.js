@@ -30,7 +30,7 @@ module.exports = class DeleteActivityHandler extends BaseHandler {
    */
   async doGet (request, h) {
     if (!isAllowedParam(request.params.id)) {
-      throw new ResponseError.Error('Unknown activity', ResponseError.status.BAD_REQUEST)
+      throw new ResponseError.Error('Unknown activity', ResponseError.status.UNAUTHORIZED)
     }
 
     const activityId = `activities/${request.params.id}`
