@@ -26,20 +26,21 @@ module.exports = async (request) => {
   // if there are no errors try to persist the activity
   if (!errors.length) {
     const cache = await request.cache().get()
+    let result
 
-    try {
-      // Test if we are adding or updating
-      if (cache.activity) {
-        await activitiesApi.change(request, cache.activity.id, cache.submissionId, payload.river,
-          payload.daysFishedWithMandatoryRelease, payload.daysFishedOther)
-        return null
-      } else {
-        await activitiesApi.add(request, cache.submissionId, payload.river,
-          payload.daysFishedWithMandatoryRelease, payload.daysFishedOther)
-        return null
-      }
-    } catch (err) {
-      return apiErrors(err, errors)
+    // Test if we are adding or updating
+    if (cache.activity) {
+      result = await activitiesApi.change(request, cache.activity.id, cache.submissionId, payload.river,
+        payload.daysFishedWithMandatoryRelease, payload.daysFishedOther)
+    } else {
+      result = await activitiesApi.add(request, cache.submissionId, payload.river,
+        payload.daysFishedWithMandatoryRelease, payload.daysFishedOther)
+    }
+
+    if (Object.keys(result).includes('errors')) {
+      return apiErrors(result)
+    } else {
+      return null
     }
   } else {
     return errors

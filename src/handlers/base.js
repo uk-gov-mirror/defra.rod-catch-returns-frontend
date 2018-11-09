@@ -8,6 +8,8 @@
  * validation if exists
  */
 const { logger } = require('defra-logging-facade')
+const CryptoError = require('../lib/crypto').cryptoError
+const ResponseError = require('./response-error')
 
 module.exports = class BaseHandler {
   constructor ([viewpath, validator]) {
@@ -26,16 +28,16 @@ module.exports = class BaseHandler {
         }
       } catch (err) {
         // Crypto error
-        if (err instanceof require('../lib/crypto').cryptoError) {
+        if (err instanceof CryptoError) {
           logger.error(err)
           return h.redirect('/')
         }
 
-        if (err.statusCode === 403) {
-          // Attempt to access unauthorized resources - don't log
-          return h.redirect('/error403')
+        // Response error
+        if (err instanceof ResponseError.Error) {
+          logger.debug(err)
+          return h.redirect(`/error4xx/${err.statusCode}`)
         } else {
-          // Server errors
           logger.error(err)
           return h.view('error500')
         }

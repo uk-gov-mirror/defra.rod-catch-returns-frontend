@@ -6,13 +6,14 @@
 const BaseHandler = require('./base')
 const SubmissionsApi = require('../api/submissions')
 const CatchesApi = require('../api/catches')
-const UnauthorizedError = require('./unauthorized')
+const ResponseError = require('./response-error')
 
 const Moment = require('moment')
 const { printWeight, testLocked } = require('./common')
 
 const submissionsApi = new SubmissionsApi()
 const catchesApi = new CatchesApi()
+const isAllowedParam = require('./common').isAllowedParam
 
 module.exports = class DeleteRiverHandler extends BaseHandler {
   constructor (...args) {
@@ -27,19 +28,23 @@ module.exports = class DeleteRiverHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
+    if (!isAllowedParam(request.params.id)) {
+      throw new ResponseError.Error('Unknown activity', ResponseError.status.UNAUTHORIZED)
+    }
+
     const cache = await request.cache().get()
     const largeCatch = await catchesApi.getById(request, `catches/${request.params.id}`)
 
     // The back button on the browser can cause this
     if (!largeCatch) {
-      throw new UnauthorizedError('Unauthorized access to large catch')
+      throw new ResponseError.Error('Unauthorized access to large catch', ResponseError.status.UNAUTHORIZED)
     }
 
     const submission = await submissionsApi.getFromLink(request, largeCatch._links.submission.href)
 
     // Check they are not messing about with somebody else's submission
     if (cache.submissionId !== submission.id) {
-      throw new Error('Action attempted on not owned submission')
+      throw new ResponseError.Error('Unauthorized access to large catch', ResponseError.status.UNAUTHORIZED)
     }
 
     // Test if the submission is locked and if so redirect to the review screen

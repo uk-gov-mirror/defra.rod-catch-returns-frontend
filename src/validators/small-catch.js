@@ -65,27 +65,28 @@ module.exports = async (request) => {
   if (!errors.length) {
     const submission = await submissionsApi.getById(request, cache.submissionId)
     const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
-    try {
-      if (cache.smallCatch) {
-        await smallCatchesApi.change(request,
-          cache.smallCatch.id,
-          activities.find(a => a.river.id === payload.river).id,
-          payload.month,
-          counts,
-          payload.released
-        )
-      } else {
-        await smallCatchesApi.add(request,
-          cache.submissionId,
-          activities.find(a => a.river.id === payload.river).id,
-          payload.month,
-          counts,
-          payload.released
-        )
-      }
-      return null
-    } catch (err) {
-      return apiErrors(err, errors).map(e => {
+
+    let result
+    if (cache.smallCatch) {
+      result = await smallCatchesApi.change(request,
+        cache.smallCatch.id,
+        activities.find(a => a.river.id === payload.river).id,
+        payload.month,
+        counts,
+        payload.released
+      )
+    } else {
+      result = await smallCatchesApi.add(request,
+        cache.submissionId,
+        activities.find(a => a.river.id === payload.river).id,
+        payload.month,
+        counts,
+        payload.released
+      )
+    }
+
+    if (Object.keys(result).includes('errors')) {
+      return apiErrors(result).map(e => {
         /*
          * With small catch errors may come with in the property and they need to be stitched
          * back to the catch-method that caused them.
@@ -100,6 +101,8 @@ module.exports = async (request) => {
 
         return e
       })
+    } else {
+      return null
     }
   } else {
     return errors

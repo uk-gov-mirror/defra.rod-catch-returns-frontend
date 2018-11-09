@@ -7,9 +7,10 @@ const BaseHandler = require('./base')
 const SubmissionsApi = require('../api/submissions')
 const ActivitiesApi = require('../api/activities')
 const RiversApi = require('../api/rivers')
-const UnauthorizedError = require('./unauthorized')
+const ResponseError = require('./response-error')
 
 const testLocked = require('./common').testLocked
+const isAllowedParam = require('./common').isAllowedParam
 
 const submissionsApi = new SubmissionsApi()
 const activitiesApi = new ActivitiesApi()
@@ -28,11 +29,15 @@ module.exports = class DeleteActivityHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
+    if (!isAllowedParam(request.params.id)) {
+      throw new ResponseError.Error('Unknown activity', ResponseError.status.UNAUTHORIZED)
+    }
+
     const activityId = `activities/${request.params.id}`
     const activity = await activitiesApi.getById(request, activityId)
 
     if (!activity) {
-      throw new UnauthorizedError('Unauthorized access to activity')
+      throw new ResponseError.Error('Unauthorized access to activity', ResponseError.status.UNAUTHORIZED)
     }
 
     const river = await riversApi.getFromLink(request, activity._links.river.href)
@@ -42,7 +47,7 @@ module.exports = class DeleteActivityHandler extends BaseHandler {
     const cache = await request.cache().get()
 
     if (cache.submissionId !== submission.id) {
-      throw new Error('Action attempted on not owned submission')
+      throw new ResponseError.Error('Unauthorized access to activity', ResponseError.status.UNAUTHORIZED)
     }
 
     // Test if the submission is locked and if so redirect to the review screen

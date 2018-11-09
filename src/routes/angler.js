@@ -188,13 +188,13 @@ module.exports = [
     }
   },
 
-  // Error 403 unauthorized handler
+  // Error 4xx handler
   {
-    path: '/error403',
+    path: '/error4xx/{status}',
     method: 'GET',
     options: { auth: false },
     handler: (request, h) => {
-      return h.view('error403')
+      return h.view('error4xx', { status: request.params.status })
     }
   },
 

@@ -67,6 +67,10 @@ module.exports = class CatchesApi extends EntityApi {
       released: released
     })
 
+    if (Object.keys(result).includes('errors')) {
+      return result
+    }
+
     const mappedResult = await this.doMap(request, result)
 
     // Change the activity if necessary
