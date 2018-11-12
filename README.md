@@ -60,6 +60,10 @@ API_PORT=9580
 API_PATH=/api
 API_REQUEST_TIMEOUT_MS=60000
 
+# LRU Cache
+LRU_ITEMS=200000
+LRU_TTL=1800000 # Half an hour
+
 ```
 ## To Run
 ```
