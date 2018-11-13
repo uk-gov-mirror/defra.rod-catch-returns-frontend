@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        {% if status === '404' %}
+            <h1 class="govuk-heading-xl">Page not found</h1>
+        {% else %}
+            <h1 class="govuk-heading-xl">Error</h1>
+        {% endif %}
+        <p class="govuk-body">You request could not be processed.</p>
+        {{ extra() }}
+    </div>
+</div>
+{% endblock %}

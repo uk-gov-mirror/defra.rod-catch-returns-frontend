@@ -101,10 +101,10 @@ const internals = {
       requestObject.headers = internals.headers(method, assoc)
 
       Request(requestObject, (err, response, body) => {
-        logger.debug(`API; ${method}:${uri} ${response.statusCode}`)
-
         if (err) {
           return reject(new Error(err))
+        } else {
+          logger.debug(`API; ${method}:${uri} ${response.statusCode}`)
         }
 
         // If not 2xx - or a 304 (From the cache)

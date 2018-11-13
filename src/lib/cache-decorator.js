@@ -4,7 +4,6 @@
  * Decorators to make access to the session cache available as
  * simple setters and getters hiding the session key.
  */
-const { logger } = require('defra-logging-facade')
 
 module.exports = function () {
   return {

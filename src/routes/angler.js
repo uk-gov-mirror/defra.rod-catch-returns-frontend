@@ -190,11 +190,11 @@ module.exports = [
 
   // Error 4xx handler
   {
-    path: '/error4xx/{status}',
+    path: '/error/{status}',
     method: 'GET',
     options: { auth: false },
     handler: (request, h) => {
-      return h.view('error4xx', { status: request.params.status })
+      return h.view('error4', { status: request.params.status })
     }
   },
 
