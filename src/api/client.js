@@ -77,7 +77,6 @@ const internals = {
   makeRequest: (auth, uri, method, body, throwOnNotFound = false, assoc = false) => {
     return new Promise(function (resolve, reject) {
       Hoek.assert(internals.method[method], `Method not allowed: ${method}`)
-      logger.debug(`API Call; ${method}:${uri} `)
 
       const requestObject = {
         uri: uri,
@@ -102,9 +101,7 @@ const internals = {
       requestObject.headers = internals.headers(method, assoc)
 
       Request(requestObject, (err, response, body) => {
-        if (!err && response.statusCode === 304) {
-          logger.debug('Received 304 - body retrieved from cache: ' + JSON.stringify(body))
-        }
+        logger.debug(`API; ${method}:${uri} ${response.statusCode}`)
 
         if (err) {
           return reject(new Error(err))
