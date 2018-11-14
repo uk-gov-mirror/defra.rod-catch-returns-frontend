@@ -5,6 +5,11 @@
  */
 
 module.exports = {
+  /**
+   * Create an array of error objects from the result
+   * @param result
+   * @returns {Array}
+   */
   apiErrors: (result) => {
     let errors = []
     result.errors.forEach(e => {
@@ -12,6 +17,9 @@ module.exports = {
       apiErr[e.entity] = e.message
       if (e.property) {
         apiErr.property = e.property
+      }
+      if (e.invalidValue) {
+        apiErr.invalidValue = e.invalidValue
       }
       errors.push(apiErr)
     })

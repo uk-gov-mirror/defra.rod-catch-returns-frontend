@@ -66,7 +66,7 @@
             {% set riverErrorMessage = { text: "Select a river" } %}
             {{ errorList.push({
                 text: "You have not selected a river",
-                href: "#river-1"
+                href: "#river"
             }) }}
         {% endif %}
 
@@ -98,7 +98,7 @@
             {% set systemErrorMessage = { text: "Select either pounds and ounces or kilograms" } %}
             {{ errorList.push({
                 text: "You have not selected pounds and ounces or kilograms",
-                href: "#system"
+                href: "#system-1"
             }) }}
         {% endif %}
 
@@ -130,7 +130,7 @@
             {% set methodErrorMessage = { text: "Select a method" } %}
             {{ errorList.push({
                 text: "You have not selected a method",
-                href: "#method"
+                href: "#method-1"
             }) }}
         {% endif %}
 
@@ -138,7 +138,7 @@
             {% set releasedErrorMessage = { text: "Select yes or no" } %}
             {{ errorList.push({
                 text: "You have not told us whether you released this fish",
-                href: "#released"
+                href: "#released-1"
             }) }}
         {% endif %}
 
@@ -146,7 +146,7 @@
             {% set systemErrorMessage = { text: "Enter a valid weight" } %}
             {{ errorList.push({
                 text: "This fish is too big",
-                href: "#system"
+                href: "#system-1"
             }) }}
         {% endif %}
 
@@ -154,7 +154,7 @@
             {% set systemErrorMessage = { text: "Enter a valid weight in kilograms" } %}
             {{ errorList.push({
                 text: "This fish is too small",
-                href: "#system"
+                href: "#system-1"
             }) }}
         {% endif %}
 
@@ -162,7 +162,7 @@
             {% set systemErrorMessage = { text: "Enter a valid weight" } %}
             {{ errorList.push({
                 text: "You have not entered a weight for this fish",
-                href: "#system"
+                href: "#system-1"
             }) }}
         {% endif %}
 

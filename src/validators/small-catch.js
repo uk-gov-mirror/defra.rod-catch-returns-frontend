@@ -86,21 +86,25 @@ module.exports = async (request) => {
     }
 
     if (Object.keys(result).includes('errors')) {
-      return apiErrors(result).map(e => {
-        /*
-         * With small catch errors may come with in the property and they need to be stitched
-         * back to the catch-method that caused them.
-         */
-        if (e.property) {
-          const pos = Number.parseInt(/counts\[(.*)\]/.exec(e.property)[1])
-          const method = methods.find(m => m.id === counts[pos].method)
-          e[method.name] = e.SmallCatch
-          delete e.property
-          delete e.SmallCatch
-        }
+      const res = apiErrors(result)
+      const invalids = res.filter(r => r.invalidValue)[0]
 
-        return e
-      })
+      if (invalids) {
+        const ret = invalids.invalidValue.map(v => {
+          v[v.method.name] = invalids.SmallCatch
+          delete v.method
+          delete v.count
+          return v
+        })
+        return res.filter(r => !r.invalidValue).concat(ret).sort((a, b) => {
+          const ord = { Fly: 1, Spinner: 2, Bait: 3, Unknown: 4, SmallCatch: 5 }
+          const ao = ord[Object.keys(a)[0]]
+          const bo = ord[Object.keys(b)[0]]
+          return (ao - bo) / Math.abs(ao - bo)
+        })
+      } else {
+        return res
+      }
     } else {
       return null
     }
