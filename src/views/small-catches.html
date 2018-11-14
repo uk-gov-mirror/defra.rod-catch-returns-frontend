@@ -169,7 +169,7 @@
     {% endfor %}
 {% endif %}
 
-{% block pageTitle %}{% if add %}Add{% else %}Edit{% endif %} small adult sea trout catch{% endblock %}
+{% block pageTitle %}{% if add %}Add{% else %}Edit{% endif %} a small adult sea trout catch {{ suffix }} - GOV.UK{% endblock %}
 
 {% if rivers.length === 1 %}
     {% set suffix = "caught on river " + rivers[0].name %}

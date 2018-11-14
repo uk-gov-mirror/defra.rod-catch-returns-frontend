@@ -213,7 +213,7 @@
     }) }}
 {% endset -%}
 
-{% block pageTitle %}{% if add %}Add{% else %}Edit{% endif %} a salmon or large adult sea trout{% endblock %}
+{% block pageTitle %}{% if add %}Add{% else %}Edit{% endif %} a salmon or large adult sea trout {{ suffix }} - GOV.UK{% endblock %}
 
 {% if rivers.length === 1 %}
     {% set suffix = "caught on river " + rivers[0].name %}
