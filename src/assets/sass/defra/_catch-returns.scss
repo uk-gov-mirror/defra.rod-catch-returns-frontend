@@ -46,3 +46,21 @@
   padding-bottom: 10px;
   border-bottom: 1px solid #bfc1c3;
 }
+
+/* Global cookie message */
+
+.js-enabled #global-cookie-message {
+  display: none; /* shown with JS, always on for non-JS */
+}
+
+#global-cookie-message {
+  width: 100%;
+  background-color: #d5e8f3;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  p {
+    padding: 0 15px;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}

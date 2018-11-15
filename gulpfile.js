@@ -10,6 +10,8 @@ const gulp = require('gulp')
 const sass = require('gulp-sass')
 const sourcemaps = require('gulp-sourcemaps')
 const del = require('del')
+const minify = require('gulp-minify')
+const merge = require('merge-stream')
 
 require('dotenv').config()
 
@@ -28,8 +30,10 @@ const copyAssets = () => {
 }
 
 const copyJs = () => {
-  return gulp.src('node_modules/govuk-frontend/all.js')
-    .pipe(gulp.dest(paths.public + '/javascript'))
+  return merge(
+    gulp.src('node_modules/govuk-frontend/all.js'),
+    gulp.src('src/assets/javascript/**/*.*')
+  ).pipe(minify({ noSource: true })).pipe(gulp.dest(paths.public + '/javascript'))
 }
 
 // Build the sass

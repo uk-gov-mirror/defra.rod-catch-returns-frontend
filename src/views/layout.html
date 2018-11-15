@@ -67,6 +67,14 @@
     {% endif %}
 {% endblock %}
 
+{% block bodyStart %}
+<div id="global-cookie-message" style="display: block;">
+    <div class="govuk-width-container">
+        <p class="govuk-link govuk-body-m">GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies">Find out more about cookies</a></p>
+    </div>
+</div>
+{% endblock %}
+
 {% block footer %}
     {{ govukFooter({
         meta: {
@@ -93,7 +101,9 @@
 {% endblock %}
 
 {% block bodyEnd %}
-    <script src="/public/javascript/all.js"></script>
+    <script src="/public/javascript/all-min.js"></script>
+    <script src="/public/javascript/cookie-functions-min.js"></script>
+    <script src="/public/javascript/cookie-header-min.js"></script>
     <script>window.GOVUKFrontend.initAll()</script>
 {% endblock %}
 
