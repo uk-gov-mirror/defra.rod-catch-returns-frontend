@@ -27,6 +27,12 @@ module.exports = {
       },
 
       payload: async (request, h) => {
+        if (!request.payload.user || !request.payload.password) {
+          return h.continue
+        }
+
+        request.payload.user = request.payload.user.replace(/\s+/g, '')
+
         const result = Joi.validate(request.payload, activeDirectorySchema,
           { allowUnknown: true, abortEarly: true })
 
@@ -36,8 +42,8 @@ module.exports = {
         }
 
         const auth = {
-          username: request.payload.user.trim(),
-          password: request.payload.password.trim()
+          username: request.payload.user,
+          password: request.payload.password
         }
 
         try {
@@ -78,6 +84,13 @@ module.exports = {
       },
 
       payload: async (request, h) => {
+        if (!request.payload.licence || !request.payload.postcode) {
+          return h.continue
+        }
+
+        request.payload.licence = request.payload.licence.replace(/\s+/g, '')
+        request.payload.postcode = request.payload.postcode.replace(/\s+/g, '')
+
         const result = Joi.validate(request.payload, licenceSchema,
           { allowUnknown: true, abortEarly: true })
 
@@ -87,8 +100,8 @@ module.exports = {
         }
 
         const auth = {
-          username: request.payload.licence.toUpperCase().trim(),
-          password: request.payload.postcode.toUpperCase().replace(' ', '')
+          username: request.payload.licence.toUpperCase(),
+          password: request.payload.postcode.toUpperCase()
         }
 
         try {

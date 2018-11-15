@@ -13,7 +13,7 @@ module.exports = async (request) => {
   const errors = []
 
   // Set up the contact id for the licence in the cache
-  payload.contact = await getContactFromLicenceKey(request, request.payload.licence.toUpperCase().trim())
+  payload.contact = await getContactFromLicenceKey(request, request.payload.licence.toUpperCase().replace(/\s+/g, ''))
 
   // Unmatched licence number
   if (!payload.licence) {
@@ -22,8 +22,8 @@ module.exports = async (request) => {
     errors.push({ postcode: 'EMPTY' })
   } else if (!payload.contact) {
     errors.push({ licence: 'NOT_FOUND' })
-  } else if (payload.postcode.toUpperCase().replace(/\s/g, '') !==
-      payload.contact.contact.postcode.toUpperCase().replace(/\s/g, '')) {
+  } else if (payload.postcode.replace(/\s+/g, '').toUpperCase() !==
+      payload.contact.contact.postcode.toUpperCase().replace(/\s+/g, '')) {
     errors.push({ postcode: 'NOT_FOUND' })
   } else {
     return null
