@@ -56,6 +56,11 @@ gulp.task('default', gulp.series(
   buildSass
 ))
 
+/*
+ * The Gulp v4 cli must be installed globally to run the watch
+ * npm rm -g gulp
+ * npm install -g gulp-cli
+ */
 gulp.task('watch', gulp.series(() => {
   gulp.watch(paths.assets + 'sass/**/*.scss', gulp.series(buildSass))
 }))
