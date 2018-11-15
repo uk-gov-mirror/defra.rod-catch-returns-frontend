@@ -5,7 +5,7 @@
 (function () {
   'use strict'
   var root = this
-  if (typeof root.GOVUK === 'undefined') { root.GOVUK = {} }
+  if (typeof this.GOVUK === 'undefined') { root.GOVUK = {} }
   /*
    * Cookie methods
    * ==============
@@ -21,18 +21,18 @@
    * Deleting a cookie:
    * GOVUK.cookie('hobnob', null);
    */
-  GOVUK.cookie = function (name, value, options) {
+  root.GOVUK.cookie = function (name, value, options) {
     if (typeof value !== 'undefined') {
       if (value === false || value === null) {
-        return GOVUK.setCookie(name, '', { days: -1 })
+        return root.GOVUK.setCookie(name, '', { days: -1 })
       } else {
-        return GOVUK.setCookie(name, value, options)
+        return root.GOVUK.setCookie(name, value, options)
       }
     } else {
-      return GOVUK.getCookie(name)
+      return root.GOVUK.getCookie(name)
     }
   }
-  GOVUK.setCookie = function (name, value, options) {
+  root.GOVUK.setCookie = function (name, value, options) {
     if (typeof options === 'undefined') {
       options = {}
     }
@@ -47,12 +47,12 @@
     }
     document.cookie = cookieString
   }
-  GOVUK.getCookie = function (name) {
+  root.GOVUK.getCookie = function (name) {
     var nameEQ = name + '='
     var cookies = document.cookie.split(';')
     for (var i = 0, len = cookies.length; i < len; i++) {
       var cookie = cookies[i]
-      while (cookie.charAt(0) == ' ') {
+      while (cookie.charAt(0) === ' ') {
         cookie = cookie.substring(1, cookie.length)
       }
       if (cookie.indexOf(nameEQ) === 0) {
