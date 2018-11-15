@@ -143,17 +143,17 @@
         {% endif %}
 
         {% if error.Catch === 'CATCH_MASS_MAX_EXCEEDED' %}
-            {% set systemErrorMessage = { text: "Enter a valid weight" } %}
+            {% set systemErrorMessage = { text: "Enter a weight less than 50kg (110lbs)" } %}
             {{ errorList.push({
-                text: "This fish is too big",
+                text: "You have not entered a valid weight",
                 href: "#system-1"
             }) }}
         {% endif %}
 
         {% if error.Catch === 'CATCH_MASS_BELOW_MINIMUM' %}
-            {% set systemErrorMessage = { text: "Enter a valid weight in kilograms" } %}
+            {% set systemErrorMessage = { text: "Enter a weight greater than 0" } %}
             {{ errorList.push({
-                text: "This fish is too small",
+                text: "You have not entered a valid weight",
                 href: "#system-1"
             }) }}
         {% endif %}
