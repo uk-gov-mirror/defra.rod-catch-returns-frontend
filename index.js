@@ -33,7 +33,7 @@ const manifest = {
         partition: 'server-cache'
       }
     ],
-    routes: { security: true }
+    routes: { security: { noOpen: false } }
   },
 
   // Register plugins
@@ -157,9 +157,11 @@ const manifest = {
        * Plugin to set content security policy headers
        * see: https://www.npmjs.com/package/blankie
        */
+
       {
         plugin: require('blankie'),
         options: {
+          generateNonces: false, // Seems to prevent the print dialog
           defaultSrc: 'self',
           scriptSrc: [ 'self', 'unsafe-inline', 'unsafe-eval', 'www.googletagmanager.com', 'www.google-analytics.com' ],
           imgSrc: [ 'self', 'www.google-analytics.com' ],
