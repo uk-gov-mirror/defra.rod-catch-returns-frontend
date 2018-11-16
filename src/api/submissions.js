@@ -3,7 +3,7 @@
 const EntityApi = require('./entity-api')
 
 /**
- * Species entity handler
+ * Submission entity handler
  *
  */
 module.exports = class SubmissionsApi extends EntityApi {
