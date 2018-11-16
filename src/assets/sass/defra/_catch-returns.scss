@@ -34,7 +34,6 @@
 .govuk-button-secondary {
   @extend .govuk-button;
   background-color: govuk-colour("grey-1");
-//  margin-left: govuk-spacing(3);
   &:hover {
     background-color: #606060;
   }
@@ -48,12 +47,8 @@
 }
 
 /* Global cookie message */
-
-.js-enabled #global-cookie-message {
-  display: none; /* shown with JS, always on for non-JS */
-}
-
-#global-cookie-message {
+div#global-cookie-message {
+  display: block;
   width: 100%;
   background-color: #d5e8f3;
   padding-top: 10px;
