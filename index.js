@@ -32,7 +32,8 @@ const manifest = {
         port: process.env.REDIS_PORT,
         partition: 'server-cache'
       }
-    ]
+    ],
+    routes: { security: true }
   },
 
   // Register plugins
@@ -150,7 +151,30 @@ const manifest = {
           },
           logUnauthorized: true
         }
+      },
+
+      /**
+       * Plugin to set content security policy headers
+       * see: https://www.npmjs.com/package/blankie
+       */
+      {
+        plugin: require('blankie'),
+        options: {
+          defaultSrc: 'self',
+          scriptSrc: [ 'self', 'unsafe-inline', 'unsafe-eval', 'www.googletagmanager.com', 'www.google-analytics.com' ],
+          imgSrc: [ 'self', 'www.google-analytics.com' ],
+          fontSrc: [ 'self', 'data:' ]
+        }
+      },
+
+      /**
+       * Required by blankie
+       * See: https://github.com/hapijs/scooter
+       */
+      {
+        plugin: require('scooter')
       }
+
     ]
   }
 }
