@@ -186,7 +186,7 @@ set activityTableHeadings = {
                 rows: riverRows
             }) }}
 
-            <p class="govuk-body" style="text-align:right">
+            <p class="govuk-body summary-link-right">
                 {% if activities.length === 0 %}
                     <a id="activities-add" class="govuk-link " href="/activities/add">Add a river</a>
                 {% else %}
@@ -205,7 +205,7 @@ set activityTableHeadings = {
                     rows: smallCatchItems
                 }) }}
 
-                <p class="govuk-body" style="text-align:right">
+                <p class="govuk-body summary-link-right">
                     {% if smallCatches.length === 0 %}
                         <a id="small-catches-add" class="govuk-link " href="small-catches/add">Add a small adult sea trout catch</a>
                     {% else %}
@@ -223,7 +223,7 @@ set activityTableHeadings = {
                     rows: salmonAndLargeTroutItems
                 }) }}
 
-                <p class="govuk-body" style="text-align:right">
+                <p class="govuk-body summary-link-right" style="text-align:right">
                     {% if catches.length === 0 %}
                         <a id="catches-add" class="govuk-link " href="catches/add">Add a salmon or large adult sea trout</a>
                     {% else %}
