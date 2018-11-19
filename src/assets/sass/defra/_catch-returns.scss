@@ -63,3 +63,7 @@ div#global-cookie-message {
 p.summary-link-right {
   text-align: right
 }
+
+div.hide-if-js-disabled {
+  display:none
+}

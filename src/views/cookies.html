@@ -62,11 +62,13 @@
     <p class="govuk-body-m">Full details of the cookies which Google Analytics uses can be found in Cookies & Google Analytics in documentation for Google’s Analytics tracking code. You can also read Google’s Privacy Policy for Google Analytics.</p>
     <p class="govuk-body-m">We don’t share the data that Google Analytics collects.</p>
 
-    {{ govukButton({
-        name: "continue",
-        text: "Continue",
-        href: "/summary"
-    }) }}
+    <div class="hide-if-js-disabled">
+        {{ govukButton({
+            name: "continue",
+            text: "Continue",
+            href: "javascript:history.back()"
+        }) }}
+    </div>
 
     <div>
         <label type="hidden" id="pgid" name="pgid" value="{{pgid}}"/>

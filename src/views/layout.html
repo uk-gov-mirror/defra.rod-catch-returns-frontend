@@ -100,6 +100,9 @@
     <script src="/public/javascript/cookie-functions-min.js"></script>
     <script src="/public/javascript/cookie-header-min.js"></script>
     <script>window.GOVUKFrontend.initAll()</script>
+    <script>var e = document.getElementsByClassName('hide-if-js-disabled');
+        for (var i = 0, len = e.length; i < len; i++) {e[i].style.display='block';}
+    </script>
 {% endblock %}
 
 
