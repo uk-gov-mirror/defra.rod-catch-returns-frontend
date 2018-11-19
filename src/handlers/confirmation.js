@@ -6,6 +6,7 @@
 const ReviewHandler = require('./review')
 const SubmissionsApi = require('../api/submissions')
 const submissionsApi = new SubmissionsApi()
+const ResponseError = require('./response-error')
 
 module.exports = class ConfirmHandler extends ReviewHandler {
   /**
@@ -21,7 +22,7 @@ module.exports = class ConfirmHandler extends ReviewHandler {
 
     // If the submission status is not submitted, throw an error
     if (submission.status !== 'SUBMITTED') {
-      throw new Error('Illegal access of the confirmation page')
+      throw new ResponseError.Error('Illegal access of the confirmation page', ResponseError.status.UNAUTHORIZED)
     }
 
     return this.reviewReturn(request, h)
