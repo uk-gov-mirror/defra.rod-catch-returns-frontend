@@ -165,7 +165,8 @@ const manifest = {
           defaultSrc: 'self',
           scriptSrc: [ 'self', 'unsafe-inline', 'unsafe-eval', 'www.googletagmanager.com', 'www.google-analytics.com' ],
           imgSrc: [ 'self', 'www.google-analytics.com' ],
-          fontSrc: [ 'self', 'data:' ]
+          fontSrc: [ 'self', 'data:' ],
+          connectSrc: [ 'self', 'www.google-analytics.com' ]
         }
       },
 

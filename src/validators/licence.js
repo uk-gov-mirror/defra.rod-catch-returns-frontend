@@ -8,8 +8,6 @@ const getContactFromLicenceKey = require('../api/licence').getContactFromLicence
 
 module.exports = async (request) => {
   const payload = request.payload
-  logger.debug('Validate licence: ' + JSON.stringify(payload))
-
   const errors = []
 
   // Set up the contact id for the licence in the cache

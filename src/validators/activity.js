@@ -12,7 +12,6 @@ const activitiesApi = new ActivitiesApi()
 
 module.exports = async (request) => {
   const payload = request.payload
-  logger.debug('Validate activity: ' + JSON.stringify(payload))
 
   let errors = []
 

@@ -21,8 +21,6 @@ module.exports = async (request) => {
   const errors = []
   const cache = await request.cache().get()
 
-  logger.debug('Validate the small catches: ' + JSON.stringify(payload))
-
   // Validate that the river has been selected
   if (!payload.river) {
     errors.push({ river: 'EMPTY' })

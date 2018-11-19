@@ -58,8 +58,6 @@ module.exports = async (request) => {
   const errors = []
   const cache = await request.cache().get()
 
-  logger.debug('Validate salmon and large trout: ' + JSON.stringify(payload))
-
   // Validate that the river has been selected
   if (!payload.river) {
     errors.push({ river: 'EMPTY' })

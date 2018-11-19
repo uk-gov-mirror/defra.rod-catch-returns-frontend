@@ -178,6 +178,16 @@ module.exports = [
     handler: confirmationHandler.handler
   },
 
+  // Cookies page handler
+  {
+    path: '/cookies',
+    method: 'GET',
+    options: { auth: false },
+    handler: (request, h) => {
+      return h.view('cookies')
+    }
+  },
+
   // Error 500 handler
   {
     path: '/error500',
@@ -202,10 +212,10 @@ module.exports = [
   {
     method: '*',
     path: '/{p*}',
+    options: { auth: false },
     handler: function (request, h) {
       return h.redirect('/')
-    },
-    options: { auth: false }
+    }
   }
 
 ]

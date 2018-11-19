@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% from "table/macro.njk" import govukTable %}
+
+{% block pageTitle %}Cookies - GOV.UK{% endblock %}
+
+{% set hdr = [
+    { text: "Name" },
+    { text: "Purpose" },
+    { text: "Expires" }
+] %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-xl">Cookies</h1>
+        <p class="govuk-body-m">When you use the Catch Returns service, we put small files known as ‘cookies’ onto your computer.</p>
+        <p class="govuk-body-m">These cookies are used to:</p>
+        <ul class="govuk-body-m govuk-list--bullet">
+            <li>help us understand how you use the service, so we can make improvements</li>
+            <li>remember what notifications you’ve seen so that you’re not shown them more than once</li>
+        </ul>
+        <p class="govuk-body-m">Find out more about <a href="https://ico.org.uk/your-data-matters/online/cookies/">how to manage cookies</a>.</p>
+    </div>
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-l govuk-!-margin-top-4">Session cookie</h1>
+        <p class="govuk-body-m">We store session cookies on your computer to help keep your information secure while you use the service.</p>
+        {{ govukTable({
+          head: hdr,
+          rows: [
+                    [ { text: "sid" }, { text: "Session management" }, { text: "1 hour" } ],
+                    [ { text: "rcr2018" }, { text: "Cross-Site Request Forgery prevention" }, { text: "1 hour" } ]
+          ]
+        }) }}
+    </div>
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-l govuk-!-margin-top-4">Our introductory message</h1>
+        <p class="govuk-body-m">You may see a pop-up welcome message when you first visit the service. We’ll store a cookie so that your computer knows you’ve seen it and knows not to show it again.</p>
+        {{ govukTable({
+          head: hdr,
+          rows: [
+                    [ { text: "gds_seen_cookie_message" }, { text: "Cookie popup message" }, { text: "90 days" } ]
+          ]
+        }) }}
+    </div>
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-l govuk-!-margin-top-4">Our performance survey</h1>
+        <p class="govuk-body-m">We use SmartSurvey to collect responses to the survey. If you take part, SmartSurvey will save extra cookies to your computer to track your progress through it. <a href="https://www.smartsurvey.co.uk/how-we-use-cookies">The SmartSurvey cookie policy</a></p>
+    </div>
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-l govuk-!-margin-top-4">Performance cookies</h1>
+        <p class="govuk-body-m">We use Google Analytics, which creates a number of first-party cookies.</p>
+        {{ govukTable({
+          head: hdr,
+          rows: [
+                    [ { text: "_ga" }, { text: "Used to distinguish users." }, { text: "2 years" } ],
+                    [ { text: "_gid" }, { text: "Used to distinguish users." }, { text: "24 hours" } ],
+                    [ { text: "_gat" }, { text: "Used to throttle request rate." }, { text: "1 minute" } ]
+          ]
+        }) }}
+    </div>
+    <p class="govuk-body-m">Full details of the cookies which Google Analytics uses can be found in Cookies & Google Analytics in documentation for Google’s Analytics tracking code. You can also read Google’s Privacy Policy for Google Analytics.</p>
+    <p class="govuk-body-m">We don’t share the data that Google Analytics collects.</p>
+    <div>
+        <label type="hidden" id="pgid" name="pgid" value="{{pgid}}"/>
+    </div>
+</div>
+{% endblock %}
