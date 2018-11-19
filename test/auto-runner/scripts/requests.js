@@ -6,7 +6,7 @@
  */
 
 const LICENCE = String('B7A718')
-const POSTCODE = String('WA41HT')
+const POSTCODE = String('WA48HT')
 const YEAR = require('moment')().year()
 
 module.exports = {

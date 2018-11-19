@@ -10,8 +10,6 @@ const SubmissionsApi = require('../api/submissions')
 const ActivitiesApi = require('../api/activities')
 const CatchesApi = require('../api/catches')
 
-const { logger } = require('defra-logging-facade')
-
 const catchesApi = new CatchesApi()
 const submissionsApi = new SubmissionsApi()
 const activitiesApi = new ActivitiesApi()

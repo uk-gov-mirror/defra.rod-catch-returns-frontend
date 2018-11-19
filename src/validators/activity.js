@@ -3,7 +3,6 @@
 /**
  * Validate the river and the number of days fished
  */
-const { logger } = require('defra-logging-facade')
 const apiErrors = require('./common').apiErrors
 const checkNumber = require('./common').checkNumber
 

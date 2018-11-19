@@ -8,7 +8,6 @@ const ActivitiesApi = require('../api/activities')
 const SmallCatchesApi = require('../api/small-catches')
 const MethodsApi = require('../api/methods')
 const checkNumber = require('./common').checkNumber
-const { logger } = require('defra-logging-facade')
 const apiErrors = require('./common').apiErrors
 
 const submissionsApi = new SubmissionsApi()

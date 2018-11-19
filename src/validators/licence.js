@@ -3,7 +3,6 @@
 /**
  * Validate the licence number and postcode
  */
-const { logger } = require('defra-logging-facade')
 const getContactFromLicenceKey = require('../api/licence').getContactFromLicenceKey
 
 module.exports = async (request) => {
