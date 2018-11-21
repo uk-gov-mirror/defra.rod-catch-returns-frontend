@@ -131,8 +131,9 @@ const internals = {
               reject(new ResponseError.Error(response.statusMessage, response.statusCode))
             }
           }
+        } else {
+          resolve(body)
         }
-        resolve(body)
       })
     })
   }

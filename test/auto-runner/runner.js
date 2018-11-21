@@ -24,7 +24,8 @@ const manifest = {
         port: process.env.REDIS_PORT,
         partition: 'session-cache'
       }
-    ]
+    ],
+    routes: { security: { noOpen: false } }
   },
   register: {
     plugins: [

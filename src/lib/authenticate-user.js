@@ -15,16 +15,18 @@ module.exports = async (request) => {
     throw new Error('Cannot set up session cookie and cache for an unauthenticated user')
   }
 
-  // Generate a new session identifier
-  const sid = uuid()
+  // Set the cookie to the new session identifier
+  request.cookieAuth.set({ sid: uuid() })
 
-  // Assign a new user
-  const cache = { authorization: await Crypto.writeObj(request.server.app.cache, request.app.authorization) }
-
-  // Set the cookie to the session identifier
-  request.cookieAuth.set({ sid: sid })
-
-  // Set the server cache to the contact details
-  await request.cache().set(cache)
-  logger.debug('User is authenticated: ' + JSON.stringify(request.app.authorization.username))
+  if (request.app.authorization.username) {
+    // If it is a user authentication then set the encrypted authorization details in the cache
+    const cache = { authorization: await Crypto.writeObj(request.server.app.cache, request.app.authorization) }
+    await request.cache().set(cache)
+    logger.debug('User is authenticated: ' + JSON.stringify(request.app.authorization.username))
+  } else {
+    // If the user is authenticated by the license set the contactId
+    const cache = { contactId: request.app.authorization.contactId }
+    await request.cache().set(cache)
+    logger.debug('Contact is authenticated: ' + JSON.stringify(request.app.authorization.contactId))
+  }
 }

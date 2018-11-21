@@ -5,7 +5,6 @@
  */
 const BaseHandler = require('./base')
 const authenticateUser = require('../lib/authenticate-user')
-const getContactFromLicenceKey = require('../api/licence').getContactFromLicenceKey
 
 module.exports = class LicenceAuthHandler extends BaseHandler {
   constructor (...args) {
@@ -38,14 +37,6 @@ module.exports = class LicenceAuthHandler extends BaseHandler {
 
     // No errors so we can authenticate this user
     await authenticateUser(request)
-
-    // Set up the contact id for the licence in the cache
-    const contact = await getContactFromLicenceKey(request, request.payload.licence.toUpperCase())
-
-    const cache = await request.cache().get()
-    cache.contactId = contact.contact.id
-    await request.cache().set(cache)
-
     return h.redirect('/select-year')
   }
 }

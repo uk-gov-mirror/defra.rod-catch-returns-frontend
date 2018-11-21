@@ -21,15 +21,14 @@ require('dotenv').config()
 
 experiment('Scripted regression tests', () => {
   lab.before(async () => {
-    const auth = { username: licence, password: postcode }
-    const contact = await Client.request(auth, Client.method.GET, `licence/${licence}`)
+    const contact = await Client.request(null, Client.method.GET, `licence/${licence}`, `verification=${postcode}`)
 
     if (!contact) {
       logger.error('Ensure the API is started in mock-mode and can find a contact for the licence: ' + licence)
       process.exit(-1)
     }
 
-    let submission = await Client.request(auth, Client.method.GET, 'submissions/search/getByContactIdAndSeason', `contact_id=${contact.contact.id}&season=${Moment().year()}`)
+    let submission = await Client.request(null, Client.method.GET, 'submissions/search/getByContactIdAndSeason', `contact_id=${contact.contact.id}&season=${Moment().year()}`)
     if (submission) {
       logger.error('Tests require API to be restarted in in-memory mode for each test run')
       process.exit(-1)

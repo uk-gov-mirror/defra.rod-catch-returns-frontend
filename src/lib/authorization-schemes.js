@@ -6,6 +6,8 @@
 
 const Joi = require('joi')
 const Client = require('../api/client')
+const LicenceApi = require('../api/licence')
+const ResponseError = require('../handlers/response-error')
 
 // Joi schema to validate a licence payload
 const licenceSchema = Joi.object().keys({
@@ -53,7 +55,7 @@ module.exports = {
           }
           return h.continue
         } catch (err) {
-          if (err.statusCode === 401 || err.statusCode === 403) {
+          if (err.statusCode === ResponseError.status.NOT_FOUND || err.statusCode === ResponseError.status.FORBIDDEN) {
             return h.continue
           } else {
             return h.redirect('/error500').takeover()
@@ -99,19 +101,17 @@ module.exports = {
           return h.continue
         }
 
-        const auth = {
-          username: request.payload.licence.toUpperCase(),
-          password: request.payload.postcode.toUpperCase()
-        }
+        const licence = request.payload.licence.toUpperCase()
+        const postcode = request.payload.postcode.toUpperCase()
 
         try {
-          await Client.request(auth, Client.method.GET, 'profile')
+          const contact = await LicenceApi.getContactFromLicenceKey(request, licence, postcode)
           request.app = {
-            authorization: auth
+            authorization: { contactId: contact.contact.id }
           }
           return h.continue
         } catch (err) {
-          if (err.statusCode === 401 || err.statusCode === 403) {
+          if (err.statusCode === ResponseError.status.NOT_FOUND || err.statusCode === ResponseError.status.FORBIDDEN) {
             return h.continue
           } else {
             return h.redirect('/error500').takeover()
