@@ -21,6 +21,7 @@ require('dotenv').config()
 
 experiment('Scripted regression tests', () => {
   lab.before(async () => {
+    process.env.CONTEXT = 'ANGLER'
     const contact = await Client.request(null, Client.method.GET, `licence/${licence}`, `verification=${postcode}`)
 
     if (!contact) {
@@ -36,30 +37,48 @@ experiment('Scripted regression tests', () => {
   })
 
   test('Sign in page', async () => {
+    process.env.CONTEXT = 'ANGLER'
     await Runner.run(require('./scripts/sign-in').first)
   })
 
   test('Activity', async () => {
+    process.env.CONTEXT = 'ANGLER'
     await Runner.run(require('./scripts/activity'))
   })
 
   test('Small catch', async () => {
+    process.env.CONTEXT = 'ANGLER'
     await Runner.run(require('./scripts/small-catch'))
   })
 
   test('Large catch', async () => {
+    process.env.CONTEXT = 'ANGLER'
     await Runner.run(require('./scripts/large-catch'))
   })
 
   test('Save and exit', async () => {
+    process.env.CONTEXT = 'ANGLER'
     await Runner.run(require('./scripts/save'))
   })
 
   test('Review and submit', async () => {
+    process.env.CONTEXT = 'ANGLER'
     await Runner.run(require('./scripts/review-and-submit'))
   })
 
   test('Sign into locked', async () => {
+    process.env.CONTEXT = 'ANGLER'
     await Runner.run(require('./scripts/sign-in').locked)
   })
+
+  test('FMT sign in', async () => {
+    process.env.CONTEXT = 'FMT'
+    await Runner.run(require('./scripts/sign-in').fmt)
+  })
+
+  test('FMT unlock', async () => {
+    process.env.CONTEXT = 'FMT'
+    await Runner.run(require('./scripts/fmt-actions'))
+  })
+
 })

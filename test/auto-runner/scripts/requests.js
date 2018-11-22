@@ -8,6 +8,8 @@
 const LICENCE = String('B7A718')
 const POSTCODE = String('WA48HT')
 const YEAR = require('moment')().year()
+const FMTUSER = String('admin1@example.com')
+const FMTPASS = String('admin')
 
 module.exports = {
   LICENCE: LICENCE,
@@ -93,7 +95,18 @@ module.exports = {
       path: '/small-catches/add',
       payload: { river: 'rivers/190', month: '', fly: 'a', spinner: '', bait: '', released: '' },
       status: 302,
-      redirect: '/small-catches/add' }
+      redirect: '/small-catches/add' },
+    { method: 'GET', path: '/small-catches/add', status: 200 }
+  ],
+  addSmallCatchErrors2: [
+    { method: 'GET', path: '/summary', status: 200 }, // Clear cache
+    { method: 'GET', path: '/small-catches/add', status: 200 },
+    { method: 'POST',
+      path: '/small-catches/add',
+      payload: { river: 'rivers/11', month: 'AUGUST', fly: '-2', spinner: '0', bait: '0', released: '22', add: 'add' },
+      status: 302,
+      redirect: '/small-catches/add' },
+    { method: 'GET', path: '/small-catches/add', status: 200 }
   ],
   editSmallCatchJune: [
     { method: 'GET', path: '/small-catches/1', status: 200 },
@@ -178,6 +191,7 @@ module.exports = {
       redirect: '/catches/add' }
   ],
   addLargeCatchErrors2: [
+    { method: 'GET', path: '/summary', status: 200 },
     { method: 'GET', path: '/catches/add', status: 200 },
     { method: 'POST',
       path: '/catches/add',
@@ -191,10 +205,12 @@ module.exports = {
         ounces: '',
         kilograms: '150',
         method: 'methods/2',
-        released: 'true'
+        released: 'true',
+        add: 'add'
       },
       status: 302,
-      redirect: '/catches/add' }
+      redirect: '/catches/add' },
+    { method: 'GET', path: '/catches/add', status: 200 }
   ],
   editLargeCatchJune: [
     { method: 'GET', path: '/catches/1', status: 200 },
@@ -247,6 +263,47 @@ module.exports = {
   reviewAndSubmit: [
     { method: 'GET', path: '/summary', status: 200 },
     { method: 'POST', path: '/summary', payload: {}, status: 302, redirect: '/review' },
+    { method: 'GET', path: '/review', status: 200 },
+    { method: 'POST', path: '/review', payload: { continue: '' }, status: 302, redirect: '/confirmation' },
+    { method: 'GET', path: '/confirmation', status: 200 }
+  ],
+  fmtStart: [
+    { method: 'GET', path: '/', status: 302, redirect: '/login' },
+    { method: 'GET', path: '/login', status: 200 }
+  ],
+  fmtSignInFail: [
+    { method: 'GET', path: '/login', status: 200 },
+    { method: 'POST', path: '/login', payload: { user: 'NOT-FOUND', password: 'AAA' }, status: 302, redirect: '/login-fail' },
+    { method: 'GET', path: '/login-fail', status: 200 }
+  ],
+  fmtSignIn: [
+    { method: 'GET', path: '/login', status: 200 },
+    { method: 'POST', path: '/login', payload: { user: FMTUSER, password: FMTPASS }, status: 302, redirect: '/licence' },
+    { method: 'GET', path: '/licence', status: 200 }
+  ],
+  fmtSelectLicence: [
+    { method: 'GET', path: '/licence', status: 200 },
+    { method: 'POST', path: '/licence', status: 302, payload: { licence: 'junk', postcode: 'junk' }, redirect: '/licence' },
+    { method: 'GET', path: '/licence', status: 200 },
+    { method: 'POST', path: '/licence', status: 302, payload: { licence: LICENCE, postcode: POSTCODE }, redirect: '/select-year' },
+    { method: 'GET', path: '/select-year', status: 200 },
+    { method: 'POST', path: '/select-year', status: 302, payload: { year: YEAR }, redirect: '/did-you-fish' },
+    { method: 'GET', path: '/did-you-fish', status: 302, redirect: '/review' },
+    { method: 'GET', path: '/review', status: 200 }
+  ],
+  fmtSignOut: [
+    { method: 'GET', path: '/logout', status: 302, redirect: '/',  },
+    { method: 'GET', path: '/', status: 302, redirect: '/login' },
+    { method: 'GET', path: '/login', status: 200 }
+  ],
+  fmtUnlockLicence: [
+    { method: 'GET', path: '/review', status: 200 },
+    { method: 'POST', path: '/review', status: 302, payload: { unlock: 'unlock' }, redirect: '/summary' },
+    { method: 'GET', path: '/summary', status: 200 }
+  ],
+  fmtExclude: [
+    { method: 'GET', path: '/summary', status: 200 },
+    { method: 'POST', path: '/summary', status: 302, payload: { 'exclude-small-catch': 'smallCatches/1', 'exclude-catch': 'catches/1', exclude: 'submission', 'continue': null  }, redirect: '/review' },
     { method: 'GET', path: '/review', status: 200 },
     { method: 'POST', path: '/review', payload: { continue: '' }, status: 302, redirect: '/confirmation' },
     { method: 'GET', path: '/confirmation', status: 200 }

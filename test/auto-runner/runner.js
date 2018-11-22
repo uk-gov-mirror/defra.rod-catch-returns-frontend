@@ -34,6 +34,9 @@ const manifest = {
       },
       {
         plugin: require('vision')
+      },
+      {
+        plugin: require('h2o2')
       }
     ]
   }

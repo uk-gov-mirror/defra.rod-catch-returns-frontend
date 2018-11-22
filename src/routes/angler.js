@@ -66,7 +66,7 @@ module.exports = [
   {
     path: '/licence-auth',
     method: 'GET',
-    handler: licenceAuthHandler.handler,
+    handler: process.env.CONTEXT === 'ANGLER' ? licenceAuthHandler.handler : (request, h) => { return h.redirect('/') },
     options: { auth: false }
   },
 
@@ -82,7 +82,7 @@ module.exports = [
   {
     path: '/licence-auth-fail',
     method: 'GET',
-    handler: licenceAuthNotFound.handler,
+    handler: process.env.CONTEXT === 'ANGLER' ? licenceAuthNotFound.handler : (request, h) => { return h.redirect('/') },
     options: { auth: false }
   },
 

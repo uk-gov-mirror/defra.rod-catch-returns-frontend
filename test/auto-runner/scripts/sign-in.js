@@ -11,6 +11,13 @@ module.exports = {
     .concat(requests.signInWithActivity),
 
   locked: requests.start
-    .concat(requests.signInToLocked)
+    .concat(requests.signInToLocked),
+
+  fmt: requests.fmtStart
+    .concat(requests.fmtSignInFail)
+    .concat(requests.fmtSignIn)
+    .concat(requests.fmtSignOut),
+
+  fmtSubsequent: requests.fmtSignIn
 
 }
