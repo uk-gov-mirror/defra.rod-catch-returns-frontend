@@ -64,6 +64,12 @@ p.summary-link-right {
   text-align: right
 }
 
+// Elements to be unhidden by javascript if present
 div.hide-if-js-disabled {
   display:none
+}
+
+// Hidden label to allow screen readers to read tabular links e.g. change/delete etc.
+label.link-reader {
+  display: none;
 }
