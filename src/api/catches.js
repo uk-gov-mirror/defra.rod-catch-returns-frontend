@@ -64,7 +64,9 @@ module.exports = class CatchesApi extends EntityApi {
     const result = await super.change(request, catchId, {
       dateCaught: dateCaught,
       mass: mass,
-      released: released
+      released: released,
+      species: speciesId,
+      method: methodId
     })
 
     if (Object.keys(result).includes('errors')) {
@@ -76,16 +78,6 @@ module.exports = class CatchesApi extends EntityApi {
     // Change the activity if necessary
     if (mappedResult.activity.id !== activityId) {
       await super.changeAssoc(request, catchId + '/activity', activityId)
-    }
-
-    // Change the activity if necessary
-    if (mappedResult.species.id !== speciesId) {
-      await super.changeAssoc(request, catchId + '/species', speciesId)
-    }
-
-    // Change the activity if necessary
-    if (mappedResult.method.id !== methodId) {
-      await super.changeAssoc(request, catchId + '/method', methodId)
     }
 
     return result

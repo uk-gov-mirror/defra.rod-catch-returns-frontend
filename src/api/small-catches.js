@@ -41,7 +41,7 @@ module.exports = class CatchesApi extends EntityApi {
         month: c.month,
         counts: methods.map(m => {
           const methodCount = counts.find(c => c.method.name === m.name)
-          return { id: m.id, name: m.name, count: methodCount ? methodCount.count : null }
+          return { id: m.id, name: m.name, count: methodCount ? methodCount.count : null, internal: m.internal }
         }),
         reportingExclude: c.reportingExclude,
         released: c.released,

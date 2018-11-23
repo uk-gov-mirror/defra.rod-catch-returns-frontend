@@ -61,6 +61,7 @@ module.exports = class ReviewHandler extends BaseHandler {
       return c
     })
 
+    let foundInternal = false
     const smallCatches = (await smallCatchesApi.getFromLink(request, submission._links.smallCatches.href)).map(c => {
       c.month = months.find(m => m.value === c.month).text
       c.river = c.activity.river.name
@@ -69,6 +70,7 @@ module.exports = class ReviewHandler extends BaseHandler {
         c[t.name.toLowerCase()] = t.count
         activity.count += t.count || 0
       })
+      foundInternal = foundInternal || !!c.counts.find(m => m.internal)
       delete c.counts
       return c
     })
@@ -79,6 +81,7 @@ module.exports = class ReviewHandler extends BaseHandler {
       activities: activities.sort(activitiesApi.sort),
       catches: catches.sort(catchesApi.sort),
       smallCatches: smallCatches.sort(smallCatchesApi.sort),
+      foundInternal: foundInternal,
       locked: !!cache.locked,
       reportingExclude: submission.reportingExclude,
       details: {

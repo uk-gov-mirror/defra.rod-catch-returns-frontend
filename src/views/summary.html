@@ -120,15 +120,28 @@ set activityTableHeadings = {
         { text: "Ex.", format: "numeric" }
     ] %}
 {% else %}
-    {% set smallCatchHeader = [
-        { text: "Month" },
-        { text: "River" },
-        { text: "Fly", format: "numeric" },
-        { text: "Spinner", format: "numeric" },
-        { text: "Bait", format: "numeric" },
-        { text: "Released", format: "numeric" },
-        { text: "Actions", format: "numeric" }
-    ] %}
+    {% if foundInternal %}
+        {% set smallCatchHeader = [
+            { text: "Month" },
+            { text: "River" },
+            { text: "Fly", format: "numeric" },
+            { text: "Spinner", format: "numeric" },
+            { text: "Bait", format: "numeric" },
+            { text: "Unknown", format: "numeric" },
+            { text: "Released", format: "numeric" },
+            { text: "Actions", format: "numeric" }
+        ] %}
+    {% else %}
+        {% set smallCatchHeader = [
+            { text: "Month" },
+            { text: "River" },
+            { text: "Fly", format: "numeric" },
+            { text: "Spinner", format: "numeric" },
+            { text: "Bait", format: "numeric" },
+            { text: "Released", format: "numeric" },
+            { text: "Actions", format: "numeric" }
+        ] %}
+    {% endif %}
 {% endif %}
 
 {% if smallCatches.length %}
@@ -146,15 +159,28 @@ set activityTableHeadings = {
                 { html: renderCheck(catch.id, "exclude-small-catch", catch.reportingExclude), format: "numeric", attributes: { 'data-label': smallCatchHeader[8].text} }
             ]) }}
         {% else %}
-            {{ smallCatchItems.push([
-                { text: catch.month, attributes: { 'data-label': smallCatchHeader[0].text} },
-                { text: catch.river, attributes: { 'data-label': smallCatchHeader[1].text} },
-                { text: catch.fly or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[2].text} },
-                { text: catch.spinner or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[3].text} },
-                { text: catch.bait or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[4].text} },
-                { text: catch.released, format: "numeric", attributes: { 'data-label': smallCatchHeader[5].text} },
-                { html: renderLinks(catch.id | replace("smallCatches", "small-catches"), catch.month + ' ' + catch.river), format: "numeric", attributes: { 'data-label': smallCatchHeader[6].text} }
-            ]) }}
+            {% if foundInternal %}
+                {{ smallCatchItems.push([
+                    { text: catch.month, attributes: { 'data-label': smallCatchHeader[0].text} },
+                    { text: catch.river, attributes: { 'data-label': smallCatchHeader[1].text} },
+                    { text: catch.fly or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[2].text} },
+                    { text: catch.spinner or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[3].text} },
+                    { text: catch.bait or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[4].text} },
+                    { text: catch.unknown or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[5].text} },
+                    { text: catch.released, format: "numeric", attributes: { 'data-label': smallCatchHeader[5].text} },
+                    { html: renderLinks(catch.id | replace("smallCatches", "small-catches"), catch.month + ' ' + catch.river), format: "numeric", attributes: { 'data-label': smallCatchHeader[6].text} }
+                ]) }}
+            {% else %}
+                {{ smallCatchItems.push([
+                    { text: catch.month, attributes: { 'data-label': smallCatchHeader[0].text} },
+                    { text: catch.river, attributes: { 'data-label': smallCatchHeader[1].text} },
+                    { text: catch.fly or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[2].text} },
+                    { text: catch.spinner or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[3].text} },
+                    { text: catch.bait or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[4].text} },
+                    { text: catch.released, format: "numeric", attributes: { 'data-label': smallCatchHeader[5].text} },
+                    { html: renderLinks(catch.id | replace("smallCatches", "small-catches"), catch.month + ' ' + catch.river), format: "numeric", attributes: { 'data-label': smallCatchHeader[6].text} }
+                ]) }}
+            {% endif %}
         {% endif %}
     {% endfor %}
 {% endif %}

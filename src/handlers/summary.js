@@ -69,6 +69,9 @@ module.exports = class SummaryHandler extends BaseHandler {
       return c
     })
 
+    // Need to show the unknown method if set by the administrator
+    let foundInternal = false
+
     // Process the small catches flattening the counts
     const smallCatches = (await smallCatchesApi.getFromLink(request, submission._links.smallCatches.href)).map(c => {
       c.month = months.find(m => m.value === c.month).text
@@ -78,6 +81,7 @@ module.exports = class SummaryHandler extends BaseHandler {
         c[t.name.toLowerCase()] = t.count
         activity.count += t.count || 0
       })
+      foundInternal = foundInternal || !!c.counts.find(m => m.internal)
       delete c.counts
       return c
     })
@@ -89,6 +93,7 @@ module.exports = class SummaryHandler extends BaseHandler {
       catches: catches.sort(catchesApi.sort),
       smallCatches: smallCatches.sort(smallCatchesApi.sort),
       reportingExclude: submission.reportingExclude,
+      foundInternal: foundInternal,
       details: {
         licenceNumber: cache.licenceNumber,
         postcode: cache.postcode,

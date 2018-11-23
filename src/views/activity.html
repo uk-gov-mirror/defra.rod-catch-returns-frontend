@@ -83,6 +83,14 @@
                 href: "#daysFishedOther"
             }) }}
         {% endif %}
+
+        {% if error.Activity === 'ACTIVITY_RIVER_FORBIDDEN' %}
+            {% set riverErrorMessage = { text: "Select a river" } %}
+            {{ errorList.push({
+                text: "You have not selected a river",
+                href: "#river"
+            }) }}
+        {% endif %}
     {% endfor %}
 {% endif %}
 

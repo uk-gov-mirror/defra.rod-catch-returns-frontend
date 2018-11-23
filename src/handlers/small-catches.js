@@ -49,7 +49,12 @@ module.exports = class SmallCatchHandler extends BaseHandler {
     const cache = await request.cache().get()
     const submission = await submissionsApi.getById(request, cache.submissionId)
     const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
+
+    // Filter rivers and methods by the internal only
     let rivers = activities.map(a => a.river)
+      .filter(r => process.env.CONTEXT === 'FMT' ? true : !r.internal)
+    const methods = (await methodsApi.list(request))
+      .filter(r => process.env.CONTEXT === 'FMT' ? true : !r.internal)
 
     // Test if the submission is locked and if so redirect to the review screen
     if (await testLocked(request, cache, submission)) {
@@ -81,7 +86,7 @@ module.exports = class SmallCatchHandler extends BaseHandler {
       return this.readCacheAndDisplayView(request, h, {
         rivers: rivers,
         months: monthsFiltered || months,
-        methods: await methodsApi.list(request),
+        methods: methods,
         add: true,
         details: {
           licenceNumber: cache.licenceNumber,
@@ -122,7 +127,7 @@ module.exports = class SmallCatchHandler extends BaseHandler {
       return this.readCacheAndDisplayView(request, h, {
         rivers: rivers,
         months: months,
-        methods: await methodsApi.list(request),
+        methods: methods,
         payload: payload,
         details: {
           licenceNumber: cache.licenceNumber,

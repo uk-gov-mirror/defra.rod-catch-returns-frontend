@@ -8,6 +8,12 @@ const EntityApi = require('./entity-api')
  */
 module.exports = class MethodsApi extends EntityApi {
   constructor () {
-    super('methods')
+    super('methods', async (request, e) => {
+      return {
+        id: EntityApi.keyFromLink(e),
+        name: e.name,
+        internal: e.internal
+      }
+    })
   }
 }

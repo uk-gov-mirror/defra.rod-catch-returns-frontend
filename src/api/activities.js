@@ -19,7 +19,8 @@ module.exports = class ActivitiesApi extends EntityApi {
         daysFishedWithMandatoryRelease: a.daysFishedWithMandatoryRelease,
         river: {
           id: EntityApi.keyFromLink(river),
-          name: river.name
+          name: river.name,
+          internal: river.internal
         }
       }
     })
@@ -38,20 +39,9 @@ module.exports = class ActivitiesApi extends EntityApi {
     // Change the days
     const result = await super.change(request, activityId, {
       daysFishedWithMandatoryRelease: daysFishedWithMandatoryRelease,
-      daysFishedOther: daysFishedOther
+      daysFishedOther: daysFishedOther,
+      river: riverId
     })
-
-    // Return early with errors
-    if (Object.keys(result).includes('errors')) {
-      return result
-    }
-
-    const mappedResult = await this.doMap(request, result)
-
-    // Change the river if necessary
-    if (mappedResult.river.id !== riverId) {
-      await super.changeAssoc(request, activityId + '/river', riverId)
-    }
 
     return result
   }

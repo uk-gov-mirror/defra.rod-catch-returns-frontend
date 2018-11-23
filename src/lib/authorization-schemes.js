@@ -12,7 +12,7 @@ const ResponseError = require('../handlers/response-error')
 // Joi schema to validate a licence payload
 const licenceSchema = Joi.object().keys({
   licence: Joi.string().alphanum().min(6).max(6).required(),
-  postcode: Joi.string().regex(/^[a-zA-Z0-9\s]{6,9}$/).required()
+  postcode: Joi.string().alphanum().required()
 })
 
 // Joi schema to validate an active directory login payload

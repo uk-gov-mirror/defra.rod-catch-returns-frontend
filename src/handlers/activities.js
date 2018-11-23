@@ -32,7 +32,8 @@ module.exports = class ActivitiesHandler extends BaseHandler {
     const cache = await request.cache().get()
     let submission = await submissionsApi.getById(request, cache.submissionId)
     const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
-    const rivers = await riversApi.list(request)
+    const rivers = (await riversApi.list(request))
+      .filter(r => process.env.CONTEXT === 'FMT' ? true : !r.internal)
 
     // Test if the submission is locked and if so redirect to the review screen
     if (await testLocked(request, cache, submission)) {
