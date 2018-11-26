@@ -55,7 +55,7 @@ module.exports = {
           }
           return h.continue
         } catch (err) {
-          if (err.statusCode === ResponseError.status.NOT_FOUND || err.statusCode === ResponseError.status.FORBIDDEN) {
+          if (Math.floor(Number.parseInt(err.statusCode) / 100) === 4) {
             return h.continue
           } else {
             return h.redirect('/error500').takeover()
