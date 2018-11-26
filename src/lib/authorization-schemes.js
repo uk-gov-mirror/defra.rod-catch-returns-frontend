@@ -7,7 +7,6 @@
 const Joi = require('joi')
 const Client = require('../api/client')
 const LicenceApi = require('../api/licence')
-const ResponseError = require('../handlers/response-error')
 const { logger } = require('defra-logging-facade')
 
 // Joi schema to validate a licence payload
