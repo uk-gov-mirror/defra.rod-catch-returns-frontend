@@ -8,6 +8,7 @@ const Joi = require('joi')
 const Client = require('../api/client')
 const LicenceApi = require('../api/licence')
 const ResponseError = require('../handlers/response-error')
+const { logger } = require('defra-logging-facade')
 
 // Joi schema to validate a licence payload
 const licenceSchema = Joi.object().keys({
@@ -111,9 +112,10 @@ module.exports = {
           }
           return h.continue
         } catch (err) {
-          if (err.statusCode === ResponseError.status.NOT_FOUND || err.statusCode === ResponseError.status.FORBIDDEN) {
+          if (Math.floor(Number.parseInt(err.statusCode) / 100) === 4) {
             return h.continue
           } else {
+            logger.error(err)
             return h.redirect('/error500').takeover()
           }
         }
