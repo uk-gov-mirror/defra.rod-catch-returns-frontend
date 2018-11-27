@@ -191,8 +191,11 @@ set activityTableHeadings = {
         <form method="post">
             <h1 class="govuk-heading-l">Your {{ year }} catch return</h1>
 
+
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-1">Rivers fished</h2>
+            <span class="govuk-caption-m govuk-!-margin-bottom-6">Enter details about any rivers you fished regardless of whether you made a catch or not</span>
+
             {{ govukTable({
-                caption: "Rivers fished",
                 classes: "rcr-responsive-summary-table",
                 captionClasses: "govuk-heading-m",
                 firstCellIsHeader: false,
@@ -215,9 +218,11 @@ set activityTableHeadings = {
                 {% endif %}
             </p>
 
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-1">Small adult sea trout (1lb and under)</h2>
+            <span class="govuk-caption-m govuk-!-margin-bottom-6">Enter details about any small catches made in the rivers entered above</span>
+
             {% if activities.length %}
                 {{ govukTable({
-                    caption: "Small adult sea trout (1lb and under)",
                     classes: "rcr-responsive-summary-table",
                     captionClasses: "govuk-heading-m",
                     firstCellIsHeader: false,
@@ -234,8 +239,10 @@ set activityTableHeadings = {
                     {% endif %}
                 </p>
 
+                <h2 class="govuk-heading-m govuk-!-margin-bottom-1">Salmon and large adult sea trout</h2>
+                <span class="govuk-caption-m govuk-!-margin-bottom-6">Enter details about any large catches made in the rivers entered above</span>
+
                 {{ govukTable({
-                    caption: "Salmon and large adult sea trout",
                     classes: "rcr-responsive-summary-table",
                     captionClasses: "govuk-heading-m",
                     firstCellIsHeader: false,
