@@ -1,5 +1,7 @@
 'use strict'
 
+const Moment = require('moment')
+
 const EntityApi = require('./entity-api')
 const ActivityApi = require('../api/activities')
 const RiversApi = require('../api/rivers')
@@ -90,11 +92,11 @@ module.exports = class CatchesApi extends EntityApi {
   }
 
   sort (a, b) {
-    if (a.dateCaught < b.dateCaught) {
+    if (Moment(a.dateCaught, 'DD/MM').unix() < Moment(b.dateCaught, 'DD/MM').unix()) {
       return -1
     }
 
-    if (a.dateCaught > b.dateCaught) {
+    if (Moment(a.dateCaught, 'DD/MM').unix() > Moment(b.dateCaught, 'DD/MM').unix()) {
       return 1
     }
 
