@@ -204,7 +204,7 @@ module.exports = [
     method: 'GET',
     options: { auth: false },
     handler: (request, h) => {
-      return h.view('error500')
+      return h.view('error500').code(500)
     }
   },
 
