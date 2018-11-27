@@ -257,6 +257,19 @@ const options = {
       }
     })
 
+    server.route({
+      method: 'GET',
+      path: '/favicon.ico',
+      config: {
+        auth: false
+      },
+      handler: {
+        file: {
+          path: 'public/images/favicon.ico'
+        }
+      }
+    })
+
     // Point the server plugin cache to an application cache to hold authenticated session data
     server.app.cache = server.cache({
       segment: 'sessions',
