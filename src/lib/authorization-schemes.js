@@ -12,7 +12,7 @@ const { logger } = require('defra-logging-facade')
 // Joi schema to validate a licence payload
 const licenceSchema = Joi.object().keys({
   licence: Joi.string().alphanum().min(6).max(6).required(),
-  postcode: Joi.string().alphanum().required()
+  postcode: Joi.string().required()
 })
 
 // Joi schema to validate an active directory login payload
