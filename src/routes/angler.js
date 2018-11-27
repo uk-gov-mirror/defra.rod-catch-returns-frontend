@@ -196,36 +196,5 @@ module.exports = [
     handler: (request, h) => {
       return h.view('privacy')
     }
-  },
-
-  // Error 500 handler
-  {
-    path: '/error500',
-    method: 'GET',
-    options: { auth: false },
-    handler: (request, h) => {
-      return h.view('error500').code(500)
-    }
-  },
-
-  // Error 4xx handler
-  {
-    path: '/error/{status}',
-    method: 'GET',
-    options: { auth: false },
-    handler: (request, h) => {
-      return h.view('error4', { status: request.params.status })
-    }
-  },
-
-  // Catch all
-  {
-    method: '*',
-    path: '/{p*}',
-    options: { auth: false },
-    handler: function (request, h) {
-      return h.redirect('/')
-    }
   }
-
 ]

@@ -38,8 +38,7 @@ module.exports = class BaseHandler {
           logger.debug(err)
           return h.redirect(`/error/${err.statusCode}`)
         } else {
-          logger.error(err)
-          return h.view('error500').code(500)
+          throw err
         }
       }
     }
