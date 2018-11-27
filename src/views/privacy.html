@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}Privacy - GOV.UK{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-l">Privacy Notice: How we use your personal information</h1>
+
+        <p class="govuk-body-m">
+            We are the Environment Agency and we run the rod catch returns service. We are the data controller for this service. A data controller determines how and why personal data (personal information) is processed.
+        </p>
+
+        <p class="govuk-body-m">
+            Our <a class="govuk-link" target="_blank" href="https://www.gov.uk/government/organisations/environment-agency/about/personal-information-charter">personal information charter</a> explains your rights and how we deal with your personal information. You can access the charter using the link or go to gov.uk and search 'Environment Agency personal information charter'.
+        </p>
+
+        <h2 class="govuk-heading-m" >The personal data we need</h2>
+        <ul class="govuk-list govuk-list--bullet">
+            <li class="">Full name</li>
+            <li>Contact details</li>
+            <li>Details of your fishing activity</li>
+        </ul>
+        <p class="govuk-body-m">
+            We are allowed to process your personal data because we have official authority as the environmental regulator, and set out in the National Fisheries Byelaws The lawful basis for processing your personal data is to perform a task in the public interest that is set out in law.
+        </p>
+
+        <h2 class="govuk-heading-m" >What we do with your personal data</h2>
+        <p class="govuk-body-m">
+            We need this data of your fishing activity in order to manage salmon and sea trout stocks in a sustainable way. If you don't provide all of this information then we can't do this.
+            We use your personal data to better understand the wellbeing of salmon and sea trout.
+        </p>
+
+        <p class="govuk-body-m">
+            We do not use your personal data to make an automated decision or for automated profiling.
+        </p>
+
+        <p class="govuk-body-m">
+            We will not share or disclose your personal data to any party outside the Environment Agency without your explicit consent, unless we are lawfully able to do so.
+        </p>
+
+        <h2 class="govuk-heading-m" >How long we keep your personal data</h2>
+        <p class="govuk-body-m">
+            We will keep your personal data for 3 years.
+        </p>
+
+        <h2 class="govuk-heading-m" >Where your personal data is processed and stored</h2>
+        <p class="govuk-body-m">
+            We store and process your personal data on our servers within the European Economic Area (EEA). We will not transfer your personal data outside the EEA.
+        </p>
+
+        <p class="govuk-body-m">
+            We welcome your views on this service. We invite feedback through an online survey tool provided by SmartSurvey Ltd. We’ll use what you tell us to improve this and related services.
+        </p>
+
+        <p class="govuk-body-m">
+            <a class="govuk-link" target="_blank" href="https://www.smartsurvey.co.uk/privacy-policy">SmartSurvey’s privacy policy.</a>
+        </p>
+
+        <h2 class="govuk-heading-m" >Contact details</h2>
+        <p class="govuk-body-m">
+            Our Data Protection Officer (DPO) is responsible for independent advice and monitoring of the Environment Agency’s use of personal information.
+        </p>
+
+        <p class="govuk-body-m">
+            If you have any concerns or queries about how we process personal data, or if you would like to make a complaint or request relating to data protection, please contact:
+        </p>
+
+        <p class="govuk-body-m">
+            Data Protection Officer<br>
+            Environment Agency<br>
+            Horizon House<br>
+            Deanery Road<br>
+            Bristol<br>
+            BS1 5AH<br>
+        </p>
+
+        <p class="govuk-body-m">
+            Email: <a href="mailto:dataprotection@environment-agency.gov.uk">dataprotection@environment-agency.gov.uk</a>
+        </p>
+
+        <p class="govuk-body-m">
+            The Information Commissioner's Office (ICO) is the supervisory authority for data protection legislation. The <a class="govuk-link" target="_blank" href="https://ico.org.uk/your-data-matters">ICO website</a> has a full list of your rights under data protection legislation.
+        </p>
+
+        <p class="govuk-body-m">
+            You have the right to <a class="govuk-link" target="_blank" href="https://ico.org.uk/make-a-complaint">lodge a complaint</a> with the ICO at any time. Should you wish to exercise that right, full details are available.
+        </p>
+
+        <p class="govuk-body-m">
+            This notice was last updated on 27 November 2018.
+        </p>
+    </div>
+    <div>
+        <label type="hidden" id="pgid" name="pgid" value="{{pgid}}"/>
+    </div>
+</div>
+{% endblock %}

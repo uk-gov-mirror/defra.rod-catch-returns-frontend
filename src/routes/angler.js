@@ -188,6 +188,16 @@ module.exports = [
     }
   },
 
+  // Privacy policy handler
+  {
+    path: '/privacy',
+    method: 'GET',
+    options: { auth: false },
+    handler: (request, h) => {
+      return h.view('privacy')
+    }
+  },
+
   // Error 500 handler
   {
     path: '/error500',
