@@ -323,7 +323,8 @@ const options = {
         } else if (statusCode % 100 === 5) {
           // 5xx Server failure, log an error to airbrake/errbit - the response object is actually an instanceof Error
           logger.serverError(request.response, request)
-          return h.view('error500').code(statusCode)
+          // Return a 500 to the client (avoid propagating other 5xx codes to the client)
+          return h.view('error500').code(500)
         }
       }
       return h.continue
