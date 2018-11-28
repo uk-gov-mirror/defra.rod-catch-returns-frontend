@@ -315,12 +315,12 @@ const options = {
     server.ext('onPreResponse', (request, h) => {
       if (request.response.isBoom) {
         // An error occurred processing the request
-        const statusCode = request.response.output.statusCode
+        const statusCode = request.response.output.statusCode || 500
 
-        if (statusCode % 100 === 4) {
+        if (Math.floor(statusCode / 100) === 4) {
           // Custom handling for 4xx codes
           return h.view('error4', { status: statusCode }).code(statusCode)
-        } else if (statusCode % 100 === 5) {
+        } else {
           // 5xx Server failure, log an error to airbrake/errbit - the response object is actually an instanceof Error
           logger.serverError(request.response, request)
           // Return a 500 to the client (avoid propagating other 5xx codes to the client)
