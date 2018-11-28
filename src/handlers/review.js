@@ -44,6 +44,9 @@ module.exports = class ReviewHandler extends BaseHandler {
 
   async reviewReturn (request, h) {
     const cache = await request.cache().get()
+    cache.back = request.path
+    await request.cache().set(cache)
+
     let submission = await submissionsApi.getById(request, cache.submissionId)
 
     // Get the activities

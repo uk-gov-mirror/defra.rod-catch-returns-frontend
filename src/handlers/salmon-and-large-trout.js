@@ -40,6 +40,7 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
     }
 
     const cache = await request.cache().get()
+    cache.back = request.path
     const submission = await submissionsApi.getById(request, cache.submissionId)
     const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
     let rivers = activities.map(a => a.river)

@@ -47,6 +47,7 @@ module.exports = class DidYouFishHandler extends BaseHandler {
 
     // Set the submissionId in the cache
     cache.submissionId = submission.id
+    cache.back = request.path
     await request.cache().set(cache)
 
     // If we have any activity go straight to the summary screen

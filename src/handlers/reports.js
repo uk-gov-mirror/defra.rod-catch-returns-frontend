@@ -18,6 +18,6 @@ module.exports = class ReportsHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
-    return this.readCacheAndDisplayView(request, h, { back: request.query.back })
+    return this.readCacheAndDisplayView(request, h)
   }
 }

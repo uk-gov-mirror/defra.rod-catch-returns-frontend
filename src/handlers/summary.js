@@ -52,6 +52,7 @@ module.exports = class SummaryHandler extends BaseHandler {
 
     // Set the submissionId in the cache
     cache.submissionId = submission.id
+    cache.back = request.path
     await request.cache().set(cache)
 
     // Get the activities

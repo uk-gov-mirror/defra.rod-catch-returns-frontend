@@ -81,6 +81,16 @@ module.exports = [
     handler: reportsHandler.handler
   },
 
+  // Back to the catch return from the reports
+  {
+    path: '/reports-back',
+    method: 'GET',
+    handler: async (request, h) => {
+      const cache = await request.cache().get()
+      return h.redirect(cache.back || '/summary')
+    }
+  },
+
   // End session handler
   {
     path: '/logout',

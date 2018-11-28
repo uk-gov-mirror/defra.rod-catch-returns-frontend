@@ -41,7 +41,7 @@ module.exports = class ActivitiesHandler extends BaseHandler {
     }
 
     if (request.params.id === 'add') {
-      delete cache.activity
+      cache.back = request.path
       await request.cache().set(cache)
 
       // Filter out the rivers already selected
@@ -71,6 +71,7 @@ module.exports = class ActivitiesHandler extends BaseHandler {
 
       // Write the catch id onto the cache
       cache.activity = { id: activity.id }
+      cache.back = request.path
       await request.cache().set(cache)
 
       // Prepare a the payload

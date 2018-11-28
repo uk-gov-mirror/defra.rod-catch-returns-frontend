@@ -67,6 +67,7 @@ module.exports = class DeleteRiverHandler extends BaseHandler {
 
     // Save the id to delete
     cache.delete = smallCatch.id
+    cache.back = request.path
     await request.cache().set(cache)
     return h.view(this.path, { smallCatch: c,
       details: {
