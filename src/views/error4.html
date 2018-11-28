@@ -5,13 +5,13 @@
 {% block content %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        {% if status === '400' %}
+        {% if status === 400 %}
             <h1 class="govuk-heading-xl">Bad request</h1>
-        {% elseif status === '401' %}
+        {% elseif status === 401 %}
             <h1 class="govuk-heading-xl">Unauthorized</h1>
-        {% elseif status === '403' %}
+        {% elseif status === 403 %}
             <h1 class="govuk-heading-xl">Forbidden</h1>
-        {% elseif status === '404' %}
+        {% elseif status === 404 %}
             <h1 class="govuk-heading-xl">Page not found</h1>
         {% else %}
             <h1 class="govuk-heading-xl">Error</h1>
