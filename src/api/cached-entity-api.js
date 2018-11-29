@@ -8,16 +8,16 @@ const Client = require('./client')
  * @type {module.CachedEntityApi}
  */
 module.exports = class CachedEntityApi extends EntityApi {
-  constructor (args, cacheTtlMilliseconds = 1000 * 60 * 60) {
-    super(args)
+  constructor (...args) {
+    super(...args)
     this._cache = null
-    this._cacheTtlMilliseconds = cacheTtlMilliseconds
+    this._cacheTtlMilliseconds = 1000 * 60 * 60
   }
   // List all entities - used for reference data. This returns data from the a cache
   async list (request) {
     if (!this._cache) {
       const result = await Client.request(await EntityApi.getAuth(request), Client.method.GET, this.path)
-      this._cache = Promise.all(result._embedded[this.path].map(m => this.mapper(request, m)))
+      this._cache = await Promise.all(result._embedded[this.path].map(m => this.mapper(request, m)))
       // Delete the cache object after a given interval (defaulted at one hour)
       setTimeout(() => { this._cache = null }, this._cacheTtlMilliseconds)
     }
