@@ -41,6 +41,7 @@ module.exports = class ActivitiesHandler extends BaseHandler {
     }
 
     if (request.params.id === 'add') {
+      delete cache.activity
       cache.back = request.path
       await request.cache().set(cache)
 
