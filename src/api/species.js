@@ -1,6 +1,6 @@
 'use strict'
 
-const EntityApi = require('./entity-api')
+const EntityApi = require('./cached-entity-api')
 
 /**
  * Species entity handler
