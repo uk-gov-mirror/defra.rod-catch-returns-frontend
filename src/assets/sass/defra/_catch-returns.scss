@@ -31,12 +31,17 @@
 }
 
 // For secondary buttons such as the add-another actions
-.govuk-button-secondary {
+button.govuk-button-secondary {
   @extend .govuk-button;
   background-color: govuk-colour("grey-1");
   &:hover {
     background-color: #606060;
   }
+}
+
+// Add a right margin for adjacent buttons
+button.govuk-button-adjacent {
+  margin-right: 22px;
 }
 
 // Like phase banner
@@ -73,3 +78,4 @@ div.hide-if-js-disabled {
 label.link-reader {
   display: none;
 }
+
