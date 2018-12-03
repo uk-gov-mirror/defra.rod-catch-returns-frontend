@@ -56,7 +56,8 @@
                     id: "licence",
                     name: "licence",
                     errorMessage: licenceErrorMessage,
-                    classes: "govuk-input govuk-!-width-one-quarter" })
+                    attributes: { maxlength: 6 },
+                    classes: "govuk-input govuk-input--width-5" })
                 }}
 
                 {{ govukInput({
@@ -69,7 +70,8 @@
                     id: "postcode",
                     name: "postcode",
                     errorMessage: postcodeErrorMessage,
-                    classes: "govuk-input govuk-!-width-one-quarter" })
+                    attributes: { maxlength: 12 },
+                    classes: "govuk-input govuk-input--width-5" })
                 }}
 
                 <p class="govuk-body-m">
