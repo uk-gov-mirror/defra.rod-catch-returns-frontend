@@ -42,7 +42,7 @@ function validateWeight (payload, errors) {
 
 function conversion (payload, errors) {
   if (payload.system === 'METRIC' && errors.filter(e => e['kilograms']).length === 0) {
-    const oz = 35.274 * Number.parseFloat(payload.kilograms)
+    const oz = 35.27396195 * Number.parseFloat(payload.kilograms)
     payload.pounds = Math.floor(oz / 16)
     payload.ounces = Math.round(oz % 16)
   } else if (payload.system === 'IMPERIAL' && errors.filter(e => e['pounds']).length === 0 && errors.filter(e => e['ounces']).length === 0) {
