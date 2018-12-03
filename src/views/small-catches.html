@@ -307,13 +307,14 @@
                     },
                     value: payload.released,
                     attributes: { maxlength: 4 },
-                    classes: "govuk-input--width-4",
+                    classes: "govuk-input--width-4 govuk-!-margin-bottom-6",
                     errorMessage: releasedErrorMessage
                 }) }}
 
                 {{ govukButton({
                     name: "continue",
                     text: "Save",
+                    classes: "govuk-button-adjacent",
                     attributes: { onclick: "var e=this;setTimeout(function(){e.disabled=true;},0);return true;" }
                 }) }}
 
@@ -321,7 +322,7 @@
                     {{ govukButton({
                         name: "add",
                         text: "Save and add another",
-                        classes: "govuk-button-secondary",
+                        classes: "govuk-button-secondary govuk-button-adjacent",
                         attributes: { onclick: "var e=this;setTimeout(function(){e.disabled=true;},0);return true;" }
                     }) }}
                 {% endif %}

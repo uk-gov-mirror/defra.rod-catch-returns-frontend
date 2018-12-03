@@ -103,8 +103,6 @@
     {% endfor %}
 {% endif %}
 
-
-
 {% if fmt %}
     {% set smallCatchHeader = [
         { text: "Month" },
@@ -284,7 +282,7 @@
         </form>
         {% if activities.length %}
             <div>
-                <a id="save" class="govuk-link govuk-body-m" href="/save">Save as draft</a>
+                <a id="save" class="govuk-link govuk-body-m" href="/save">Save and return later</a>
             </div>
         {% else %}
             <div>
