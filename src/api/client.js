@@ -122,7 +122,7 @@ const internals = {
           resolve({ statusCode: response.statusCode, statusMessage: response.statusMessage })
         } else if (response.statusCode === ResponseError.status.BAD_REQUEST) {
           // Bad requests may be API validation errors
-          if (Object.keys(body).includes('errors')) {
+          if (body && Object.keys(body).includes('errors')) {
             resolve(body)
           } else {
             reject(new ResponseError.Error(response.statusMessage, response.statusCode))
