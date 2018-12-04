@@ -90,7 +90,7 @@ module.exports = {
         }
 
         request.payload.licence = request.payload.licence.replace(/\s+/g, '')
-        request.payload.postcode = request.payload.postcode.replace(/\s+/g, '')
+        request.payload.postcode = request.payload.postcode.trim()
 
         const result = Joi.validate(request.payload, licenceSchema,
           { allowUnknown: true, abortEarly: true })
