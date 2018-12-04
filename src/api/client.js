@@ -107,32 +107,29 @@ const internals = {
           logger.debug(`API; ${method}:${uri} ${response.statusCode}`)
         }
 
-        // If not 2xx - or a 304 (From the cache)
-        if (Math.floor(Number.parseInt(response.statusCode) / 100) !== 2 && response.statusCode !== 304) {
-          // Bad requests can be validation errors which we should not reject here
-          if (response.statusCode === ResponseError.status.BAD_REQUEST) {
-            if (Object.keys(body).includes('errors')) {
-              resolve(body)
-            } else {
-              reject(new ResponseError.Error(response.statusMessage, response.statusCode))
-            }
+        // If no error occurred i.e. all statuses but 2xx - or a 304 (cache)
+        if (Math.floor(response.statusCode / 100) === 2 || response.statusCode === 304) {
+          resolve(body)
+        } else if (response.statusCode === ResponseError.status.NOT_FOUND) {
+          // Not found is ignored for searches otherwise it is treated as an error
+          if (throwOnNotFound) {
+            reject(new ResponseError.Error(response.statusMessage, ResponseError.status.NOT_FOUND))
           } else {
-            /*
-             * Not found is ok on searches - its the empty object and a legitimate response
-             * but link GETS or id GETS should always return a result in HATEOAS
-             */
-            if (response.statusCode === ResponseError.status.NOT_FOUND) {
-              if (throwOnNotFound) {
-                reject(new ResponseError.Error(response.statusMessage, ResponseError.status.NOT_FOUND))
-              } else {
-                resolve()
-              }
-            } else {
-              reject(new ResponseError.Error(response.statusMessage, response.statusCode))
-            }
+            resolve()
+          }
+        } else if (response.statusCode === ResponseError.status.CONFLICT) {
+          // Conflicts are key violations and treated as validation errors
+          resolve({ statusCode: response.statusCode, statusMessage: response.statusMessage })
+        } else if (response.statusCode === ResponseError.status.BAD_REQUEST) {
+          // Bad requests may be API validation errors
+          if (Object.keys(body).includes('errors')) {
+            resolve(body)
+          } else {
+            reject(new ResponseError.Error(response.statusMessage, response.statusCode))
           }
         } else {
-          resolve(body)
+          // All other errors are thrown 403 forbidden and server 500 errors
+          reject(new ResponseError.Error(response.statusMessage, response.statusCode))
         }
       })
     })

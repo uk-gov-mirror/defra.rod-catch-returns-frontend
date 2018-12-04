@@ -5,6 +5,7 @@ const EntityApi = require('./entity-api')
 const ActivityApi = require('../api/activities')
 const RiversApi = require('../api/rivers')
 const MethodsApi = require('../api/methods')
+const ResponseError = require('../handlers/response-error')
 
 const activityApi = new ActivityApi()
 const riversApi = new RiversApi()
@@ -81,9 +82,19 @@ module.exports = class CatchesApi extends EntityApi {
 
     const mappedResult = await this.doMap(request, result)
 
-    // Change the activity if necessary
+    // Change the activity if necessary. If there is a conflict treat it as a duplicate
     if (mappedResult.activity.id !== activityId) {
-      await super.changeAssoc(request, catchId + '/activity', activityId)
+      const changeResult = await super.changeAssoc(request, catchId + '/activity', activityId)
+      if (changeResult.statusCode && changeResult.statusCode === ResponseError.status.CONFLICT) {
+        return {
+          errors: [
+            {
+              entity: 'SmallCatch',
+              message: 'SMALL_CATCH_DUPLICATE_FOUND'
+            }
+          ]
+        }
+      }
     }
 
     return result
