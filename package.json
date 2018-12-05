@@ -22,7 +22,7 @@
     "blipp": "^3.1.1",
     "catbox-redis": "^4.2.4",
     "crumb": "^7.2.3",
-    "defra-logging-facade": "git+https://github.com/DEFRA/defra-logging-facade.git#13052c1",
+    "defra-logging-facade": "git+https://github.com/DEFRA/defra-logging-facade.git#02459ac",
     "disinfect": "^1.0.0",
     "dotenv": "^6.1.0",
     "figlet": "^1.2.1",
