@@ -86,8 +86,15 @@ module.exports = [
     path: '/reports-back',
     method: 'GET',
     handler: async (request, h) => {
-      const cache = await request.cache().get()
-      return h.redirect(cache.back || '/summary')
+      return h.redirect(((cache) => {
+        if (cache.back) {
+          return cache.back
+        } else if (cache.contactId) {
+          return '/summary'
+        } else {
+          return '/licence'
+        }
+      })(await request.cache().get()))
     }
   },
 
