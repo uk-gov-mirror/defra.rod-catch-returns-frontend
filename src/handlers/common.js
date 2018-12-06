@@ -6,7 +6,13 @@
 module.exports = {
   printWeight: (c) => {
     if (c.mass.type === 'IMPERIAL') {
-      return Math.floor(c.mass.oz / 16).toString() + 'lbs ' + Math.floor(c.mass.oz % 16).toString() + 'oz'
+      let lbs = Math.floor(c.mass.oz / 16).toString()
+      let oz = Math.round(c.mass.oz % 16)
+      if (oz === 16) {
+        ++lbs
+        oz = 0
+      }
+      return lbs + 'lbs ' + oz + 'oz'
     } else {
       return (Math.round(c.mass.kg * 1000) / 1000).toString() + 'kg'
     }
