@@ -64,6 +64,10 @@ API_REQUEST_TIMEOUT_MS=60000
 LRU_ITEMS=200000
 LRU_TTL=1800000 # Half an hour
 
+# Google analytics and tag manager 
+GA_TRACKING_ID=UA-000000000-1
+GA_TAG_MANAGER=GTM-AAAAAAA
+
 ```
 ## To Run
 ```

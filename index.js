@@ -238,7 +238,9 @@ const options = {
       context: () => {
         return {
           pgid: Uuid.v4(),
-          fmt: process.env.CONTEXT === 'FMT'
+          fmt: process.env.CONTEXT === 'FMT',
+          ga_id: process.env.GA_TRACKING_ID,
+          gtm: process.env.GA_TAG_MANAGER
         }
       }
     })
