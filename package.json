@@ -14,7 +14,7 @@
     "test": "./node_modules/lab/bin/lab --verbose ",
     "release": "standard-version"
   },
-  "author": "Graham Willis, Druid Wood Ltd",
+  "author": "Graham Willis, Sam Gardner-Dell",
   "license": "ISC",
   "dependencies": {
     "bash": "^0.0.1",
