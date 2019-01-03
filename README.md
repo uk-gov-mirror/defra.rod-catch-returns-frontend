@@ -60,6 +60,20 @@ API_PORT=9580
 API_PATH=/api
 API_REQUEST_TIMEOUT_MS=60000
 
+# AWS Credentials - for the s3 bucket
+AWS_ACCESS_KEY_ID=AAAAAAAAAAAAAAAAAAAA
+AWS_SECRET_ACCESS_KEY=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+AWS_DEFAULT_REGION=eu-west-1
+
+# Proxy settings - do not use locally
+PROXY_SCHEME=http
+PROXY_HOST=devpxlb01.aws-int.defra.cloud
+PROXY_PORT=3182
+
+# Report locations
+REPORTS_S3_LOCATION_BUCKET=devrcrs3bkt001
+REPORTS_S3_LOCATION_FOLDER=reports 
+
 # LRU Cache
 LRU_ITEMS=200000
 LRU_TTL=1800000 # Half an hour

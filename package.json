@@ -9,6 +9,7 @@
   },
   "scripts": {
     "start": "node index.js",
+    "aws": "node proto.js",
     "postinstall": "gulp",
     "watch": "nohup gulp watch&",
     "test": "./node_modules/lab/bin/lab --verbose ",
@@ -17,6 +18,7 @@
   "author": "Graham Willis, Sam Gardner-Dell",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.382.0",
     "bash": "^0.0.1",
     "blankie": "^4.0.0",
     "blipp": "^3.1.1",
@@ -40,6 +42,7 @@
     "joi": "^14.3.0",
     "moment": "^2.22.2",
     "nunjucks": "^3.1.4",
+    "proxy-agent": "^3.0.3",
     "request": "^2.88.0",
     "request-etag": "^2.0.3",
     "scooter": "^4.0.1",
