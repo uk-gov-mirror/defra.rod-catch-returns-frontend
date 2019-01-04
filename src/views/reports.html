@@ -31,6 +31,30 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <h1 class="govuk-heading-l">Reports</h1>
+        <ul class="download-list">
+        {% for report in reports %}
+            <li  class="govuk-!-margin-bottom-9">
+                <div class="govuk-grid-column-full">
+                    <div class="govuk-grid-column-one-half">
+                        <div class="govuk-grid-column-full">
+                            <span class="govuk-body-l">{{ report.description }}</span>
+                        </div>
+                        <div class="govuk-grid-column-full">
+                            <span class="govuk-body-s">{{ report.contentType }}, {{ report.length }}KB</span>
+                        </div>
+                        <div class="govuk-grid-column-full">
+                            <span class="govuk-body-s">Last modified on {{ report.lastModified }}</span>
+                        </div>
+                    </div>
+                    <div class="govuk-grid-column-one-half">
+                        <div class="govuk-grid-column-full">
+                            link
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
     </div>
 </div>
 {% endblock %}

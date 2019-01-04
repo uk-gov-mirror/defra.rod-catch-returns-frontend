@@ -7,6 +7,14 @@ const { logger } = require('defra-logging-facade')
 const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
 const Url = require('url')
+const Mime = require('./mime-desc')
+/*
+ * The AWS connectivity relies on the environment variables being set so
+ * it will not read the .env file
+ */
+AWS.config.update({
+  region: process.env.AWS_DEFAULT_REGION
+})
 
 // If the proxy details are set up then include them in the AWS configuration
 if (Object.keys(process.env).filter(k => /PROXY_.*/.test(k)).length === 3) {
@@ -25,7 +33,7 @@ if (Object.keys(process.env).filter(k => /PROXY_.*/.test(k)).length === 3) {
       }
     })
   } catch (err) {
-    logger.error('Bad proxy specification')
+    logger.error('Bad proxy specification: ' + err)
   }
 }
 
@@ -39,7 +47,7 @@ const fileNameToDesc = (filename) => {
  * Get the report metadata for a given key. Use either a description tag
  * Or convert the filename to a description
  */
-const getReportMetadata = (key) => {
+const getReportDescription = (key) => {
   return new Promise((resolve, reject) => {
     const params = {
       Bucket: process.env.REPORTS_S3_LOCATION_BUCKET,
@@ -54,6 +62,33 @@ const getReportMetadata = (key) => {
       resolve({
         key: key,
         description: descTag ? descTag.Value.trim() : fileNameToDesc(key)
+      })
+    })
+  })
+}
+
+/*
+ * Get the report metadata for a given key. Use either a description tag
+ * Or convert the filename to a description
+ */
+const getReportMetaData = (key) => {
+  return new Promise((resolve, reject) => {
+    const params = {
+      Bucket: process.env.REPORTS_S3_LOCATION_BUCKET,
+      Key: key
+    }
+
+    s3.getObject(params, (err, data) => {
+      if (err) {
+        reject(err)
+      }
+      resolve({
+        key: key,
+        length: Math.round(data.ContentLength / 1000),
+        lastModified: data.LastModified.toDateString(),
+        contentType: ((t) => {
+          return Object.keys(Mime).includes(t) ? Mime[t] : t
+        })(data.ContentType)
       })
     })
   })
@@ -87,8 +122,12 @@ module.exports = {
           reject(err)
         }
 
-        Promise.all(data.Contents.map(c => getReportMetadata(c.Key))).then((details) => {
-          resolve(details)
+        Promise.all(data.Contents.map(c => getReportDescription(c.Key))).then((details) => {
+          Promise.all(details.map(d => getReportMetaData(d.key))).then((reportMetaData) => {
+            resolve(details.map(d => {
+              return Object.assign(d, reportMetaData.find(m => m.key === d.key))
+            }))
+          })
         })
       })
     })

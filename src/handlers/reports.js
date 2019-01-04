@@ -4,6 +4,7 @@
  * Display the FMT users reports page
  */
 const BaseHandler = require('./base')
+const aws = require('../lib/aws')
 
 module.exports = class ReportsHandler extends BaseHandler {
   constructor (...args) {
@@ -18,6 +19,8 @@ module.exports = class ReportsHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
-    return this.readCacheAndDisplayView(request, h)
+    await aws.reportLocationExists()
+    const reportsList = await aws.listReports()
+    return this.readCacheAndDisplayView(request, h, { reports: reportsList })
   }
 }

@@ -60,7 +60,11 @@ API_PORT=9580
 API_PATH=/api
 API_REQUEST_TIMEOUT_MS=60000
 
-# AWS Credentials - for the s3 bucket
+# AWS Credentials
+# Note that the AWS-SDK expects to find the credentialis from the credentials provider chain, 
+# See https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html. 
+# Where running locally it is not sufficient to set these variables in the .env file - they need to be added 
+# to the parent shell.
 AWS_ACCESS_KEY_ID=AAAAAAAAAAAAAAAAAAAA
 AWS_SECRET_ACCESS_KEY=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 AWS_DEFAULT_REGION=eu-west-1
