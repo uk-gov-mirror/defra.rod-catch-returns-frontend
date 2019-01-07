@@ -7,6 +7,7 @@ const LoginHandler = require('../handlers/login')
 const FailedLogin = require('../handlers/login-fail')
 const LicenceHandler = require('../handlers/licence')
 const ReportsHandler = require('../handlers/reports')
+const ReportDownloadHandler = require('../handlers/report-download')
 
 // Define the validators
 const loginValidator = require('../validators/login')
@@ -16,6 +17,7 @@ const licenceValidator = require('../validators/licence')
 const loginHandler = new LoginHandler('login', loginValidator)
 const failedLogin = new FailedLogin('login', loginValidator)
 const reportsHandler = new ReportsHandler('reports')
+const reportDownloadHandler = new ReportDownloadHandler()
 const licenceHandler = new LicenceHandler('licence', licenceValidator)
 
 const api = {
@@ -79,6 +81,13 @@ module.exports = [
     path: '/reports',
     method: 'GET',
     handler: reportsHandler.handler
+  },
+
+  // Report download handler
+  {
+    path: '/reports/{file}',
+    method: 'GET',
+    handler: reportDownloadHandler.handler
   },
 
   // Back to the catch return from the reports

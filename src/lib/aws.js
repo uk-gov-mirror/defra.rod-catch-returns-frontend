@@ -56,6 +56,7 @@ const getReportDescription = (key) => {
 
     s3.getObjectTagging(params, (err, data) => {
       if (err) {
+        logger.error('Cannot retrieve report description: ' + err)
         reject(err)
       }
       const descTag = data.TagSet.find(k => k.Key.toLowerCase() === 'description')
@@ -80,6 +81,7 @@ const getReportMetaData = (key) => {
 
     s3.getObject(params, (err, data) => {
       if (err) {
+        logger.error('Cannot retrieve report metadata: ' + err)
         reject(err)
       }
       resolve({
@@ -100,6 +102,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       s3.headBucket({ Bucket: process.env.REPORTS_S3_LOCATION_BUCKET }, function (err) {
         if (err) {
+          logger.error('Cannot find report location: ' + err)
           reject(err)
         }
 
@@ -119,6 +122,7 @@ module.exports = {
 
       s3.listObjectsV2(params, (err, data) => {
         if (err) {
+          logger.error('Cannot retrieve report listing: ' + err)
           reject(err)
         }
 
@@ -142,6 +146,7 @@ module.exports = {
       }
       s3.getObject(params, (err, data) => {
         if (err) {
+          logger.error('Cannot retrieve report: ' + err)
           reject(err)
         }
 

@@ -74,7 +74,9 @@ PROXY_SCHEME=http
 PROXY_HOST=devpxlb01.aws-int.defra.cloud
 PROXY_PORT=3182
 
-# Report locations
+# Report locations - The FMT system expects to find the reports in this location
+# A metadata tag of 'decription' can be used to give the report a name otherwise
+# the name will be derived from the filename
 REPORTS_S3_LOCATION_BUCKET=devrcrs3bkt001
 REPORTS_S3_LOCATION_FOLDER=reports 
 
