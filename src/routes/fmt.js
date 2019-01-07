@@ -119,10 +119,10 @@ module.exports = [
 
   {
     method: 'GET',
-    path: '/reporting/catches/{season}',
+    path: '/reporting/{report}',
     handler: {
       proxy: {
-        uri: `http://${api.host}:${api.port}/api/reporting/catches/{season}`,
+        uri: `http://${api.host}:${api.port}/api/reporting/{season}`,
         passThrough: true,
         xforward: true
       }
