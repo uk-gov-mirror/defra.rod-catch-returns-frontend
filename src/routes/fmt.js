@@ -26,12 +26,11 @@ const api = {
   protocol: 'http'
 }
 
+/*
+ * The following set of handlers are the additional set of handlers
+ * required by the FMT interface
+ */
 module.exports = [
-
-  /*
-   * The following set of handlers are the additional set of handlers
-   * required by teh FMT interface
-   */
 
   // Login GET handler
   {
