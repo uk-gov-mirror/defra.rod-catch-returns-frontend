@@ -24,11 +24,8 @@ module.exports = Joi.object().keys({
   LRU_TTL: Joi.number(),
   GA_TRACKING_ID: Joi.string(),
   GA_TAG_MANAGER: Joi.string(),
-  AWS_ACCESS_KEY_ID: Joi.string(),
-  AWS_SECRET_ACCESS_KEY: Joi.string(),
-  AWS_DEFAULT_REGION: Joi.string(),
-  PROXY_SCHEME: Joi.string(),
-  PROXY_HOST: Joi.string(),
-  PROXY_PORT: Joi.string(),
+  http_proxy: Joi.string(),
+  https_proxy: Joi.string(),
+  no_proxy: Joi.string(),
   REPORTS_S3_LOCATION_BUCKET: Joi.string()
 })
