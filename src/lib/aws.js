@@ -17,27 +17,28 @@ AWS.config.update({
 
 // If the proxy details are set up then include them in the AWS configuration
 const proxyUrl = (() => {
-  if (Object.keys(process.env).find(k => k === 'https_proxy')) {
-    return process.env.https_proxy
-  } else if (Object.keys(process.env).find(k => k === 'http_proxy')) {
+  if (Object.keys(process.env).find(k => k === 'http_proxy')) {
+    logger.debug(`Using proxy: ${process.env.http_proxy}`)
     return process.env.http_proxy
-  } else if (Object.keys(process.env).find(k => k === 'no_proxy')) {
-    return process.env.no_proxy
+  } else {
+    return null
   }
 })()
 
-;((url) => {
-  try {
-    const proxy = require('proxy-agent')
-    AWS.config.update({
-      httpOptions: {
-        agent: proxy(url)
-      }
-    })
-  } catch (err) {
-    logger.error('Bad proxy specification: ' + err)
-  }
-})(proxyUrl)
+if (proxyUrl) {
+  ((url) => {
+    try {
+      const proxy = require('proxy-agent')
+      AWS.config.update({
+        httpOptions: {
+          agent: proxy(url)
+        }
+      })
+    } catch (err) {
+      logger.error('Bad proxy specification: ' + err)
+    }
+  })(proxyUrl)
+}
 
 // Convert the file name to a description
 const fileNameToDesc = (filename) => {
