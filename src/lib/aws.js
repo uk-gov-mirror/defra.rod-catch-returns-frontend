@@ -7,13 +7,6 @@ const { logger } = require('defra-logging-facade')
 const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
 const Mime = require('./mime-desc')
-/*
- * The AWS connectivity relies on the environment variables being set so
- * it will not read the .env file
- */
-AWS.config.update({
-  region: process.env.AWS_DEFAULT_REGION
-})
 
 // If the proxy details are set up then include them in the AWS configuration
 const proxyUrl = (() => {
