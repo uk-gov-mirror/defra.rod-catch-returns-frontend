@@ -9,28 +9,18 @@ const s3 = new AWS.S3()
 const Mime = require('./mime-desc')
 
 // If the proxy details are set up then include them in the AWS configuration
-const proxyUrl = (() => {
-  if (Object.keys(process.env).find(k => k === 'http_proxy')) {
-    return process.env.http_proxy
-  } else {
-    return null
+if (Object.keys(process.env).find(k => k === 'https_proxy')) {
+  try {
+    logger.debug(`Using proxy: ${process.env.https_proxy}`)
+    const proxy = require('proxy-agent')
+    AWS.config.update({
+      httpOptions: {
+        agent: proxy(process.env.https_proxy)
+      }
+    })
+  } catch (err) {
+    logger.error('Bad proxy specification: ' + err)
   }
-})()
-
-if (proxyUrl) {
-  ((url) => {
-    try {
-      logger.debug(`Using proxy: ${url}`)
-      const proxy = require('proxy-agent')
-      AWS.config.update({
-        httpOptions: {
-          agent: proxy(url)
-        }
-      })
-    } catch (err) {
-      logger.error('Bad proxy specification: ' + err)
-    }
-  })(proxyUrl)
 }
 
 // Convert the file name to a description
