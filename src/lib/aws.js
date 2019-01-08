@@ -6,7 +6,6 @@
 const { logger } = require('defra-logging-facade')
 const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
-const Url = require('url')
 const Mime = require('./mime-desc')
 /*
  * The AWS connectivity relies on the environment variables being set so
@@ -17,16 +16,19 @@ AWS.config.update({
 })
 
 // If the proxy details are set up then include them in the AWS configuration
-if (Object.keys(process.env).filter(k => /PROXY_.*/.test(k)).length === 3) {
+const proxyUrl = (() => {
+  if (Object.keys(process.env).find(k => k === 'https_proxy')) {
+    return process.env.https_proxy
+  } else if (Object.keys(process.env).find(k => k === 'http_proxy')) {
+    return process.env.http_proxy
+  } else if (Object.keys(process.env).find(k => k === 'no_proxy')) {
+    return process.env.no_proxy
+  }
+})()
+
+;((url) => {
   try {
     const proxy = require('proxy-agent')
-
-    const url = Url.format({
-      protocol: process.env.PROXY_SCHEME,
-      hostname: process.env.PROXY_HOST,
-      port: process.env.PROXY_PORT
-    })
-
     AWS.config.update({
       httpOptions: {
         agent: proxy(url)
@@ -35,7 +37,7 @@ if (Object.keys(process.env).filter(k => /PROXY_.*/.test(k)).length === 3) {
   } catch (err) {
     logger.error('Bad proxy specification: ' + err)
   }
-}
+})(proxyUrl)
 
 // Convert the file name to a description
 const fileNameToDesc = (filename) => {

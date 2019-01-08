@@ -70,9 +70,9 @@ AWS_SECRET_ACCESS_KEY=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 AWS_DEFAULT_REGION=eu-west-1
 
 # Proxy settings - do not use locally
-PROXY_SCHEME=http
-PROXY_HOST=devpxlb01.aws-int.defra.cloud
-PROXY_PORT=3182
+http_proxy=http://defra-proxy:3128
+https_proxy=http://defra-proxy:3128
+no_proxy=localhost
 
 # Report locations - The FMT system expects to find the reports in this location
 # A metadata tag of 'decription' can be used to give the report a name otherwise
