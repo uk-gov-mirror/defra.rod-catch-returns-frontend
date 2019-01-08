@@ -18,7 +18,6 @@ AWS.config.update({
 // If the proxy details are set up then include them in the AWS configuration
 const proxyUrl = (() => {
   if (Object.keys(process.env).find(k => k === 'http_proxy')) {
-    logger.debug(`Using proxy: ${process.env.http_proxy}`)
     return process.env.http_proxy
   } else {
     return null
@@ -28,6 +27,7 @@ const proxyUrl = (() => {
 if (proxyUrl) {
   ((url) => {
     try {
+      logger.debug(`Using proxy: ${process.env.http_proxy}`)
       const proxy = require('proxy-agent')
       AWS.config.update({
         httpOptions: {
