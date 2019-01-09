@@ -68,6 +68,9 @@ LRU_TTL=1800000 # Half an hour
 GA_TRACKING_ID=UA-000000000-1
 GA_TAG_MANAGER=GTM-AAAAAAA
 
+# Catch return entry point on GOV.UK
+CATCH_RETURNS_GOV_UK=https://www.gov.uk/catch-return
+
 ```
 ## To Run
 ```

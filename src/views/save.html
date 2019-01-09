@@ -6,7 +6,11 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Your catch return has been saved</h1>
-        <p class="govuk-body">Please return to complete your catch return by 31 December</p>
+        {% if extendPeriod %}
+            <p class="govuk-body">Return to <a href="{{ catchReturnsRef }}">{{ catchReturnsLink }}</a> to complete your catch return</p>
+        {% else %}
+            <p class="govuk-body">Return to <a href="{{ catchReturnsRef }}">{{ catchReturnsLink }}</a> to complete your catch return by 31 December</p>
+        {% endif %}
         <div>
             <label type="hidden" id="pgid" name="pgid" value="{{pgid}}"/>
         </div>
