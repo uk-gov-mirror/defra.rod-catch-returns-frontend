@@ -19,5 +19,6 @@ module.exports = Joi.object().keys({
   API_PORT: Joi.number().port().required(),
   API_PATH: Joi.string().required(),
   API_REQUEST_TIMEOUT_MS: Joi.number().required(),
+  CATCH_RETURNS_GOV_UK: Joi.string().uri().required(),
   AUTH_PW: Joi.string().length(16).required()
 })

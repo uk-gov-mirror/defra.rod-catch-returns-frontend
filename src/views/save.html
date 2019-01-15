@@ -1,12 +1,20 @@
 {% extends "layout.html" %}
 
+{% from "button/macro.njk" import govukButton %}
 {% block pageTitle %}Your draft catch return has been saved - GOV.UK{% endblock %}
-
 {% block content %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Your catch return has been saved</h1>
-        <p class="govuk-body">Please return to complete your catch return by 31 December</p>
+        {% if fmt %}
+            <p class="govuk-body">Return to <a href="/licence">licence details and postcode</a> to complete your catch return or start a new one</p>
+        {% else %}
+            {% if extendPeriod %}
+                <p class="govuk-body">Return to <a href="{{ catchReturnsRef }}">{{ catchReturnsLink }}</a> to complete your catch return</p>
+            {% else %}
+                <p class="govuk-body">Return to <a href="{{ catchReturnsRef }}">{{ catchReturnsLink }}</a> to complete your catch return by 31 December</p>
+            {% endif %}
+        {% endif %}
         <div>
             <label type="hidden" id="pgid" name="pgid" value="{{pgid}}"/>
         </div>
