@@ -118,11 +118,15 @@ module.exports = [
   },
 
   {
-    method: 'GET',
-    path: '/reporting/{report}',
+    method: ['GET', 'POST'],
+    path: '/reporting/{reports*3}',
     handler: {
       proxy: {
-        uri: `http://${api.host}:${api.port}/api/reporting/{season}`,
+        mapUri: (request) => {
+          return {
+            uri: `http://${api.host}:${api.port}/api/reporting/${request.params.reports}`
+          }
+        },
         passThrough: true,
         xforward: true
       }
