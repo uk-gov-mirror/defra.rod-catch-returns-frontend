@@ -29,6 +29,11 @@ const copyAssets = () => {
     .pipe(gulp.dest(paths.public))
 }
 
+const copyAdditionalImages = () => {
+  return gulp.src('src/assets/images/**/*.*')
+    .pipe(gulp.dest(paths.public + '/images'))
+}
+
 const copyJs = () => {
   return merge(
     gulp.src('node_modules/govuk-frontend/all.js'),
@@ -52,6 +57,7 @@ const buildSass = () => {
 gulp.task('default', gulp.series(
   clean,
   copyAssets,
+  copyAdditionalImages,
   copyJs,
   buildSass
 ))

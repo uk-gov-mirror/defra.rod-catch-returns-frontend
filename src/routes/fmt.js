@@ -7,6 +7,7 @@ const LoginHandler = require('../handlers/login')
 const FailedLogin = require('../handlers/login-fail')
 const LicenceHandler = require('../handlers/licence')
 const ReportsHandler = require('../handlers/reports')
+const ReportDownloadHandler = require('../handlers/report-download')
 
 // Define the validators
 const loginValidator = require('../validators/login')
@@ -16,6 +17,7 @@ const licenceValidator = require('../validators/licence')
 const loginHandler = new LoginHandler('login', loginValidator)
 const failedLogin = new FailedLogin('login', loginValidator)
 const reportsHandler = new ReportsHandler('reports')
+const reportDownloadHandler = new ReportDownloadHandler()
 const licenceHandler = new LicenceHandler('licence', licenceValidator)
 
 const api = {
@@ -24,12 +26,11 @@ const api = {
   protocol: 'http'
 }
 
+/*
+ * The following set of handlers are the additional set of handlers
+ * required by the FMT interface
+ */
 module.exports = [
-
-  /*
-   * The following set of handlers are the additional set of handlers
-   * required by teh FMT interface
-   */
 
   // Login GET handler
   {
@@ -81,6 +82,13 @@ module.exports = [
     handler: reportsHandler.handler
   },
 
+  // Report download handler
+  {
+    path: '/reports/{file}',
+    method: 'GET',
+    handler: reportDownloadHandler.handler
+  },
+
   // Back to the catch return from the reports
   {
     path: '/reports-back',
@@ -110,11 +118,15 @@ module.exports = [
   },
 
   {
-    method: 'GET',
-    path: '/reporting/catches/{season}',
+    method: ['GET', 'POST'],
+    path: '/reporting/{reports*3}',
     handler: {
       proxy: {
-        uri: `http://${api.host}:${api.port}/api/reporting/catches/{season}`,
+        mapUri: (request) => {
+          return {
+            uri: `http://${api.host}:${api.port}/api/reporting/${request.params.reports}`
+          }
+        },
         passThrough: true,
         xforward: true
       }
