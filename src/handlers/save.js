@@ -1,5 +1,6 @@
 'use strict'
 
+const moment = require('moment')
 /**
  * Display the saved data message.
  * N.B. This does not save anything!
@@ -20,11 +21,23 @@ module.exports = class SaveHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
-    if (process.env.CONTEXT === 'FMT') {
-      return h.redirect('/licence')
+    const now = moment()
+    const cache = await request.cache().get()
+
+    const catchReturns = new URL(process.env.CATCH_RETURNS_GOV_UK)
+    const catchReturnsRef = catchReturns.toString()
+    const catchReturnsLink = catchReturns.hostname + catchReturns.pathname
+
+    if (process.env.CONTEXT === 'ANGLER') {
+      await request.cache().drop()
+      request.cookieAuth.clear()
     }
-    await request.cache().drop()
-    request.cookieAuth.clear()
-    return h.view(this.path)
+
+    return h.view(this.path, {
+      extendPeriod: Number.parseInt(cache.year) === now.year() - 1,
+      catchReturnsRef: catchReturnsRef,
+      catchReturnsLink: catchReturnsLink,
+      fmt: process.env.CONTEXT === 'FMT'
+    })
   }
 }
