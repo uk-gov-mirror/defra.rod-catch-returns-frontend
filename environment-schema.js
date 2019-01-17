@@ -24,7 +24,7 @@ module.exports = Joi.object().keys({
   LRU_TTL: Joi.number(),
   GA_TRACKING_ID: Joi.string(),
   GA_TAG_MANAGER: Joi.string(),
-  REPORTS_S3_LOCATION_BUCKET: Joi.string()
+  REPORTS_S3_LOCATION_BUCKET: Joi.string(),
   CATCH_RETURNS_GOV_UK: Joi.string().uri().required(),
   AUTH_PW: Joi.string().length(16).required(),
   AWS_REGION: Joi.string()
