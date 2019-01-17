@@ -119,7 +119,8 @@ module.exports = [
 
   {
     method: ['GET', 'POST'],
-    path: '/reporting/{reports*3}',
+    path: '/reporting/{reports*}',
+    options: { auth: false },
     handler: {
       proxy: {
         mapUri: (request) => {
