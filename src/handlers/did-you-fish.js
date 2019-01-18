@@ -53,7 +53,7 @@ module.exports = class DidYouFishHandler extends BaseHandler {
     // If we have any activity go straight to the summary screen
     const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
 
-    // If there are no activities go straight to teh activities-add page
+    // If there are no activities go straight to the summary page
     if (activities.length) {
       return h.redirect('/summary')
     }

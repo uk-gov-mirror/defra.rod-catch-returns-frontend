@@ -5,6 +5,7 @@
  */
 const BaseHandler = require('./base')
 const authenticateUser = require('../lib/authenticate-user')
+const querystring = require('querystring')
 
 module.exports = class LoginHandler extends BaseHandler {
   constructor (...args) {
@@ -31,11 +32,18 @@ module.exports = class LoginHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doPost (request, h, errors) {
+    let qryStr = false
+    if (request.query.next && request.query.next.startsWith('/lookup')) {
+      qryStr = querystring.unescape(request.raw.req.url).replace('/login?next=/lookup', '')
+    }
+
     if (errors) {
-      return h.redirect('/login-fail')
+      return h.redirect('/login-fail' + (qryStr || ''))
     }
 
     await authenticateUser(request)
-    return h.redirect('/licence')
+
+    // In the FMT journey we can be redirected into the service
+    return h.redirect(qryStr ? '/lookup' + qryStr : '/licence')
   }
 }

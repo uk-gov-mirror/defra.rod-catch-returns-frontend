@@ -277,7 +277,7 @@ module.exports = {
     { method: 'GET', path: '/login-fail', status: 200 }
   ],
   fmtSignIn: [
-    { method: 'GET', path: '/login', status: 200 },
+    { method: 'GET', path: '/login?next=/login-fail', status: 200 },
     { method: 'POST', path: '/login', payload: { user: FMTUSER, password: FMTPASS }, status: 302, redirect: '/licence' },
     { method: 'GET', path: '/licence', status: 200 }
   ],
@@ -307,5 +307,8 @@ module.exports = {
     { method: 'GET', path: '/review', status: 200 },
     { method: 'POST', path: '/review', payload: { continue: '' }, status: 302, redirect: '/confirmation' },
     { method: 'GET', path: '/confirmation', status: 200 }
+  ],
+  fmtLookupSubmission: [
+    { method: 'GET', path: '/lookup?submissionId=submissions/1', status: 302, redirect: '/summary' }
   ]
 }

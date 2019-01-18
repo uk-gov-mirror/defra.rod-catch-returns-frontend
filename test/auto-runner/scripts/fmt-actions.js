@@ -7,3 +7,4 @@ module.exports = signIn.fmtSubsequent
     .concat(requests.fmtSelectLicence)
     .concat(requests.fmtUnlockLicence)
     .concat(requests.fmtExclude)
+    .concat(requests.fmtLookupSubmission)

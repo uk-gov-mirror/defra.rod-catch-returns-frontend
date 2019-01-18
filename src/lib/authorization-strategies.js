@@ -8,7 +8,8 @@ module.exports = {
     password: process.env.COOKIE_PW,
     cookie: 'sid',
     redirectTo: process.env.CONTEXT === 'ANGLER' ? '/licence-auth' : '/login',
-    isSecure: process.env.HTTPS === 'true' || false,
+    appendNext: process.env.CONTEXT === 'FMT',
+    isSecure: process.env.HTTPS === 'true',
     clearInvalid: true,
     /**
      * validation function called on every request

@@ -58,7 +58,11 @@
 {% block beforeContent %}
     {% if fmt %}
         {% if details %}
-            <div class="licence-info govuk-body-m" align="right">Licence: {{ details.licenceNumber }}&nbsp;&#x7c;&nbsp;Postcode:&nbsp;{{ details.postcode }}&nbsp;{% if details.year %}&nbsp;&#x7c;&nbsp;Year:&nbsp;{{ details.year }}{% endif %}</div>
+            <div class="licence-info govuk-body-m" align="right">
+                {% if details.licenceNumber %}Licence:&nbsp;{{ details.licenceNumber }}&nbsp;&#x7c;&nbsp;{% endif %}
+                {% if details.postcode %}Postcode:&nbsp;{{ details.postcode }}&nbsp;&#x7c;&nbsp;{% endif %}
+                {% if details.year %}Year:&nbsp;{{ details.year }}{% endif %}
+            </div>
         {% endif %}
     {% else %}
         {{ govukPhaseBanner({

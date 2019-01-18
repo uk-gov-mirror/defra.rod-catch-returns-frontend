@@ -1,4 +1,6 @@
 'use strict'
+const Joi = require('joi')
+const id = Joi.string()
 
 /**
  * These routes are scanned automatically by the hapi-router
@@ -8,6 +10,7 @@ const FailedLogin = require('../handlers/login-fail')
 const LicenceHandler = require('../handlers/licence')
 const ReportsHandler = require('../handlers/reports')
 const ReportDownloadHandler = require('../handlers/report-download')
+const LookupHandler = require('../handlers/lookup')
 
 // Define the validators
 const loginValidator = require('../validators/login')
@@ -19,12 +22,20 @@ const failedLogin = new FailedLogin('login', loginValidator)
 const reportsHandler = new ReportsHandler('reports')
 const reportDownloadHandler = new ReportDownloadHandler()
 const licenceHandler = new LicenceHandler('licence', licenceValidator)
+const lookupHandler = new LookupHandler('lookup')
 
 const api = {
   host: process.env.API_HOSTNAME || 'localhost',
   port: Number.parseInt(process.env.API_PORT || 9580),
   protocol: 'http'
 }
+
+const lookupQuerySchema = Joi.object({
+  submissionId: id.required(),
+  activityId: id.optional(),
+  catchId: id.optional(),
+  smallCatchId: id.optional()
+}).oxor('activityId', 'catchId', 'smallCatchId')
 
 /*
  * The following set of handlers are the additional set of handlers
@@ -87,6 +98,18 @@ module.exports = [
     path: '/reports/{file}',
     method: 'GET',
     handler: reportDownloadHandler.handler
+  },
+
+  // Lookup handler
+  {
+    path: '/lookup',
+    method: 'GET',
+    handler: lookupHandler.handler,
+    options: {
+      validate: {
+        query: lookupQuerySchema
+      }
+    }
   },
 
   // Back to the catch return from the reports
