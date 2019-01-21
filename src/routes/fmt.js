@@ -162,7 +162,7 @@ module.exports = [
           }
         },
         passThrough: true,
-        xforward: true
+        acceptEncoding: true
       }
     }
   }
