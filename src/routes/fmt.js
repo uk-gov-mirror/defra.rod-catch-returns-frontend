@@ -143,7 +143,17 @@ module.exports = [
   {
     method: ['GET', 'POST'],
     path: '/reporting/{reports*}',
-    options: { auth: false },
+    options: {
+      auth: false,
+      plugins: {
+        disinfect: {
+          disinfectQuery: true,
+          disinfectParams: true,
+          disinfectPayload: false
+        },
+        crumb: false
+      }
+    },
     handler: {
       proxy: {
         mapUri: (request) => {
