@@ -157,8 +157,12 @@ module.exports = [
     handler: {
       proxy: {
         mapUri: (request) => {
+          const mappedUri = new URL(`http://${api.host}:${api.port}/api/reporting/${request.params.reports}`)
+          if (request.query) {
+            mappedUri.search = new URLSearchParams(request.query)
+          }
           return {
-            uri: `http://${api.host}:${api.port}/api/reporting/${request.params.reports}`
+            uri: mappedUri.href
           }
         },
         passThrough: true,
