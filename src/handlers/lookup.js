@@ -16,7 +16,7 @@ module.exports = class SaveHandler extends BaseHandler {
   /**
    * Set up the cache data and redirect to the appropriate page
    * the page is determined by a query string
-   * lookup?year=yyyy&submissionId=id{&[activityId=id|catchId=id|smallCatchId=id]}
+   * lookup?submissionId=id{&[activityId=id|catchId=id|smallCatchId=id]}
    *
    * @param request
    * @param h

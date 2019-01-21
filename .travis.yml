@@ -31,6 +31,9 @@ env:
     API_REQUEST_TIMEOUT_MS=20000
     CONTEXT=ANGLER
     AUTH_PW=1234567890123456
+    CATCH_RETURNS_GOV_UK=https://www.gov.uk/catch-return
+    REPORTS_S3_LOCATION_BUCKET=devrcrs3bkt001
+    REPORTS_S3_LOCATION_FOLDER=reports
 
 before_install:
   - nvm install $NODE_VERSION
