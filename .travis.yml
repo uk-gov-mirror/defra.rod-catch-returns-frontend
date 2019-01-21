@@ -38,6 +38,7 @@ services:
 
 before_install:
   - nvm install $NODE_VERSION
+  - npm rebuild node-sass
   - git clone https://github.com/DEFRA/rod-catch-returns-api.git
   - cd ./rod-catch-returns-api
   - ./mvnw compile
