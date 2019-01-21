@@ -20,7 +20,7 @@ branches:
 
 env:
   - >
-    NODE_VERSION="8.9.1"
+    NODE_VERSION="10.13.0"
     DYNAMICS_IMPL=mock
     COOKIE_PW=532fdfghdf62645872aaau121qsqw112
     API_PATH=/api
@@ -32,8 +32,6 @@ env:
     CONTEXT=ANGLER
     AUTH_PW=1234567890123456
     CATCH_RETURNS_GOV_UK=https://www.gov.uk/catch-return
-    REPORTS_S3_LOCATION_BUCKET=devrcrs3bkt001
-    REPORTS_S3_LOCATION_FOLDER=reports
 
 before_install:
   - nvm install $NODE_VERSION
