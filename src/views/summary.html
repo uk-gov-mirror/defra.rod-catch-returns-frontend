@@ -275,20 +275,34 @@
             {{ govukButton({
                 name: "continue",
                 text: "Review catch return",
+                classes: "govuk-button-adjacent",
                 disabled: activities.length === 0
             }) }}
 
+            {% if fmt and activities.length %}
+                {{ govukButton({
+                    name: "save",
+                    text: "Save and return later",
+                    classes: "govuk-button-secondary govuk-button-adjacent",
+                    attributes: { onclick: "var e=this;setTimeout(function(){e.disabled=true;},0);return true;" }
+                }) }}
+            {% endif %}
+
             {{ extra() }}
         </form>
+
         {% if activities.length %}
-            <div>
-                <a id="save" class="govuk-link govuk-body-m" href="/save">Save and return later</a>
-            </div>
+            {% if not fmt %}
+                <div>
+                    <a id="save" class="govuk-link govuk-body-m" href="/save">Save and return later</a>
+                </div>
+            {% endif %}
         {% else %}
             <div>
                 <a id="cancel" class="govuk-link govuk-body-m" href="/did-you-fish">Cancel</a>
             </div>
         {% endif %}
+
     </div>
 </div>
 

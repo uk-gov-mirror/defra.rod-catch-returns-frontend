@@ -114,6 +114,10 @@ module.exports = class SummaryHandler extends BaseHandler {
   async doPost (request, h) {
     if (process.env.CONTEXT === 'FMT') {
       await this.exclusions(request)
+
+      if (Object.keys(request.payload).includes('save')) {
+        return h.redirect('/save')
+      }
     }
 
     return h.redirect('/review')
