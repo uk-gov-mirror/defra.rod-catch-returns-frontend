@@ -33,7 +33,7 @@ module.exports = class ActivitiesHandler extends BaseHandler {
     let submission = await submissionsApi.getById(request, cache.submissionId)
     const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
     const rivers = (await riversApi.list(request))
-      .filter(r => process.env.CONTEXT === 'FMT' ? true : !r.internal)
+      .filter(r => process.env.CONTEXT === 'FMT' ? true : !r.internal).sort(riversApi.sort)
 
     // Test if the submission is locked and if so redirect to the review screen
     if (await testLocked(request, cache, submission)) {
@@ -88,7 +88,8 @@ module.exports = class ActivitiesHandler extends BaseHandler {
        */
       return this.readCacheAndDisplayView(request, h, {
         rivers: rivers.filter(r => ![].concat(...activities.map(a => a.river))
-          .filter(r => r.id !== activity.river.id).map(r2 => r2.id).includes(r.id)),
+          .filter(r => r.id !== activity.river.id)
+          .map(r2 => r2.id).includes(r.id)).sort(riversApi.sort),
         payload: payload,
         details: {
           licenceNumber: cache.licenceNumber,
