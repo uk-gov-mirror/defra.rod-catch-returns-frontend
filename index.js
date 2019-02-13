@@ -225,6 +225,7 @@ const options = {
           }
         }
       },
+
       isCached: process.env.NODE_ENV !== 'development',
       relativeTo: __dirname,
       path: [
@@ -243,6 +244,7 @@ const options = {
           gtm: process.env.GA_TAG_MANAGER
         }
       }
+
     })
 
     // Set up the route handlers for static resources
