@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% set title = "Your " + year + " catch return report" %}
-{% block pageTitle %}{{ title }} - GOV.UK{% endblock %}
+{% block pageTitle %}<div class="no-print-area">{{ title }} - GOV.UK</div>{% endblock %}
 
 {% block content %}
 <div class="govuk-grid-row">
@@ -40,6 +40,7 @@
                 {% if fmt %}
                     {{ govukButton({
                         name: "unlock",
+                        classes: "no-print-area",
                         text: "Unlock catch return"
                     }) }}
                 {% endif %}
