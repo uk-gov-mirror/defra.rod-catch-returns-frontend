@@ -21,7 +21,7 @@
     "aws-sdk": "^2.406.0",
     "bash": "^0.0.1",
     "blankie": "^4.1.0",
-    "blipp": "^3.1.1",
+    "blipp": "^3.1.2",
     "catbox-redis": "^4.2.4",
     "crumb": "^7.2.3",
     "defra-logging-facade": "git+https://github.com/DEFRA/defra-logging-facade.git#02459ac",
