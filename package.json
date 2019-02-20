@@ -64,9 +64,9 @@
     "gulp-minify": "^3.1.0",
     "gulp-sass": "^4.0.2",
     "gulp-sourcemaps": "^2.6.5",
-    "lab": "^18.0.0",
+    "lab": "^18.0.2",
     "merge-stream": "^1.0.1",
     "run-sequence": "^2.2.1",
-    "standard-version": "^4.4.0"
+    "standard-version": "^5.0.0"
   }
 }
