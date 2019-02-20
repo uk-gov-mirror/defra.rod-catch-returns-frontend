@@ -92,6 +92,7 @@ const internals = {
       },
       path: [
         'src/views',
+        'src/views/macros',
         'node_modules/govuk-frontend/',
         'node_modules/govuk-frontend/components/'
       ],
