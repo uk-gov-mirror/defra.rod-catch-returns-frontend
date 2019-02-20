@@ -45,7 +45,7 @@
     "proxy-agent": "^3.0.3",
     "request": "^2.88.0",
     "request-etag": "^2.0.3",
-    "scooter": "^4.0.1",
+    "scooter": "^5.0.2",
     "uuid": "^3.3.2",
     "vision": "^5.4.3"
   },
