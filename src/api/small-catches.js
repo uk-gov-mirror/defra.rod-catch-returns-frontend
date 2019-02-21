@@ -1,32 +1,22 @@
 'use strict'
-const Moment = require('moment')
 
 const EntityApi = require('./entity-api')
 const ActivityApi = require('../api/activities')
 const RiversApi = require('../api/rivers')
 const MethodsApi = require('../api/methods')
 const ResponseError = require('../handlers/response-error')
+const monthUtils = require('../handlers/common').monthUtils
 
 const activityApi = new ActivityApi()
 const riversApi = new RiversApi()
 const methodsApi = new MethodsApi()
 
-// Calculate calendar months
-const months = [ ...Array(12).keys() ].map(m => {
-  const mth = Moment({ month: m }).format('MMMM')
-  return {
-    value: m,
-    text: mth.toUpperCase()
-  }
-})
-
-const mthVal = (o) => months.find(m => m.text === o.month.toUpperCase()).value
 
 /**
  * Small catches entity handler
  *
  */
-module.exports = class CatchesApi extends EntityApi {
+module.exports = class SmallCatchesApi extends EntityApi {
   constructor () {
     super('smallCatches', async (request, c) => {
       const activity = await activityApi.getFromLink(request, c._links.activity.href)
@@ -39,7 +29,7 @@ module.exports = class CatchesApi extends EntityApi {
       }))
       return {
         id: EntityApi.keyFromLink(c),
-        month: c.month,
+        month: monthUtils.find.numFromKey(c.month),
         counts: methods.map(m => {
           const methodCount = counts.find(c => c.method.name === m.name)
           return { id: m.id, name: m.name, count: methodCount ? methodCount.count : null, internal: m.internal }
@@ -62,7 +52,7 @@ module.exports = class CatchesApi extends EntityApi {
     return super.add(request, {
       submission: submissionId,
       activity: activityId,
-      month: month,
+      month: monthUtils.find.keyFromNum(month),
       released: released,
       counts: counts
     })
@@ -70,7 +60,7 @@ module.exports = class CatchesApi extends EntityApi {
 
   async change (request, catchId, activityId, month, counts, released) {
     const result = await super.change(request, catchId, {
-      month: month,
+      month: monthUtils.find.keyFromNum(month),
       released: released,
       counts: counts
     })
@@ -107,19 +97,19 @@ module.exports = class CatchesApi extends EntityApi {
   }
 
   sort (a, b) {
-    if (mthVal(a) < mthVal(b)) {
+    if (a.month < b.month) {
       return -1
     }
 
-    if (mthVal(a) > mthVal(b)) {
+    if (a.month > b.month) {
       return 1
     }
 
-    if (a.river.name < b.river.name) {
+    if (a.activity.river.name < b.activity.river.name) {
       return -1
     }
 
-    if (a.river.name > b.river.name) {
+    if (a.activity.river.name > b.activity.river.name) {
       return 1
     }
 

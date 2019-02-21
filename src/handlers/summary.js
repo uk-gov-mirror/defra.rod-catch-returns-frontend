@@ -3,28 +3,17 @@
 /**
  * Summary handler
  */
-const Moment = require('moment')
 const BaseHandler = require('./base')
 const SubmissionsApi = require('../api/submissions')
 const CatchesApi = require('../api/catches')
 const SmallCatchesApi = require('../api/small-catches')
-const ActivitiesApi = require('../api/activities')
 
-const { printWeight, testLocked } = require('./common')
+const { testLocked } = require('./common')
+const displayData = require('./summary-data')
 
 const submissionsApi = new SubmissionsApi()
 const catchesApi = new CatchesApi()
 const smallCatchesApi = new SmallCatchesApi()
-const activitiesApi = new ActivitiesApi()
-
-// Calculate calendar months
-const months = [ ...Array(12).keys() ].map(m => {
-  const mth = Moment({ month: m }).format('MMMM')
-  return {
-    value: mth.toUpperCase(),
-    text: mth
-  }
-})
 
 module.exports = class SummaryHandler extends BaseHandler {
   constructor (...args) {
@@ -55,44 +44,14 @@ module.exports = class SummaryHandler extends BaseHandler {
     cache.back = request.path
     await request.cache().set(cache)
 
-    // Get the activities
-    const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
-
-    // Add a count to the activities
-    activities.map(a => { a.count = 0 })
-
-    // Process the catches for the summary view
-    const catches = (await catchesApi.getFromLink(request, submission._links.catches.href)).map(c => {
-      c.dateCaught = Moment(c.dateCaught).format('DD/MM')
-      c.weight = printWeight(c)
-      const activity = activities.find(a => a.id === c.activity.id)
-      activity.count++
-      return c
-    })
-
-    // Need to show the unknown method if set by the administrator
-    let foundInternal = false
-
-    // Process the small catches flattening the counts
-    const smallCatches = (await smallCatchesApi.getFromLink(request, submission._links.smallCatches.href)).map(c => {
-      c.month = months.find(m => m.value === c.month).text
-      c.river = c.activity.river.name
-      const activity = activities.find(a => a.id === c.activity.id)
-      c.counts.forEach(t => {
-        c[t.name.toLowerCase()] = t.count
-        activity.count += t.count || 0
-      })
-      foundInternal = foundInternal || !!c.counts.find(m => m.internal)
-      delete c.counts
-      return c
-    })
+    const { activities, catches, smallCatches, foundInternal } = await displayData(request, submission)
 
     // Return the summary view
     return h.view(this.path, {
       year: cache.year,
-      activities: activities.sort(activitiesApi.sort),
-      catches: catches.sort(catchesApi.sort),
-      smallCatches: smallCatches.sort(smallCatchesApi.sort),
+      activities: activities,
+      catches: catches,
+      smallCatches: smallCatches,
       reportingExclude: submission.reportingExclude,
       foundInternal: foundInternal,
       details: {

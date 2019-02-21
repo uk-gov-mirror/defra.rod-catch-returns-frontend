@@ -76,3 +76,9 @@ label.link-reader {
 ul.download-list {
   list-style-image: url('/public/images/icon-file-download.png');
 }
+
+input.date-disabled {
+  color: black !important;
+  border: none !important;
+  background-color: transparent !important;
+}

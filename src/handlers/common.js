@@ -1,5 +1,15 @@
 'use strict'
 
+const Moment = require('moment')
+const months = [ ...Array(12).keys() ].map(m => {
+  const mth = Moment({ month: m }).format('MMMM')
+  return {
+    num: m + 1,
+    key: mth.toUpperCase(),
+    text: mth
+  }
+})
+
 /**
  * General functions
  */
@@ -33,6 +43,15 @@ module.exports = {
     }
 
     return false
+  },
+
+  monthUtils: {
+    months,
+    find: {
+      numFromKey: (k) => months.find(m => m.key === k).num,
+      keyFromNum: (n) => months.find(m => m.num === Number.parseInt(n)).key,
+      textFromNum: (n) => months.find(m => m.num === Number.parseInt(n)).text
+    }
   },
 
   isAllowedParam: (param) => {
