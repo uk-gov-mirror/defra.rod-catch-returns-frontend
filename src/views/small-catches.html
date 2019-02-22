@@ -57,6 +57,14 @@
             }) }}
         {% endif %}
 
+        {% if error.SmallCatch === 'SMALL_CATCH_MONTH_IN_FUTURE' %}
+            {% set monthsErrorMessage = { text: "Month caught cannot be in the future" } %}
+            {{ errorList.push({
+                text: "You have entered a month in the future",
+                href: "#month"
+            }) }}
+        {% endif %}
+
         {% if error.months === 'INVALID' %}
             {% set monthsErrorMessage = { text: "Enter the month you fished" } %}
                 {{ errorList.push({
@@ -173,7 +181,6 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <form method="post">
-
             {% if errors %}
                 {{ govukErrorSummary({
                     titleText: "There is a problem",
@@ -242,7 +249,7 @@
                                 classes: "govuk-date-input__label",
                                 for: "year"
                             }) }}
-                            <input id="year" disabled aria-disabled="true" class="govuk-input date-disabled govuk-input--width-4" value="{{ year }}"/>
+                            <input id="year" disabled aria-disabled="true" class="govuk-input date-disabled govuk-input--width-4" value="{{ details.year }}"/>
                         </div>
                     </div>
                 </div>

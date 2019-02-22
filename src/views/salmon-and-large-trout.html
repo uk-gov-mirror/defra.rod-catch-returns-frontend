@@ -75,7 +75,7 @@
             {% set dateErrorMessage = { text: "Enter the date you fished" } %}
             {{ errorList.push({
                 text: "You have not entered a date",
-                href: "#date-day"
+                href: "#day"
             }) }}
         {% endif %}
 
@@ -83,7 +83,15 @@
             {% set dateErrorMessage = { text: "Enter the date you fished" } %}
             {{ errorList.push({
                 text: "You have not entered a valid date",
-                href: "#date-day"
+                href: "#day"
+            }) }}
+        {% endif %}
+
+        {% if error.Catch === 'CATCH_DATE_IN_FUTURE' %}
+            {% set dateErrorMessage = { text: "Date caught cannot be in the future" } %}
+            {{ errorList.push({
+                text: "You have entered a date in the future",
+                href: "#day"
             }) }}
         {% endif %}
 
@@ -224,7 +232,6 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <form method="post">
-
             {% if errors %}
                 {{ govukErrorSummary({
                     titleText: "There is a problem",
@@ -310,7 +317,7 @@
                                     classes: "govuk-date-input__label",
                                     for: "year"
                                 }) }}
-                                <input id="year" disabled aria-disabled="true" class="govuk-input date-disabled govuk-input--width-4" value="{{ year }}"/>
+                                <input id="year" disabled aria-disabled="true" class="govuk-input date-disabled govuk-input--width-4" value="{{ details.year }}"/>
                             </div>
                         </div>
                     </div>
