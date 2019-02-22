@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 
 {% from "fieldset/macro.njk" import govukFieldset %}
-{% from "date-input/macro.njk" import govukDateInput %}
 {% from "button/macro.njk" import govukButton %}
 {% from "input/macro.njk" import govukInput %}
 {% from "error-summary/macro.njk" import govukErrorSummary %}
@@ -51,7 +50,7 @@
         {% endif %}
 
         {% if error.months === 'EMPTY' %}
-            {% set monthsErrorMessage = { text: "Enter the month you caught the fish" } %}
+            {% set monthsErrorMessage = { text: "Enter the month you fished" } %}
             {{ errorList.push({
                 text: "You have not entered a month",
                 href: "#month"
@@ -59,7 +58,7 @@
         {% endif %}
 
         {% if error.months === 'INVALID' %}
-            {% set monthsErrorMessage = { text: "Enter the month you caught the fish" } %}
+            {% set monthsErrorMessage = { text: "Enter the month you fished" } %}
                 {{ errorList.push({
                 text: "You have not entered a valid month",
                 href: "#month"
@@ -110,7 +109,7 @@
             {% set riverErrorMessage = { text: "Select a river" } %}
             {% set monthsErrorMessage = { text: "Select the month your caught the fish" } %}
             {{ errorList.push({
-                text: "You have already added a record for this river and this month - choose a different river or month",
+                text: "You have already added a catch for this river and this month - choose a different river or month",
                 href: "#river"
             }) }}
         {% endif %}
@@ -229,11 +228,11 @@
                                 text: "Month",
                                 classes: "govuk-date-input__label"
                             },
-                            type: "number"
+                            type: "number",
                             value: payload.month,
                             attributes: { maxlength: 2, pattern: "[0-9]*" },
                             classes: "govuk-input--width-2",
-                            errorMessage: monthsErrorMessage,
+                            errorMessage: monthsErrorMessage
                         }) }}
                     </div>
                     <div class="govuk-date-input__item">
@@ -243,7 +242,7 @@
                                 classes: "govuk-date-input__label",
                                 for: "year"
                             }) }}
-                            <input id="year" disabled aria-disabled="true" class="govuk-input date-disabled govuk-input--width-4" value="2019"/>
+                            <input id="year" disabled aria-disabled="true" class="govuk-input date-disabled govuk-input--width-4" value="{{ year }}"/>
                         </div>
                     </div>
                 </div>

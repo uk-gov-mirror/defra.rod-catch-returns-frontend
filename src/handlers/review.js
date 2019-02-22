@@ -6,7 +6,7 @@
 const BaseHandler = require('./base')
 const SubmissionsApi = require('../api/submissions')
 const submissionsApi = new SubmissionsApi()
-const displayData = require('./summary-data')
+const displayData = require('./display-data')
 
 module.exports = class ReviewHandler extends BaseHandler {
   constructor (...args) {

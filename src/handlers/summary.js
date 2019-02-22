@@ -9,7 +9,7 @@ const CatchesApi = require('../api/catches')
 const SmallCatchesApi = require('../api/small-catches')
 
 const { testLocked } = require('./common')
-const displayData = require('./summary-data')
+const displayData = require('./display-data')
 
 const submissionsApi = new SubmissionsApi()
 const catchesApi = new CatchesApi()

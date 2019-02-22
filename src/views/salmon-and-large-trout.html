@@ -3,11 +3,12 @@
 {% from "fieldset/macro.njk" import govukFieldset %}
 {% from "button/macro.njk" import govukButton %}
 {% from "radios/macro.njk" import govukRadios %}
-{% from "date-input/macro.njk" import govukDateInput %}
 {% from "input/macro.njk" import govukInput %}
 {% from "select/macro.njk" import govukSelect %}
 {% from "error-summary/macro.njk" import govukErrorSummary %}
+{% from "error-message/macro.njk" import govukErrorMessage %}
 {% from "navigation.njk" import navigationHeaderBlock %}
+{% from "label/macro.njk" import govukLabel %}
 
 {% block header %}
     {% if fmt %}
@@ -260,33 +261,63 @@
                     <input type="hidden" id="river" name="river" value="{{ rivers[0].id }}"/>
                 {% endif %}
 
-                {{ govukDateInput({
-                    id: "date",
-                    name: "date",
-                    fieldset: {
-                        legend: {
-                            text: "Date caught in " + year,
-                            isPageHeading: false,
-                            classes: "govuk-fieldset__legend govuk-!-font-weight-bold"
-                        }
-                    },
-                    hint: {
-                        text: "For example, 24 01"
-                    },
-                    items: [
-                        {
-                            name: "day",
-                            value: payload.day,
-                            classes: 'govuk-input--width-2'
-                        },
-                        {
-                            name: "month",
-                            value: payload.month,
-                            classes: 'govuk-input--width-2'
-                        }
-                    ],
-                    errorMessage: dateErrorMessage
-                }) }}
+                <label class="govuk-label govuk-!-font-weight-bold">Date caught</label>
+                <span id="date-hint" class="govuk-hint">For example, 24 6</span>
+
+                {% if dateErrorMessage %}
+                    <div class="govuk-form-group govuk-form-group--error">
+                        <span id="fly-error" class="govuk-error-message">
+                            {{ dateErrorMessage.text }}
+                        </span>
+                {% endif %}
+
+                    <div class="govuk-date-input">
+
+                        <div class="govuk-date-input__item">
+                            {{ govukInput({
+                                id: "day",
+                                name: "day",
+                                label: {
+                                    text: "Day",
+                                    classes: "govuk-date-input__label"
+                                },
+                                type: "number",
+                                value: payload.month,
+                                attributes: { maxlength: 2, pattern: "[0-9]*" },
+                                classes:  "govuk-input--width-2 govuk-input--error" if dateErrorMessage else "govuk-input--width-2"
+                            }) }}
+                        </div>
+
+                        <div class="govuk-date-input__item">
+                            {{ govukInput({
+                                id: "month",
+                                name: "month",
+                                label: {
+                                    text: "Month",
+                                    classes: "govuk-date-input__label"
+                                },
+                                type: "number",
+                                value: payload.month,
+                                attributes: { maxlength: 2, pattern: "[0-9]*" },
+                                classes: "govuk-input--width-2 govuk-input--error" if dateErrorMessage else "govuk-input--width-2"
+                            }) }}
+                        </div>
+
+                        <div class="govuk-date-input__item">
+                            <div class="govuk-form-group">
+                                {{ govukLabel({
+                                    text: "Year",
+                                    classes: "govuk-date-input__label",
+                                    for: "year"
+                                }) }}
+                                <input id="year" disabled aria-disabled="true" class="govuk-input date-disabled govuk-input--width-4" value="{{ year }}"/>
+                            </div>
+                        </div>
+                    </div>
+
+                {% if dateErrorMessage %}
+                </div>
+                {% endif %}
 
                 {{ govukRadios({
                     idPrefix: "type",

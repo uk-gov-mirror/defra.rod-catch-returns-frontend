@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * Used for both summary and review pages
+ * Used to process data into humen readable format for both summary and review pages
  */
 const CatchesApi = require('../api/catches')
 const SmallCatchesApi = require('../api/small-catches')
@@ -12,7 +12,7 @@ const smallCatchesApi = new SmallCatchesApi()
 const activitiesApi = new ActivitiesApi()
 
 const Moment = require('moment')
-const { monthUtils, printWeight } = require('./common')
+const { monthHelper, printWeight } = require('./common')
 
 module.exports = async (request, submission) => {
   // Get the activities
@@ -40,7 +40,7 @@ module.exports = async (request, submission) => {
   const smallCatches = (await smallCatchesApi.getFromLink(request, submission._links.smallCatches.href))
     .sort(smallCatchesApi.sort)
     .map(c => {
-      c.month = monthUtils.find.textFromNum(c.month)
+      c.month = monthHelper.find.textFromNum(c.month)
       c.river = c.activity.river.name
       const activity = activities.find(a => a.id === c.activity.id)
       c.counts.forEach(t => {

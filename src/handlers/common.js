@@ -11,7 +11,7 @@ const months = [ ...Array(12).keys() ].map(m => {
 })
 
 /**
- * General functions
+ * Common and utility functions
  */
 module.exports = {
   printWeight: (c) => {
@@ -45,7 +45,10 @@ module.exports = {
     return false
   },
 
-  monthUtils: {
+  /**
+   * For example API calls use JANUARY, internally represented as 1 and displayed as January
+   */
+  monthHelper: {
     months,
     find: {
       numFromKey: (k) => months.find(m => m.key === k).num,

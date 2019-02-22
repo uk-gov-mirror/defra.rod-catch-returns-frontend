@@ -5,7 +5,7 @@ const ActivityApi = require('../api/activities')
 const RiversApi = require('../api/rivers')
 const MethodsApi = require('../api/methods')
 const ResponseError = require('../handlers/response-error')
-const monthUtils = require('../handlers/common').monthUtils
+const monthUtils = require('../handlers/common').monthHelper
 
 const activityApi = new ActivityApi()
 const riversApi = new RiversApi()

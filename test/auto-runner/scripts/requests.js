@@ -75,7 +75,7 @@ module.exports = {
     { method: 'GET', path: '/small-catches/add', status: 200 },
     { method: 'POST',
       path: '/small-catches/add',
-      payload: { river: 'rivers/190', month: 'JUNE', fly: '5', spinner: '2', bait: '', released: '1' },
+      payload: { river: 'rivers/190', month: '6', fly: '5', spinner: '2', bait: '', released: '1' },
       status: 302,
       redirect: '/summary' },
     { method: 'GET', path: '/summary', status: 200 }
@@ -84,7 +84,7 @@ module.exports = {
     { method: 'GET', path: '/small-catches/add', status: 200 },
     { method: 'POST',
       path: '/small-catches/add',
-      payload: { river: 'rivers/11', month: 'JUNE', fly: '', spinner: '2', bait: '', released: '1' },
+      payload: { river: 'rivers/11', month: '6', fly: '', spinner: '2', bait: '', released: '1' },
       status: 302,
       redirect: '/summary' },
     { method: 'GET', path: '/summary', status: 200 }
@@ -103,7 +103,7 @@ module.exports = {
     { method: 'GET', path: '/small-catches/add', status: 200 },
     { method: 'POST',
       path: '/small-catches/add',
-      payload: { river: 'rivers/11', month: 'AUGUST', fly: '-2', spinner: '0', bait: '0', released: '22', add: 'add' },
+      payload: { river: 'rivers/11', month: '8', fly: '-2', spinner: '0', bait: '0', released: '22', add: 'add' },
       status: 302,
       redirect: '/small-catches/add' },
     { method: 'GET', path: '/small-catches/add', status: 200 }
@@ -112,7 +112,7 @@ module.exports = {
     { method: 'GET', path: '/small-catches/1', status: 200 },
     { method: 'POST',
       path: '/small-catches/1',
-      payload: { river: 'rivers/190', month: 'JUNE', fly: '2', spinner: '2', bait: '1', released: '2' },
+      payload: { river: 'rivers/190', month: '6', fly: '2', spinner: '2', bait: '1', released: '2' },
       status: 302,
       redirect: '/summary' },
     { method: 'GET', path: '/summary', status: 200 }
@@ -121,7 +121,7 @@ module.exports = {
     { method: 'GET', path: '/small-catches/add', status: 200 },
     { method: 'POST',
       path: '/small-catches/add',
-      payload: { river: 'rivers/190', month: 'JULY', fly: '5', spinner: '2', bait: '', released: '1' },
+      payload: { river: 'rivers/190', month: '7', fly: '5', spinner: '2', bait: '', released: '1' },
       status: 302,
       redirect: '/summary' },
     { method: 'GET', path: '/summary', status: 200 }

@@ -8,22 +8,10 @@ const SubmissionsApi = require('../api/submissions')
 const SmallCatchesApi = require('../api/small-catches')
 const ResponseError = require('./response-error')
 
-const testLocked = require('./common').testLocked
-
-const Moment = require('moment')
-
+const { testLocked, monthHelper } = require('./common')
 const submissionsApi = new SubmissionsApi()
 const smallCatchesApi = new SmallCatchesApi()
 const isAllowedParam = require('./common').isAllowedParam
-
-// Calculate calendar months
-const months = [ ...Array(12).keys() ].map(m => {
-  const mth = Moment({ month: m }).format('MMMM')
-  return {
-    value: mth.toUpperCase(),
-    text: mth
-  }
-})
 
 module.exports = class DeleteRiverHandler extends BaseHandler {
   constructor (...args) {
@@ -63,7 +51,7 @@ module.exports = class DeleteRiverHandler extends BaseHandler {
     }
 
     const c = await smallCatchesApi.doMap(request, smallCatch)
-    c.month = months.find(m => m.value === c.month).text
+    c.month = monthHelper.find.textFromNum(c.month)
 
     // Save the id to delete
     cache.delete = smallCatch.id
