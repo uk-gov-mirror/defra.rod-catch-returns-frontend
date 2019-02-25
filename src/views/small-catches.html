@@ -49,14 +49,6 @@
             }) }}
         {% endif %}
 
-        {% if error.months === 'EMPTY' %}
-            {% set monthsErrorMessage = { text: "Enter the month you fished" } %}
-            {{ errorList.push({
-                text: "You have not entered a month",
-                href: "#month"
-            }) }}
-        {% endif %}
-
         {% if error.SmallCatch === 'SMALL_CATCH_MONTH_IN_FUTURE' %}
             {% set monthsErrorMessage = { text: "Month caught cannot be in the future" } %}
             {{ errorList.push({
@@ -65,7 +57,7 @@
             }) }}
         {% endif %}
 
-        {% if error.months === 'INVALID' %}
+        {% if error.months === 'INVALID' or error.months === 'EMPTY' %}
             {% set monthsErrorMessage = { text: "Enter the month you fished" } %}
                 {{ errorList.push({
                 text: "You have not entered a valid month",
