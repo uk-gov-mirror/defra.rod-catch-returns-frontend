@@ -8,16 +8,29 @@
 const LICENCE = String('B7A718')
 const POSTCODE = String('WA48HT')
 const YEAR = require('moment')().year()
+
+const THISMONTH = require('moment')().month() + 1
+const NEXTMONTH = require('moment')().add(1, 'months').month() + 1
+const YESTERDAY = require('moment')().subtract(1, 'days')
+const TOMORROW = require('moment')().add(1, 'days')
+
 const FMTUSER = String('admin1@example.com')
 const FMTPASS = String('admin')
+
+console.log(`Using last month: ${THISMONTH}`)
+console.log(`Using next month: ${NEXTMONTH}`)
+console.log(`Using yesterday: ${YESTERDAY.toISOString()}`)
+console.log(`Using tomorrow: ${TOMORROW.toISOString()}`)
 
 module.exports = {
   LICENCE: LICENCE,
   POSTCODE: POSTCODE,
+
   start: [
     { method: 'GET', path: '/', status: 302, redirect: '/licence-auth' },
     { method: 'GET', path: '/licence-auth', status: 200 }
   ],
+
   signInSuccess: [
     { method: 'GET', path: '/licence-auth', status: 200 },
     { method: 'POST', path: '/licence-auth', status: 302, payload: { licence: LICENCE, postcode: POSTCODE }, redirect: '/select-year' },
@@ -71,25 +84,45 @@ module.exports = {
     { method: 'GET', path: '/delete/activities/2', status: 200 },
     { method: 'POST', path: '/delete/activities/2', payload: {}, status: 302, redirect: '/summary' }
   ],
-  addSmallCatchJune: [
+
+  addSmallCatch1: [
     { method: 'GET', path: '/small-catches/add', status: 200 },
     { method: 'POST',
       path: '/small-catches/add',
-      payload: { river: 'rivers/190', month: '6', fly: '5', spinner: '2', bait: '', released: '1' },
+      payload: { river: 'rivers/190', month: THISMONTH.toString(), fly: '5', spinner: '2', bait: '', released: '1' },
       status: 302,
       redirect: '/summary' },
     { method: 'GET', path: '/summary', status: 200 }
   ],
-  addSmallCatch2June: [
+  addSmallCatch2: [
     { method: 'GET', path: '/small-catches/add', status: 200 },
     { method: 'POST',
       path: '/small-catches/add',
-      payload: { river: 'rivers/11', month: '6', fly: '', spinner: '2', bait: '', released: '1' },
+      payload: { river: 'rivers/11', month:  THISMONTH.toString(), fly: '', spinner: '2', bait: '', released: '1' },
       status: 302,
       redirect: '/summary' },
     { method: 'GET', path: '/summary', status: 200 }
   ],
-  addSmallCatchErrors: [
+  editSmallCatch1: [
+    { method: 'GET', path: '/small-catches/1', status: 200 },
+    { method: 'POST',
+      path: '/small-catches/1',
+      payload: { river: 'rivers/190', month: THISMONTH.toString(), fly: '2', spinner: '2', bait: '1', released: '2' },
+      status: 302,
+      redirect: '/summary' },
+    { method: 'GET', path: '/summary', status: 200 }
+  ],
+  removeSmallCatch1: [
+    { method: 'GET', path: '/delete/small-catches/1', status: 200 },
+    { method: 'POST', path: '/delete/small-catches/1', payload: {}, status: 302, redirect: '/summary' },
+    { method: 'GET', path: '/summary', status: 200 }
+  ],
+  removeSmallCatch2: [
+    { method: 'GET', path: '/delete/small-catches/2', status: 200 },
+    { method: 'POST', path: '/delete/small-catches/2', payload: {}, status: 302, redirect: '/summary' },
+    { method: 'GET', path: '/summary', status: 200 }
+  ],
+  addSmallCatchWithErrors1: [
     { method: 'GET', path: '/small-catches/add', status: 200 },
     { method: 'POST',
       path: '/small-catches/add',
@@ -98,47 +131,25 @@ module.exports = {
       redirect: '/small-catches/add' },
     { method: 'GET', path: '/small-catches/add', status: 200 }
   ],
-  addSmallCatchErrors2: [
+  addSmallCatchWithErrors2: [
     { method: 'GET', path: '/summary', status: 200 }, // Clear cache
     { method: 'GET', path: '/small-catches/add', status: 200 },
     { method: 'POST',
       path: '/small-catches/add',
-      payload: { river: 'rivers/11', month: '8', fly: '-2', spinner: '0', bait: '0', released: '22', add: 'add' },
+      payload: { river: 'rivers/11', month:  NEXTMONTH.toString(), fly: '-2', spinner: '0', bait: '0', released: '22', add: 'add' },
       status: 302,
       redirect: '/small-catches/add' },
     { method: 'GET', path: '/small-catches/add', status: 200 }
   ],
-  editSmallCatchJune: [
-    { method: 'GET', path: '/small-catches/1', status: 200 },
-    { method: 'POST',
-      path: '/small-catches/1',
-      payload: { river: 'rivers/190', month: '6', fly: '2', spinner: '2', bait: '1', released: '2' },
-      status: 302,
-      redirect: '/summary' },
-    { method: 'GET', path: '/summary', status: 200 }
-  ],
-  addSmallCatchJuly: [
-    { method: 'GET', path: '/small-catches/add', status: 200 },
-    { method: 'POST',
-      path: '/small-catches/add',
-      payload: { river: 'rivers/190', month: '7', fly: '5', spinner: '2', bait: '', released: '1' },
-      status: 302,
-      redirect: '/summary' },
-    { method: 'GET', path: '/summary', status: 200 }
-  ],
-  deleteSmallCatchJuly: [
-    { method: 'GET', path: '/delete/small-catches/2', status: 200 },
-    { method: 'POST', path: '/delete/small-catches/2', payload: {}, status: 302, redirect: '/summary' },
-    { method: 'GET', path: '/summary', status: 200 }
-  ],
-  addLargeCatchJune: [
+
+  addLargeCatch1: [
     { method: 'GET', path: '/catches/add', status: 200 },
     { method: 'POST',
       path: '/catches/add',
       payload: {
         river: 'rivers/190',
-        day: '1',
-        month: '6',
+        day: YESTERDAY.date().toString(),
+        month: YESTERDAY.month().toString(),
         type: 'species/1',
         system: 'IMPERIAL',
         pounds: '1',
@@ -151,14 +162,14 @@ module.exports = {
       redirect: '/summary' },
     { method: 'GET', path: '/summary', status: 200 }
   ],
-  addLargeCatch2June: [
+  addLargeCatch2: [
     { method: 'GET', path: '/catches/add', status: 200 },
     { method: 'POST',
       path: '/catches/add',
       payload: {
         river: 'rivers/11',
-        day: '1',
-        month: '6',
+        day: YESTERDAY.date().toString(),
+        month: YESTERDAY.month().toString(),
         type: 'species/1',
         system: 'IMPERIAL',
         pounds: '1',
@@ -171,7 +182,55 @@ module.exports = {
       redirect: '/summary' },
     { method: 'GET', path: '/summary', status: 200 }
   ],
-  addLargeCatchErrors: [
+  editLargeCatch1: [
+    { method: 'GET', path: '/catches/1', status: 200 },
+    { method: 'POST',
+      path: '/catches/1',
+      payload: {
+        river: 'rivers/190',
+        day: YESTERDAY.date().toString(),
+        month: YESTERDAY.month().toString(),
+        type: 'species/2',
+        system: 'IMPERIAL',
+        pounds: '1',
+        ounces: '3',
+        kilograms: '',
+        method: 'methods/1',
+        released: 'false'
+      },
+      status: 302,
+      redirect: '/summary' },
+    { method: 'GET', path: '/summary', status: 200 }
+  ],
+  editLargeCatch2: [
+    { method: 'GET', path: '/catches/1', status: 200 },
+    { method: 'POST',
+      path: '/catches/2',
+      payload: {
+        river: 'rivers/190',
+        day: YESTERDAY.date().toString(),
+        month: YESTERDAY.month().toString(),
+        type: 'species/2',
+        system: 'IMPERIAL',
+        pounds: '1',
+        ounces: '3',
+        kilograms: '',
+        method: 'methods/1',
+        released: 'false'
+      },
+      status: 302,
+      redirect: '/summary' },
+    { method: 'GET', path: '/summary', status: 200 }
+  ],
+  deleteLargeCatch1: [
+    { method: 'GET', path: '/delete/catches/1', status: 200 },
+    { method: 'POST', path: '/delete/catches/1', payload: {}, status: 302, redirect: '/summary' }
+  ],
+  deleteLargeCatch2: [
+    { method: 'GET', path: '/delete/catches/2', status: 200 },
+    { method: 'POST', path: '/delete/catches/2', payload: {}, status: 302, redirect: '/summary' }
+  ],
+  addLargeCatchWithErrors1: [
     { method: 'GET', path: '/catches/add', status: 200 },
     { method: 'POST',
       path: '/catches/add',
@@ -190,15 +249,15 @@ module.exports = {
       status: 302,
       redirect: '/catches/add' }
   ],
-  addLargeCatchErrors2: [
+  addLargeCatchWithErrors2: [
     { method: 'GET', path: '/summary', status: 200 },
     { method: 'GET', path: '/catches/add', status: 200 },
     { method: 'POST',
       path: '/catches/add',
       payload: {
         river: 'rivers/190',
-        day: '1',
-        month: '6',
+        day: TOMORROW.date().toString(),
+        month: TOMORROW.month().toString(),
         type: 'species/1',
         system: 'METRIC',
         pounds: '',
@@ -211,50 +270,6 @@ module.exports = {
       status: 302,
       redirect: '/catches/add' },
     { method: 'GET', path: '/catches/add', status: 200 }
-  ],
-  editLargeCatchJune: [
-    { method: 'GET', path: '/catches/1', status: 200 },
-    { method: 'POST',
-      path: '/catches/1',
-      payload: {
-        river: 'rivers/11',
-        day: '1',
-        month: '6',
-        type: 'species/2',
-        system: 'IMPERIAL',
-        pounds: '1',
-        ounces: '3',
-        kilograms: '',
-        method: 'methods/1',
-        released: 'false'
-      },
-      status: 302,
-      redirect: '/summary' },
-    { method: 'GET', path: '/summary', status: 200 }
-  ],
-  addLargeCatchJuly: [
-    { method: 'GET', path: '/catches/add', status: 200 },
-    { method: 'POST',
-      path: '/catches/add',
-      payload: {
-        river: 'rivers/190',
-        day: '1',
-        month: '7',
-        type: 'species/1',
-        system: 'IMPERIAL',
-        pounds: '0',
-        ounces: '9',
-        kilograms: '',
-        method: 'methods/2',
-        released: 'true'
-      },
-      status: 302,
-      redirect: '/summary' },
-    { method: 'GET', path: '/summary', status: 200 }
-  ],
-  deleteLargeCatchJuly: [
-    { method: 'GET', path: '/delete/catches/2', status: 200 },
-    { method: 'POST', path: '/delete/catches/2', payload: {}, status: 302, redirect: '/summary' }
   ],
   save: [
     { method: 'GET', path: '/summary', status: 200 },

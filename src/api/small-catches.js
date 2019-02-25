@@ -11,7 +11,6 @@ const activityApi = new ActivityApi()
 const riversApi = new RiversApi()
 const methodsApi = new MethodsApi()
 
-
 /**
  * Small catches entity handler
  *
