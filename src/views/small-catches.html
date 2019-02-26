@@ -210,13 +210,15 @@
                     <input type="hidden" id="river" name="river" value="{{ rivers[0].id }}"/>
                 {% endif %}
 
-                <label class="govuk-label govuk-!-font-weight-bold">
-                    Month caught
-                </label>
+                <label class="govuk-label govuk-!-font-weight-bold">Month caught</label>
+                <span id="fly-hint" class="govuk-hint">For example, 6</span>
 
-                <span id="fly-hint" class="govuk-hint">
-                    For example, 6
-                </span>
+                {% if monthsErrorMessage %}
+                <div class="govuk-form-group govuk-form-group--error">
+                        <span id="month-error" class="govuk-error-message">
+                            {{ monthsErrorMessage.text }}
+                        </span>
+                {% endif %}
 
                 <div class="govuk-date-input">
                     <div class="govuk-date-input__item">
@@ -230,8 +232,7 @@
                             type: "number",
                             value: payload.month,
                             attributes: { maxlength: 2, pattern: "[0-9]*" },
-                            classes: "govuk-input--width-2",
-                            errorMessage: monthsErrorMessage
+                            classes: "govuk-input--width-2 govuk-input--error" if monthsErrorMessage else "govuk-input--width-2"
                         }) }}
                     </div>
                     <div class="govuk-date-input__item">
@@ -245,6 +246,10 @@
                         </div>
                     </div>
                 </div>
+
+                {% if monthsErrorMessage %}
+                </div>
+                {% endif %}
 
                 {% if errors %}{% for error in errors %}{% if error.SmallCatch === 'SMALL_CATCH_COUNTS_REQUIRED' %}
                 <div class="govuk-form-group govuk-form-group--error">
