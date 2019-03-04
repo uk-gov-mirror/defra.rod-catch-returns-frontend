@@ -92,11 +92,11 @@ module.exports = class CatchesApi extends EntityApi {
   }
 
   sort (a, b) {
-    if (Moment(a.dateCaught, 'DD/MM').unix() < Moment(b.dateCaught, 'DD/MM').unix()) {
+    if (Moment(a.dateCaught, 'YYYY-MM-DD').unix() < Moment(b.dateCaught, 'YYYY-MM-DD').unix()) {
       return -1
     }
 
-    if (Moment(a.dateCaught, 'DD/MM').unix() > Moment(b.dateCaught, 'DD/MM').unix()) {
+    if (Moment(a.dateCaught, 'YYYY-MM-DD').unix() > Moment(b.dateCaught, 'YYYY-MM-DD').unix()) {
       return 1
     }
 

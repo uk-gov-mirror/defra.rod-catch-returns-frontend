@@ -86,7 +86,6 @@ module.exports = class SmallCatchHandler extends BaseHandler {
       // Add a new salmon and large trout
       return this.readCacheAndDisplayView(request, h, {
         rivers: rivers,
-        months: monthsFiltered || months,
         methods: methods,
         add: true,
         details: {
@@ -127,7 +126,6 @@ module.exports = class SmallCatchHandler extends BaseHandler {
 
       return this.readCacheAndDisplayView(request, h, {
         rivers: rivers,
-        months: months,
         methods: methods,
         payload: payload,
         details: {

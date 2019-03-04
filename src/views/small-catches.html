@@ -6,6 +6,7 @@
 {% from "error-summary/macro.njk" import govukErrorSummary %}
 {% from "select/macro.njk" import govukSelect %}
 {% from "navigation.njk" import navigationHeaderBlock %}
+{% from "label/macro.njk" import govukLabel %}
 
 {% block header %}
     {% if fmt %}
@@ -29,20 +30,6 @@
     }) }}
 {% endfor %}
 
-{% set monthItems = [] %}
-
-{% if not payload or not payload.month %}
-    {{ monthItems.push(null) }}
-{% endif %}
-
-{% for month in months %}
-    {{ monthItems.push({
-        text: month.text,
-        value: month.value,
-        selected: month.value === payload.month
-    }) }}
-{% endfor %}
-
 {% set errorList = [] %}
 {% set riverErrorMessage = null %}
 {% set releasedErrorMessage = null %}
@@ -62,10 +49,18 @@
             }) }}
         {% endif %}
 
-        {% if error.months %}
-            {% set monthsErrorMessage = { text: "Select the month you caught the fish" } %}
+        {% if error.SmallCatch === 'SMALL_CATCH_MONTH_IN_FUTURE' %}
+            {% set monthsErrorMessage = { text: "Month caught cannot be in the future" } %}
             {{ errorList.push({
-                text: "You have not selected a month",
+                text: "You have entered a month in the future",
+                href: "#month"
+            }) }}
+        {% endif %}
+
+        {% if error.months === 'INVALID' or error.months === 'EMPTY' %}
+            {% set monthsErrorMessage = { text: "Enter the month you fished" } %}
+                {{ errorList.push({
+                text: "You have not entered a valid month",
                 href: "#month"
             }) }}
         {% endif %}
@@ -114,7 +109,7 @@
             {% set riverErrorMessage = { text: "Select a river" } %}
             {% set monthsErrorMessage = { text: "Select the month your caught the fish" } %}
             {{ errorList.push({
-                text: "You have already added a record for this river and this month - choose a different river or month",
+                text: "You have already added a catch for this river and this month - choose a different river or month",
                 href: "#river"
             }) }}
         {% endif %}
@@ -178,7 +173,6 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <form method="post">
-
             {% if errors %}
                 {{ govukErrorSummary({
                     titleText: "There is a problem",
@@ -199,7 +193,8 @@
                         id: "river",
                         name: "river",
                         label: {
-                            text: "River"
+                            text: "River",
+                            classes: "govuk-!-font-weight-bold"
                         },
                         fieldset: {
                             legend: {
@@ -215,22 +210,46 @@
                     <input type="hidden" id="river" name="river" value="{{ rivers[0].id }}"/>
                 {% endif %}
 
-                {{ govukSelect({
-                    id: "month",
-                    name: "month",
-                    label: {
-                        text: "Select month"
-                    },
-                    fieldset: {
-                        legend: {
-                            text: "Month the fish were caught",
-                            isPageHeading: false,
-                            classes: "govuk-fieldset__legend govuk-!-font-weight-bold"
-                        }
-                    },
-                    items: monthItems,
-                    errorMessage: monthsErrorMessage
-                }) }}
+                <label class="govuk-label govuk-!-font-weight-bold">Month caught</label>
+                <span id="fly-hint" class="govuk-hint">For example, 6</span>
+
+                {% if monthsErrorMessage %}
+                <div class="govuk-form-group govuk-form-group--error">
+                        <span id="month-error" class="govuk-error-message">
+                            {{ monthsErrorMessage.text }}
+                        </span>
+                {% endif %}
+
+                <div class="govuk-date-input">
+                    <div class="govuk-date-input__item">
+                        {{ govukInput({
+                            id: "month",
+                            name: "month",
+                            label: {
+                                text: "Month",
+                                classes: "govuk-date-input__label"
+                            },
+                            type: "number",
+                            value: payload.month,
+                            attributes: { maxlength: 2, pattern: "[0-9]*" },
+                            classes: "govuk-input--width-2 govuk-input--error" if monthsErrorMessage else "govuk-input--width-2"
+                        }) }}
+                    </div>
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            {{ govukLabel({
+                                text: "Year",
+                                classes: "govuk-date-input__label",
+                                for: "year"
+                            }) }}
+                            <input id="year" disabled aria-disabled="true" class="govuk-input date-disabled govuk-input--width-4" value="{{ details.year }}"/>
+                        </div>
+                    </div>
+                </div>
+
+                {% if monthsErrorMessage %}
+                </div>
+                {% endif %}
 
                 {% if errors %}{% for error in errors %}{% if error.SmallCatch === 'SMALL_CATCH_COUNTS_REQUIRED' %}
                 <div class="govuk-form-group govuk-form-group--error">
@@ -244,7 +263,8 @@
                     name: "fly",
                     hint: { text: "Number of fish caught with a fly" },
                     label: {
-                        text: "Fly"
+                        text: "Fly",
+                        classes: "govuk-!-font-weight-bold"
                     },
                     value: payload.fly,
                     attributes: { maxlength: 4 },
@@ -257,7 +277,8 @@
                     name: "spinner",
                     hint: { text: "Number of fish caught with a spinner" },
                     label: {
-                        text: "Spinner"
+                        text: "Spinner",
+                        classes: "govuk-!-font-weight-bold"
                     },
                     value: payload.spinner,
                     attributes: { maxlength: 4 },
@@ -270,7 +291,8 @@
                     name: "bait",
                     hint: { text: "Number of fish caught with bait" },
                     label: {
-                        text: "Bait"
+                        text: "Bait",
+                        classes: "govuk-!-font-weight-bold"
                     },
                     value: payload.bait,
                     attributes: { maxlength: 4 },
@@ -284,7 +306,8 @@
                         name: "unknown",
                         hint: { text: "Number of fish caught using an unknown method" },
                         label: {
-                            text: "Unknown"
+                            text: "Unknown",
+                            classes: "govuk-!-font-weight-bold"
                         },
                         value: payload.unknown,
                         attributes: { maxlength: 4 },
@@ -302,7 +325,8 @@
                     name: "released",
                     hint: { text: "Number of fish released back into the water" },
                     label: {
-                        text: "Released"
+                        text: "Released",
+                        classes: "govuk-!-font-weight-bold"
                     },
                     value: payload.released,
                     attributes: { maxlength: 4 },

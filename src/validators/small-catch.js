@@ -25,8 +25,12 @@ module.exports = async (request) => {
     errors.push({ river: 'EMPTY' })
   }
 
-  if (!payload.month) {
+  if (!payload.month.trim()) {
     errors.push({ months: 'EMPTY' })
+  } else if (isNaN(payload.month)) {
+    errors.push({ months: 'INVALID' })
+  } else if (Number.parseInt(payload.month) < 1 || Number.parseInt(payload.month) > 12) {
+    errors.push({ months: 'INVALID' })
   }
 
   /*
