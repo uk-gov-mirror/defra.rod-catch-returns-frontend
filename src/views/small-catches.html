@@ -41,7 +41,7 @@
 
 {% if errors %}
     {% for error in errors %}
-        {% if error.river %}
+        {% if error.SmallCatch === 'SMALL_CATCH_ACTIVITY_REQUIRED' %}
             {% set riverErrorMessage = { text: "Select a river" } %}
             {{ errorList.push({
                 text: "You have not selected a river",
@@ -229,7 +229,7 @@
                                 text: "Month",
                                 classes: "govuk-date-input__label"
                             },
-                            type: "number",
+                            type: "text",
                             value: payload.month,
                             attributes: { maxlength: 2, pattern: "[0-9]*" },
                             classes: "govuk-input--width-2 govuk-input--error" if monthsErrorMessage else "govuk-input--width-2"
