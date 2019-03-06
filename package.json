@@ -1,6 +1,6 @@
 {
   "name": "rod-catch-returns-frontend",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Rod catch returns webservice",
   "main": "index.js",
   "repository": "https://github.com/DEFRA/rod-catch-returns-frontend.git",
