@@ -33,7 +33,7 @@
 
 {% if errors %}
     {% for error in errors %}
-        {% if error.River %}
+        {% if error.Activity === 'ACTIVITY_RIVER_REQUIRED' %}
             {% set riverErrorMessage = { text: "Select a river" } %}
             {{ errorList.push({
                 text: "You have not selected a river",
@@ -41,23 +41,8 @@
             }) }}
         {% endif %}
 
-        {% if error.daysFishedWithMandatoryRelease === "EMPTY" %}
-            {% set daysMandatoryErrorMessage = { text: "Enter a number between 0 and 167" } %}
-            {{ errorList.push({
-                text: "You have not entered the number of days fished between 1 January and 16 June",
-                href: "#daysFishedWithMandatoryRelease"
-            }) }}
-        {% endif %}
-
-        {% if error.daysFishedOther === "EMPTY" %}
-            {% set daysOtherErrorMessage = { text: "Enter a number between 0 and 198" } %}
-            {{ errorList.push({
-                text: "You have not entered the number of days fished between 17 June and 31 Dec",
-                href: "#daysFishedOther"
-            }) }}
-        {% endif %}
-
-        {% if error.daysFishedWithMandatoryRelease === "NOT_A_NUMBER" or error.Activity === 'ACTIVITY_DAYS_FISHED_WITH_MANDATORY_RELEASE_MAX_EXCEEDED' or
+        {% if error.daysFishedWithMandatoryRelease === "NOT_A_NUMBER" or
+            error.Activity === 'ACTIVITY_DAYS_FISHED_WITH_MANDATORY_RELEASE_MAX_EXCEEDED' or
             error.Activity === 'ACTIVITY_DAYS_FISHED_WITH_MANDATORY_RELEASE_NEGATIVE' %}
             {% set daysMandatoryErrorMessage = { text: "Enter a number between 0 and 167" } %}
             {{ errorList.push({
@@ -66,7 +51,8 @@
             }) }}
         {% endif %}
 
-        {% if error.daysFishedOther === "NOT_A_NUMBER" or error.Activity === 'ACTIVITY_DAYS_FISHED_OTHER_MAX_EXCEEDED' or
+        {% if error.daysFishedOther === "NOT_A_NUMBER" or
+            error.Activity === 'ACTIVITY_DAYS_FISHED_OTHER_MAX_EXCEEDED' or
             error.Activity === 'ACTIVITY_DAYS_FISHED_OTHER_NEGATIVE' %}
             {% set daysOtherErrorMessage = { text: "Enter a number between 0 and 198" } %}
             {{ errorList.push({
@@ -99,7 +85,6 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <form method="post">
-
             {% if errors %}
                 {{ govukErrorSummary({
                     titleText: "There is a problem",
