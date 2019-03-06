@@ -46,6 +46,11 @@ module.exports = {
     return num
   },
 
+  /**
+   * Helper for submission to the API where with numeric fields we can only send null or a number
+   * @param num
+   * @returns {*}
+   */
   subNumber: (num) => {
     if (!num || !num.trim()) {
       return 0
