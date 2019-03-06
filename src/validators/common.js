@@ -44,5 +44,14 @@ module.exports = {
       return num
     }
     return num
+  },
+
+  subNumber: (num) => {
+    if (!num || !num.trim()) {
+      return 0
+    } else if (isNaN(num)) {
+      return null
+    }
+    return num
   }
 }
