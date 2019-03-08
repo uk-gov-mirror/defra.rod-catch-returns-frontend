@@ -7,10 +7,7 @@ const SubmissionsApi = require('../api/submissions')
 const ActivitiesApi = require('../api/activities')
 const SmallCatchesApi = require('../api/small-catches')
 const MethodsApi = require('../api/methods')
-const checkNumber = require('./common').checkNumber
-const subNumber = require('./common').subNumber
-const apiErrors = require('./common').apiErrors
-
+const { checkNumber, subNumber, apiErrors, getSorterForApiErrors } = require('./common')
 const submissionsApi = new SubmissionsApi()
 const activitiesApi = new ActivitiesApi()
 const smallCatchesApi = new SmallCatchesApi()
@@ -23,13 +20,10 @@ module.exports = async (request) => {
   let monthForApi
 
   if (!payload.month.trim()) {
-    errors.push({ months: 'INVALID' })
     monthForApi = null
   } else if (isNaN(payload.month)) {
-    errors.push({ months: 'INVALID' })
     monthForApi = null
   } else if (Number.parseInt(payload.month) < 1 || Number.parseInt(payload.month) > 12) {
-    errors.push({ months: 'INVALID' })
     monthForApi = null
   } else {
     monthForApi = Number.parseInt(payload.month)
@@ -47,30 +41,25 @@ module.exports = async (request) => {
     if (Object.keys(payload).includes(name)) {
       const count = payload[name]
       if (count && count.trim()) {
-        const num = checkNumber(name, count, errors)
-        if (num && !isNaN(num)) {
-          if (num > 0) {
-            counts.push({
-              method: m.id,
-              count: num
-            })
-          } else if (num < 0) {
-            // The API does not handle small catch counts !> 0 with enough precision for the messaging
-            errors.push(new function () {
-              this[m.name] = 'SMALL_CATCH_COUNTS_NOT_GREATER_THAN_ZERO'
-            }())
-          }
+        if (count && !isNaN(count)) {
+          counts.push({
+            method: m.id,
+            count: count
+          })
+        } else {
+          counts.push({
+            method: m.id,
+            count: null
+          })
         }
+      } else {
+        counts.push({
+          method: m.id,
+          count: 0
+        })
       }
     }
   })
-
-  // Check released
-  if (payload.released.trim()) {
-    checkNumber('released', payload.released, errors)
-  } else {
-    payload.released = 0
-  }
 
   const submission = await submissionsApi.getById(request, cache.submissionId)
   const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
@@ -103,6 +92,7 @@ module.exports = async (request) => {
     )
   }
 
+  const sorter = getSorterForApiErrors('SmallCatch', 'ACTIVITY', 'MONTH', 'COUNTS', 'RELEASED')
   if (Object.keys(result).includes('errors')) {
     const res = apiErrors(result)
     const invalids = res.filter(r => r.invalidValue)[0]
@@ -121,7 +111,7 @@ module.exports = async (request) => {
         return (ao - bo) / Math.abs(ao - bo)
       }))
     } else {
-      return errors.concat(res)
+      return errors.concat(res.sort(sorter))
     }
   } else {
     return errors.length ? errors : null

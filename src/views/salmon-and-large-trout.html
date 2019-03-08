@@ -63,7 +63,7 @@
 
 {% if errors %}
     {% for error in errors %}
-        {% if error.river %}
+        {% if error.Catch === 'CATCH_ACTIVITY_REQUIRED' %}
             {% set riverErrorMessage = { text: "Select a river" } %}
             {{ errorList.push({
                 text: "You have not selected a river",
@@ -71,7 +71,7 @@
             }) }}
         {% endif %}
 
-        {% if error.date === 'EMPTY' or error.date === 'INVALID' %}
+        {% if error.Catch === 'CATCH_DATE_REQUIRED' %}
             {% set dateErrorMessage = { text: "Enter the date you fished" } %}
             {{ errorList.push({
                 text: "You have not entered a valid date",
@@ -87,7 +87,7 @@
             }) }}
         {% endif %}
 
-        {% if error.type %}
+        {% if error.Catch === 'CATCH_SPECIES_REQUIRED' %}
             {% set typeErrorMessage = { text: "Select the type of fish" } %}
             {{ errorList.push({
                 text: "You have not selected the type of fish",
@@ -95,7 +95,7 @@
             }) }}
         {% endif %}
 
-        {% if error.system %}
+        {% if error.Catch === 'CATCH_MASS_TYPE_REQUIRED' %}
             {% set systemErrorMessage = { text: "Select either pounds and ounces or kilograms" } %}
             {{ errorList.push({
                 text: "You have not selected pounds and ounces or kilograms",
@@ -127,7 +127,7 @@
             }) }}
         {% endif %}
 
-        {% if error.method %}
+        {% if error.Catch === 'CATCH_METHOD_REQUIRED' %}
             {% set methodErrorMessage = { text: "Select a method" } %}
             {{ errorList.push({
                 text: "You have not selected a method",
@@ -135,7 +135,7 @@
             }) }}
         {% endif %}
 
-        {% if error.released %}
+        {% if error.Catch === 'CATCH_RELEASED_REQUIRED' %}
             {% set releasedErrorMessage = { text: "Select yes or no" } %}
             {{ errorList.push({
                 text: "You have not told us whether you released this fish",
