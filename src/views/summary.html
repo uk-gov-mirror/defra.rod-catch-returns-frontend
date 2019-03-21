@@ -305,5 +305,54 @@
 
     </div>
 </div>
-
 {% endblock %}
+
+{% block bodyEnd %}
+{{ super() }}
+{% if fmt %}
+    <script>
+      (function () {
+        // inter-exclusion check box behaviour
+        'use strict'
+        document.addEventListener('DOMContentLoaded', function () {
+          let exclude = document.getElementById('exclude-1')
+          let catchExcludes = document.getElementsByName('exclude-catch')
+          let smallCatchExcludes = document.getElementsByName('exclude-small-catch')
+          let every = function(e) {
+            for (let i = 0; i < e.length; i++) {
+              if (!e[i].checked) {
+                return false
+              }
+            }
+            return true
+          }
+          let setLineExcludes = function(chk) {
+            for (let i = 0; i < catchExcludes.length; i++) {
+              catchExcludes[i].checked = chk
+            }
+            for (let i = 0; i < smallCatchExcludes.length; i++) {
+              smallCatchExcludes[i].checked = chk
+            }
+          }
+          let lineListener = function() {
+            exclude.checked = !!(this.checked && every(catchExcludes) && every(smallCatchExcludes));
+          }
+          exclude.addEventListener('change', function() {
+            if (this.checked) {
+              setLineExcludes(true)
+            } else {
+              setLineExcludes(false)
+            }
+          })
+          for (let i = 0; i < catchExcludes.length; i++) {
+            catchExcludes[i].addEventListener('change', lineListener)
+          }
+          for (let i = 0; i < smallCatchExcludes.length; i++) {
+            smallCatchExcludes[i].addEventListener('change', lineListener)
+          }
+        })
+      }).call()
+    </script>
+{% endif %}
+{% endblock %}
+
