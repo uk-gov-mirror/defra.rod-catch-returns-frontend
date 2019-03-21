@@ -10,3 +10,4 @@ nohup.out
 coverage.html
 lcov.info
 volumes/
+temp/
