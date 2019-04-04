@@ -11,6 +11,7 @@ const LicenceHandler = require('../handlers/licence')
 const ReportsHandler = require('../handlers/reports')
 const ReportDownloadHandler = require('../handlers/report-download')
 const LookupHandler = require('../handlers/lookup')
+const ExclusionsHandler = require('../handlers/exclusions')
 
 // Define the validators
 const loginValidator = require('../validators/login')
@@ -23,6 +24,7 @@ const reportsHandler = new ReportsHandler('reports')
 const reportDownloadHandler = new ReportDownloadHandler()
 const licenceHandler = new LicenceHandler('licence', licenceValidator)
 const lookupHandler = new LookupHandler('lookup')
+const exclusionsHandler = new ExclusionsHandler('exclusions')
 
 const api = {
   host: process.env.API_HOSTNAME || 'localhost',
@@ -137,6 +139,18 @@ module.exports = [
       await request.cache().drop()
       request.cookieAuth.clear()
       return h.redirect('/')
+    }
+  },
+
+  // The exclusions handler
+  {
+    path: '/exclusions',
+    method: 'POST',
+    handler: exclusionsHandler.handler,
+    options: {
+      plugins: {
+        crumb: { restful: true }
+      }
     }
   },
 
