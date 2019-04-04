@@ -13,7 +13,7 @@
     let hid = document.getElementsByName('rcr2018')
     let csrf = hid[0].value
 
-    let serverUpdateExclusion = (message) => {
+    let serverUpdateExclusion = function (message) {
       let client = new XMLHttpRequest()
       client.open('POST', '/exclusions')
       client.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
