@@ -25,16 +25,20 @@ module.exports = class ExclusionsHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doPost (request, h) {
+    const response = {}
     const cache = await request.cache().get()
     const submission = await submissionsApi.getById(request, cache.submissionId)
     const catches = await catchesApi.getFromLink(request, submission._links.catches.href)
     const smallCatches = await smallCatchesApi.getFromLink(request, submission._links.smallCatches.href)
 
     const payloadKey = Object.keys(request.payload)[0]
+    const setting = request.payload[payloadKey] === 'true'
 
     if (payloadKey === 'exclude-1') {
-      const setting = request.payload[payloadKey]
-
+      /**
+       * Deal with the setting and unsetting of the submission level flag
+       * cascade to the large and small catch line items
+       */
       // Change the submission level exclusion if necessary
       if (submission.reportingExclude !== setting) {
         await submissionsApi.changeExclusion(request, submission.id, setting)
@@ -44,6 +48,7 @@ module.exports = class ExclusionsHandler extends BaseHandler {
       await Promise.all(smallCatches.map(async c => {
         if (c.reportingExclude !== setting) {
           await smallCatchesApi.changeExclusion(request, c.id, setting)
+          response[`exclude-${c.id}`] = setting
         }
       }))
 
@@ -51,24 +56,47 @@ module.exports = class ExclusionsHandler extends BaseHandler {
       await Promise.all(catches.map(async c => {
         if (c.reportingExclude !== setting) {
           await catchesApi.changeExclusion(request, c.id, setting)
+          response[`exclude-${c.id}`] = setting
         }
       }))
-    } else if (payloadKey.includes('smallCatches')) {
+    } else {
+      /**
+       * Deal with the item level flags and set the submission level flag if all flags are set
+       * or clear it if we it is already set and we are un-setting an item level flag
+       * @type {string}
+       */
       const key = payloadKey.replace('exclude-', '')
-      const setting = request.payload[payloadKey]
-      const smallCatch = smallCatches.find(c => c.id === key)
-      if (smallCatch && smallCatch.reportingExclude !== setting) {
-        await smallCatchesApi.changeExclusion(request, key, setting)
+
+      // Set the item level exclusion flags
+      if (payloadKey.includes('smallCatches')) {
+        const smallCatch = smallCatches.find(c => c.id === key)
+        if (smallCatch && smallCatch.reportingExclude !== setting) {
+          await smallCatchesApi.changeExclusion(request, key, setting)
+          smallCatch.reportingExclude = setting
+        }
+      } else if (payloadKey.includes('catches')) {
+        const largeCatch = catches.find(c => c.id === key)
+        if (largeCatch && largeCatch.reportingExclude !== setting) {
+          await catchesApi.changeExclusion(request, key, setting)
+          largeCatch.reportingExclude = setting
+        }
       }
-    } else if (payloadKey.includes('catches')) {
-      const key = payloadKey.replace('exclude-', '')
-      const setting = request.payload[payloadKey]
-      const largeCatch = catches.find(c => c.id === key)
-      if (largeCatch && largeCatch.reportingExclude !== setting) {
-        await catchesApi.changeExclusion(request, key, setting)
+
+      // Set or unset the submission level flag
+      if (setting) {
+        if (catches.every(c => c.reportingExclude) && smallCatches.every(c => c.reportingExclude) &&
+          !submission.reportingExclude) {
+          await submissionsApi.changeExclusion(request, submission.id, true)
+          response['exclude-1'] = true
+        }
+      } else {
+        if (submission.reportingExclude) {
+          await submissionsApi.changeExclusion(request, submission.id, false)
+          response['exclude-1'] = false
+        }
       }
     }
 
-    return null
+    return response
   }
 }

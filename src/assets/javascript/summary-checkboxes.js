@@ -18,29 +18,19 @@
       client.open('POST', '/exclusions')
       client.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
       client.setRequestHeader('X-CSRF-Token', csrf)
+      client.onreadystatechange = function () {
+        if (client.readyState === 4 && client.status === 200) {
+          let response = JSON.parse(client.responseText)
+          Object.keys(response).forEach(function (flag) {
+            let exclude = document.getElementById(flag)
+            exclude.checked = response[flag]
+          })
+        }
+      }
       client.send(JSON.stringify(message))
     }
 
-    let every = function (e) {
-      for (let i = 0; i < e.length; i++) {
-        if (!e[i].checked) {
-          return false
-        }
-      }
-      return true
-    }
-
-    let setLineExcludes = function (chk) {
-      for (let i = 0; i < catchExcludes.length; i++) {
-        catchExcludes[i].checked = chk
-      }
-      for (let i = 0; i < smallCatchExcludes.length; i++) {
-        smallCatchExcludes[i].checked = chk
-      }
-    }
-
     let lineListener = function () {
-      exclude.checked = !!(this.checked && every(catchExcludes) && every(smallCatchExcludes))
       let payload = {}
       payload[this.id] = this.checked
       serverUpdateExclusion(payload)
@@ -51,7 +41,6 @@
       let payload = {}
       payload[this.id] = this.checked
       serverUpdateExclusion(payload)
-      setLineExcludes(this.checked)
     })
 
     // Add listeners for large catch excludes

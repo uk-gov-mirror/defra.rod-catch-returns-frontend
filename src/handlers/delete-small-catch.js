@@ -3,7 +3,7 @@
 /**
  * Delete small catch handler
  */
-const BaseHandler = require('./base')
+const DeleteCatchHandler = require('./delete-catch')
 const SubmissionsApi = require('../api/submissions')
 const SmallCatchesApi = require('../api/small-catches')
 const ResponseError = require('./response-error')
@@ -13,11 +13,7 @@ const submissionsApi = new SubmissionsApi()
 const smallCatchesApi = new SmallCatchesApi()
 const isAllowedParam = require('./common').isAllowedParam
 
-module.exports = class DeleteRiverHandler extends BaseHandler {
-  constructor (...args) {
-    super(args)
-  }
-
+module.exports = class DeleteRiverHandler extends DeleteCatchHandler {
   /**
    * Get handler for delete large catch page
    * @param request
@@ -76,6 +72,7 @@ module.exports = class DeleteRiverHandler extends BaseHandler {
     const cache = await request.cache().get()
     await smallCatchesApi.deleteById(request, cache.delete)
     delete cache.delete
+    await DeleteCatchHandler.recalculateExclusion(request, cache)
     await request.cache().set(cache)
     return h.redirect('/summary')
   }
