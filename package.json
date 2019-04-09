@@ -12,7 +12,7 @@
     "aws": "node proto.js",
     "postinstall": "gulp",
     "watch": "nohup gulp watch&",
-    "test": "./node_modules/lab/bin/lab --verbose ",
+    "test": "./node_modules/lab/bin/lab --verbose",
     "release": "standard-version"
   },
   "author": "Graham Willis, Sam Gardner-Dell",
