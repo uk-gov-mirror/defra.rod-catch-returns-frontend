@@ -313,10 +313,10 @@
     <script src="/public/javascript/summary-checkboxes-min.js"></script>
     <script>
       (function () {
-        var e = document.getElementsByClassName('govuk-checkboxes__input')
-        for (var i = 0; i < e.length; i++) { e[i].disabled = false }
-        var e = document.getElementsByClassName('rcr-tab-checkboxes__input')
-        for (var i = 0; i < e.length; i++) { e[i].disabled = false }
+        let e = document.getElementsByClassName('govuk-checkboxes__input')
+        for (let i = 0; i < e.length; i++) { e[i].disabled = false }
+        e = document.getElementsByClassName('rcr-tab-checkboxes__input')
+        for (let i = 0; i < e.length; i++) { e[i].disabled = false }
       })()
     </script>
 {% endif %}
