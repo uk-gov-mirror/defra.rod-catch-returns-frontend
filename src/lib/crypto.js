@@ -1,4 +1,4 @@
-'use strict '
+'use strict'
 
 /**
  * Used to encrypt and decrypt the authorization details in the redis cache.
