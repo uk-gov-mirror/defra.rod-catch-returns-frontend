@@ -13,6 +13,8 @@ jdk:
 addons:
   sonarcloud:
     organization: "defra"
+  code_climate:
+    repo_token: a1b64fbd3a46e52bc5b254fbba6f2decf4b71f13461b15c52b805972c510a303
 
 git:
   depth: 2
@@ -70,9 +72,5 @@ after_script:
   - cd ..
   - ./cc-test-reporter after-build -t lcov --exit-code $TRAVIS_TEST_RESULT
   - redis-cli --scan | while read line; do echo $line; redis-cli get $line; done;
-
-addons:
-  code_climate:
-    repo_token: a1b64fbd3a46e52bc5b254fbba6f2decf4b71f13461b15c52b805972c510a303
 
 
