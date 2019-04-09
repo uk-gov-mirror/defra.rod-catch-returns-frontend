@@ -185,9 +185,20 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <form method="post">
+
+            {% if fmt %}
+            <div class="govuk-grid-column-full hide-if-js-enabled">
+                <div class="govuk-warning-text">
+                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                    <strong class="govuk-warning-text__text">
+                        <span class="govuk-warning-text__assistive">Warning</span>
+                        Administrator user: You need javascript enabled to use the exclusion flags on this page.
+                    </strong>
+                </div>
+            </div>
+            {% endif %}
+
             <h1 class="govuk-heading-l">Your {{ year }} catch return</h1>
-
-
             <h2 class="govuk-heading-m govuk-!-margin-bottom-1">Rivers fished</h2>
             <!--<span class="govuk-caption-m govuk-!-margin-bottom-5">Add a river to start recording your catch return</span>-->
 
@@ -309,6 +320,11 @@
 
 {% block bodyEnd %}
 {{ super() }}
-{% if fmt %}<script src="/public/javascript/summary-checkboxes-min.js"></script>{% endif %}
+{% if fmt %}
+    <script src="/public/javascript/summary-checkboxes-min.js"></script>
+    <script>var e = document.getElementsByClassName('hide-if-js-enabled');
+        for (var i = 0; i < e.length; i++) { e[i].style.display='none'; }
+    </script>
+{% endif %}
 {% endblock %}
 
