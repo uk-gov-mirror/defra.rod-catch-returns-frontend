@@ -17,7 +17,6 @@ addons:
     repo_token: a1b64fbd3a46e52bc5b254fbba6f2decf4b71f13461b15c52b805972c510a303
 
 git:
-  depth: 2
   quiet: true
 
 branches:
