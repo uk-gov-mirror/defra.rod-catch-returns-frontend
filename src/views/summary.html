@@ -23,6 +23,7 @@
 {% macro renderLinks(id, desc) %}
     {% set editurl = id %}
     {% set deleteurl = "/delete/" + id %}
+<!--suppress ALL -->
 <span><a id="edit-{{ id }}" class="govuk-link" href="{{ editurl }}">Change<label class="link-reader">&nbsp;{{ desc }}</label></a>&nbsp;&#x7c;&nbsp;<a id="delete-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete<label class="link-reader">&nbsp;{{ desc }}</label></a></span>
 {% endmacro %}
 
@@ -189,7 +190,6 @@
 
 
             <h2 class="govuk-heading-m govuk-!-margin-bottom-1">Rivers fished</h2>
-            <!--<span class="govuk-caption-m govuk-!-margin-bottom-5">Add a river to start recording your catch return</span>-->
 
             {{ govukTable({
                 classes: "rcr-responsive-summary-table",
