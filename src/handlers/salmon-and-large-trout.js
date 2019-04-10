@@ -138,6 +138,15 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
     let next
     const cache = await request.cache().get()
 
+    // Clear the submission level exclude flag
+    if (!errors) {
+      const submission = await submissionsApi.getById(request, cache.submissionId)
+      if (submission.reportingExclude) {
+        await submissionsApi.changeExclusion(request, submission.id, false)
+      }
+    }
+
+    // Determine the next page
     if (Object.keys(request.payload).includes('add')) {
       next = '/catches/add'
       cache.add = { river: request.payload.river }

@@ -149,6 +149,14 @@ module.exports = class SmallCatchHandler extends BaseHandler {
     let next
     const cache = await request.cache().get()
 
+    // Clear the submission level exclude flag
+    if (!errors) {
+      const submission = await submissionsApi.getById(request, cache.submissionId)
+      if (submission.reportingExclude) {
+        await submissionsApi.changeExclusion(request, submission.id, false)
+      }
+    }
+
     if (Object.keys(request.payload).includes('add')) {
       next = '/small-catches/add'
       cache.add = { river: request.payload.river }

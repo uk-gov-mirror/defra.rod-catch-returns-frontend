@@ -29,7 +29,7 @@
 
 {% macro renderCheck(id, name, checked) %}
 <div class="rcr-tab-checkboxes__item">
-    <input class="rcr-tab-checkboxes__input" type="checkbox" id="exclude-{{ id }}" name="{{ name }}" value="{{ id }}" {% if checked %}checked="checked"{% endif %}>
+    <input class="rcr-tab-checkboxes__input" type="checkbox" id="exclude-{{ id }}" name="{{ name }}" value="{{ id }}" disabled="true" {% if checked %}checked="checked"{% endif %}>
     <label for="exclude-{{ id }}" class="rcr-tab-checkboxes__label"></label>
 </div>
 {% endmacro %}
@@ -187,8 +187,6 @@
     <div class="govuk-grid-column-full">
         <form method="post">
             <h1 class="govuk-heading-l">Your {{ year }} catch return</h1>
-
-
             <h2 class="govuk-heading-m govuk-!-margin-bottom-1">Rivers fished</h2>
 
             {{ govukTable({
@@ -246,7 +244,7 @@
                     rows: salmonAndLargeTroutItems
                 }) }}
 
-                <p class="govuk-body summary-link-right" style="text-align:right">
+                <p class="govuk-body summary-link-right">
                     {% if catches.length === 0 %}
                         <a id="catches-add" class="govuk-link " href="catches/add">Add a salmon or large adult sea trout</a>
                     {% else %}
@@ -260,10 +258,12 @@
                     {{ govukCheckboxes({
                           idPrefix: "exclude",
                           name: "exclude",
+                          classes: "disable-if-js-disable",
                           items: [{
                                 value: "submission",
                                 text: "Exclude this catch return from reports?",
-                                checked: reportingExclude
+                                checked: reportingExclude,
+                                disabled: true
                           }]
                         })
                     }}
@@ -305,5 +305,20 @@
 
     </div>
 </div>
-
 {% endblock %}
+
+{% block bodyEnd %}
+{{ super() }}
+{% if fmt %}
+    <script src="/public/javascript/summary-checkboxes-min.js"></script>
+    <script>
+      (function () {
+        let e = document.getElementsByClassName('govuk-checkboxes__input')
+        for (let i = 0; i < e.length; i++) { e[i].disabled = false }
+        e = document.getElementsByClassName('rcr-tab-checkboxes__input')
+        for (let i = 0; i < e.length; i++) { e[i].disabled = false }
+      })()
+    </script>
+{% endif %}
+{% endblock %}
+

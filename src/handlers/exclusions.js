@@ -1,0 +1,102 @@
+'use strict'
+const SubmissionsApi = require('../api/submissions')
+const CatchesApi = require('../api/catches')
+const SmallCatchesApi = require('../api/small-catches')
+
+const submissionsApi = new SubmissionsApi()
+const catchesApi = new CatchesApi()
+const smallCatchesApi = new SmallCatchesApi()
+
+/**
+ * Write the state of the exclusions flags into the cache
+ */
+const BaseHandler = require('./base')
+
+module.exports = class ExclusionsHandler extends BaseHandler {
+  constructor (...args) {
+    super(args)
+  }
+
+  /**
+   * Post handler for exclusion flags
+   * @param request
+   * @param h
+   * @param user
+   * @returns {Promise<*>}
+   */
+  async doPost (request, h) {
+    const response = {}
+    const cache = await request.cache().get()
+    const submission = await submissionsApi.getById(request, cache.submissionId)
+    const catches = await catchesApi.getFromLink(request, submission._links.catches.href)
+    const smallCatches = await smallCatchesApi.getFromLink(request, submission._links.smallCatches.href)
+
+    const payloadKey = Object.keys(request.payload)[0]
+    const setting = request.payload[payloadKey] === 'true'
+
+    if (payloadKey === 'exclude-1') {
+      /**
+       * Deal with the setting and unsetting of the submission level flag
+       * cascade to the large and small catch line items
+       */
+      // Change the submission level exclusion if necessary
+      if (submission.reportingExclude !== setting) {
+        await submissionsApi.changeExclusion(request, submission.id, setting)
+      }
+
+      // Cascade the small catch exclusions if necessary
+      await Promise.all(smallCatches.map(async c => {
+        if (c.reportingExclude !== setting) {
+          await smallCatchesApi.changeExclusion(request, c.id, setting)
+          response[`exclude-${c.id}`] = setting
+        }
+      }))
+
+      // Cascade the large catch exclusions if necessary
+      await Promise.all(catches.map(async c => {
+        if (c.reportingExclude !== setting) {
+          await catchesApi.changeExclusion(request, c.id, setting)
+          response[`exclude-${c.id}`] = setting
+        }
+      }))
+    } else {
+      /**
+       * Deal with the item level flags and set the submission level flag if all flags are set
+       * or clear it if we it is already set and we are un-setting an item level flag
+       * @type {string}
+       */
+      const key = payloadKey.replace('exclude-', '')
+
+      // Set the item level exclusion flags
+      if (payloadKey.includes('smallCatches')) {
+        const smallCatch = smallCatches.find(c => c.id === key)
+        if (smallCatch && smallCatch.reportingExclude !== setting) {
+          await smallCatchesApi.changeExclusion(request, key, setting)
+          smallCatch.reportingExclude = setting
+        }
+      } else if (payloadKey.includes('catches')) {
+        const largeCatch = catches.find(c => c.id === key)
+        if (largeCatch && largeCatch.reportingExclude !== setting) {
+          await catchesApi.changeExclusion(request, key, setting)
+          largeCatch.reportingExclude = setting
+        }
+      }
+
+      // Set or unset the submission level flag
+      if (setting) {
+        if (catches.every(c => c.reportingExclude) && smallCatches.every(c => c.reportingExclude) &&
+          !submission.reportingExclude) {
+          await submissionsApi.changeExclusion(request, submission.id, true)
+          response['exclude-1'] = true
+        }
+      } else {
+        if (submission.reportingExclude) {
+          await submissionsApi.changeExclusion(request, submission.id, false)
+          response['exclude-1'] = false
+        }
+      }
+    }
+
+    return response
+  }
+}
