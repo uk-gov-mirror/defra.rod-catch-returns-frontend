@@ -5,15 +5,11 @@
  */
 const BaseHandler = require('./base')
 const SubmissionsApi = require('../api/submissions')
-const CatchesApi = require('../api/catches')
-const SmallCatchesApi = require('../api/small-catches')
 
 const { testLocked } = require('./common')
 const displayData = require('./display-data')
 
 const submissionsApi = new SubmissionsApi()
-const catchesApi = new CatchesApi()
-const smallCatchesApi = new SmallCatchesApi()
 
 module.exports = class SummaryHandler extends BaseHandler {
   constructor (...args) {

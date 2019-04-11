@@ -21,6 +21,7 @@ require('dotenv').config()
 
 experiment('Scripted regression tests', () => {
   lab.before(async () => {
+    logger.log('Running angler tests')
     process.env.CONTEXT = 'ANGLER'
     const contact = await Client.request(null, Client.method.GET, `licence/${licence}`, `verification=${postcode}`)
 
@@ -30,7 +31,7 @@ experiment('Scripted regression tests', () => {
     }
 
     let submission = await Client.request(null, Client.method.GET, 'submissions/search/getByContactIdAndSeason', `contact_id=${contact.contact.id}&season=${Moment().year()}`)
-    if (submission) {
+    if (submission && submission.statusCode !== 404) {
       logger.error('Tests require API to be restarted in in-memory mode for each test run')
       process.exit(-1)
     }
@@ -72,6 +73,7 @@ experiment('Scripted regression tests', () => {
   })
 
   test('FMT sign in', async () => {
+    logger.log('Running FMT tests')
     process.env.CONTEXT = 'FMT'
     await Runner.run(require('./scripts/sign-in').fmt)
   })
