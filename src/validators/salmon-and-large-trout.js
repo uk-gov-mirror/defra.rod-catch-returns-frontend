@@ -4,7 +4,7 @@
  * Validate the salmon and large trout
  */
 const moment = require('moment')
-const { getSorterForApiErrors, checkNumber, apiErrors } = require('./common')
+const { getSorterForApiErrors, apiErrors } = require('./common')
 const SubmissionsApi = require('../api/submissions')
 const ActivitiesApi = require('../api/activities')
 const CatchesApi = require('../api/catches')
@@ -26,17 +26,6 @@ function cleanDate (payload, cache) {
     const dateCaught = moment({ year: cache.year, month: payload.month - 1, day: payload.day })
     return dateCaught.isValid()
       ? moment({ year: cache.year, month: payload.month - 1, day: payload.day }).format() : null
-  }
-}
-
-function validateWeight (payload, errors) {
-  if (!payload.system) {
-    errors.push({ system: 'EMPTY' })
-  } else if (payload.system === 'IMPERIAL') {
-    payload.pounds = checkNumber('pounds', payload.pounds, errors)
-    payload.ounces = checkNumber('ounces', payload.ounces, errors)
-  } else if (payload.system === 'METRIC') {
-    payload.kilograms = checkNumber('kilograms', payload.kilograms, errors)
   }
 }
 

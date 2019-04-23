@@ -56,6 +56,18 @@ module.exports = {
   },
 
   /**
+   * Test is integer
+   * @param value
+   * @returns {boolean}
+   */
+  isInt: (value) => {
+    return !isNaN(value) &&
+    // eslint-disable-next-line eqeqeq
+       parseInt(Number(value)) == value &&
+       !isNaN(parseInt(value, 10))
+  },
+
+  /**
    * Replaces blanks with zero.
    * Tests for not a number.
    * @param label - The label to assign to the error
