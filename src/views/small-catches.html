@@ -72,34 +72,66 @@
             }) }}
         {% endif %}
 
-        {% if error.Fly === 'SMALL_CATCH_COUNTS_NOT_GREATER_THAN_ZERO' %}
-            {% set flyErrorMessage = { text: "The number caught with a fly must be greater than zero" } %}
+        {% if error.SmallCatch === 'SMALL_CATCH_FLY_COUNT_NOT_GREATER_THAN_ZERO' %}
+            {% set flyErrorMessage = { text: "Enter the number caught with a fly" } %}
             {{ errorList.push({
-                text: "Enter the number caught with a fly",
+                text: "The number caught with a fly must be greater than zero",
                 href: "#fly"
             }) }}
         {% endif %}
 
-        {% if error.Spinner === 'SMALL_CATCH_COUNTS_NOT_GREATER_THAN_ZERO' %}
-            {% set spinnerErrorMessage = { text: "The number caught with a spinner must be greater than zero" } %}
+        {% if error.SmallCatch === 'SMALL_CATCH_SPINNER_COUNT_NOT_GREATER_THAN_ZERO' %}
+            {% set spinnerErrorMessage = { text: "Enter the number caught with a spinner" } %}
             {{ errorList.push({
-                text: "Enter the number caught with a spinner",
+                text: "The number caught with a spinner must be greater than zero",
                 href: "#spinner"
             }) }}
         {% endif %}
 
-        {% if error.Bait === 'SMALL_CATCH_COUNTS_NOT_GREATER_THAN_ZERO' %}
-            {% set baitErrorMessage = { text: "The number caught with bait must be greater than zero" } %}
+        {% if error.SmallCatch === 'SMALL_CATCH_BAIT_COUNT_NOT_GREATER_THAN_ZERO' %}
+            {% set baitErrorMessage = { text: "Enter the number caught with bait" } %}
             {{ errorList.push({
-                text: "Enter the number caught with bait",
+                text: "The number caught with bait must be greater than zero",
                 href: "#bait"
             }) }}
         {% endif %}
 
-        {% if error.Unknown === 'SMALL_CATCH_COUNTS_NOT_GREATER_THAN_ZERO' %}
-            {% set unknownErrorMessage = { text: "The number caught with an unknown must be greater than zero" } %}
+        {% if error.SmallCatch === 'SMALL_CATCH_UNKNOWN_COUNT_NOT_GREATER_THAN_ZERO' %}
+            {% set unknownErrorMessage = { text: "Enter the number caught by an unknown method" } %}
             {{ errorList.push({
-                text: "Enter the number caught by an unknown method",
+                text: "The number caught with an unknown must be greater than zero",
+                href: "#unknown"
+            }) }}
+        {% endif %}
+
+        {% if error.SmallCatch === 'SMALL_CATCH_FLY_COUNT_INVALID' %}
+            {% set flyErrorMessage = { text: "Enter the number caught with a fly" } %}
+            {{ errorList.push({
+                text: "The number of fish caught using a fly is not a valid number",
+                href: "#fly"
+            }) }}
+        {% endif %}
+
+        {% if error.SmallCatch === 'SMALL_CATCH_SPINNER_COUNT_INVALID' %}
+            {% set spinnerErrorMessage = { text: "Enter the number caught with a spinner" } %}
+            {{ errorList.push({
+                text: "The number of fish caught using a spinner is not a valid number",
+                href: "#spinner"
+            }) }}
+        {% endif %}
+
+        {% if error.SmallCatch === 'SMALL_CATCH_BAIT_COUNT_INVALID' %}
+            {% set baitErrorMessage = { text: "Enter the number caught with a bait" } %}
+            {{ errorList.push({
+                text: "The number of fish caught using a bait is not a valid number",
+                href: "#bait"
+            }) }}
+        {% endif %}
+
+        {% if error.SmallCatch === 'SMALL_CATCH_UNKNOWN_COUNT_INVALID' %}
+            {% set unknownErrorMessage = { text: "Enter the number caught by an unknown method" } %}
+            {{ errorList.push({
+                text: "The number of fish caught using an unknown method is not a valid number",
                 href: "#unknown"
             }) }}
         {% endif %}
@@ -109,30 +141,6 @@
             {{ errorList.push({
                 text: "You have not entered a valid number of fish released back into the water",
                 href: "#released"
-            }) }}
-        {% endif %}
-
-         {% if error.fly %}
-            {% set flyErrorMessage = { text: "Enter the number of fish caught using a fly" } %}
-            {{ errorList.push({
-                text: "You have not entered a valid number of fish caught using a fly",
-                href: "#fly"
-            }) }}
-        {% endif %}
-
-        {% if error.spinner %}
-            {% set spinnerErrorMessage = { text: "Enter the number of small fish caught using a spinner" } %}
-            {{ errorList.push({
-                text: "You have not entered a valid number of fish caught using a spinner",
-                href: "#spinner"
-            }) }}
-        {% endif %}
-
-        {% if error.bait %}
-            {% set baitErrorMessage = { text: "Enter the number of fish caught using bait" } %}
-            {{ errorList.push({
-                text: "You have not entered a valid number of fish caught using bait",
-                href: "#bait"
             }) }}
         {% endif %}
 
@@ -174,7 +182,6 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <form method="post">
-            {{errors|dump}}
             {% if errors %}
                 {{ govukErrorSummary({
                     titleText: "There is a problem",
