@@ -7,30 +7,63 @@ const SubmissionsApi = require('../api/submissions')
 const ActivitiesApi = require('../api/activities')
 const SmallCatchesApi = require('../api/small-catches')
 const MethodsApi = require('../api/methods')
-const checkNumber = require('./common').checkNumber
-const apiErrors = require('./common').apiErrors
-
+const { isInt, subNumber, apiErrors, getSorterForApiErrors } = require('./common')
 const submissionsApi = new SubmissionsApi()
 const activitiesApi = new ActivitiesApi()
 const smallCatchesApi = new SmallCatchesApi()
 const methodsApi = new MethodsApi()
 
+/**
+ * recombines what was sent to the API with the result returned from the API
+ * @param errors
+ * @param apiCounts
+ * @param apiIgnore
+ * @param methods
+ * @returns {*}
+ */
+const apiMethodErrorRemapper = (errors, apiCounts, apiIgnore, methods) => {
+  const propCount = /counts\[([0-4])\]\.count/
+  return errors
+    // Filter out results we want to ignore because we will use a front end generated error
+    .filter(e => {
+      const search = propCount.exec(e.property)
+      if (!search || !apiIgnore.length) {
+        return true
+      } else {
+        // Locate the position in the API ignore array
+        return !apiIgnore.includes(Number.parseInt(search[1]))
+      }
+    })
+    .map(e => {
+      const search = propCount.exec(e.property)
+      if (!search) {
+        return e
+      } else {
+        // Locate the position in the API array
+        const apiReqItem = apiCounts[Number.parseInt(search[1])]
+        // Find method
+        const method = methods.find(m => m.id === apiReqItem.method)
+        // Manipulate message
+        e.SmallCatch = e.SmallCatch.replace('_COUNTS_', '_' + method.name.toUpperCase() + '_COUNT_')
+        return e
+      }
+    })
+}
+
 module.exports = async (request) => {
   const payload = request.payload
   const errors = []
   const cache = await request.cache().get()
-
-  // Validate that the river has been selected
-  if (!payload.river) {
-    errors.push({ river: 'EMPTY' })
-  }
+  let monthForApi
 
   if (!payload.month.trim()) {
-    errors.push({ months: 'EMPTY' })
+    monthForApi = null
   } else if (isNaN(payload.month)) {
-    errors.push({ months: 'INVALID' })
+    monthForApi = null
   } else if (Number.parseInt(payload.month) < 1 || Number.parseInt(payload.month) > 12) {
-    errors.push({ months: 'INVALID' })
+    monthForApi = null
+  } else {
+    monthForApi = Number.parseInt(payload.month)
   }
 
   /*
@@ -39,77 +72,85 @@ module.exports = async (request) => {
    * because the API will not accept them. Otherwise we assign to counts and allow the API to perform validation
    */
   const methods = await methodsApi.list(request)
-  const counts = []
+  const apiCounts = []
+  const apiIgnore = []
+
   methods.forEach(m => {
     const name = m.name.toLowerCase()
     if (Object.keys(payload).includes(name)) {
       const count = payload[name]
-      if (count && count.trim()) {
-        const num = checkNumber(name, count, errors)
-        if (Number.parseInt(num) !== 0) {
-          counts.push({
+      if (count.trim()) {
+        if (isInt(count)) {
+          apiCounts.push({
             method: m.id,
-            count: num
+            count: count
           })
+        } else {
+          /*
+           * We have to send something that will fail the validation otherwise we might erroneously save the data.
+           * ignore the api error here and replace with a front end generated one
+           */
+          apiCounts.push({
+            method: m.id,
+            count: null
+          })
+
+          // Push the array index of the count payload to ignore
+          apiIgnore.push(apiCounts.length - 1)
+
+          errors.push({ 'SmallCatch': 'SMALL_CATCH_' + m.name.toUpperCase() + '_COUNT_INVALID' })
         }
       }
     }
   })
 
-  // Check released
-  if (payload.released.trim()) {
-    checkNumber('released', payload.released, errors)
+  const submission = await submissionsApi.getById(request, cache.submissionId)
+  const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
+
+  // Get the activity from the river id
+  const activityId = (() => {
+    const activity = activities.find(a => a.river.id === payload.river)
+    return activity ? activity.id : null
+  })()
+
+  /*
+   * Add or change the result in the API merging any validation errors
+   */
+  let result
+  if (cache.smallCatch) {
+    result = await smallCatchesApi.change(request,
+      cache.smallCatch.id,
+      activityId,
+      monthForApi,
+      apiCounts,
+      subNumber(payload.released)
+    )
   } else {
-    payload.released = 0
+    result = await smallCatchesApi.add(request,
+      cache.submissionId,
+      activityId,
+      monthForApi,
+      apiCounts,
+      subNumber(payload.released)
+    )
   }
 
-  if (!errors.length) {
-    const submission = await submissionsApi.getById(request, cache.submissionId)
-    const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
+  const sorter = getSorterForApiErrors('SmallCatch',
+    'ACTIVITY',
+    'MONTH',
+    'COUNTS',
+    'FLY',
+    'SPINNER',
+    'BAIT',
+    'UNKNOWN',
+    'RELEASED')
 
-    let result
-    if (cache.smallCatch) {
-      result = await smallCatchesApi.change(request,
-        cache.smallCatch.id,
-        activities.find(a => a.river.id === payload.river).id,
-        payload.month,
-        counts,
-        payload.released
-      )
-    } else {
-      result = await smallCatchesApi.add(request,
-        cache.submissionId,
-        activities.find(a => a.river.id === payload.river).id,
-        payload.month,
-        counts,
-        payload.released
-      )
-    }
+  if (Object.keys(result).includes('errors')) {
+    const reMappedApiErrors = apiMethodErrorRemapper(apiErrors(result),
+      apiCounts, apiIgnore, methods)
 
-    if (Object.keys(result).includes('errors')) {
-      const res = apiErrors(result)
-      const invalids = res.filter(r => r.invalidValue)[0]
-
-      if (invalids) {
-        const ret = invalids.invalidValue.map(v => {
-          v[v.method.name] = invalids.SmallCatch
-          delete v.method
-          delete v.count
-          return v
-        })
-        return res.filter(r => !r.invalidValue).concat(ret).sort((a, b) => {
-          const ord = { Fly: 1, Spinner: 2, Bait: 3, Unknown: 4, SmallCatch: 5 }
-          const ao = ord[Object.keys(a)[0]]
-          const bo = ord[Object.keys(b)[0]]
-          return (ao - bo) / Math.abs(ao - bo)
-        })
-      } else {
-        return res
-      }
-    } else {
-      return null
-    }
+    return errors.concat(reMappedApiErrors).sort(sorter)
   } else {
-    return errors
+    return errors.length ? errors : null
   }
 }

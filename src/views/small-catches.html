@@ -41,11 +41,19 @@
 
 {% if errors %}
     {% for error in errors %}
-        {% if error.river %}
+        {% if error.SmallCatch === 'SMALL_CATCH_ACTIVITY_REQUIRED' %}
             {% set riverErrorMessage = { text: "Select a river" } %}
             {{ errorList.push({
                 text: "You have not selected a river",
                 href: "#river"
+            }) }}
+        {% endif %}
+
+        {% if error.SmallCatch === 'SMALL_CATCH_MONTH_REQUIRED' %}
+            {% set monthsErrorMessage = { text: "Enter the month you fished" } %}
+            {{ errorList.push({
+                text: "You have not entered a valid month",
+                href: "#month"
             }) }}
         {% endif %}
 
@@ -57,11 +65,74 @@
             }) }}
         {% endif %}
 
-        {% if error.months === 'INVALID' or error.months === 'EMPTY' %}
-            {% set monthsErrorMessage = { text: "Enter the month you fished" } %}
-                {{ errorList.push({
-                text: "You have not entered a valid month",
-                href: "#month"
+        {% if error.SmallCatch === 'SMALL_CATCH_COUNTS_REQUIRED' %}
+            {{ errorList.push({
+                text: "You have not entered the number of fish caught",
+                href: "#fly"
+            }) }}
+        {% endif %}
+
+        {% if error.SmallCatch === 'SMALL_CATCH_FLY_COUNT_NOT_GREATER_THAN_ZERO' %}
+            {% set flyErrorMessage = { text: "Enter the number caught with a fly" } %}
+            {{ errorList.push({
+                text: "The number caught with a fly must be greater than zero",
+                href: "#fly"
+            }) }}
+        {% endif %}
+
+        {% if error.SmallCatch === 'SMALL_CATCH_SPINNER_COUNT_NOT_GREATER_THAN_ZERO' %}
+            {% set spinnerErrorMessage = { text: "Enter the number caught with a spinner" } %}
+            {{ errorList.push({
+                text: "The number caught with a spinner must be greater than zero",
+                href: "#spinner"
+            }) }}
+        {% endif %}
+
+        {% if error.SmallCatch === 'SMALL_CATCH_BAIT_COUNT_NOT_GREATER_THAN_ZERO' %}
+            {% set baitErrorMessage = { text: "Enter the number caught with bait" } %}
+            {{ errorList.push({
+                text: "The number caught with bait must be greater than zero",
+                href: "#bait"
+            }) }}
+        {% endif %}
+
+        {% if error.SmallCatch === 'SMALL_CATCH_UNKNOWN_COUNT_NOT_GREATER_THAN_ZERO' %}
+            {% set unknownErrorMessage = { text: "Enter the number caught by an unknown method" } %}
+            {{ errorList.push({
+                text: "The number caught with an unknown must be greater than zero",
+                href: "#unknown"
+            }) }}
+        {% endif %}
+
+        {% if error.SmallCatch === 'SMALL_CATCH_FLY_COUNT_INVALID' %}
+            {% set flyErrorMessage = { text: "Enter the number caught with a fly" } %}
+            {{ errorList.push({
+                text: "The number of fish caught using a fly is not a valid number",
+                href: "#fly"
+            }) }}
+        {% endif %}
+
+        {% if error.SmallCatch === 'SMALL_CATCH_SPINNER_COUNT_INVALID' %}
+            {% set spinnerErrorMessage = { text: "Enter the number caught with a spinner" } %}
+            {{ errorList.push({
+                text: "The number of fish caught using a spinner is not a valid number",
+                href: "#spinner"
+            }) }}
+        {% endif %}
+
+        {% if error.SmallCatch === 'SMALL_CATCH_BAIT_COUNT_INVALID' %}
+            {% set baitErrorMessage = { text: "Enter the number caught with a bait" } %}
+            {{ errorList.push({
+                text: "The number of fish caught using a bait is not a valid number",
+                href: "#bait"
+            }) }}
+        {% endif %}
+
+        {% if error.SmallCatch === 'SMALL_CATCH_UNKNOWN_COUNT_INVALID' %}
+            {% set unknownErrorMessage = { text: "Enter the number caught by an unknown method" } %}
+            {{ errorList.push({
+                text: "The number of fish caught using an unknown method is not a valid number",
+                href: "#unknown"
             }) }}
         {% endif %}
 
@@ -70,30 +141,6 @@
             {{ errorList.push({
                 text: "You have not entered a valid number of fish released back into the water",
                 href: "#released"
-            }) }}
-        {% endif %}
-
-         {% if error.fly %}
-            {% set flyErrorMessage = { text: "Enter the number of fish caught using a fly" } %}
-            {{ errorList.push({
-                text: "You have not entered a valid number of fish caught using a fly",
-                href: "#fly"
-            }) }}
-        {% endif %}
-
-        {% if error.spinner %}
-            {% set spinnerErrorMessage = { text: "Enter the number of small fish caught using a spinner" } %}
-            {{ errorList.push({
-                text: "You have not entered a valid number of fish caught using a spinner",
-                href: "#spinner"
-            }) }}
-        {% endif %}
-
-        {% if error.bait %}
-            {% set baitErrorMessage = { text: "Enter the number of fish caught using bait" } %}
-            {{ errorList.push({
-                text: "You have not entered a valid number of fish caught using bait",
-                href: "#bait"
             }) }}
         {% endif %}
 
@@ -114,13 +161,6 @@
             }) }}
         {% endif %}
 
-        {% if error.SmallCatch === 'SMALL_CATCH_COUNTS_REQUIRED' %}
-            {{ errorList.push({
-                text: "You have not entered the number of fish caught",
-                href: "#fly"
-            }) }}
-        {% endif %}
-
         {% if error.SmallCatch === 'SMALL_CATCH_RELEASED_NEGATIVE' %}
             {% set releasedErrorMessage = { text: "The number released must be 0 or above" } %}
             {{ errorList.push({
@@ -129,37 +169,6 @@
             }) }}
         {% endif %}
 
-        {% if error.Fly === 'SMALL_CATCH_COUNTS_NOT_GREATER_THAN_ZERO' %}
-            {% set flyErrorMessage = { text: "The number caught with a fly must be greater than zero" } %}
-            {{ errorList.push({
-                text: "Enter the number caught with a fly",
-                href: "#fly"
-            }) }}
-        {% endif %}
-
-        {% if error.Spinner === 'SMALL_CATCH_COUNTS_NOT_GREATER_THAN_ZERO' %}
-            {% set spinnerErrorMessage = { text: "The number caught with a spinner must be greater than zero" } %}
-            {{ errorList.push({
-                text: "Enter the number caught with a spinner",
-                href: "#spinner"
-            }) }}
-        {% endif %}
-
-        {% if error.Bait === 'SMALL_CATCH_COUNTS_NOT_GREATER_THAN_ZERO' %}
-            {% set baitErrorMessage = { text: "The number caught with bait must be greater than zero" } %}
-            {{ errorList.push({
-                text: "Enter the number caught with bait",
-                href: "#bait"
-            }) }}
-        {% endif %}
-
-        {% if error.Unknown === 'SMALL_CATCH_COUNTS_NOT_GREATER_THAN_ZERO' %}
-            {% set unknownErrorMessage = { text: "The number caught with an unknown must be greater than zero" } %}
-            {{ errorList.push({
-                text: "Enter the number caught by an unknown method",
-                href: "#unknown"
-            }) }}
-        {% endif %}
     {% endfor %}
 {% endif %}
 
@@ -229,7 +238,7 @@
                                 text: "Month",
                                 classes: "govuk-date-input__label"
                             },
-                            type: "number",
+                            type: "text",
                             value: payload.month,
                             attributes: { maxlength: 2, pattern: "[0-9]*" },
                             classes: "govuk-input--width-2 govuk-input--error" if monthsErrorMessage else "govuk-input--width-2"

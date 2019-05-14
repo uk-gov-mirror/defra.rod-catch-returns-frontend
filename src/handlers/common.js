@@ -51,9 +51,20 @@ module.exports = {
   monthHelper: {
     months,
     find: {
-      numFromKey: (k) => months.find(m => m.key === k).num,
-      keyFromNum: (n) => months.find(m => m.num === Number.parseInt(n)).key,
-      textFromNum: (n) => months.find(m => m.num === Number.parseInt(n)).text
+      numFromKey: (k) => {
+        const mth = months.find(m => m.key === k)
+        return mth ? mth.num : null
+      },
+
+      keyFromNum: (n) => {
+        const mth = months.find(m => m.num === Number.parseInt(n))
+        return mth ? mth.key : null
+      },
+
+      textFromNum: (n) => {
+        const mth = months.find(m => m.num === Number.parseInt(n))
+        return mth ? mth.text : null
+      }
     }
   },
 

@@ -4,8 +4,7 @@
  * Validate the salmon and large trout
  */
 const moment = require('moment')
-const apiErrors = require('./common').apiErrors
-const checkNumber = require('./common').checkNumber
+const { getSorterForApiErrors, apiErrors } = require('./common')
 const SubmissionsApi = require('../api/submissions')
 const ActivitiesApi = require('../api/activities')
 const CatchesApi = require('../api/catches')
@@ -14,29 +13,19 @@ const catchesApi = new CatchesApi()
 const submissionsApi = new SubmissionsApi()
 const activitiesApi = new ActivitiesApi()
 
-function validateDate (payload, errors, cache) {
+/*
+ * Function to parse the date entered to ensure it is well either well formed or null so that it
+ * can be passed to the API. Returns a date string in the required format or null.
+ */
+function cleanDate (payload, cache) {
   if (!payload.month || !payload.day) {
-    errors.push({ date: 'EMPTY' })
+    return null
   } else if (Number.isNaN(Number.parseInt(payload.month)) || Number.isNaN(Number.parseInt(payload.day))) {
-    errors.push({ date: 'INVALID' })
-    payload.day = payload.month = null
+    return null
   } else {
     const dateCaught = moment({ year: cache.year, month: payload.month - 1, day: payload.day })
-    if (!dateCaught.isValid()) {
-      errors.push({ date: 'INVALID' })
-      payload.day = payload.month = null
-    }
-  }
-}
-
-function validateWeight (payload, errors) {
-  if (!payload.system) {
-    errors.push({ system: 'EMPTY' })
-  } else if (payload.system === 'IMPERIAL') {
-    payload.pounds = checkNumber('pounds', payload.pounds, errors)
-    payload.ounces = checkNumber('ounces', payload.ounces, errors)
-  } else if (payload.system === 'METRIC') {
-    payload.kilograms = checkNumber('kilograms', payload.kilograms, errors)
+    return dateCaught.isValid()
+      ? moment({ year: cache.year, month: payload.month - 1, day: payload.day }).format() : null
   }
 }
 
@@ -56,74 +45,73 @@ module.exports = async (request) => {
   const errors = []
   const cache = await request.cache().get()
 
-  // Validate that the river has been selected
-  if (!payload.river) {
-    errors.push({ river: 'EMPTY' })
-  }
-
   // Validate the date
-  validateDate(payload, errors, cache)
-
-  if (!payload.type) {
-    errors.push({ type: 'EMPTY' })
-  }
-
-  // Validate the weight
-  validateWeight(payload, errors)
-
-  if (!payload.method) {
-    errors.push({ method: 'EMPTY' })
-  }
-
-  if (!payload.released) {
-    errors.push({ released: 'EMPTY' })
-  }
+  const dateCaught = cleanDate(payload, cache)
 
   // Do the conversion
   conversion(payload, errors)
 
-  if (!errors.length) {
-    const submission = await submissionsApi.getById(request, cache.submissionId)
-    const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
-    const dateCaught = moment({ year: cache.year, month: payload.month - 1, day: payload.day })
+  const submission = await submissionsApi.getById(request, cache.submissionId)
+  const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
 
-    const mass = {
-      kg: Number.parseFloat(payload.kilograms),
-      oz: (16 * Number.parseInt(payload.pounds)) + Number.parseInt(payload.ounces),
-      type: payload.system
-    }
+  const mass = {
+    kg: Number.parseFloat(payload.kilograms),
+    oz: (16 * Number.parseInt(payload.pounds)) + Number.parseInt(payload.ounces),
+    type: payload.system
+  }
 
-    let result
+  // Get the activity from the river id
+  const activityId = (() => {
+    const activity = activities.find(a => a.river.id === payload.river)
+    return activity ? activity.id : null
+  })()
 
-    // Test if we are adding or updating
-    if (cache.largeCatch) {
-      result = await catchesApi.change(request,
-        cache.largeCatch.id,
-        activities.find(a => a.river.id === payload.river).id,
-        dateCaught.format(),
-        payload.type,
-        mass,
-        payload.method,
-        payload.released === 'true'
-      )
-    } else {
-      result = await catchesApi.add(request,
-        cache.submissionId,
-        activities.find(a => a.river.id === payload.river).id,
-        dateCaught.format(),
-        payload.type,
-        mass,
-        payload.method,
-        payload.released === 'true'
-      )
-    }
-
-    if (Object.keys(result).includes('errors')) {
-      return apiErrors(result)
+  const released = (() => {
+    if (payload.released === 'true') {
+      return true
+    } else if (payload.released === 'false') {
+      return false
     } else {
       return null
     }
+  })(errors)
+
+  // Test if we are adding or updating
+  let result
+  if (cache.largeCatch) {
+    result = await catchesApi.change(request,
+      cache.largeCatch.id,
+      activityId,
+      dateCaught,
+      payload.type,
+      mass,
+      payload.method,
+      released
+    )
   } else {
-    return errors
+    result = await catchesApi.add(request,
+      cache.submissionId,
+      activityId,
+      dateCaught,
+      payload.type,
+      mass,
+      payload.method,
+      released
+    )
+  }
+
+  const sorter = getSorterForApiErrors('Catch',
+    'ACTIVITY',
+    'DATE',
+    'CATCH_SPECIES_REQUIRED',
+    'CATCH_MASS_TYPE_REQUIRED',
+    'MASS',
+    'CATCH_METHOD_REQUIRED',
+    'CATCH_RELEASED_REQUIRED')
+
+  if (Object.keys(result).includes('errors')) {
+    return errors.concat(apiErrors(result).sort(sorter))
+  } else {
+    return errors.length ? errors : null
   }
 }
