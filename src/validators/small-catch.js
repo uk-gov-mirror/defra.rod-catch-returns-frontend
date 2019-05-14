@@ -81,10 +81,12 @@ module.exports = async (request) => {
       const count = payload[name]
       if (count.trim()) {
         if (isInt(count)) {
-          apiCounts.push({
-            method: m.id,
-            count: count
-          })
+          if (Number.parseInt(count) !== 0) {
+            apiCounts.push({
+              method: m.id,
+              count: count
+            })
+          }
         } else {
           /*
            * We have to send something that will fail the validation otherwise we might erroneously save the data.
