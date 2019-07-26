@@ -7,6 +7,7 @@ const Url = require('url')
 const Hoek = require('hoek')
 const ResponseError = require('../handlers/response-error')
 const ETagRequest = require('request-etag')
+const Fs = require('fs')
 
 const Request = new ETagRequest({
   length: function () {
@@ -23,6 +24,12 @@ const internals = {
     GET: 'GET', POST: 'POST', PUT: 'PUT', DELETE: 'DELETE', PATCH: 'PATCH'
   },
 
+  contentTypes: {
+    JSON: 'application/json',
+    ASSOCIATION: 'text/uri-list',
+    CSV: 'text/csv'
+  },
+
   /**
    * Function to determine which headers should be set
    * @param method
@@ -36,6 +43,33 @@ const internals = {
       headers['Content-Type'] = 'application/json'
     }
     return headers
+  },
+
+  /**
+   * Generate the URI for the request
+   * @param path
+   * @param query
+   * @param body
+   * @return {string}
+   */
+  getUri: (path, search) => {
+    try {
+      const uriObj = {
+        protocol: 'http',
+        hostname: process.env.API_HOSTNAME || 'localhost',
+        port: Number.parseInt(process.env.API_PORT || 9580),
+        pathname: path ? process.env.API_PATH + '/' + path : process.env.API_PATH
+      }
+
+      if (search) {
+        uriObj.search = search
+      }
+
+      return Url.format(uriObj)
+    } catch (err) {
+      logger.error(err)
+      throw err
+    }
   },
 
   /**
@@ -74,7 +108,7 @@ const internals = {
    * @param assoc - if true will operate on associations (using the text/uri-list header)
    * @returns {Promise<void>}
    */
-  makeRequest: (auth, uri, method, body, throwOnNotFound = false, assoc = false) => {
+  makeRequest: (auth, uri, method, body, type = internals.contentTypes.JSON) => {
     return new Promise(function (resolve, reject) {
       Hoek.assert(internals.method[method], `Method not allowed: ${method}`)
 
@@ -82,7 +116,7 @@ const internals = {
         uri: uri,
         method: method,
         timeout: Number.parseInt(process.env.API_REQUEST_TIMEOUT_MS) || 60000,
-        json: !assoc
+        json: type === internals.contentTypes.JSON
       }
 
       if (auth) {
@@ -98,9 +132,20 @@ const internals = {
         requestObject.body = body
       }
 
-      requestObject.headers = internals.headers(method, assoc)
+      requestObject.headers = internals.headers(type)
 
-      Request(requestObject, (err, response, body) => {
+      Request(requestObject, (err, response, responseBody) => {
+        /*
+         * Where the request object has JSON set to true the response has already been
+         * deserialize - if not we need to deserialize it
+         */
+        let parsedResponseBody
+        if (responseBody && type !== internals.contentTypes.JSON) {
+          parsedResponseBody = JSON.parse(responseBody)
+        } else {
+          parsedResponseBody = responseBody
+        }
+
         if (err) {
           return reject(new Error(err))
         } else {
@@ -109,21 +154,23 @@ const internals = {
 
         // If no error occurred i.e. all statuses but 2xx - or a 304 (cache)
         if (Math.floor(response.statusCode / 100) === 2 || response.statusCode === 304) {
-          resolve(body)
+          resolve(parsedResponseBody)
         } else if (response.statusCode === ResponseError.status.NOT_FOUND) {
-          // Not found is ignored for searches otherwise it is treated as an error
-          if (throwOnNotFound) {
-            reject(new ResponseError.Error(response.statusMessage, ResponseError.status.NOT_FOUND))
-          } else {
-            resolve()
-          }
+          // Not found is not an error
+          resolve({ statusCode: response.statusCode, statusMessage: response.statusMessage })
         } else if (response.statusCode === ResponseError.status.CONFLICT) {
           // Conflicts are key violations and treated as validation errors
           resolve({ statusCode: response.statusCode, statusMessage: response.statusMessage })
         } else if (response.statusCode === ResponseError.status.BAD_REQUEST) {
           // Bad requests may be API validation errors
-          if (body && Object.keys(body).includes('errors')) {
-            resolve(body)
+          if (body && (Object.keys(parsedResponseBody).includes('errors') || Object.keys(parsedResponseBody).includes('error'))) {
+            resolve(parsedResponseBody)
+          // Age weight key upload specific errors
+          } else if (body && (Object.keys(parsedResponseBody).includes('generalErrors') ||
+                              Object.keys(parsedResponseBody).includes('headerErrors') ||
+                              Object.keys(parsedResponseBody).includes('errorsByRow') ||
+                              Object.keys(parsedResponseBody).includes('errorsByColumnAndRowNumber'))) {
+            resolve({ statusCode: response.statusCode, statusMessage: parsedResponseBody })
           } else {
             reject(new ResponseError.Error(response.statusMessage, response.statusCode))
           }
@@ -149,6 +196,23 @@ module.exports = {
 
   requestFromLink: async (auth, link) => {
     return internals.makeRequest(auth, link, internals.method.GET, null, true, false)
+  },
+
+  /**
+   * The file uploader - accepts a file path and (at this point) assumes a .CSV file
+   * @param auth
+   * @param path
+   * @param query
+   * @param filePath
+   * @returns {Promise<*|Promise<void>>}
+   */
+  requestFileUpload: async (auth, path, query, filePath) => {
+    return internals.makeRequest(
+      auth,
+      internals.getUri(path, query),
+      internals.method.POST,
+      Fs.createReadStream(filePath),
+      internals.contentTypes.CSV)
   },
 
   method: internals.method
