@@ -14,6 +14,7 @@ const LookupHandler = require('../handlers/lookup')
 const AgeWeightKeyHandler = require('../handlers/age-weight-key')
 const AgeWeightKeyOkHandler = require('../handlers/age-weight-key-ok')
 const AgeWeightKeyConflictCheckHandler = require('../handlers/age-weight-key-conflict-check')
+const AgeWeightKeyErrorBreakdownHandler = require('../handlers/age-weight-key-error-breakdown')
 const ExclusionsHandler = require('../handlers/exclusions')
 
 // Define the validators
@@ -31,6 +32,7 @@ const lookupHandler = new LookupHandler('lookup')
 const ageWeightKeyHandler = new AgeWeightKeyHandler('age-weight-key', ageWeightKeyValidator)
 const ageWeightKeyOkHandler = new AgeWeightKeyOkHandler('age-weight-key-ok')
 const ageWeightKeyConflictCheckHandler = new AgeWeightKeyConflictCheckHandler('age-weight-key-conflict-check')
+const ageWeightKeyErrorBreakdownHandler = new AgeWeightKeyErrorBreakdownHandler('age-weight-key-error-breakdown')
 const exclusionsHandler = new ExclusionsHandler('exclusions')
 
 const api = {
@@ -172,6 +174,13 @@ module.exports = [
         }
       }
     }
+  },
+
+  // Age weight key error breakdown handler
+  {
+    path: '/age-weight-key-error-breakdown',
+    method: 'GET',
+    handler: ageWeightKeyErrorBreakdownHandler.handler
   },
 
   // Lookup handler
