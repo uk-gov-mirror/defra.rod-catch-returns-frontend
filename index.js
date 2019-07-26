@@ -13,7 +13,9 @@ const Nunjucks = require('nunjucks')
 const Uuid = require('uuid')
 const Joi = require('joi')
 const Crypto = require('crypto')
-
+const Fs = require('fs')
+const TEMP = require('./defaults').TEMP
+const Path = require('path')
 const { logger } = require('defra-logging-facade')
 const AuthorizationSchemes = require('./src/lib/authorization-schemes')
 const AuthorizationStrategies = require('./src/lib/authorization-strategies')
@@ -188,6 +190,15 @@ const options = {
 
 ;(async () => {
   try {
+    /**
+     * Create the temporary directory if it does not exist
+     */
+    if (!Fs.existsSync(TEMP)) {
+      Fs.mkdirSync(TEMP)
+    } else {
+      Fs.readdirSync(TEMP).forEach(file => Fs.unlinkSync(Path.join(TEMP, file)))
+    }
+
     /**
      * Test that the environment is set up correctly
      */
