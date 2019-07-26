@@ -11,11 +11,14 @@ const LicenceHandler = require('../handlers/licence')
 const ReportsHandler = require('../handlers/reports')
 const ReportDownloadHandler = require('../handlers/report-download')
 const LookupHandler = require('../handlers/lookup')
+const AgeWeightKeyHandler = require('../handlers/age-weight-key')
+const AgeWeightKeyOkHandler = require('../handlers/age-weight-key-ok')
 const ExclusionsHandler = require('../handlers/exclusions')
 
 // Define the validators
 const loginValidator = require('../validators/login')
 const licenceValidator = require('../validators/licence')
+const ageWeightKeyValidator = require('../validators/age-weight-key')
 
 // Define the handlers
 const loginHandler = new LoginHandler('login', loginValidator)
@@ -24,6 +27,8 @@ const reportsHandler = new ReportsHandler('reports')
 const reportDownloadHandler = new ReportDownloadHandler()
 const licenceHandler = new LicenceHandler('licence', licenceValidator)
 const lookupHandler = new LookupHandler('lookup')
+const ageWeightKeyHandler = new AgeWeightKeyHandler('age-weight-key', ageWeightKeyValidator)
+const ageWeightKeyOkHandler = new AgeWeightKeyOkHandler('age-weight-key-ok')
 const exclusionsHandler = new ExclusionsHandler('exclusions')
 
 const api = {
@@ -100,6 +105,42 @@ module.exports = [
     path: '/reports/{file}',
     method: 'GET',
     handler: reportDownloadHandler.handler
+  },
+
+  // Age weight key upload handlers
+  {
+    path: '/age-weight-key',
+    method: 'GET',
+    handler: ageWeightKeyHandler.handler
+  },
+
+  // Age weight key upload handlers
+  {
+    path: '/age-weight-key',
+    method: 'POST',
+    handler: ageWeightKeyHandler.handler,
+    options: {
+      payload: {
+        output: 'file',
+        parse: true,
+        maxBytes: 1000 * 1000,
+        uploads: require('../../defaults').TEMP
+      },
+      plugins: {
+        disinfect: {
+          disinfectQuery: true,
+          disinfectParams: true,
+          disinfectPayload: false
+        }
+      }
+    }
+  },
+
+  // Age weight key upload success handler
+  {
+    path: '/age-weight-key-ok',
+    method: 'GET',
+    handler: ageWeightKeyOkHandler.handler
   },
 
   // Lookup handler
