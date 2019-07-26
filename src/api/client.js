@@ -24,12 +24,6 @@ const internals = {
     GET: 'GET', POST: 'POST', PUT: 'PUT', DELETE: 'DELETE', PATCH: 'PATCH'
   },
 
-  contentTypes: {
-    JSON: 'application/json',
-    ASSOCIATION: 'text/uri-list',
-    CSV: 'text/csv'
-  },
-
   /**
    * Function to determine which headers should be set
    * @param method
@@ -52,7 +46,7 @@ const internals = {
    * @param body
    * @return {string}
    */
-  getUri: (path, search) => {
+  createRequest: (path, search) => {
     try {
       const uriObj = {
         protocol: 'http',
@@ -113,6 +107,7 @@ const internals = {
         } else {
           logger.debug(`API; ${method}:${uri} ${response.statusCode}`)
         }
+
         // If no error occurred i.e. all statuses but 2xx - or a 304 (cache)
         if (Math.floor(response.statusCode / 100) === 2 || response.statusCode === 304) {
           resolve(body)
@@ -122,14 +117,13 @@ const internals = {
             reject(new ResponseError.Error(response.statusMessage, ResponseError.status.NOT_FOUND))
           } else {
             resolve()
-            // resolve({ statusCode: response.statusCode, statusMessage: response.statusMessage })
           }
         } else if (response.statusCode === ResponseError.status.CONFLICT) {
           // Conflicts are key violations and treated as validation errors
           resolve({ statusCode: response.statusCode, statusMessage: response.statusMessage })
         } else if (response.statusCode === ResponseError.status.BAD_REQUEST) {
           // Bad requests may be API validation errors
-          if (body && (Object.keys(body).includes('errors') || Object.keys(body).includes('error'))) {
+          if (body && Object.keys(body).includes('errors')) {
             resolve(body)
           // Age weight key upload specific errors
           } else if (body && (Object.keys(JSON.parse(body)).includes('generalErrors') ||
@@ -151,12 +145,12 @@ const internals = {
 
 module.exports = {
   request: async (auth, method, path, search, body, throwOnNotFound = false) => {
-    const request = internals.getUri(path, search)
+    const request = internals.createRequest(path, search)
     return internals.makeRequest(auth, request, method, body, throwOnNotFound, false)
   },
 
   requestAssociationChange: async (auth, path, payload) => {
-    const request = internals.getUri(path)
+    const request = internals.createRequest(path)
     return internals.makeRequest(auth, request, internals.method.PUT, payload, true, true)
   },
 
@@ -175,7 +169,7 @@ module.exports = {
   requestFileUpload: async (auth, path, query, filePath) => {
     return internals.makeRequest(
       auth,
-      internals.getUri(path, query),
+      internals.createRequest(path, query),
       internals.method.POST,
       Fs.createReadStream(filePath),
       true,
