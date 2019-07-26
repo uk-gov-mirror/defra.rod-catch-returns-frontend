@@ -13,6 +13,7 @@ const ReportDownloadHandler = require('../handlers/report-download')
 const LookupHandler = require('../handlers/lookup')
 const AgeWeightKeyHandler = require('../handlers/age-weight-key')
 const AgeWeightKeyOkHandler = require('../handlers/age-weight-key-ok')
+const AgeWeightKeyConflictCheckHandler = require('../handlers/age-weight-key-conflict-check')
 const ExclusionsHandler = require('../handlers/exclusions')
 
 // Define the validators
@@ -29,6 +30,7 @@ const licenceHandler = new LicenceHandler('licence', licenceValidator)
 const lookupHandler = new LookupHandler('lookup')
 const ageWeightKeyHandler = new AgeWeightKeyHandler('age-weight-key', ageWeightKeyValidator)
 const ageWeightKeyOkHandler = new AgeWeightKeyOkHandler('age-weight-key-ok')
+const ageWeightKeyConflictCheckHandler = new AgeWeightKeyConflictCheckHandler('age-weight-key-conflict-check')
 const exclusionsHandler = new ExclusionsHandler('exclusions')
 
 const api = {
@@ -141,6 +143,35 @@ module.exports = [
     path: '/age-weight-key-ok',
     method: 'GET',
     handler: ageWeightKeyOkHandler.handler
+  },
+
+  // Age weight key conflict check handlers
+  {
+    path: '/age-weight-key-conflict-check',
+    method: 'GET',
+    handler: ageWeightKeyConflictCheckHandler.handler
+  },
+
+  // Age weight key conflict check handlers
+  {
+    path: '/age-weight-key-conflict-check',
+    method: 'POST',
+    handler: ageWeightKeyConflictCheckHandler.handler,
+    options: {
+      payload: {
+        output: 'file',
+        parse: true,
+        maxBytes: 1000 * 1000,
+        uploads: require('../../defaults').TEMP
+      },
+      plugins: {
+        disinfect: {
+          disinfectQuery: true,
+          disinfectParams: true,
+          disinfectPayload: false
+        }
+      }
+    }
   },
 
   // Lookup handler
