@@ -4,32 +4,11 @@
 {% from "panel/macro.njk" import govukPanel %}
 
 {% block header %}
-    {{ govukHeader({
-        homepageUrl: "https://www.gov.uk/",
-        serviceUrl: "/",
-        containerClasses: "govuk-width-container",
-        serviceName: "Report your salmon or sea trout catch",
-        navigation: [
-            {
-              href: "/reports-back",
-              text: "Catch returns",
-              active: false
-            },
-            {
-              href: "/reports",
-              text: "Reports"
-            },
-            {
-                href: "/age-weight-key",
-                text: "Age weight key",
-                active: true
-            },
-            {
-              href: "/logout",
-              text: "Sign out"
-            }
-        ]})
-    }}
+  {% if fmt %}
+    {{ navigationHeaderBlock('age-weight-key') }}
+  {% else %}
+    {{ super() }}
+  {% endif %}
 {% endblock %}
 
 {% block pageTitle %}Your age weight key upload has completed - GOV.UK{% endblock %}

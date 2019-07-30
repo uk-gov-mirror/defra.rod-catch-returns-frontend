@@ -197,7 +197,7 @@ module.exports = [
 
   // Back to the catch return from the reports
   {
-    path: '/reports-back',
+    path: '/back',
     method: 'GET',
     handler: async (request, h) => {
       return h.redirect(((cache) => {
