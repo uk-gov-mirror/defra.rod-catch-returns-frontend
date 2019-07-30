@@ -11,11 +11,32 @@
 {% from "radios/macro.njk" import govukRadios %}
 
 {% block header %}
-  {% if fmt %}
-    {{ navigationHeaderBlock('age-weight-key') }}
-  {% else %}
-    {{ super() }}
-  {% endif %}
+    {{ govukHeader({
+        homepageUrl: "https://www.gov.uk/",
+        serviceUrl: "/",
+        containerClasses: "govuk-width-container",
+        serviceName: "Report your salmon or sea trout catch",
+        navigation: [
+            {
+              href: "/reports-back",
+              text: "Catch returns",
+              active: false
+            },
+            {
+              href: "/reports",
+              text: "Reports"
+            },
+            {
+                href: "/age-weight-key",
+                text: "Age weight key",
+                active: true
+            },
+            {
+              href: "/logout",
+              text: "Sign out"
+            }
+        ]})
+    }}
 {% endblock %}
 
 {% set keyItems = [] %}
