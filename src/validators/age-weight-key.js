@@ -59,7 +59,7 @@ module.exports = async (request) => {
             cache.ageWeightContext = cache.ageWeightContext || {}
             cache.ageWeightContext.ageWeightKeyConflict = true
           } else {
-            if (cache.ageWeightContext.ageWeightKeyConflict) delete cache.ageWeightContext.ageWeightKeyConflict
+            if (cache.ageWeightContext && cache.ageWeightContext.ageWeightKeyConflict) delete cache.ageWeightContext.ageWeightKeyConflict
             errors.push({ type: 'BAD_FILE', message: response.statusMessage })
           }
 
