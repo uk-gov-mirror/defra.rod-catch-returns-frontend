@@ -108,7 +108,7 @@ module.exports = class ActivitiesHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doPost (request, h, errors) {
-    return ActivitiesHandler.writeCacheAndRedirect(request, h, errors, '/summary',
+    return this.writeCacheAndRedirect(request, h, errors, '/summary',
       `/activities/${encodeURIComponent(request.params.id)}`)
   }
 }

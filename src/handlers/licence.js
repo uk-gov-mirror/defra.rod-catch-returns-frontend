@@ -38,6 +38,6 @@ module.exports = class LicenceHandler extends BaseHandler {
       delete cache.locked
     }
 
-    return LicenceHandler.writeCacheAndRedirect(request, h, errors, '/select-year', '/licence', cache)
+    return this.writeCacheAndRedirect(request, h, errors, '/select-year', '/licence', cache)
   }
 }

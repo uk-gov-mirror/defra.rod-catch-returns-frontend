@@ -27,9 +27,9 @@
 {% set errorItem = null %}
 
 {% if error %}
-  {% set errorItem = { text: "Select an option" } %}
+  {% set errorItem = { text: "Select yes if you want to replace the existing age weight key" } %}
   {{ errorList.push({
-    text: "Select an option",
+    text: "Select yes if you want to replace the existing age weight key",
     href: "#overwrite"
   }) }}
 {% endif %}

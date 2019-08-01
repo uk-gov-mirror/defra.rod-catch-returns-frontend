@@ -46,7 +46,7 @@ module.exports = class AgeWeightKeyErrorBreakdownHandler extends BaseHandler {
                 errorsObject[a][b].forEach(c => {
                   errorItems.push({
                     type: 'Missing required',
-                    message: `File is missing a required column header ('${c}'). Column headers 'Weight' and at least one month of the year must exist (for example: Weight, April).`
+                    message: `Row 1, Column ${c} - File is missing a required column header. Column headers 'Weight' and at least one month of the year must exist (for example: Weight, April).`
                   })
                 })
                 break
@@ -55,7 +55,7 @@ module.exports = class AgeWeightKeyErrorBreakdownHandler extends BaseHandler {
                 errorsObject[a][b].forEach(c => {
                   errorItems.push({
                     type: 'Column disallowed',
-                    message: `Column header '${c}' is not allowed. Column headers can only be 'Weight' or a month of the year (for example: July).`
+                    message: `Row 1, Column ${c} - Column header not allowed. Column headers can only be 'Weight' or a month of the year (for example: July).`
                   })
                 })
                 break
@@ -64,7 +64,7 @@ module.exports = class AgeWeightKeyErrorBreakdownHandler extends BaseHandler {
                 errorsObject[a][b].forEach(c => {
                   errorItems.push({
                     type: 'Duplicate header',
-                    message: `File contains a duplicate column header ('${c}'). Remove or change the duplicate header.`
+                    message: `Row 1, Column ${c} - File contains a duplicate column header. Remove or change the duplicate header.`
                   })
                 })
                 break
@@ -81,7 +81,7 @@ module.exports = class AgeWeightKeyErrorBreakdownHandler extends BaseHandler {
                 errorsObject[a][b].forEach(c => {
                   errorItems.push({
                     type: 'Row header discrepancy',
-                    message: `Row ${c} contains too many or too few columns compared to the number of column headers.`
+                    message: `Row ${c}, Column UNKNOWN - Row contains too many or too few columns compared to the number of column headers.`
                   })
                 })
                 break
@@ -100,7 +100,7 @@ module.exports = class AgeWeightKeyErrorBreakdownHandler extends BaseHandler {
                   errorsObject[a][b][c].forEach(d => {
                     errorItems.push({
                       type: 'Not whole number',
-                      message: `File contains a duplicate weight in row ${d}. Remove or change the duplicate weight.`
+                      message: `Row ${d}, Column WEIGHT - File contains a duplicate weight. Remove or change the duplicate weight.`
                     })
                   })
                 })
@@ -111,7 +111,7 @@ module.exports = class AgeWeightKeyErrorBreakdownHandler extends BaseHandler {
                   errorsObject[a][b][c].forEach(d => {
                     errorItems.push({
                       type: 'Not whole number',
-                      message: `Weight must be a whole number. Change weight in row ${d} to a whole number`
+                      message: `Row ${d}, Column WEIGHT - Weight must be a whole number. Change weight to a whole number`
                     })
                   })
                 })
@@ -122,7 +122,7 @@ module.exports = class AgeWeightKeyErrorBreakdownHandler extends BaseHandler {
                   errorsObject[a][b][c].forEach(d => {
                     errorItems.push({
                       type: 'Invalid probability',
-                      message: `Probability must be a number between 0 and 1 (inclusive). Change ${c} row ${d} to a number between 0 and 1 (inclusive).`
+                      message: `Row ${d}, Column ${c} - Probability must be a number between 0 and 1 (inclusive). Change probability to a number between 0 and 1 (inclusive).`
                     })
                   })
                 })
@@ -142,9 +142,9 @@ module.exports = class AgeWeightKeyErrorBreakdownHandler extends BaseHandler {
 
   async doGet (request, h) {
     let cache = await request.cache().get()
-    let errorsObject = cache.errors[0].message
+    let errorsObject = cache.ageWeightContext.errors[0].message
     let errorItems = AgeWeightKeyErrorBreakdownHandler.buildErrorItemsObject(errorsObject)
-    let filename = cache.payload.upload.filename
+    let filename = cache.ageWeightContext.payload.upload.filename
 
     return this.readCacheAndDisplayView(request, h, { errorItems, filename })
   }

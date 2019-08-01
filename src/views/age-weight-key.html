@@ -50,9 +50,9 @@
     {% endif %}
 
     {% if error.type === 'YEAR_OUT_OF_RANGE' %}
-      {% set yearErrorMessage = { text: "Year must be between " + years[0] + " and " + years[1] } %}
+      {% set yearErrorMessage = { text: "Enter year between " + years[0] + " and " + years[1] } %}
       {{ errorList.push({
-        text: "Year must be between " + years[0] + " and " + years[1],
+        text: "Enter year between " + years[0] + " and " + years[1],
         href: "#year"
       }) }}
     {% endif %}
@@ -90,9 +90,9 @@
     {% endif %}
 
     {% if error.type === 'BAD_FILE' %}
-      {% set fileErrorMessage = { html: "<span>The selected file must use the template</span><br><a href='/age-weight-key-error-breakdown'>View all the files errors</a>" } %}
+      {% set fileErrorMessage = { html: "<span>The selected file must match the required template</span><br><a href='/age-weight-key-error-breakdown'>View all the files errors</a>" } %}
       {{ errorList.push({
-        text: "The selected file must use the template",
+        text: "The selected file must match the required template",
         href: "#upload"
       }) }}
     {% endif %}
@@ -104,7 +104,7 @@
 {% block content %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-xl">Upload a Salmon age weight key</h1>
+    <h1 class="govuk-heading-l">Upload a Salmon age weight key</h1>
     <form method="post" enctype="multipart/form-data">
       {% if errors %}
         {{ govukErrorSummary({
@@ -121,13 +121,14 @@
           name: "key",
           fieldset: {
             legend: {
-              text: "Which age weight key would you like to upload?"
+              text: "Which age weight key would you like to upload?",
+              classes: "govuk-!-font-weight-bold"
             }
           },
           items: keyItems
         }) }}
 
-        <label class='govuk-label'>Which year does the age weight key apply to?</label>
+        <label class='govuk-label govuk-!-font-weight-bold'>Which year does the age weight key apply to?</label>
         <span class='govuk-hint'>For example, 2017</span>
 
         {{ govukInput({
@@ -145,44 +146,21 @@
           id: "upload",
           name: "upload",
           label: {
-            text: "Select your file"
+            text: "Select your file",
+            classes: "govuk-!-font-weight-bold"
           },
           hint: {
             text: "Save your file in comma seperated value format (CSV)"
+          },
+          attributes: {
+            accept: ".csv"
           },
           errorMessage: fileErrorMessage
         }) }}
 
         {{ govukDetails({
           summaryText: "Your CSV file needs to look like this example",
-          html: "
-            <table>
-              <tr>
-                <th>Weight</th>
-                <th>June</th>
-                <th>July</th>
-                <th>August</th>
-              </tr>
-              <tr>
-                <td>1</td>
-                <td>1.000000</td>
-                <td>1.000000</td>
-                <td>0.919192</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>0.500000</td>
-                <td>0.897436</td>
-                <td>0.510204</td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>0.000000</td>
-                <td>0.107143</td>
-                <td>0.986111</td>
-              </tr>
-            </table>
-          "
+          html: "<img src='/public/images/csv-example.png' alt='a screenshot of an example .csv opened in Microsoft Excel'>"
         }) }}
 
         {{ govukButton({

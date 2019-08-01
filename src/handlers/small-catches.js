@@ -161,7 +161,7 @@ module.exports = class SmallCatchHandler extends BaseHandler {
       delete cache.add
     }
 
-    return SmallCatchHandler.writeCacheAndRedirect(request, h, errors, next,
+    return this.writeCacheAndRedirect(request, h, errors, next,
       `/small-catches/${encodeURIComponent(request.params.id)}`, cache)
   }
 }

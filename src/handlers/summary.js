@@ -25,7 +25,7 @@ module.exports = class SummaryHandler extends BaseHandler {
    */
   async doGet (request, h) {
     // Clean the cache
-    const cache = await SummaryHandler.clearCacheErrorsAndPayload(request)
+    const cache = await this.clearCacheErrorsAndPayload(request)
 
     // Find or create a submission object
     let submission = await submissionsApi.getById(request, cache.submissionId)

@@ -4,6 +4,7 @@
 
 {% from "button/macro.njk" import govukButton %}
 {% from "details/macro.njk" import govukDetails %}
+{% from "error-summary/macro.njk" import govukErrorSummary %}
 {% from "table/macro.njk" import govukTable %}
 
 {% block header %}
@@ -32,40 +33,13 @@
 
 {% block content %}
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-xl">Errors found in '{{ filename }}'</h1>
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-l">Errors found in '{{ filename }}'</h1>
     <label class='govuk-label'>Before uploading the age weight key again, correct all the errors in your file.</label>
 
     {{ govukDetails({
       summaryText: "Your CSV file needs to look like this example",
-      html: "
-        <table>
-          <tr>
-            <th>Weight</th>
-            <th>June</th>
-            <th>July</th>
-            <th>August</th>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>1.000000</td>
-            <td>1.000000</td>
-            <td>0.919192</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>0.500000</td>
-            <td>0.897436</td>
-            <td>0.510204</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>0.000000</td>
-            <td>0.107143</td>
-            <td>0.986111</td>
-          </tr>
-        </table>
-      "
+      html: "<img src='/public/images/csv-example.png' alt='a screenshot of an example .csv opened in Microsoft Excel'>"
     }) }}
 
     {{ govukTable({
