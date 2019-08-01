@@ -29,12 +29,12 @@ module.exports = class BaseHandler {
     try {
       let errors
       if (request.method.toUpperCase() === 'GET') {
-        return await this.doGet(request, h)
+        return this.doGet(request, h)
       } else {
         if (this.validator) {
           errors = await this.validator(request, h)
         }
-        return await this.doPost(request, h, errors)
+        return this.doPost(request, h, errors)
       }
     } catch (err) {
       // Crypto error
@@ -59,9 +59,10 @@ module.exports = class BaseHandler {
    * object from the cache and rewrite the cache
    */
   async writeCacheAndRedirect (request, h, errors, successPath, errorPath, c) {
+    let cache = c || await request.cache().get()
+
     if (errors) {
       // Write the errors into the cache
-      let cache = c || await request.cache().get()
       cache[this.context] = cache[this.context] || {}
       cache[this.context].errors = errors
       cache[this.context].payload = request.payload
@@ -69,13 +70,7 @@ module.exports = class BaseHandler {
       return h.redirect(errorPath)
     }
 
-    let cache = c || await request.cache().get()
-    cache[this.context] = cache[this.context] || {}
-    if (cache[this.context].errors || cache[this.context].payload || cache[this.context].ageWeightKeyConflict) {
-      delete cache[this.context].errors
-      delete cache[this.context].payload
-      delete cache[this.context].ageWeightKeyConflict
-    }
+    if (cache[this.context]) delete cache[this.context]
 
     await request.cache().set(cache)
     return h.redirect(successPath)
@@ -98,7 +93,8 @@ module.exports = class BaseHandler {
     if (cache[this.context] && (cache[this.context].payload || cache[this.context].errors)) {
       pageObj = Object.assign(pageObj, {
         payload: cache[this.context].payload,
-        errors: cache[this.context].errors })
+        errors: cache[this.context].errors
+      })
     }
 
     return h.view(this.path, Object.assign(pageObj, { fmt: process.env.CONTEXT === 'FMT' }))
