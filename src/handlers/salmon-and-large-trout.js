@@ -155,7 +155,7 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
       delete cache.add
     }
 
-    return SalmonAndLargeTroutHandler.writeCacheAndRedirect(request, h, errors, next,
+    return this.writeCacheAndRedirect(request, h, errors, next,
       `/catches/${encodeURIComponent(request.params.id)}`, cache)
   }
 }

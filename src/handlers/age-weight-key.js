@@ -26,8 +26,8 @@ module.exports = class AgeWeightKeyHandler extends BaseHandler {
    */
   async doGet (request, h) {
     const cache = await request.cache().get()
-    const key = cache.payload && cache.payload.key ? cache.payload.key : ''
-    const year = cache.payload && cache.payload.year ? cache.payload.year : ''
+    const key = cache[this.context] && cache[this.context].payload && cache[this.context].payload.key ? cache[this.context].payload.key : ''
+    const year = cache[this.context] && cache[this.context].payload && cache[this.context].payload.year ? cache[this.context].payload.year : ''
 
     const keys = ['Dee', 'Tamar']
 
@@ -44,14 +44,15 @@ module.exports = class AgeWeightKeyHandler extends BaseHandler {
       year: request.payload.year,
       key: request.payload.key
     }
-    cache.payload = request.payload
+    cache[this.context] = cache[this.context] || {}
+    cache[this.context].payload = request.payload
     await request.cache().set(cache)
 
-    if (cache.ageWeightKeyConflict) {
+    if (cache[this.context].ageWeightKeyConflict) {
       return h.redirect('/age-weight-key-conflict-check')
     } else {
       this.removeTempFile(request)
-      return AgeWeightKeyHandler.writeCacheAndRedirect(request, h, errors, '/age-weight-key-ok', '/age-weight-key')
+      return this.writeCacheAndRedirect(request, h, errors, '/age-weight-key-ok', '/age-weight-key')
     }
   }
 }

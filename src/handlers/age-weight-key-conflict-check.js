@@ -36,16 +36,16 @@ module.exports = class AgeWeightKeyConflictCheck extends BaseHandler {
     const overwrite = request.payload.overwrite
     if (overwrite === 'true') {
       const cache = await request.cache().get()
-      const filepath = cache.payload.upload.path
-      const year = cache.payload.year
+      const filepath = cache[this.context].payload.upload.path
+      const year = cache[this.context].payload.year
 
       await AgeWeightKeyApi.postNew(request, year, filepath, true)
 
       this.removeTempFile(filepath)
 
-      return AgeWeightKeyConflictCheck.writeCacheAndRedirect(request, h, false, '/age-weight-key-ok', '')
+      return this.writeCacheAndRedirect(request, h, false, '/age-weight-key-ok', '')
     } else if (overwrite === 'false') {
-      return AgeWeightKeyConflictCheck.writeCacheAndRedirect(request, h, false, '/age-weight-key', '')
+      return this.writeCacheAndRedirect(request, h, false, '/age-weight-key', '')
     } else {
       return h.view(this.path, { error: true })
     }

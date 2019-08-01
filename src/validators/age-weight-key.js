@@ -56,9 +56,10 @@ module.exports = async (request) => {
           if (Object.keys(response.statusMessage).length === 1 &&
               Object.keys(response.statusMessage)[0] === 'generalErrors' &&
               response.statusMessage.generalErrors[0] === 'OVERWRITE_DISALLOWED') {
-            cache.ageWeightKeyConflict = true
+            cache.ageWeightContext = cache.ageWeightContext || {}
+            cache.ageWeightContext.ageWeightKeyConflict = true
           } else {
-            if (cache.ageWeightKeyConflict) delete cache.ageWeightKeyConflict
+            if (cache.ageWeightContext.ageWeightKeyConflict) delete cache.ageWeightContext.ageWeightKeyConflict
             errors.push({ type: 'BAD_FILE', message: response.statusMessage })
           }
 
