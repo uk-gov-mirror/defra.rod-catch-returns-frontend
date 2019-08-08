@@ -15,11 +15,12 @@ const MAX_FILE_UPLOAD_BYTES = process.env.MAX_FILE_UPLOAD_BYTES || 100 * 1000 //
 module.exports = async (request) => {
   let errors = []
 
-  const tempFilePath = request.payload.upload.path
-  logger.debug(`Uploaded age weight key file to: ${tempFilePath}`)
-
   const now = moment()
   const years = [-2, -1, 0, 1, 2].map(y => (now.year() + y).toString())
+
+  if (!request.payload.gate) {
+    errors.push({ type: 'NO_GATE_SELECTED' })
+  }
 
   if (!request.payload.year) {
     errors.push({ type: 'NO_YEAR_ENTERED' })
@@ -29,7 +30,7 @@ module.exports = async (request) => {
     errors.push({ type: 'YEAR_OUT_OF_RANGE' })
   }
 
-  if (!request.payload.upload.filename) {
+  if (!request.payload.upload || !request.payload.upload.filename) {
     errors.push({ type: 'NO_FILE_SELECTED' })
   } else {
     if (Path.extname(request.payload.upload.filename.toString().toUpperCase()) !== '.CSV') {
@@ -44,7 +45,9 @@ module.exports = async (request) => {
   }
 
   if (!errors.length) {
-    const response = await AgeWeightKeyApi.postNew(request, request.payload.year, tempFilePath, !!request.payload.overwrite)
+    const tempFilePath = request.payload.upload.path
+    logger.debug(`Uploaded age weight key file to: ${tempFilePath}`)
+    const response = await AgeWeightKeyApi.postNew(request, request.payload.year, request.payload.gate, tempFilePath, !!request.payload.overwrite)
     // TODO - status code inconsistent from API - needs to be fixed
     if (response) {
       response.status = response.status ? response.status : response.statusCode
