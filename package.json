@@ -59,6 +59,7 @@
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
+    "form-data": "^2.5.0",
     "gulp": "^4.0.0",
     "gulp-merge": "^0.1.1",
     "gulp-minify": "^3.1.0",
@@ -67,6 +68,7 @@
     "lab": "^18.0.2",
     "merge-stream": "^1.0.1",
     "run-sequence": "^2.2.1",
-    "standard-version": "^5.0.0"
+    "standard-version": "^5.0.0",
+    "stream-to-promise": "^2.2.0"
   }
 }
