@@ -82,5 +82,4 @@ experiment('Scripted regression tests', () => {
     process.env.CONTEXT = 'FMT'
     await Runner.run(require('./scripts/fmt-actions'))
   })
-
 })
