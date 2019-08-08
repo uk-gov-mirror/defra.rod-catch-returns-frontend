@@ -18,21 +18,31 @@
   {% endif %}
 {% endblock %}
 
-{% set keyItems = [] %}
-{% for k in keys %}
-  {{ keyItems.push({
-    text: k,
-    value: k,
-    checked: k === key
+{% set gateItems = [] %}
+{% for g in gates %}
+  {{ gateItems.push({
+    text: g.name,
+    value: g.id,
+    checked: g.id === gate
+
   }) }}
 {% endfor %}
 
 {% set errorList = [] %}
+{% set gateErrorMessage = null %}
 {% set yearErrorMessage = null %}
 {% set fileErrorMessage = null %}
 
 {% if errors %}
   {% for error in errors %}
+    {% if error.type === 'NO_GATE_SELECTED' %}
+      {% set gateErrorMessage = { text: "Select an age weight key" } %}
+      {{ errorList.push({
+        text: "Select an age weight key",
+        href: "#gate"
+      }) }}
+    {% endif %}
+
     {% if error.type === 'NO_YEAR_ENTERED' %}
       {% set yearErrorMessage = { text: "Enter a year" } %}
       {{ errorList.push({
@@ -117,15 +127,16 @@
 
         {{ govukRadios({
           classes: "govuk-radios--inline",
-          idPrefix: "key",
-          name: "key",
+          idPrefix: "gate",
+          name: "gate",
           fieldset: {
             legend: {
               text: "Which age weight key would you like to upload?",
               classes: "govuk-!-font-weight-bold"
             }
           },
-          items: keyItems
+          items: gateItems,
+          errorMessage: gateErrorMessage
         }) }}
 
         <label class='govuk-label govuk-!-font-weight-bold'>Which year does the age weight key apply to?</label>
@@ -171,7 +182,7 @@
       {% endcall %}
       {{ extra() }}
     </form>
-    <a id="licence" class="govuk-link govuk-body-m" href="/licence">Cancel</a>
+    <a id="licence" class="govuk-link govuk-body-m" href="/age-weight-key-cancel">Cancel</a>
   </div>
 </div>
 {% endblock %}

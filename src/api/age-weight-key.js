@@ -10,8 +10,8 @@ module.exports = class AgeWeightKeyApi {
     return Client.request(null, Client.method.GET, `reporting/reference/grilse-probabilities/${year}`)
   }
 
-  static async postNew (request, year, filePath, overwrite) {
-    return Client.requestFileUpload(null, `reporting/reference/grilse-probabilities/${year}`,
+  static async postNew (request, year, gate, filePath, overwrite) {
+    return Client.requestFileUpload(null, `reporting/reference/grilse-probabilities/${year}/${gate}`,
       `overwrite=${overwrite ? 'true' : 'false'}`, filePath)
   }
 }

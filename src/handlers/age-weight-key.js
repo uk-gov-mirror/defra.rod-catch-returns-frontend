@@ -6,6 +6,9 @@ const moment = require('moment')
  * Display the age weight key upload page
  */
 const BaseHandler = require('./base')
+const GatesApi = require('../api/gates')
+
+const gatesApi = new GatesApi()
 
 module.exports = class AgeWeightKeyHandler extends BaseHandler {
   constructor (...args) {
@@ -13,8 +16,10 @@ module.exports = class AgeWeightKeyHandler extends BaseHandler {
   }
 
   removeTempFile (request) {
-    Fs.unlinkSync(request.payload.upload.path)
-    logger.debug(`Removed temporary file: ${request.payload.upload.path}`)
+    if (request.payload.upload) {
+      Fs.unlinkSync(request.payload.upload.path)
+      logger.debug(`Removed temporary file: ${request.payload.upload.path}`)
+    }
   }
 
   /**
@@ -26,24 +31,32 @@ module.exports = class AgeWeightKeyHandler extends BaseHandler {
    */
   async doGet (request, h) {
     const cache = await request.cache().get()
-    const key = cache[this.context] && cache[this.context].payload && cache[this.context].payload.key ? cache[this.context].payload.key : ''
+    const gate = cache[this.context] && cache[this.context].payload && cache[this.context].payload.gate ? cache[this.context].payload.gate : ''
     const year = cache[this.context] && cache[this.context].payload && cache[this.context].payload.year ? cache[this.context].payload.year : ''
 
-    const keys = ['Dee', 'Tamar']
+    const gates = (await gatesApi.list(request)).map(e => {
+      return {
+        id: e.id,
+        name: e.name
+      }
+    })
 
     const now = moment()
     const years = [-2, 2].map(y => (now.year() + y).toString())
 
-    return this.readCacheAndDisplayView(request, h, { key, year, keys, years })
+    return this.readCacheAndDisplayView(request, h, { gate, year, gates, years })
   }
 
   async doPost (request, h, errors) {
     let cache = await request.cache().get()
+    const gate = (await gatesApi.list(request)).filter(e => e.id === request.payload.gate)[0]
+
     cache.ageWeightKey = {
-      filename: request.payload.upload.filename,
+      filename: request.payload.upload ? request.payload.upload.filename : '',
       year: request.payload.year,
-      key: request.payload.key
+      gate: gate ? gate.name : ''
     }
+
     cache[this.context] = cache[this.context] || {}
     cache[this.context].payload = request.payload
     await request.cache().set(cache)

@@ -23,13 +23,14 @@ const DUPLICATE_HEADER = Path.join(ROOT, 'test/files/age-weight-key (duplicate h
 const EMPTY_FILE = Path.join(ROOT, 'test/files/age-weight-key (empty).csv')
 const INVALID_FORMAT = Path.join(ROOT, 'test/files/age-weight-key (invalid format).csv')
 const INVALID_HEADER = Path.join(ROOT, 'test/files/age-weight-key (invalid header).csv')
-// const LARGE_UPLOAD_FILE = Path.join(ROOT, 'test/files/age-weight-key (large).csv')
+const LARGE_UPLOAD_FILE = Path.join(ROOT, 'test/files/age-weight-key (large).csv')
 const MISSING_COLUMN = Path.join(ROOT, 'test/files/age-weight-key (missing column).csv')
 const MIXED_ERRORS = Path.join(ROOT, 'test/files/age-weight-key (mixed errors).csv')
 const NOT_A_CSV = Path.join(ROOT, 'test/files/age-weight-key (not a csv).png')
 const VALID_FILE = Path.join(ROOT, 'test/files/age-weight-key (valid).csv')
 
 const YEAR = require('moment')().year()
+const GATE = 1
 
 let sessionCookie = null
 let server = null
@@ -42,9 +43,10 @@ experiment('File upload: ', () => {
     sessionCookie = Runner.getCookies(response)['sid']
   })
 
-  const makeUpload = async (year, file) => {
+  const makeUpload = async (year, gate, file) => {
     const form = new FormData()
     form.append('year', year)
+    form.append('gate', gate)
     form.append('upload', Fs.createReadStream(file))
     const headers = form.getHeaders()
     Object.assign(headers, { cookie: 'sid=' + sessionCookie })
@@ -63,30 +65,51 @@ experiment('File upload: ', () => {
     return response
   }
 
-  test('No year entered', async () => {
-    const responseA = await server.inject({ url: '/age-weight-key', method: 'GET', headers: { cookie: 'sid=' + sessionCookie } })
-    expect(responseA.statusCode).to.equal(200)
-    expect(responseA.request.path).to.equal('/age-weight-key')
+  test('Visit the age weight key page', async () => {
+    const response = await server.inject({ url: '/age-weight-key', method: 'GET', headers: { cookie: 'sid=' + sessionCookie } })
+    expect(response.statusCode).to.equal(200)
+    expect(response.request.path).to.equal('/age-weight-key')
+  })
 
-    const responseB = await makeUpload('', VALID_FILE)
+  test('No gate selected', async () => {
+    const response = await makeUpload(YEAR, '', VALID_FILE)
+    expect(response.statusCode).to.equal(302)
+    expect(response.headers.location).to.equal('/age-weight-key')
+  })
+
+  test('No year entered', async () => {
+    const responseB = await makeUpload('', GATE, VALID_FILE)
     expect(responseB.statusCode).to.equal(302)
     expect(responseB.headers.location).to.equal('/age-weight-key')
   })
 
   test('Non-number entered as a year', async () => {
-    const response = await makeUpload('non-numberic characters', VALID_FILE)
+    const response = await makeUpload('non-numberic characters', GATE, VALID_FILE)
     expect(response.statusCode).to.equal(302)
     expect(response.headers.location).to.equal('/age-weight-key')
   })
 
   test('Year entered is out of range', async () => {
-    const response = await makeUpload(1970, VALID_FILE)
+    const response = await makeUpload(1970, GATE, VALID_FILE)
+    expect(response.statusCode).to.equal(302)
+    expect(response.headers.location).to.equal('/age-weight-key')
+  })
+
+  test('No file selected', async () => {
+    const form = new FormData()
+    form.append('year', YEAR)
+    form.append('gate', GATE)
+    const headers = form.getHeaders()
+    Object.assign(headers, { cookie: 'sid=' + sessionCookie })
+    const payload = await StreamToPromise(form)
+    const response = await server.inject({ url: '/age-weight-key', method: 'POST', payload: payload, headers: headers })
+
     expect(response.statusCode).to.equal(302)
     expect(response.headers.location).to.equal('/age-weight-key')
   })
 
   test('Duplicate header', async () => {
-    const responseA = await makeUpload(YEAR, DUPLICATE_HEADER)
+    const responseA = await makeUpload(YEAR, GATE, DUPLICATE_HEADER)
     expect(responseA.statusCode).to.equal(302)
     expect(responseA.headers.location).to.equal('/age-weight-key')
 
@@ -96,13 +119,13 @@ experiment('File upload: ', () => {
   })
 
   test('An empty file', async () => {
-    const response = await makeUpload(YEAR, EMPTY_FILE)
+    const response = await makeUpload(YEAR, GATE, EMPTY_FILE)
     expect(response.statusCode).to.equal(302)
     expect(response.headers.location).to.equal('/age-weight-key')
   })
 
   test('Invalid format', async () => {
-    const responseA = await makeUpload(YEAR, INVALID_FORMAT)
+    const responseA = await makeUpload(YEAR, GATE, INVALID_FORMAT)
     expect(responseA.statusCode).to.equal(302)
     expect(responseA.headers.location).to.equal('/age-weight-key')
 
@@ -112,7 +135,7 @@ experiment('File upload: ', () => {
   })
 
   test('Invalid header', async () => {
-    const responseA = await makeUpload(YEAR, INVALID_HEADER)
+    const responseA = await makeUpload(YEAR, GATE, INVALID_HEADER)
     expect(responseA.statusCode).to.equal(302)
     expect(responseA.headers.location).to.equal('/age-weight-key')
 
@@ -121,8 +144,14 @@ experiment('File upload: ', () => {
     expect(responseB.request.path).to.equal('/age-weight-key-error-breakdown')
   })
 
+  test('File too large', async () => {
+    const response = await makeUpload(YEAR, GATE, LARGE_UPLOAD_FILE)
+    expect(response.statusCode).to.equal(302)
+    expect(response.headers.location).to.equal('/age-weight-key')
+  })
+
   test('Missing column', async () => {
-    const responseA = await makeUpload(YEAR, MISSING_COLUMN)
+    const responseA = await makeUpload(YEAR, GATE, MISSING_COLUMN)
     expect(responseA.statusCode).to.equal(302)
     expect(responseA.headers.location).to.equal('/age-weight-key')
 
@@ -132,13 +161,13 @@ experiment('File upload: ', () => {
   })
 
   test('Not a csv', async () => {
-    const responseA = await makeUpload(YEAR, NOT_A_CSV)
+    const responseA = await makeUpload(YEAR, GATE, NOT_A_CSV)
     expect(responseA.statusCode).to.equal(302)
     expect(responseA.headers.location).to.equal('/age-weight-key')
   })
 
   test('Viewing validation errors breakdown', async () => {
-    const responseA = await makeUpload(YEAR, MIXED_ERRORS)
+    const responseA = await makeUpload(YEAR, GATE, MIXED_ERRORS)
     expect(responseA.statusCode).to.equal(302)
     expect(responseA.headers.location).to.equal('/age-weight-key')
 
@@ -148,7 +177,7 @@ experiment('File upload: ', () => {
   })
 
   test('Successful upload', async () => {
-    const responseA = await makeUpload(YEAR - 2, VALID_FILE)
+    const responseA = await makeUpload(YEAR - 2, GATE, VALID_FILE)
     expect(responseA.statusCode).to.equal(302)
     expect(responseA.headers.location).to.equal('/age-weight-key-ok')
 
@@ -158,8 +187,8 @@ experiment('File upload: ', () => {
   })
 
   test('Conflicting upload (year already exists), continued without selection', async () => {
-    await makeUpload(YEAR - 1, VALID_FILE)
-    const responseA = await makeUpload(YEAR - 1, VALID_FILE)
+    await makeUpload(YEAR - 1, GATE, VALID_FILE)
+    const responseA = await makeUpload(YEAR - 1, GATE, VALID_FILE)
     expect(responseA.statusCode).to.equal(302)
     expect(responseA.headers.location).to.equal('/age-weight-key-conflict-check')
 
@@ -173,8 +202,8 @@ experiment('File upload: ', () => {
   })
 
   test('Conflicting upload (year already exists), cancelled upload', async () => {
-    await makeUpload(YEAR + 1, VALID_FILE)
-    const responseA = await makeUpload(YEAR + 1, VALID_FILE)
+    await makeUpload(YEAR + 1, GATE, VALID_FILE)
+    const responseA = await makeUpload(YEAR + 1, GATE, VALID_FILE)
     expect(responseA.statusCode).to.equal(302)
     expect(responseA.headers.location).to.equal('/age-weight-key-conflict-check')
 
@@ -184,8 +213,8 @@ experiment('File upload: ', () => {
   })
 
   test('Conflicting upload (year already exists), chose to overwrite', async () => {
-    await makeUpload(YEAR + 2, VALID_FILE)
-    const responseA = await makeUpload(YEAR + 2, VALID_FILE)
+    await makeUpload(YEAR + 2, GATE, VALID_FILE)
+    const responseA = await makeUpload(YEAR + 2, GATE, VALID_FILE)
     expect(responseA.statusCode).to.equal(302)
     expect(responseA.headers.location).to.equal('/age-weight-key-conflict-check')
 
@@ -194,23 +223,9 @@ experiment('File upload: ', () => {
     expect(responseB.headers.location).to.equal('/age-weight-key-ok')
   })
 
-  /*
-  UNCOMMENT ONCE RESEARCHED NO FILE SELECTED
-  */
-
-  // test('No file selected', async () => {
-  //   const response = await makeUpload(YEAR, '')
-  //   expect(response.statusCode).to.equal(302)
-  //   expect(response.headers.location).to.equal('/age-weight-key')
-  // })
-
-  /*
-  UNCOMMENT WHEN FILE SIZE VALIDATION FIXED
-  */
-
-  // test('File too large', async () => {
-  //   const response = await makeUpload(YEAR, LARGE_UPLOAD_FILE)
-  //   expect(response.statusCode).to.equal(302)
-  //   expect(response.headers.location).to.equal('/age-weight-key')
-  // })
+  test('Cancel upload', async () => {
+    const response = await server.inject({ url: '/age-weight-key-cancel', method: 'GET', headers: { cookie: 'sid=' + sessionCookie } })
+    expect(response.statusCode).to.equal(302)
+    expect(response.headers.location).to.equal('/licence')
+  })
 })

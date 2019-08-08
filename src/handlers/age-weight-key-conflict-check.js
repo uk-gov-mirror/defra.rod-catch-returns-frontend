@@ -26,20 +26,21 @@ module.exports = class AgeWeightKeyConflictCheck extends BaseHandler {
    */
   async doGet (request, h) {
     const cache = await request.cache().get()
-    const key = cache.ageWeightKey.key ? cache.ageWeightKey.key : ''
+    const gate = cache.ageWeightKey.gate
     const year = cache.ageWeightKey.year
 
-    return this.readCacheAndDisplayView(request, h, { key, year })
+    return this.readCacheAndDisplayView(request, h, { gate, year })
   }
 
   async doPost (request, h, errors) {
     const overwrite = request.payload.overwrite
+    const cache = await request.cache().get()
     if (overwrite === 'true') {
-      const cache = await request.cache().get()
       const filepath = cache[this.context].payload.upload.path
+      const gate = cache[this.context].payload.gate
       const year = cache[this.context].payload.year
 
-      await AgeWeightKeyApi.postNew(request, year, filepath, true)
+      await AgeWeightKeyApi.postNew(request, year, gate, filepath, true)
 
       this.removeTempFile(filepath)
 
@@ -47,7 +48,10 @@ module.exports = class AgeWeightKeyConflictCheck extends BaseHandler {
     } else if (overwrite === 'false') {
       return this.writeCacheAndRedirect(request, h, false, '/age-weight-key', '')
     } else {
-      return h.view(this.path, { error: true })
+      const gate = cache.ageWeightKey.gate
+      const year = cache.ageWeightKey.year
+
+      return h.view(this.path, { gate, year, error: true })
     }
   }
 }
