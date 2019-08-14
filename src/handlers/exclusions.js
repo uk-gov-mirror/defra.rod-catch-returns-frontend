@@ -46,22 +46,6 @@ module.exports = class ExclusionsHandler extends BaseHandler {
       if (submission.reportingExclude !== setting) {
         await submissionsApi.changeExclusion(request, submission.id, setting)
       }
-
-      // Cascade the small catch exclusions if necessary
-      await Promise.all(smallCatches.map(async c => {
-        if (c.reportingExclude !== setting) {
-          await smallCatchesApi.changeExclusion(request, c.id, setting)
-          response[`exclude-${c.id}`] = setting
-        }
-      }))
-
-      // Cascade the large catch exclusions if necessary
-      await Promise.all(catches.map(async c => {
-        if (c.reportingExclude !== setting) {
-          await catchesApi.changeExclusion(request, c.id, setting)
-          response[`exclude-${c.id}`] = setting
-        }
-      }))
     } else {
       /**
        * Deal with the item level flags and set the submission level flag if all flags are set
@@ -85,21 +69,7 @@ module.exports = class ExclusionsHandler extends BaseHandler {
         }
       }
 
-      // Set or unset the submission level flag
-      if (setting) {
-        if (catches.every(c => c.reportingExclude) && smallCatches.every(c => c.reportingExclude) &&
-          !submission.reportingExclude) {
-          await submissionsApi.changeExclusion(request, submission.id, true)
-          response['exclude-1'] = true
-        }
-      } else {
-        if (submission.reportingExclude) {
-          await submissionsApi.changeExclusion(request, submission.id, false)
-          response['exclude-1'] = false
-        }
-      }
+      return response
     }
-
-    return response
   }
 }
