@@ -28,30 +28,11 @@
 {% endmacro %}
 
 {% macro renderCheck(id, name, checked) %}
-<div class="rcr-tab-checkboxes__item">
-<!--    <input class="rcr-tab-checkboxes__input" type="checkbox" id="exclude-{{ id }}" name="{{ name }}" value="{{ id }}" disabled="true" {% if checked %}checked="checked"{% endif %}>-->
-<!--    <label for="exclude-{{ id }}" class="rcr-tab-checkboxes__label"></label>-->
-
-
-    {{ govukCheckboxes({
-      idPrefix: "organisation",
-      name: "organisation",
-      classes: "govuk-checkboxes--small",
-      fieldset: {
-        legend: {
-          text: "Organisation",
-          isPageHeading: true,
-          classes: "govuk-fieldset__legend--m"
-        }
-      },
-      items: [
-        {
-          value: "hmrc",
-          text: "HM Revenue and Customs (HMRC)"
-        }
-      ]
-    }) }}
-
+<div class="govuk-checkboxes govuk-checkboxes--small">
+    <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" type="checkbox" id="exclude-{{ id }}" name="{{ name }}" value="{{ id }}" disabled="true" {% if checked %}checked="checked"{% endif %}>
+        <label class="govuk-label govuk-checkboxes__label" for="exclude-{{ id }}"></label>
+    </div>
 </div>
 {% endmacro %}
 
@@ -296,7 +277,7 @@
             {{ govukButton({
                 name: "continue",
                 text: "Review catch return",
-                classes: "govuk-button-adjacent",
+                classes: "govuk-!-margin-right-1",
                 disabled: activities.length === 0
             }) }}
 
@@ -304,7 +285,7 @@
                 {{ govukButton({
                     name: "save",
                     text: "Save and return later",
-                    classes: "govuk-button-secondary govuk-button-adjacent",
+                    classes: "govuk-button--secondary",
                     attributes: { onclick: "var e=this;setTimeout(function(){e.disabled=true;},0);return true;" }
                 }) }}
             {% endif %}
