@@ -170,10 +170,10 @@ const manifest = {
         options: {
           generateNonces: false, // Seems to prevent the print dialog
           defaultSrc: 'self',
-          scriptSrc: [ 'self', 'unsafe-inline', 'unsafe-eval', 'www.googletagmanager.com', 'www.google-analytics.com' ],
-          imgSrc: [ 'self', 'www.google-analytics.com' ],
-          fontSrc: [ 'self', 'data:' ],
-          connectSrc: [ 'self', 'www.google-analytics.com' ]
+          scriptSrc: ['self', 'unsafe-inline', 'unsafe-eval', 'www.googletagmanager.com', 'www.google-analytics.com'],
+          imgSrc: ['self', 'www.google-analytics.com'],
+          fontSrc: ['self', 'data:'],
+          connectSrc: ['self', 'www.google-analytics.com']
         }
       },
 
@@ -292,6 +292,7 @@ const options = {
 
     // Point the server plugin cache to an application cache to hold authenticated session data
     server.app.cache = server.cache({
+      cache: 'server-cache',
       segment: 'sessions',
       expiresIn: process.env.SESSION_TTL_MS
     })
