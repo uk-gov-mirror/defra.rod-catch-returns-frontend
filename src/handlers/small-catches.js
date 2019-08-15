@@ -21,7 +21,7 @@ const activitiesApi = new ActivitiesApi()
 const methodsApi = new MethodsApi()
 
 // Calculate calendar months
-const months = [ ...Array(12).keys() ].map(m => {
+const months = [...Array(12).keys()].map(m => {
   const mth = Moment({ month: m }).format('MMMM')
   return {
     value: mth.toUpperCase(),

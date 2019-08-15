@@ -100,7 +100,7 @@ module.exports = async (request) => {
           // Push the array index of the count payload to ignore
           apiIgnore.push(apiCounts.length - 1)
 
-          errors.push({ 'SmallCatch': 'SMALL_CATCH_' + m.name.toUpperCase() + '_COUNT_INVALID' })
+          errors.push({ SmallCatch: 'SMALL_CATCH_' + m.name.toUpperCase() + '_COUNT_INVALID' })
         }
       }
     }

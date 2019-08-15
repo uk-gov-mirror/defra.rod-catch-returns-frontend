@@ -25,7 +25,7 @@ const clean = () => {
 }
 
 const copyAssets = () => {
-  return gulp.src('node_modules/govuk-frontend/assets/{images/**/*.*,fonts/**/*.*}')
+  return gulp.src('node_modules/govuk-frontend/govuk/assets/{images/**/*.*,fonts/**/*.*}')
     .pipe(gulp.dest(paths.public))
 }
 

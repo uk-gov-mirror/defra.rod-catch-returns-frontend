@@ -65,8 +65,8 @@ module.exports = class ExclusionsHandler extends BaseHandler {
           largeCatch.reportingExclude = setting
         }
       }
-
-      return response
     }
+
+    return response
   }
 }

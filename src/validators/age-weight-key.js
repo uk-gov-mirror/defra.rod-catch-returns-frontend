@@ -13,7 +13,7 @@ const MAX_FILE_UPLOAD_BYTES = process.env.MAX_FILE_UPLOAD_BYTES || 100 * 1000 //
  * Validate the did you fish input
  */
 module.exports = async (request) => {
-  let errors = []
+  const errors = []
 
   const now = moment()
   const years = [-2, -1, 0, 1, 2].map(y => (now.year() + y).toString())
@@ -54,7 +54,7 @@ module.exports = async (request) => {
 
       switch (response.status) {
         case ResponseError.status.BAD_REQUEST:
-          let cache = await request.cache().get()
+          const cache = await request.cache().get()
 
           if (Object.keys(response.statusMessage).length === 1 &&
               Object.keys(response.statusMessage)[0] === 'generalErrors' &&

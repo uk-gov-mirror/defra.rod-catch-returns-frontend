@@ -48,7 +48,7 @@ module.exports = class AgeWeightKeyHandler extends BaseHandler {
   }
 
   async doPost (request, h, errors) {
-    let cache = await request.cache().get()
+    const cache = await request.cache().get()
     const gate = (await gatesApi.list(request)).filter(e => e.id === request.payload.gate)[0]
 
     cache.ageWeightKey = {
