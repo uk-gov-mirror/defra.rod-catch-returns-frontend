@@ -29,8 +29,29 @@
 
 {% macro renderCheck(id, name, checked) %}
 <div class="rcr-tab-checkboxes__item">
-    <input class="rcr-tab-checkboxes__input" type="checkbox" id="exclude-{{ id }}" name="{{ name }}" value="{{ id }}" disabled="true" {% if checked %}checked="checked"{% endif %}>
-    <label for="exclude-{{ id }}" class="rcr-tab-checkboxes__label"></label>
+<!--    <input class="rcr-tab-checkboxes__input" type="checkbox" id="exclude-{{ id }}" name="{{ name }}" value="{{ id }}" disabled="true" {% if checked %}checked="checked"{% endif %}>-->
+<!--    <label for="exclude-{{ id }}" class="rcr-tab-checkboxes__label"></label>-->
+
+
+    {{ govukCheckboxes({
+      idPrefix: "organisation",
+      name: "organisation",
+      classes: "govuk-checkboxes--small",
+      fieldset: {
+        legend: {
+          text: "Organisation",
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--m"
+        }
+      },
+      items: [
+        {
+          value: "hmrc",
+          text: "HM Revenue and Customs (HMRC)"
+        }
+      ]
+    }) }}
+
 </div>
 {% endmacro %}
 
