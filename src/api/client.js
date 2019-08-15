@@ -4,7 +4,7 @@
  * This module is responsible for the API rest interface and is data agnostic.
  */
 const Url = require('url')
-const Hoek = require('hoek')
+const Hoek = require('@hapi/hoek')
 const ResponseError = require('../handlers/response-error')
 const ETagRequest = require('request-etag')
 const Fs = require('fs')

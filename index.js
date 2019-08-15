@@ -8,10 +8,10 @@
 
 require('dotenv').config()
 
-const Glue = require('glue')
+const Glue = require('@hapi/glue')
 const Nunjucks = require('nunjucks')
 const Uuid = require('uuid')
-const Joi = require('joi')
+const Joi = require('@hapi/joi')
 const Crypto = require('crypto')
 const Fs = require('fs')
 const TEMP = require('./defaults').TEMP
@@ -29,10 +29,15 @@ const manifest = {
     port: process.env.PORT || 3000,
     cache: [
       {
-        engine: require('catbox-redis'),
-        host: process.env.REDIS_HOSTNAME,
-        port: process.env.REDIS_PORT,
-        partition: 'server-cache'
+        name: 'server-cache',
+        provider: {
+          constructor: require('@hapi/catbox-redis'),
+          options: {
+            host: process.env.REDIS_HOSTNAME,
+            port: process.env.REDIS_PORT,
+            partition: 'server-cache'
+          }
+        }
       }
     ],
     routes: { security: { noOpen: false } }
@@ -53,7 +58,7 @@ const manifest = {
        * See https://www.npmjs.com/package/inert
        */
       {
-        plugin: require('inert')
+        plugin: require('@hapi/inert')
       },
 
       /*
@@ -61,7 +66,7 @@ const manifest = {
        * See https://www.npmjs.com/package/vision
        */
       {
-        plugin: require('vision')
+        plugin: require('@hapi/vision')
       },
 
       /*
@@ -69,7 +74,7 @@ const manifest = {
        * See https://www.npmjs.com/package/hapi-auth-cookie
        */
       {
-        plugin: require('hapi-auth-cookie'),
+        plugin: require('@hapi/cookie'),
         options: {
           mode: 'required'
         }
@@ -112,7 +117,7 @@ const manifest = {
        * See https://github.com/hapijs/h2o2
        */
       {
-        plugin: require('h2o2')
+        plugin: require('@hapi/h2o2')
       },
 
       /*
@@ -144,7 +149,7 @@ const manifest = {
        * See https://www.npmjs.com/package/crumb
        */
       {
-        plugin: require('crumb'),
+        plugin: require('@hapi/crumb'),
         options: {
           key: 'rcr2018',
           cookieOptions: {
@@ -177,7 +182,7 @@ const manifest = {
        * See: https://github.com/hapijs/scooter
        */
       {
-        plugin: require('scooter')
+        plugin: require('@hapi/scooter')
       }
 
     ]
@@ -242,8 +247,8 @@ const options = {
       path: [
         'src/views',
         'src/views/macros',
-        'node_modules/govuk-frontend/',
-        'node_modules/govuk-frontend/components/'
+        'node_modules/govuk-frontend/govuk/',
+        'node_modules/govuk-frontend/govuk/components/'
       ],
 
       // Set up the common view data
