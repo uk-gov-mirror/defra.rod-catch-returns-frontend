@@ -5,7 +5,7 @@
  * test runner
  */
 const { logger } = require('defra-logging-facade')
-const Lab = require('lab')
+const Lab = require('@hapi/lab')
 const lab = exports.lab = Lab.script()
 
 const experiment = lab.experiment

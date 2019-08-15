@@ -30,7 +30,7 @@
 {% macro renderCheck(id, name, checked) %}
 <div class="govuk-checkboxes govuk-checkboxes--small">
     <div class="govuk-checkboxes__item">
-        <input class="govuk-checkboxes__input" type="checkbox" id="exclude-{{ id }}" name="{{ name }}" value="{{ id }}" disabled="true" {% if checked %}checked="checked"{% endif %}>
+        <input class="govuk-checkboxes__input" type="checkbox" id="exclude-{{ id }}" name="{{ name }}" value="{{ id }}" {% if checked %}checked="checked"{% endif %}>
         <label class="govuk-label govuk-checkboxes__label" for="exclude-{{ id }}"></label>
     </div>
 </div>
@@ -65,7 +65,7 @@
         { text: "Method" },
         { text: "Released" },
         { text: "Actions", format: "numeric" },
-        { text: "Ex.", format: "numeric" }
+        { text: "Ex." }
     ] %}
 {% else %}
     {% set largeCatchHeader = [
@@ -116,7 +116,7 @@
         { text: "Unknown", format: "numeric" },
         { text: "Released", format: "numeric" },
         { text: "Actions", format: "numeric" },
-        { text: "Ex.", format: "numeric" }
+        { text: "Ex." }
     ] %}
 {% else %}
     {% if foundInternal %}

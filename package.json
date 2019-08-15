@@ -11,23 +11,23 @@
     "postinstall": "gulp",
     "release": "standard-version",
     "start": "node index.js",
-    "test": "./node_modules/lab/bin/lab --verbose",
+    "test": "./node_modules/@hapi/lab/bin/lab --verbose",
     "watch": "nohup gulp watch&"
   },
   "dependencies": {
     "@hapi/basic": "^5.1.1",
-    "@hapi/catbox-redis": "^5.0.2",
-    "@hapi/cookie": "^10.1.0",
-    "@hapi/crumb": "^7.3.0",
-    "@hapi/glue": "^6.1.0",
-    "@hapi/h2o2": "^8.3.0",
-    "@hapi/hapi": "^18.3.1",
+    "@hapi/catbox-redis": "^5.0.3",
+    "@hapi/cookie": "^10.1.1",
+    "@hapi/crumb": "^7.3.1",
+    "@hapi/glue": "^6.1.1",
+    "@hapi/h2o2": "^8.3.1",
+    "@hapi/hapi": "^18.3.2",
     "@hapi/hoek": "^8.2.1",
     "@hapi/inert": "^5.2.1",
     "@hapi/joi": "^15.1.0",
     "@hapi/scooter": "^5.1.0",
-    "@hapi/vision": "^5.5.2",
-    "aws-sdk": "^2.509.0",
+    "@hapi/vision": "^5.5.3",
+    "aws-sdk": "^2.510.0",
     "bash": "^0.0.1",
     "blankie": "^4.1.1",
     "blipp": "^4.0.0",
@@ -66,6 +66,7 @@
     "merge-stream": "^2.0.0",
     "run-sequence": "^2.2.1",
     "standard": "^13.0.2",
-    "standard-version": "^5.0.0"
+    "standard-version": "^5.0.0",
+    "stream-to-promise": "^2.2.0"
   }
 }

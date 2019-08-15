@@ -15,7 +15,7 @@ module.exports = class BaseHandler {
   constructor ([viewpath, validator, context]) {
     this.path = viewpath
     this.validator = validator
-    this.context = context || 'default-context'
+    this.context = context || 'defaultContext'
     this.handler = this.handler.bind(this)
   }
 
@@ -59,7 +59,7 @@ module.exports = class BaseHandler {
    * object from the cache and rewrite the cache
    */
   async writeCacheAndRedirect (request, h, errors, successPath, errorPath, c) {
-    let cache = c || await request.cache().get()
+    const cache = c || await request.cache().get()
 
     if (errors) {
       // Write the errors into the cache
@@ -89,7 +89,7 @@ module.exports = class BaseHandler {
       throw new Error('Page object must be an object')
     }
 
-    let cache = await request.cache().get()
+    const cache = await request.cache().get()
     if (cache[this.context] && (cache[this.context].payload || cache[this.context].errors)) {
       pageObj = Object.assign(pageObj, {
         payload: cache[this.context].payload,
@@ -105,8 +105,9 @@ module.exports = class BaseHandler {
    * canceled activity
    */
   async clearCacheErrorsAndPayload (request) {
-    let cache = await request.cache().get()
+    const cache = await request.cache().get()
     if (cache[this.context]) {
+      delete cache[this.context]
       await request.cache().set(cache)
     }
     return cache

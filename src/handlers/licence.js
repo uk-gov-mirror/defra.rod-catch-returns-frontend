@@ -19,6 +19,7 @@ module.exports = class LicenceHandler extends BaseHandler {
   async doGet (request, h) {
     return this.readCacheAndDisplayView(request, h, {})
   }
+
   /**
    * If the licence and postcode have been validated save the contact id
    * redirect to the start of the authenticated journey
@@ -28,7 +29,7 @@ module.exports = class LicenceHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doPost (request, h, errors) {
-    let cache = await request.cache().get()
+    const cache = await request.cache().get()
 
     if (!errors) {
       cache.contactId = request.payload.contact.contact.id

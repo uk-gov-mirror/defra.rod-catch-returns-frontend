@@ -18,11 +18,11 @@ module.exports = class AgeWeightKeyErrorBreakdownHandler extends BaseHandler {
    */
 
   static buildErrorItemsObject (errorsObject) {
-    let errorItems = []
-    let errorTypes = Object.keys(errorsObject)
+    const errorItems = []
+    const errorTypes = Object.keys(errorsObject)
 
     errorTypes.forEach(a => {
-      let aTypes = Object.keys(errorsObject[a])
+      const aTypes = Object.keys(errorsObject[a])
       switch (a) {
         case 'generalErrors':
           errorsObject[a].forEach(b => {
@@ -93,7 +93,7 @@ module.exports = class AgeWeightKeyErrorBreakdownHandler extends BaseHandler {
 
         case 'errorsByColumnAndRowNumber':
           aTypes.forEach(b => {
-            let bTypes = Object.keys(errorsObject[a][b])
+            const bTypes = Object.keys(errorsObject[a][b])
             switch (b) {
               case 'DUPLICATE':
                 bTypes.forEach(c => {
@@ -141,10 +141,10 @@ module.exports = class AgeWeightKeyErrorBreakdownHandler extends BaseHandler {
   }
 
   async doGet (request, h) {
-    let cache = await request.cache().get()
-    let errorsObject = cache.ageWeightContext.errors[0].message
-    let errorItems = AgeWeightKeyErrorBreakdownHandler.buildErrorItemsObject(errorsObject)
-    let filename = cache.ageWeightContext.payload.upload.filename
+    const cache = await request.cache().get()
+    const errorsObject = cache.ageWeightContext.errors[0].message
+    const errorItems = AgeWeightKeyErrorBreakdownHandler.buildErrorItemsObject(errorsObject)
+    const filename = cache.ageWeightContext.payload.upload.filename
 
     return this.readCacheAndDisplayView(request, h, { errorItems, filename })
   }

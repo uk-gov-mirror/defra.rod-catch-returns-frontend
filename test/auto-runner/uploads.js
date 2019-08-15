@@ -3,7 +3,7 @@ const ROOT = require('../../defaults').ROOT_PATH
 const Code = require('code')
 const FormData = require('form-data')
 const Fs = require('fs')
-const Lab = require('lab')
+const Lab = require('@hapi/lab')
 const Path = require('path')
 const StreamToPromise = require('stream-to-promise')
 
