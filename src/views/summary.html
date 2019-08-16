@@ -116,7 +116,7 @@
         { text: "Unknown", format: "numeric" },
         { text: "Released", format: "numeric" },
         { text: "Actions", format: "numeric" },
-        { text: "Ex." }
+        { text: "Ex.", format: "numeric"  }
     ] %}
 {% else %}
     {% if foundInternal %}
@@ -218,7 +218,7 @@
                 <span class="govuk-caption-m govuk-!-margin-bottom-5">Skip this section if you did not catch any small adult sea trout</span>
 
                 {{ govukTable({
-                    classes: "rcr-responsive-summary-table",
+                    classes: "rcr-responsive-summary-table exclusion-cb" if fmt else "rcr-responsive-summary-table",
                     captionClasses: "govuk-heading-m",
                     firstCellIsHeader: false,
                     attributes: { id: "small" },
@@ -238,7 +238,7 @@
                 <span class="govuk-caption-m govuk-!-margin-bottom-5">Skip this section if you did not catch any salmon or large adult sea trout</span>
 
                 {{ govukTable({
-                    classes: "rcr-responsive-summary-table",
+                    classes: "rcr-responsive-summary-table exclusion-cb" if fmt else "rcr-responsive-summary-table",
                     captionClasses: "govuk-heading-m",
                     firstCellIsHeader: false,
                     attributes: { id: "large" },
@@ -258,7 +258,7 @@
             {% if activities.length %}
                 {% if fmt %}
                     {{ govukCheckboxes({
-                          idPrefix: "exclude",
+                          idPrefix: "exclude-1",
                           name: "exclude",
                           classes: "disable-if-js-disable",
                           items: [{
