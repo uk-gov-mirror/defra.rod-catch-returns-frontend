@@ -171,7 +171,7 @@
         {% if smallCatchItems.length %}
             {{ govukTable({
                 caption: "Small adult sea trout (1lb and under) catches",
-                classes: "rcr-responsive-summary-table govuk-!-margin-bottom-9",
+                classes: "rcr-responsive-summary-table govuk-!-margin-bottom-9 exclusion-cb" if fmt else "rcr-responsive-summary-table govuk-!-margin-bottom-9",
                 captionClasses: "govuk-heading-m",
                 firstCellIsHeader: false,
                 head: smallCatchHeader,
@@ -182,7 +182,7 @@
         {% if salmonAndLargeTroutItems.length %}
             {{ govukTable({
                 caption: "Salmon and large adult sea trout",
-                classes: "rcr-responsive-summary-table govuk-!-margin-bottom-9",
+                classes: "rcr-responsive-summary-table govuk-!-margin-bottom-9 exclusion-cb" if fmt else "rcr-responsive-summary-table govuk-!-margin-bottom-9",
                 captionClasses: "govuk-heading-m",
                 firstCellIsHeader: false,
                 head: largeCatchHeader,
