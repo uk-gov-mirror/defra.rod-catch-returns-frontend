@@ -30,7 +30,7 @@
             { text: "Weight" },
             { text: "Method" },
             { text: "Released" },
-            { text: "Ex.", classes: "no-print-area" }
+            { text: "Ex.", classes: "no-print-area", format: "numeric" }
         ] %}
     {% else %}
         {% set largeCatchHeader = [
@@ -52,7 +52,7 @@
             { text: "Bait", format: "numeric" },
             { text: "Unknown", format: "numeric" },
             { text: "Released", format: "numeric" },
-            { text: "Ex.", classes: "no-print-area" }
+            { text: "Ex.", classes: "no-print-area", format: "numeric" }
         ] %}
     {% else %}
         {% if foundInternal %}
