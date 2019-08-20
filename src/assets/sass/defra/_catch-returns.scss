@@ -83,3 +83,16 @@ input.date-disabled {
   border: none !important;
   background-color: transparent !important;
 }
+
+div.govuk-date-input--inline {
+  @extend .govuk-date-input;
+  display: inline-block;
+}
+
+div.rcr-default-date {
+  display: inline-block;
+  position: absolute;
+  margin-right: 20px;
+  margin-bottom: 0;
+}
+
