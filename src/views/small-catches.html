@@ -229,7 +229,7 @@
                         </span>
                 {% endif %}
 
-                <div class="govuk-date-input">
+                <div class="govuk-date-input--inline">
                     <div class="govuk-date-input__item">
                         {{ govukInput({
                             id: "month",
@@ -255,6 +255,17 @@
                         </div>
                     </div>
                 </div>
+
+                {% if fmt %}
+                    <div class="rcr-default-date--single">
+                        <div class="govuk-checkboxes govuk-checkboxes--small">
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" type="checkbox" id="no_month" name="{{ name }}" value="{{ id }}">
+                                <label class="govuk-label govuk-checkboxes__label" for="no_month">No month recorded</label>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
 
                 {% if monthsErrorMessage %}
                 </div>
