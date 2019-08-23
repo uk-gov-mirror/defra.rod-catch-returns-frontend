@@ -125,7 +125,8 @@ module.exports = async (request) => {
       activityId,
       monthForApi,
       apiCounts,
-      subNumber(payload.released)
+      subNumber(payload.released),
+      Object.keys(payload).includes('noMonthRecorded')
     )
   } else {
     result = await smallCatchesApi.add(request,
@@ -133,7 +134,8 @@ module.exports = async (request) => {
       activityId,
       monthForApi,
       apiCounts,
-      subNumber(payload.released)
+      subNumber(payload.released),
+      Object.keys(payload).includes('noMonthRecorded')
     )
   }
 

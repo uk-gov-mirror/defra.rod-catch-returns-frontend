@@ -113,7 +113,8 @@ module.exports = class SmallCatchHandler extends BaseHandler {
       const payload = {
         river: smallCatch.activity.river.id,
         released: smallCatch.released,
-        month: smallCatch.month
+        month: smallCatch.month,
+        noMonthRecorded: smallCatch.noMonthRecorded
       }
 
       smallCatch.counts.forEach(t => {
