@@ -319,11 +319,11 @@
                         <div class="rcr-default-date">
                             <div class="govuk-checkboxes govuk-checkboxes--small">
                                 <div class="govuk-checkboxes__item">
-                                    <input class="govuk-checkboxes__input" type="checkbox" id="no_date" name="{{ name }}" value="{{ id }}">
+                                    <input class="govuk-checkboxes__input" type="checkbox" id="no_date" name="noDateRecorded" value="{{ payload.noDateRecorded }}" {% if payload.noDateRecorded %}checked="checked"{% endif %}>
                                     <label class="govuk-label govuk-checkboxes__label" for="no_date">No date recorded</label>
                                 </div>
                                 <div class="govuk-checkboxes__item">
-                                    <input class="govuk-checkboxes__input" type="checkbox" id="only_month" name="{{ name }}" value="{{ id }}">
+                                    <input class="govuk-checkboxes__input" type="checkbox" id="only_month" name="onlyMonthRecorded" value="{{ payload.onlyMonthRecorded }}" {% if payload.onlyMonthRecorded %}checked="checked"{% endif %}>
                                     <label class="govuk-label govuk-checkboxes__label" for="only_month">Only month recorded</label>
                                 </div>
                             </div>

@@ -109,7 +109,9 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
         system: largeCatch.mass.type,
         kilograms: Math.round(largeCatch.mass.kg * 1000) / 1000,
         method: largeCatch.method.id,
-        released: largeCatch.released ? 'true' : 'false'
+        released: largeCatch.released ? 'true' : 'false',
+        noDateRecorded: largeCatch.noDateRecorded,
+        onlyMonthRecorded: largeCatch.onlyMonthRecorded
       }
 
       return this.readCacheAndDisplayView(request, h, {

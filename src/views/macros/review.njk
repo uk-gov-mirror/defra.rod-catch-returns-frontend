@@ -95,7 +95,7 @@
             {% for fish in catches %}
                 {% if fmt %}
                     {{ salmonAndLargeTroutItems.push([
-                        { text: fish.dateCaught, attributes: { 'data-label': largeCatchHeader[0].text} },
+                        { text: fish.dateCaught + ('*' if fish.onlyMonthRecorded or fish.noDateRecorded else ''), attributes: { 'data-label': largeCatchHeader[0].text} },
                         { text: fish.activity.river.name, attributes: { 'data-label': largeCatchHeader[1].text} },
                         { text: fish.species.name, attributes: { 'data-label': largeCatchHeader[2].text} },
                         { text: fish.weight, attributes: { 'data-label': largeCatchHeader[3].text} },
@@ -120,7 +120,7 @@
             {% for catch in smallCatches %}
                 {% if fmt %}
                     {{ smallCatchItems.push([
-                        { text: catch.month, attributes: { 'data-label': smallCatchHeader[0].text} },
+                        { text: catch.month + ('*' if catch.noMonthRecorded else ''), attributes: { 'data-label': smallCatchHeader[0].text} },
                         { text: catch.river, attributes: { 'data-label': smallCatchHeader[1].text} },
                         { text: catch.fly or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[2].text} },
                         { text: catch.spinner or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[3].text} },
