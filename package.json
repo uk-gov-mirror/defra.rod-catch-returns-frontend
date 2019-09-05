@@ -33,6 +33,7 @@
     "blipp": "^4.0.0",
     "defra-logging-facade": "git+https://github.com/DEFRA/defra-logging-facade.git#02459ac",
     "disinfect": "^1.0.0",
+    "dot-prop": "^5.1.0",
     "dotenv": "^8.0.0",
     "figlet": "^1.2.3",
     "govuk-frontend": "^3.0.0",
