@@ -81,18 +81,14 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
     } else {
       // Modify an existing catch
       let largeCatch = await catchesApi.getById(request, `catches/${request.params.id}`)
-
       if (!largeCatch) {
         throw new ResponseError.Error('Unauthorized access to large catch', ResponseError.status.UNAUTHORIZED)
       }
-
-      const largeCatchSubmission = await submissionsApi.getFromLink(request, largeCatch._links.submission.href)
-      largeCatch = await catchesApi.doMap(request, largeCatch)
-
       // Check they are not messing about with somebody else's activity
-      if (largeCatchSubmission.id !== submission.id) {
+      if (!activities.map(a => a._links.self.href).includes(largeCatch._links.activityEntity.href)) {
         throw new ResponseError.Error('Unauthorized access to large catch', ResponseError.status.UNAUTHORIZED)
       }
+      largeCatch = await catchesApi.doMap(request, largeCatch)
 
       // Write the catch id onto the cache
       cache.largeCatch = { id: largeCatch.id }

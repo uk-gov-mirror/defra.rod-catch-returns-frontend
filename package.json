@@ -26,6 +26,7 @@
     "crumb": "^7.2.3",
     "defra-logging-facade": "git+https://github.com/DEFRA/defra-logging-facade.git#02459ac",
     "disinfect": "^1.0.0",
+    "dot-prop": "^5.1.0",
     "dotenv": "^6.1.0",
     "figlet": "^1.2.1",
     "glue": "^5.0.0",

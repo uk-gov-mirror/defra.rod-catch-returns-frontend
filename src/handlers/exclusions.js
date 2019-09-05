@@ -1,9 +1,11 @@
 'use strict'
 const SubmissionsApi = require('../api/submissions')
+const ActivitiesApi = require('../api/activities')
 const CatchesApi = require('../api/catches')
 const SmallCatchesApi = require('../api/small-catches')
 
 const submissionsApi = new SubmissionsApi()
+const activitiesApi = new ActivitiesApi()
 const catchesApi = new CatchesApi()
 const smallCatchesApi = new SmallCatchesApi()
 
@@ -28,8 +30,9 @@ module.exports = class ExclusionsHandler extends BaseHandler {
     const response = {}
     const cache = await request.cache().get()
     const submission = await submissionsApi.getById(request, cache.submissionId)
-    const catches = await catchesApi.getFromLink(request, submission._links.catches.href)
-    const smallCatches = await smallCatchesApi.getFromLink(request, submission._links.smallCatches.href)
+    const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
+    const catches = await catchesApi.getAllChildren(request, activities, '_links.catches.href')
+    const smallCatches = smallCatchesApi.getAllChildren(request, activities, '_links.smallCatches.href')
 
     const payloadKey = Object.keys(request.payload)[0]
     const setting = request.payload[payloadKey] === 'true'
