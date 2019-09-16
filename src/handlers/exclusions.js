@@ -32,7 +32,7 @@ module.exports = class ExclusionsHandler extends BaseHandler {
     const submission = await submissionsApi.getById(request, cache.submissionId)
     const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
     const catches = await catchesApi.getAllChildren(request, activities, '_links.catches.href')
-    const smallCatches = smallCatchesApi.getAllChildren(request, activities, '_links.smallCatches.href')
+    const smallCatches = await smallCatchesApi.getAllChildren(request, activities, '_links.smallCatches.href')
 
     const payloadKey = Object.keys(request.payload)[0]
     const setting = request.payload[payloadKey] === 'true'
