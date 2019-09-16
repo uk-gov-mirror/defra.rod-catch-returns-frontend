@@ -73,7 +73,6 @@ experiment('File upload: ', () => {
 
   test('No gate selected', async () => {
     const response = await makeUpload(YEAR, '', VALID_FILE)
-    if (response.statusCode !== 302) console.error({response})
     expect(response.statusCode).to.equal(302)
     expect(response.headers.location).to.equal('/age-weight-key')
   })
