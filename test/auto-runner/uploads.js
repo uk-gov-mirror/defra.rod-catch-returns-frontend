@@ -44,15 +44,20 @@ experiment('File upload: ', () => {
   })
 
   const makeUpload = async (year, gate, file) => {
-    const form = new FormData()
-    form.append('year', year)
-    form.append('gate', gate)
-    form.append('upload', Fs.createReadStream(file))
-    const headers = form.getHeaders()
-    Object.assign(headers, { cookie: 'sid=' + sessionCookie })
-    const payload = await StreamToPromise(form)
-    const response = await server.inject({ url: '/age-weight-key', method: 'POST', payload: payload, headers: headers })
-    return response
+    try {
+      const form = new FormData()
+      form.append('year', year)
+      form.append('gate', gate)
+      form.append('upload', Fs.createReadStream(file))
+      const headers = form.getHeaders()
+      Object.assign(headers, {cookie: 'sid=' + sessionCookie})
+      const payload = await StreamToPromise(form)
+      const response = await server.inject({url: '/age-weight-key', method: 'POST', payload: payload, headers: headers})
+      console.log({form})
+      return response
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   const makeConflictDecision = async (decision) => {
