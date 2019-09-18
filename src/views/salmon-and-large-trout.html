@@ -80,6 +80,14 @@
             }) }}
         {% endif %}
 
+        {% if error.Catch === 'CATCH_DEFAULT_DATE_REQUIRED' %}
+            {% set dateErrorMessage = { text: "Enter agreed default date" } %}
+            {{ errorList.push({
+                text: "You have not entered a valid default date",
+                href: "#day"
+            }) }}
+        {% endif %}
+
         {% if error.Catch === 'CATCH_DATE_IN_FUTURE' %}
             {% set dateErrorMessage = { text: "Date caught cannot be in the future" } %}
             {{ errorList.push({
@@ -319,11 +327,11 @@
                         <div class="rcr-default-date">
                             <div class="govuk-checkboxes govuk-checkboxes--small">
                                 <div class="govuk-checkboxes__item">
-                                    <input class="govuk-checkboxes__input" type="checkbox" id="no_date" name="noDateRecorded" value="{{ payload.noDateRecorded }}" {% if payload.noDateRecorded %}checked="checked"{% endif %}>
+                                    <input class="govuk-checkboxes__input" type="checkbox" id="no_date" name="noDateRecorded" value="{{ payload.noDateRecorded }}" {% if payload|existsOn("noDateRecorded") %}checked="checked"{% endif %}>
                                     <label class="govuk-label govuk-checkboxes__label" for="no_date">No date recorded</label>
                                 </div>
                                 <div class="govuk-checkboxes__item">
-                                    <input class="govuk-checkboxes__input" type="checkbox" id="only_month" name="onlyMonthRecorded" value="{{ payload.onlyMonthRecorded }}" {% if payload.onlyMonthRecorded %}checked="checked"{% endif %}>
+                                    <input class="govuk-checkboxes__input" type="checkbox" id="only_month" name="onlyMonthRecorded" value="{{ payload.onlyMonthRecorded }}" {% if  payload|existsOn("onlyMonthRecorded") %}checked="checked"{% endif %}>
                                     <label class="govuk-label govuk-checkboxes__label" for="only_month">Only month recorded</label>
                                 </div>
                             </div>

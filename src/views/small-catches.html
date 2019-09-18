@@ -57,6 +57,14 @@
             }) }}
         {% endif %}
 
+        {% if error.SmallCatch === 'SMALL_CATCH_DEFAULT_MONTH_REQUIRED' %}
+            {% set monthsErrorMessage = { text: "Enter agreed default month" } %}
+            {{ errorList.push({
+                text: "You have not entered a valid default month",
+                href: "#month"
+            }) }}
+        {% endif %}
+
         {% if error.SmallCatch === 'SMALL_CATCH_MONTH_IN_FUTURE' %}
             {% set monthsErrorMessage = { text: "Month caught cannot be in the future" } %}
             {{ errorList.push({
@@ -260,7 +268,7 @@
                     <div class="rcr-default-date--single">
                         <div class="govuk-checkboxes govuk-checkboxes--small">
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" type="checkbox" id="no_month_recorded" name="noMonthRecorded" value="{{ payload.noMonthRecorded }}" {% if payload.noMonthRecorded %}checked="checked"{% endif %}>
+                                <input class="govuk-checkboxes__input" type="checkbox" id="no_month_recorded" name="noMonthRecorded" value="{{ payload.noMonthRecorded }}" {% if payload|existsOn("noMonthRecorded") %}checked="checked"{% endif %}>
                                 <label class="govuk-label govuk-checkboxes__label" for="no_month_recorded">No month recorded</label>
                             </div>
                         </div>

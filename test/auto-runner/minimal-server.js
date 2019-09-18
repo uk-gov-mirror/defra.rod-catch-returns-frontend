@@ -71,6 +71,9 @@ module.exports = async () => {
         },
         prepare: (options, next) => {
           options.compileOptions.environment = Nunjucks.configure(options.path, {watch: false})
+
+          // Add a custom filter for use to test the existance of a key on an object
+          options.compileOptions.environment.addFilter('existsOn', (obj, item) => Object.keys(obj || {}).includes(item))
           return next()
         }
       }

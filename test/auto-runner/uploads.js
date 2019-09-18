@@ -1,5 +1,7 @@
 const ROOT = require('../../defaults').ROOT_PATH
 
+require('dotenv').config()
+
 const Code = require('code')
 const FormData = require('form-data')
 const Fs = require('fs')
@@ -53,7 +55,6 @@ experiment('File upload: ', () => {
       Object.assign(headers, {cookie: 'sid=' + sessionCookie})
       const payload = await StreamToPromise(form)
       const response = await server.inject({url: '/age-weight-key', method: 'POST', payload: payload, headers: headers})
-      console.log({form})
       return response
     } catch (err) {
       console.error(err)
