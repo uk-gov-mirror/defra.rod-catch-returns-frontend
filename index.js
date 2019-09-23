@@ -170,9 +170,10 @@ const manifest = {
         options: {
           generateNonces: false, // Seems to prevent the print dialog
           defaultSrc: 'self',
-          scriptSrc: ['self', 'unsafe-inline', 'unsafe-eval', 'www.googletagmanager.com', 'www.google-analytics.com'],
-          imgSrc: ['self', 'www.google-analytics.com'],
-          fontSrc: ['self', 'data:'],
+          scriptSrc: ['self', 'unsafe-inline', 'unsafe-eval', 'www.googletagmanager.com', 'tagmanager.google.com', 'www.google-analytics.com', 'ssl.google-analytics.com'],
+          styleSrc: ['self', 'unsafe-inline', 'tagmanager.google.com', 'fonts.googleapis.com'],
+          imgSrc: ['self', 'www.googletagmanager.com', 'www.google-analytics.com', 'ssl.gstatic.com', 'www.gstatic.com', 'data:'],
+          fontSrc: ['self', 'fonts.gstatic.com', 'data:'],
           connectSrc: ['self', 'www.google-analytics.com']
         }
       },
@@ -256,7 +257,6 @@ const options = {
         return {
           pgid: Uuid.v4(),
           fmt: process.env.CONTEXT === 'FMT',
-          ga_id: process.env.GA_TRACKING_ID,
           gtm: process.env.GA_TAG_MANAGER
         }
       }
