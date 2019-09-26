@@ -10,6 +10,7 @@ const Crypto = require('crypto')
 require('dotenv').config()
 
 const AuthorizationSchemes = require('../../src/lib/authorization-schemes')
+
 const AuthorizationStrategies = require('../../src/lib/authorization-strategies')
 const CacheDecorator = require('../../src/lib/cache-decorator')
 

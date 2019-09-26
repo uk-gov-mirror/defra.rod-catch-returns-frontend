@@ -13,14 +13,12 @@ const Nunjucks = require('nunjucks')
 const Uuid = require('uuid')
 const Joi = require('@hapi/joi')
 const Crypto = require('crypto')
-const Fs = require('fs')
-const TEMP = require('./defaults').TEMP
-const Path = require('path')
 const { logger } = require('defra-logging-facade')
 const AuthorizationSchemes = require('./src/lib/authorization-schemes')
 const AuthorizationStrategies = require('./src/lib/authorization-strategies')
 const EnvironmentSchema = require('./environment-schema')
 const CacheDecorator = require('./src/lib/cache-decorator')
+const { checkTempDir } = require('./src/lib/misc')
 
 const manifest = {
 
@@ -196,15 +194,6 @@ const options = {
 ;(async () => {
   try {
     /**
-     * Create the temporary directory if it does not exist
-     */
-    if (!Fs.existsSync(TEMP)) {
-      Fs.mkdirSync(TEMP)
-    } else {
-      Fs.readdirSync(TEMP).forEach(file => Fs.unlinkSync(Path.join(TEMP, file)))
-    }
-
-    /**
      * Test that the environment is set up correctly
      */
     Joi.validate(process.env, EnvironmentSchema, { allowUnknown: true }, (err) => {
@@ -353,6 +342,9 @@ const options = {
       }
       return h.continue
     })
+
+    // Ensure we have created the temporary directory
+    await checkTempDir()
 
     // Start the server
     await server.start()

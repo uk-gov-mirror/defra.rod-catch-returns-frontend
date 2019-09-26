@@ -8,6 +8,7 @@ const Fs = require('fs')
 const Lab = require('@hapi/lab')
 const Path = require('path')
 const StreamToPromise = require('stream-to-promise')
+const { checkTempDir } = require('../../src/lib/misc')
 
 const lab = exports.lab = Lab.script()
 
@@ -37,6 +38,8 @@ const GATE = 1
 let sessionCookie = null
 let server = null
 
+;(async () => await checkTempDir())()
+
 experiment('File upload: ', () => {
   lab.before(async () => {
     process.env.CONTEXT = 'FMT'
@@ -46,7 +49,6 @@ experiment('File upload: ', () => {
   })
 
   const makeUpload = async (year, gate, file) => {
-    try {
       const form = new FormData()
       form.append('year', year)
       form.append('gate', gate)
@@ -54,11 +56,7 @@ experiment('File upload: ', () => {
       const headers = form.getHeaders()
       Object.assign(headers, {cookie: 'sid=' + sessionCookie})
       const payload = await StreamToPromise(form)
-      const response = await server.inject({url: '/age-weight-key', method: 'POST', payload: payload, headers: headers})
-      return response
-    } catch (err) {
-      console.error(err)
-    }
+      return server.inject({ url: '/age-weight-key', method: 'POST', payload: payload, headers: headers })
   }
 
   const makeConflictDecision = async (decision) => {
