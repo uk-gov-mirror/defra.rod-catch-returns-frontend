@@ -29,15 +29,21 @@ const internals = {
    * @param method
    * @param assoc
    */
-  headers: (method, assoc) => {
-    const headers = {}
-    if (assoc) {
-      headers['Content-Type'] = 'text/uri-list'
-    } else {
-      headers['Content-Type'] = 'application/json'
-    }
-    return headers
+  typeHeader: {
+    ASSOC: 'text/uri-list',
+    JSON: 'application/json',
+    CSV: 'text/csv'
   },
+
+  // headers: (method, assoc) => {
+  //   const headers = {}
+  //   if (assoc) {
+  //     headers['Content-Type'] = 'text/uri-list'
+  //   } else {
+  //     headers['Content-Type'] = 'application/json'
+  //   }
+  //   return headers
+  // },
 
   /**
    * Generate the URI for the request
@@ -72,18 +78,19 @@ const internals = {
    * @param method - internals.method
    * @param body - (JSON formatted request payload)
    * @param throwOnNotFound - if throw throws exception on 404
-   * @param assoc - if true will operate on associations (using the text/uri-list header)
+   * @param typeHeader - specifies the mime type header
    * @returns {Promise<void>}
    */
-  makeRequest: (auth, uri, method, body, throwOnNotFound = false, assoc = false) => {
+  makeRequest: (auth, uri, method, body, throwOnNotFound = false, typeHeader = internals.typeHeader.JSON) => {
     return new Promise(function (resolve, reject) {
       Hoek.assert(internals.method[method], `Method not allowed: ${method}`)
+      Hoek.assert(Object.values(internals.typeHeader).includes(typeHeader), `Type not allowed: ${typeHeader}`)
 
       const requestObject = {
         uri: uri,
         method: method,
         timeout: Number.parseInt(process.env.API_REQUEST_TIMEOUT_MS) || 60000,
-        json: !assoc
+        json: false // This influences both the headers and treatment of the response body so deserialization is done explicitly
       }
 
       if (auth) {
@@ -96,10 +103,10 @@ const internals = {
 
       if (body) {
         logger.debug(`Payload; ${JSON.stringify(body, null, 2)}`)
-        requestObject.body = body
+        requestObject.body = typeHeader === internals.typeHeader.JSON ? JSON.stringify(body) : body
       }
 
-      requestObject.headers = internals.headers(method, assoc)
+      requestObject.headers = { 'Content-Type': typeHeader }
 
       Request(requestObject, (err, response, body) => {
         if (err) {
@@ -108,9 +115,18 @@ const internals = {
           logger.debug(`API; ${method}:${uri} ${response.statusCode}`)
         }
 
+        // If we can deserialize the body as JSON then do so
+        const responseBody = ((body) => {
+          try {
+            return JSON.parse(body || {})
+          } catch (e) {
+            return body
+          }
+        })(body)
+
         // If no error occurred i.e. all statuses but 2xx - or a 304 (cache)
         if (Math.floor(response.statusCode / 100) === 2 || response.statusCode === 304) {
-          resolve(body)
+          resolve(responseBody)
         } else if (response.statusCode === ResponseError.status.NOT_FOUND) {
           // Not found is ignored for searches otherwise it is treated as an error
           if (throwOnNotFound) {
@@ -123,14 +139,8 @@ const internals = {
           resolve({ statusCode: response.statusCode, statusMessage: response.statusMessage })
         } else if (response.statusCode === ResponseError.status.BAD_REQUEST) {
           // Bad requests may be API validation errors
-          if (body && Object.keys(body).includes('errors')) {
-            resolve(body)
-          // Age weight key upload specific errors
-          } else if (body && (Object.keys(JSON.parse(body)).includes('generalErrors') ||
-                              Object.keys(JSON.parse(body)).includes('headerErrors') ||
-                              Object.keys(JSON.parse(body)).includes('errorsByRow') ||
-                              Object.keys(JSON.parse(body)).includes('errorsByColumnAndRowNumber'))) {
-            resolve({ statusCode: response.statusCode, statusMessage: JSON.parse(body) })
+          if (Object.keys(responseBody).includes('errors')) {
+            resolve(responseBody)
           } else {
             reject(new ResponseError.Error(response.statusMessage, response.statusCode))
           }
@@ -144,26 +154,51 @@ const internals = {
 }
 
 module.exports = {
+  /**
+   * To process CRUD requests against the data model
+   * @param auth - The authorization where needed by the API
+   * @param method - One of the HTTP method verbs
+   * @param path - the path
+   * @param search - optional search criteria
+   * @param body - the message body
+   * @param throwOnNotFound flag to indicate that not-found 404 should throw an exception
+   * @returns {Promise<*|Promise<void>>}
+   */
   request: async (auth, method, path, search, body, throwOnNotFound = false) => {
     const request = internals.createRequest(path, search)
-    return internals.makeRequest(auth, request, method, body, throwOnNotFound, false)
+    return internals.makeRequest(auth, request, method, body, throwOnNotFound, internals.typeHeader.JSON)
   },
 
+  /**
+   * For relationship changes between entities
+   * @param auth - The authorization where needed by the API
+   * @param path - the path
+   * @param payload
+   * @returns {Promise<*|Promise<void>>}
+   */
   requestAssociationChange: async (auth, path, payload) => {
     const request = internals.createRequest(path)
-    return internals.makeRequest(auth, request, internals.method.PUT, payload, true, true)
+    return internals.makeRequest(auth, request, internals.method.PUT,
+      payload, true, internals.typeHeader.ASSOC)
   },
 
+  /**
+   * For requests for objects specified by hypermedia (where a full URL is specified)
+   * @param auth - The authorization where needed by the API
+   * @param link - the link
+   * @returns {Promise<*|Promise<void>>}
+   */
   requestFromLink: async (auth, link) => {
-    return internals.makeRequest(auth, link, internals.method.GET, null, true, false)
+    return internals.makeRequest(auth, link, internals.method.GET,
+      null, true, internals.typeHeader.JSON)
   },
 
   /**
    * The file uploader - accepts a file path and (at this point) assumes a .CSV file
-   * @param auth
-   * @param path
-   * @param query
-   * @param filePath
+   * @param auth - The authorization where needed by the API
+   * @param path - the path
+   * @param query - any additional query parameters
+   * @param filePath - the path of the file being uploaded
    * @returns {Promise<*|Promise<void>>}
    */
   requestFileUpload: async (auth, path, query, filePath) => {
@@ -173,7 +208,7 @@ module.exports = {
       internals.method.POST,
       Fs.createReadStream(filePath),
       true,
-      true)
+      internals.typeHeader.CSV)
   },
 
   method: internals.method

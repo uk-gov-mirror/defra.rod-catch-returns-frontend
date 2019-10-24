@@ -30,42 +30,68 @@ module.exports = class AgeWeightKeyHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
-    const cache = await request.cache().get()
-    const gate = cache[this.context] && cache[this.context].payload && cache[this.context].payload.gate ? cache[this.context].payload.gate : ''
-    const year = cache[this.context] && cache[this.context].payload && cache[this.context].payload.year ? cache[this.context].payload.year : ''
+    // If from the navigation menu then clear the whole context including the ageWeightKey
+    if (request.query.clear) {
+      await this.clearCacheErrorsAndPayload(request)
+    }
 
-    const gates = (await gatesApi.list(request)).map(e => {
-      return {
-        id: e.id,
-        name: e.name
-      }
-    })
+    const gates = (await gatesApi.list(request)).map(e => ({ id: e.id, name: e.name }))
 
     const now = moment()
     const years = [-2, 2].map(y => (now.year() + y).toString())
 
-    return this.readCacheAndDisplayView(request, h, { gate, year, gates, years })
+    return this.readCacheAndDisplayView(request, h, { gates, years })
   }
 
+  /**
+   * Called after the validator and:
+   * (1) Writes any errors and payload into the cache
+   * (2) Redirects to the ok to overwrite dialog if there is a conflict
+   * (3) Directs back to self (get) of the OK page depending on the error state
+   *
+   * Note: request.payload.upload.path is the temporary file while
+   * request.payload.upload.filename is the filename
+   *
+   * @param request
+   * @param h
+   * @param errors
+   * @returns {Promise<Promise<*|*>|*>}
+   */
   async doPost (request, h, errors) {
-    const cache = await request.cache().get()
     const gate = (await gatesApi.list(request)).filter(e => e.id === request.payload.gate)[0]
+    const cacheContext = await this.getCacheContext(request)
 
-    cache.ageWeightKey = {
-      filename: request.payload.upload ? request.payload.upload.filename : '',
+    cacheContext.ageWeightKey = {
       year: request.payload.year,
-      gate: gate ? gate.name : ''
+      gateName: gate ? gate.name : '',
+      gateId: gate ? gate.id : ''
     }
 
-    cache[this.context] = cache[this.context] || {}
-    cache[this.context].payload = request.payload
-    await request.cache().set(cache)
+    if (request.payload.upload) {
+      cacheContext.ageWeightKey.tempfile = request.payload.upload.path
+      cacheContext.ageWeightKey.filename = request.payload.upload.filename
+    }
 
-    if (cache[this.context].ageWeightKeyConflict) {
-      return h.redirect('/age-weight-key-conflict-check')
-    } else {
+    cacheContext.errors = errors
+    cacheContext.payload = request.payload
+
+    await this.setCacheContext(request, cacheContext)
+
+    if (errors) {
+      if (errors.find(e => e.type === 'OVERWRITE_DISALLOWED')) {
+        await this.clearCacheErrors(request)
+        return h.redirect('/age-weight-key-conflict-check')
+      }
+
       this.removeTempFile(request)
-      return this.writeCacheAndRedirect(request, h, errors, '/age-weight-key-ok', '/age-weight-key')
+      return this.writeCacheAndRedirect(request, h, errors, null, '/age-weight-key')
     }
+
+    // Leave the ageWeightKey in place on the cache as it is needed by the OK page
+    this.removeTempFile(request)
+    await this.clearCachePayload(request)
+    await this.clearCacheErrors(request)
+
+    return h.redirect('/age-weight-key-ok')
   }
 }

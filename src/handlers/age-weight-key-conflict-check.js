@@ -25,33 +25,48 @@ module.exports = class AgeWeightKeyConflictCheck extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
-    const cache = await request.cache().get()
-    const gate = cache.ageWeightKey.gate
-    const year = cache.ageWeightKey.year
+    const cacheContext = await this.getCacheContext(request)
+    const gate = cacheContext.gate
+    const year = cacheContext.year
 
     return this.readCacheAndDisplayView(request, h, { gate, year })
   }
 
   async doPost (request, h, errors) {
-    const overwrite = request.payload.overwrite
-    const cache = await request.cache().get()
-    if (overwrite === 'true') {
-      const filepath = cache[this.context].payload.upload.path
-      const gate = cache[this.context].payload.gate
-      const year = cache[this.context].payload.year
+    const cacheContext = await this.getCacheContext(request)
 
-      await AgeWeightKeyApi.postNew(request, year, gate, filepath, true)
-
-      this.removeTempFile(filepath)
-
-      return this.writeCacheAndRedirect(request, h, false, '/age-weight-key-ok', '')
-    } else if (overwrite === 'false') {
-      return this.writeCacheAndRedirect(request, h, false, '/age-weight-key', '')
-    } else {
-      const gate = cache.ageWeightKey.gate
-      const year = cache.ageWeightKey.year
-
-      return h.view(this.path, { gate, year, error: true })
+    /*
+     * If errors on this page write payload and errors and get again
+     * Need to preserve the ageWeightKey in the cache
+     */
+    if (errors) {
+      cacheContext.errors = errors
+      cacheContext.payload = request.payload
+      await this.setCacheContext(request, cacheContext)
+      return h.redirect('/age-weight-key-conflict-check')
     }
+
+    /*
+     * Otherwise if chosen that overwrite is yes then load the file
+     * clear the errors and payload but preserve the ageWeightKey on the cache
+     */
+    if (request.payload.overwrite === 'true') {
+      await AgeWeightKeyApi.postNew(request,
+        cacheContext.ageWeightKey.year, cacheContext.ageWeightKey.gateId,
+        cacheContext.ageWeightKey.tempfile, true)
+
+      logger.debug(`Uploaded age weight key file: ${cacheContext.ageWeightKey.filename}`)
+      this.removeTempFile(cacheContext.ageWeightKey.tempfile)
+      await this.clearCachePayload(request)
+      await this.clearCacheErrors(request)
+
+      return h.redirect('/age-weight-key-ok')
+    }
+
+    /*
+     * Chosen to not overwrite so return to the main age weight page
+     * clearing the entire cache context
+     */
+    return h.redirect('/age-weight-key?clear=true')
   }
 }

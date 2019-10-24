@@ -20,9 +20,9 @@ module.exports = class AgeWeightKeyOkHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
-    const cache = await request.cache().get()
+    const cacheContext = await this.getCacheContext(request)
     const now = moment().format('dddd Do MMMM YYYY [at] h:mma')
 
-    return this.readCacheAndDisplayView(request, h, { ageWeightKey: cache.ageWeightKey, now })
+    return this.readCacheAndDisplayView(request, h, { ageWeightKey: cacheContext.ageWeightKey, now })
   }
 }

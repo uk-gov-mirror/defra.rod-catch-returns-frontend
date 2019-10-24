@@ -18,7 +18,7 @@
   <div class="govuk-grid-column-full">
     {{ govukPanel({
       titleText: "Upload complete",
-      html: "<strong>" + ageWeightKey.filename + "</strong><div class='govuk-!-padding-bottom-4'></div><strong>" + ageWeightKey.gate + ", " + ageWeightKey.year + "</strong>",
+      html: "<strong>" + ageWeightKey.filename + "</strong><div class='govuk-!-padding-bottom-4'></div><strong>" + ageWeightKey.gateName + ", " + ageWeightKey.year + "</strong>",
       classes: "govuk-!-margin-bottom-6"
     }) }}
     ​
@@ -29,7 +29,7 @@
     ​
     <div class="govuk-!-padding-bottom-4"></div>
     ​
-    <a id="age-weight-key" class="govuk-link govuk-body-m" href="/age-weight-key">Upload another age weight key</a>
+    <a id="age-weight-key" class="govuk-link govuk-body-m" href="/age-weight-key?clear=true">Upload another age weight key</a>
 
     {{ extra() }}
     ​
