@@ -35,16 +35,6 @@ const internals = {
     CSV: 'text/csv'
   },
 
-  // headers: (method, assoc) => {
-  //   const headers = {}
-  //   if (assoc) {
-  //     headers['Content-Type'] = 'text/uri-list'
-  //   } else {
-  //     headers['Content-Type'] = 'application/json'
-  //   }
-  //   return headers
-  // },
-
   /**
    * Generate the URI for the request
    * @param path
@@ -116,7 +106,7 @@ const internals = {
         }
 
         // If we can deserialize the body as JSON then do so
-        const responseBody = ((body) => {
+        const responseBody = (body => {
           try {
             return JSON.parse(body || {})
           } catch (e) {

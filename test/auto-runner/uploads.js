@@ -201,7 +201,7 @@ experiment('File upload: ', () => {
     expect(responseB.request.path).to.equal('/age-weight-key-conflict-check')
 
     const responseC = await makeConflictDecision('')
-    expect(responseC.statusCode).to.equal(200)
+    expect(responseC.statusCode).to.equal(302)
     expect(responseC.request.path).to.equal('/age-weight-key-conflict-check')
   })
 
@@ -213,7 +213,7 @@ experiment('File upload: ', () => {
 
     const responseB = await makeConflictDecision('false')
     expect(responseB.statusCode).to.equal(302)
-    expect(responseB.headers.location).to.equal('/age-weight-key')
+    expect(responseB.headers.location).to.equal('/age-weight-key?clear=true')
   })
 
   test('Conflicting upload (year already exists), chose to overwrite', async () => {
