@@ -46,6 +46,7 @@ before_install:
   - npm rebuild node-sass
   - git clone https://github.com/DEFRA/rod-catch-returns-api.git
   - cd ./rod-catch-returns-api
+  - git checkout 10cb815b908ac90d1d61a729b8836f0ea76b52ac
   - ./mvnw compile
   - ./mvnw -Dcheckstyle.skip=true -Ddependency-check.skip=true -DskipTests=true -Dspring-boot-plugin.fork.wait=5000 -Dspring-boot-plugin.fork.attempts=24 -Dspring-boot.run.arguments="--spring.profiles.active=h2" spring-boot:start
   - curl http://localhost:9580/api/licence/B7A718

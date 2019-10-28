@@ -44,36 +44,22 @@ module.exports = async (request) => {
     }
   }
 
+  /**
+   * Upload the file and then retrieve tha API errors
+   */
   if (!errors.length) {
     const tempFilePath = request.payload.upload.path
-    logger.debug(`Uploaded age weight key file to: ${tempFilePath}`)
-    const response = await AgeWeightKeyApi.postNew(request, request.payload.year, request.payload.gate, tempFilePath, !!request.payload.overwrite)
-    // TODO - status code inconsistent from API - needs to be fixed
-    if (response) {
-      response.status = response.status ? response.status : response.statusCode
+    logger.debug(`Uploaded age weight key file: ${tempFilePath}`)
 
-      switch (response.status) {
-        case ResponseError.status.BAD_REQUEST:
-          const cache = await request.cache().get()
+    const response = await AgeWeightKeyApi.postNew(request, request.payload.year,
+      request.payload.gate, tempFilePath, !!request.payload.overwrite)
 
-          if (Object.keys(response.statusMessage).length === 1 &&
-              Object.keys(response.statusMessage)[0] === 'generalErrors' &&
-              response.statusMessage.generalErrors[0] === 'OVERWRITE_DISALLOWED') {
-            cache.ageWeightContext = cache.ageWeightContext || {}
-            cache.ageWeightContext.ageWeightKeyConflict = true
-          } else {
-            if (cache.ageWeightContext && cache.ageWeightContext.ageWeightKeyConflict) delete cache.ageWeightContext.ageWeightKeyConflict
-            errors.push({ type: 'BAD_FILE', message: response.statusMessage })
-          }
+    if (response.statusCode === ResponseError.status.CONFLICT) {
+      return [{ type: 'OVERWRITE_DISALLOWED' }]
+    }
 
-          await request.cache().set(cache)
-          break
-
-        case ResponseError.status.CREATED:
-          break
-
-        default:
-      }
+    if (response.status === ResponseError.status.BAD_REQUEST && response.errors) {
+      return [{ type: 'BAD_FILE' }].concat(response.errors)
     }
   }
 

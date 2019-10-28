@@ -14,138 +14,82 @@ module.exports = class AgeWeightKeyErrorBreakdownHandler extends BaseHandler {
    * @param request
    * @param h
    * @param user
-   * @returns {Promise<*>}
+   * @returns {type: string, message: string}
    */
 
-  static buildErrorItemsObject (errorsObject) {
-    const errorItems = []
-    const errorTypes = Object.keys(errorsObject)
+  static builder (err) {
+    switch (err.errorType) {
+      case 'MISSING_WEIGHT_HEADER':
+        return {
+          type: 'Missing required',
+          message: `Row 1, Column ${err.col} - File is missing the 'Weight' column header. ` +
+            'Column headers \'Weight\' and at least one month of the year must exist (for example: Weight, April)'
+        }
 
-    errorTypes.forEach(a => {
-      const aTypes = Object.keys(errorsObject[a])
-      switch (a) {
-        case 'generalErrors':
-          errorsObject[a].forEach(b => {
-            switch (b) {
-              case 'INVALID_CSV':
-                errorItems.push({
-                  type: 'Invalid csv',
-                  message: 'File has .csv formatting issues. Check for missing commas, extra commas, or improper use of quotes.'
-                })
-                break
+      case 'MISSING_MONTH_HEADER':
+        return {
+          type: 'Missing required',
+          message: `Row 1, Column ${err.col} - File is missing the month column header. ` +
+            'Column headers \'Weight\' and at least one month of the year must exist (for example: Weight, April)'
+        }
 
-              default:
-            }
-          })
-          break
+      case 'COLUMN_DISALLOWED':
+        return {
+          type: 'Column disallowed',
+          message: `Row 1, Column ${err.col} - Column header not allowed. ` +
+            'Column headers can only be \'Weight\' or a month of the year (for example: July)'
+        }
 
-        case 'headerErrors':
-          aTypes.forEach(b => {
-            switch (b) {
-              case 'MISSING_REQUIRED':
-                errorsObject[a][b].forEach(c => {
-                  errorItems.push({
-                    type: 'Missing required',
-                    message: `Row 1, Column ${c} - File is missing a required column header. Column headers 'Weight' and at least one month of the year must exist (for example: Weight, April).`
-                  })
-                })
-                break
+      case 'DUPLICATE_HEADERS':
+        return {
+          type: 'Duplicate header',
+          message: `Row 1, Column ${err.col} - File contains a duplicate column header. ` +
+            'Remove or change the duplicate header'
+        }
 
-              case 'COLUMN_DISALLOWED':
-                errorsObject[a][b].forEach(c => {
-                  errorItems.push({
-                    type: 'Column disallowed',
-                    message: `Row 1, Column ${c} - Column header not allowed. Column headers can only be 'Weight' or a month of the year (for example: July).`
-                  })
-                })
-                break
+      case 'ROW_HEADER_DISCREPANCY':
+        return {
+          type: 'Row header discrepancy',
+          message: `Row ${err.row}, Column UNKNOWN - ` +
+            'Row contains too many or too few columns compared to the number of column headers'
+        }
 
-              case 'DUPLICATE_HEADERS':
-                errorsObject[a][b].forEach(c => {
-                  errorItems.push({
-                    type: 'Duplicate header',
-                    message: `Row 1, Column ${c} - File contains a duplicate column header. Remove or change the duplicate header.`
-                  })
-                })
-                break
+      case 'DUPLICATE_WEIGHT':
+        return {
+          type: 'Duplicate weight',
+          message: `Row ${err.row}, Column WEIGHT - File contains a duplicate weight. Remove or change the duplicate weight`
+        }
 
-              default:
-            }
-          })
-          break
+      case 'NOT_WHOLE_NUMBER':
+        return {
+          type: 'Not whole number',
+          message: `Row ${err.row}, Column WEIGHT - Weight must be a whole number. Change weight to a whole number`
+        }
 
-        case 'errorsByRow':
-          aTypes.forEach(b => {
-            switch (b) {
-              case 'ROW_HEADER_DISCREPANCY':
-                errorsObject[a][b].forEach(c => {
-                  errorItems.push({
-                    type: 'Row header discrepancy',
-                    message: `Row ${c}, Column UNKNOWN - Row contains too many or too few columns compared to the number of column headers.`
-                  })
-                })
-                break
-
-              default:
-            }
-          })
-          break
-
-        case 'errorsByColumnAndRowNumber':
-          aTypes.forEach(b => {
-            const bTypes = Object.keys(errorsObject[a][b])
-            switch (b) {
-              case 'DUPLICATE':
-                bTypes.forEach(c => {
-                  errorsObject[a][b][c].forEach(d => {
-                    errorItems.push({
-                      type: 'Not whole number',
-                      message: `Row ${d}, Column WEIGHT - File contains a duplicate weight. Remove or change the duplicate weight.`
-                    })
-                  })
-                })
-                break
-
-              case 'NOT_WHOLE_NUMBER':
-                bTypes.forEach(c => {
-                  errorsObject[a][b][c].forEach(d => {
-                    errorItems.push({
-                      type: 'Not whole number',
-                      message: `Row ${d}, Column WEIGHT - Weight must be a whole number. Change weight to a whole number`
-                    })
-                  })
-                })
-                break
-
-              case 'INVALID_PROBABILITY':
-                bTypes.forEach(c => {
-                  errorsObject[a][b][c].forEach(d => {
-                    errorItems.push({
-                      type: 'Invalid probability',
-                      message: `Row ${d}, Column ${c} - Probability must be a number between 0 and 1 (inclusive). Change probability to a number between 0 and 1 (inclusive).`
-                    })
-                  })
-                })
-                break
-
-              default:
-            }
-          })
-          break
-
-        default:
-      }
-    })
-
-    return errorItems
+      case 'INVALID_PROBABILITY':
+        return {
+          type: 'Invalid probability',
+          message: `Row ${err.row}, Column ${err.col} - Probability must be a number between 0 and 1 (inclusive). ` +
+            'Change probability to a number between 0 and 1 (inclusive)'
+        }
+    }
   }
 
   async doGet (request, h) {
-    const cache = await request.cache().get()
-    const errorsObject = cache.ageWeightContext.errors[0].message
-    const errorItems = AgeWeightKeyErrorBreakdownHandler.buildErrorItemsObject(errorsObject)
-    const filename = cache.ageWeightContext.payload.upload.filename
+    const cacheContext = await this.getCacheContext(request)
+
+    const errorItems = cacheContext.errors
+      .sort((a, b) => ((a.row || 0) - (b.row || 0)) || ((a.col || 0) - (b.col || 0)))
+      .map(AgeWeightKeyErrorBreakdownHandler.builder)
+      .filter(e => !!e)
+
+    const filename = cacheContext.payload.upload.filename
 
     return this.readCacheAndDisplayView(request, h, { errorItems, filename })
+  }
+
+  async doPost (request, h) {
+    await this.clearCacheErrors(request)
+    return h.redirect('/age-weight-key')
   }
 }

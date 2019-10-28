@@ -22,6 +22,7 @@ const ExclusionsHandler = require('../handlers/exclusions')
 const loginValidator = require('../validators/login')
 const licenceValidator = require('../validators/licence')
 const ageWeightKeyValidator = require('../validators/age-weight-key')
+const ageWeightKeyConflictValidator = require('../validators/age-weight-key-conflict')
 
 // Define the handlers
 const loginHandler = new LoginHandler('login', loginValidator)
@@ -32,8 +33,10 @@ const licenceHandler = new LicenceHandler('licence', licenceValidator)
 const lookupHandler = new LookupHandler('lookup')
 const ageWeightKeyHandler = new AgeWeightKeyHandler('age-weight-key', ageWeightKeyValidator, 'ageWeightContext')
 const ageWeightKeyOkHandler = new AgeWeightKeyOkHandler('age-weight-key-ok', null, 'ageWeightContext')
-const ageWeightKeyConflictCheckHandler = new AgeWeightKeyConflictCheckHandler('age-weight-key-conflict-check', null, 'ageWeightContext')
-const ageWeightKeyErrorBreakdownHandler = new AgeWeightKeyErrorBreakdownHandler('age-weight-key-error-breakdown')
+const ageWeightKeyConflictCheckHandler = new AgeWeightKeyConflictCheckHandler('age-weight-key-conflict-check',
+  ageWeightKeyConflictValidator, 'ageWeightContext')
+const ageWeightKeyErrorBreakdownHandler = new AgeWeightKeyErrorBreakdownHandler('age-weight-key-error-breakdown',
+  null, 'ageWeightContext')
 const ageWeightKeyCancel = new AgeWeightKeyCancel(null, null, 'ageWeightContext')
 const exclusionsHandler = new ExclusionsHandler('exclusions')
 
@@ -181,7 +184,7 @@ module.exports = [
   // Age weight key error breakdown handler
   {
     path: '/age-weight-key-error-breakdown',
-    method: 'GET',
+    method: ['GET', 'POST'],
     handler: ageWeightKeyErrorBreakdownHandler.handler
   },
 

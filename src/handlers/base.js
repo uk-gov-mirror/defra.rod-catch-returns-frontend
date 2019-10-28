@@ -53,10 +53,17 @@ module.exports = class BaseHandler {
     }
   }
 
-  /*
+  /**
    * If there are errors then append the errors and the original payload to the
    * cache and redirect to the errorPath. Otherwise remove the errors and payload
    * object from the cache and rewrite the cache
+   * @param request
+   * @param h
+   * @param errors
+   * @param successPath
+   * @param errorPath
+   * @param c
+   * @returns {Promise<*>}
    */
   async writeCacheAndRedirect (request, h, errors, successPath, errorPath, c) {
     const cache = c || await request.cache().get()
@@ -76,9 +83,13 @@ module.exports = class BaseHandler {
     return h.redirect(successPath)
   }
 
-  /*
+  /**
    * Append any errors and payload found in the cache object to
    * the page view
+   * @param request
+   * @param h
+   * @param pageObj - An object for use in the page template.
+   * @returns {Promise<never>}
    */
   async readCacheAndDisplayView (request, h, pageObj) {
     if (!pageObj) {
@@ -90,19 +101,72 @@ module.exports = class BaseHandler {
     }
 
     const cache = await request.cache().get()
+    let pageObj2
     if (cache[this.context] && (cache[this.context].payload || cache[this.context].errors)) {
-      pageObj = Object.assign(pageObj, {
+      pageObj2 = Object.assign(pageObj, {
         payload: cache[this.context].payload,
         errors: cache[this.context].errors
       })
     }
 
-    return h.view(this.path, Object.assign(pageObj, { fmt: process.env.CONTEXT === 'FMT' }))
+    return h.view(this.path, Object.assign(pageObj2 || pageObj, { fmt: process.env.CONTEXT === 'FMT' }))
   }
 
-  /*
+  /**
+   * Helper function to return the current local context of the cache
+   * @param request
+   * @returns {Promise<void>}
+   */
+  async getCacheContext (request) {
+    const cache = await request.cache().get()
+    return cache[this.context] || {}
+  }
+
+  /**
+   * Helper function to set the cache withing the local context
+   * @param request
+   * @param obj
+   * @returns {Promise<void>}
+   */
+  async setCacheContext (request, obj) {
+    const cache = await request.cache().get()
+    cache[this.context] = obj
+    await request.cache().set(cache)
+  }
+
+  /**
+   * @param request
+   * Just clear the errors
+   */
+  async clearCacheErrors (request) {
+    const cache = await request.cache().get()
+    if (cache[this.context] && cache[this.context].errors) {
+      delete cache[this.context].errors
+      await request.cache().set(cache)
+    }
+    return cache
+  }
+
+  /**
+   * @param request
+   * Just clear the payload
+   */
+  async clearCachePayload (request) {
+    const cache = await request.cache().get()
+    if (cache[this.context] && cache[this.context].payload) {
+      delete cache[this.context].payload
+      await request.cache().set(cache)
+    }
+    return cache
+  }
+
+  /**
+   * Clears the context
+   *
    * Allow handlers to clear the cache for a
-   * canceled activity
+   * canceled activity.
+   * @param request
+   * @returns {Promise<*>}
    */
   async clearCacheErrorsAndPayload (request) {
     const cache = await request.cache().get()

@@ -34,29 +34,36 @@
 {% block content %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
-    <h1 class="govuk-heading-l">Errors found in '{{ filename }}'</h1>
-    <label class='govuk-label'>Before uploading the age weight key again, correct all the errors in your file.</label>
+    <form method="post">
 
-    {{ govukDetails({
-      summaryText: "Your CSV file needs to look like this example",
-      html: "<img src='/public/images/csv-example.png' alt='a screenshot of an example .csv opened in Microsoft Excel'>"
-    }) }}
+      <h1 class="govuk-heading-l">Errors found in '{{ filename }}'</h1>
+      <label class='govuk-label'>Before uploading the age weight key again, correct all the errors in your file.</label>
 
-    {{ govukTable({
-      firstCellIsHeader: true,
-      head: [
-        {
-          text: "Number"
-        },
-        {
-          text: "Error"
-        }
-      ],
-      rows: errorRows
-    }) }}
+      {{ govukDetails({
+        summaryText: "Your CSV file needs to look like this example",
+        html: "<img src='/public/images/csv-example.png' alt='a screenshot of an example .csv opened in Microsoft Excel'>"
+      }) }}
 
-    <a id="age-weight-key" class="govuk-link govuk-body-m" href="/age-weight-key">Upload the age weight key again</a>
+      {{ govukTable({
+        firstCellIsHeader: true,
+        head: [
+          {
+            text: "Number"
+          },
+          {
+            text: "Error"
+          }
+        ],
+        rows: errorRows
+      }) }}
 
+      {{ govukButton({
+        name: "continue",
+        text: "Upload the age weight key again"
+      }) }}
+
+      {{ extra() }}
+    </form>
   </div>
 </div>
 {% endblock %}

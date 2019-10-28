@@ -26,7 +26,19 @@
 {% set errorList = [] %}
 {% set errorItem = null %}
 
-{% if error %}
+{% if errors %}
+  {% for error in errors %}
+    {% if error.override === 'NO_OVERRIDE_SELECTED' %}
+      {% set errorItem = { text: "Select yes if you want to replace the existing age weight key" } %}
+        {{ errorList.push({
+          text: "Select yes if you want to replace the existing age weight key",
+          href: "#overwrite"
+        }) }}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% if errors and errors|existsOn("override") %}
   {% set errorItem = { text: "Select yes if you want to replace the existing age weight key" } %}
   {{ errorList.push({
     text: "Select yes if you want to replace the existing age weight key",
@@ -41,7 +53,7 @@
   <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l">An age weight key already exists for the river {{ gate }} in {{ year }}</h1>
     <form method="post" enctype="multipart/form-data">
-      {% if error %}
+      {% if errors %}
         {{ govukErrorSummary({
           titleText: "There is a problem",
           errorList: errorList

@@ -54,6 +54,7 @@
 {% set errorList = [] %}
 {% set riverErrorMessage = null %}
 {% set dateErrorMessage = null %}
+{% set defaultDateErrorMessage = null %}
 {% set typeErrorMessage = null %}
 {% set systemErrorMessage = null %}
 {% set poundsErrorMessage = null %}
@@ -81,10 +82,26 @@
         {% endif %}
 
         {% if error.Catch === 'CATCH_DEFAULT_DATE_REQUIRED' %}
-            {% set dateErrorMessage = { text: "Enter agreed default date" } %}
+            {% if payload|existsOn("onlyMonthRecorded") and not payload|existsOn("noDateRecorded") %}
+                {% set dateErrorMessage = { text: "Enter agreed default day" } %}
+                {{ errorList.push({
+                    text: "You have not entered a valid default day",
+                    href: "#day"
+                }) }}
+            {% else %}
+                {% set dateErrorMessage = { text: "Enter agreed default date" } %}
+                {{ errorList.push({
+                    text: "You have not entered a valid default date",
+                    href: "#day"
+                }) }}
+            {% endif %}
+        {% endif %}
+
+        {% if error.Catch === 'CATCH_NO_DATE_RECORDED_WITH_ONLY_MONTH_RECORDED' %}
+            {% set defaultDateErrorMessage = { text: "Select one only" } %}
             {{ errorList.push({
-                text: "You have not entered a valid default date",
-                href: "#day"
+                text: "You cannot select default date recorded and only month recorded",
+                href: "#only_month"
             }) }}
         {% endif %}
 
@@ -269,78 +286,85 @@
                     <input type="hidden" id="river" name="river" value="{{ rivers[0].id }}"/>
                 {% endif %}
 
-                <label class="govuk-label govuk-!-font-weight-bold">Date caught</label>
-                <span id="date-hint" class="govuk-hint">For example, 24 6</span>
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-full">
+                        <label class="govuk-label govuk-!-font-weight-bold">Date caught</label>
+                        <span id="date-hint" class="govuk-hint">For example, 24 6</span>
+                    </div>
 
-                {% if dateErrorMessage %}
-                    <div class="govuk-form-group govuk-form-group--error">
-                        <span id="fly-error" class="govuk-error-message">
-                            {{ dateErrorMessage.text }}
-                        </span>
-                {% endif %}
+                    <div class="govuk-grid-column-one-half">
+                        <div {% if dateErrorMessage %} class="govuk-form-group govuk-form-group--error" {% else %} class="govuk-form-group" {% endif %}>
+                            {% if dateErrorMessage %}
+                                <span id="date-error" class="govuk-error-message">
+                                    {{ dateErrorMessage.text }}
+                                </span>
+                            {% endif %}
 
-                    <div class="govuk-date-input--inline">
-
-                        <div class="govuk-date-input__item">
-                            {{ govukInput({
-                                id: "day",
-                                name: "day",
-                                label: {
-                                    text: "Day",
-                                    classes: "govuk-date-input__label"
-                                },
-                                type: "number",
-                                value: payload.day,
-                                attributes: { maxlength: 2, pattern: "[0-9]*" },
-                                classes:  "govuk-input--width-2 govuk-input--error" if dateErrorMessage else "govuk-input--width-2"
-                            }) }}
-                        </div>
-
-                        <div class="govuk-date-input__item">
-                            {{ govukInput({
-                                id: "month",
-                                name: "month",
-                                label: {
-                                    text: "Month",
-                                    classes: "govuk-date-input__label"
-                                },
-                                type: "number",
-                                value: payload.month,
-                                attributes: { maxlength: 2, pattern: "[0-9]*" },
-                                classes: "govuk-input--width-2 govuk-input--error" if dateErrorMessage else "govuk-input--width-2"
-                            }) }}
-                        </div>
-
-                        <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                                {{ govukLabel({
-                                    text: "Year",
-                                    classes: "govuk-date-input__label",
-                                    for: "year"
+                            <div class="govuk-date-input__item">
+                                {{ govukInput({
+                                    id: "day",
+                                    name: "day",
+                                    label: {
+                                        text: "Day",
+                                        classes: "govuk-date-input__label"
+                                    },
+                                    type: "number",
+                                    value: payload.day,
+                                    attributes: { maxlength: 2, pattern: "[0-9]*" },
+                                    classes:  "govuk-input--width-2 govuk-input--error" if dateErrorMessage else "govuk-input--width-2"
                                 }) }}
-                                <input id="year" disabled aria-disabled="true" class="govuk-input date-disabled govuk-input--width-4" value="{{ details.year }}"/>
+                            </div>
+
+                            <div class="govuk-date-input__item">
+                                {{ govukInput({
+                                    id: "month",
+                                    name: "month",
+                                    label: {
+                                        text: "Month",
+                                        classes: "govuk-date-input__label"
+                                    },
+                                    type: "number",
+                                    value: payload.month,
+                                    attributes: { maxlength: 2, pattern: "[0-9]*" },
+                                    classes: "govuk-input--width-2 govuk-input--error" if dateErrorMessage else "govuk-input--width-2"
+                                }) }}
+                            </div>
+
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    {{ govukLabel({
+                                        text: "Year",
+                                        classes: "govuk-date-input__label",
+                                        for: "year"
+                                    }) }}
+                                    <input id="year" disabled aria-disabled="true" class="govuk-input date-disabled govuk-input--width-4" value="{{ details.year }}"/>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {% if fmt %}
-                        <div class="rcr-default-date">
-                            <div class="govuk-checkboxes govuk-checkboxes--small">
-                                <div class="govuk-checkboxes__item">
-                                    <input class="govuk-checkboxes__input" type="checkbox" id="no_date" name="noDateRecorded" value="{{ payload.noDateRecorded }}" {% if payload|existsOn("noDateRecorded") %}checked="checked"{% endif %}>
-                                    <label class="govuk-label govuk-checkboxes__label" for="no_date">No date recorded</label>
-                                </div>
-                                <div class="govuk-checkboxes__item">
-                                    <input class="govuk-checkboxes__input" type="checkbox" id="only_month" name="onlyMonthRecorded" value="{{ payload.onlyMonthRecorded }}" {% if  payload|existsOn("onlyMonthRecorded") %}checked="checked"{% endif %}>
-                                    <label class="govuk-label govuk-checkboxes__label" for="only_month">Only month recorded</label>
+                    <div class="govuk-grid-column-one-half">
+                        {% if fmt %}
+                            <div {% if defaultDateErrorMessage %} class="govuk-form-group govuk-form-group--error" {% else %} class="govuk-form-group" {% endif %}>
+                                {% if defaultDateErrorMessage %}
+                                    <span id="default-date-error" class="govuk-error-message">
+                                        {{ defaultDateErrorMessage.text }}
+                                    </span>
+                                {% endif %}
+                                <div class="govuk-checkboxes govuk-checkboxes--small">
+                                    <div class="govuk-checkboxes__item">
+                                        <input class="govuk-checkboxes__input" type="checkbox" id="no_date" name="noDateRecorded" value="{{ payload.noDateRecorded }}" {% if payload|existsOn("noDateRecorded") %}checked="checked"{% endif %}>
+                                        <label class="govuk-label govuk-checkboxes__label" for="no_date">No date recorded</label>
+                                    </div>
+                                    <div class="govuk-checkboxes__item">
+                                        <input class="govuk-checkboxes__input" type="checkbox" id="only_month" name="onlyMonthRecorded" value="{{ payload.onlyMonthRecorded }}" {% if  payload|existsOn("onlyMonthRecorded") %}checked="checked"{% endif %}>
+                                        <label class="govuk-label govuk-checkboxes__label" for="only_month">Only month recorded</label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endif %}
-
-                {% if dateErrorMessage %}
+                        {% endif %}
+                    </div>
                 </div>
-                {% endif %}
 
                 {{ govukRadios({
                     idPrefix: "type",

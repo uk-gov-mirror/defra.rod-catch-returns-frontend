@@ -18,10 +18,7 @@ module.exports = class AgeWeightKeyCancelHandler extends BaseHandler {
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
-    const cache = await request.cache().get()
-    if (cache[this.context]) delete cache[this.context]
-    request.cache().set(cache)
-
+    await this.clearCacheErrorsAndPayload(request)
     return h.redirect('/licence')
   }
 }

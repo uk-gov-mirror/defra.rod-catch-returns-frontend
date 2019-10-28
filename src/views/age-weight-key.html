@@ -23,8 +23,7 @@
   {{ gateItems.push({
     text: g.name,
     value: g.id,
-    checked: g.id === gate
-
+    checked: g.id === payload.gate
   }) }}
 {% endfor %}
 
@@ -149,7 +148,7 @@
             text: "Year"
           },
           classes: "govuk-input--width-4",
-          value: year,
+          value: payload.year,
           errorMessage: yearErrorMessage
         }) }}
 
