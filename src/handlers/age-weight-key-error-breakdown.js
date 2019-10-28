@@ -19,12 +19,6 @@ module.exports = class AgeWeightKeyErrorBreakdownHandler extends BaseHandler {
 
   static builder (err) {
     switch (err.errorType) {
-      case 'INVALID_CSV':
-        return {
-          type: 'Invalid csv',
-          message: 'File has .csv formatting issues. Check for missing commas, extra commas, or improper use of quotes'
-        }
-
       case 'MISSING_WEIGHT_HEADER':
         return {
           type: 'Missing required',
