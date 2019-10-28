@@ -101,14 +101,15 @@ module.exports = class BaseHandler {
     }
 
     const cache = await request.cache().get()
+    let pageObj2
     if (cache[this.context] && (cache[this.context].payload || cache[this.context].errors)) {
-      pageObj = Object.assign(pageObj, {
+      pageObj2 = Object.assign(pageObj, {
         payload: cache[this.context].payload,
         errors: cache[this.context].errors
       })
     }
 
-    return h.view(this.path, Object.assign(pageObj, { fmt: process.env.CONTEXT === 'FMT' }))
+    return h.view(this.path, Object.assign(pageObj2 || pageObj, { fmt: process.env.CONTEXT === 'FMT' }))
   }
 
   /**

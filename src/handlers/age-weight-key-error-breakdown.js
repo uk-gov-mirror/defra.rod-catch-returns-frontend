@@ -85,7 +85,7 @@ module.exports = class AgeWeightKeyErrorBreakdownHandler extends BaseHandler {
     const cacheContext = await this.getCacheContext(request)
 
     const errorItems = cacheContext.errors
-      .sort((a, b) => ((a.row || 0) - (b.row || 0)) || (((a.col || 0) - (b.col || 0))))
+      .sort((a, b) => ((a.row || 0) - (b.row || 0)) || ((a.col || 0) - (b.col || 0)))
       .map(AgeWeightKeyErrorBreakdownHandler.builder)
       .filter(e => !!e)
 

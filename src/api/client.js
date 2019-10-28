@@ -106,13 +106,13 @@ const internals = {
         }
 
         // If we can deserialize the body as JSON then do so
-        const responseBody = (body => {
+        const responseBody = (() => {
           try {
             return JSON.parse(body || {})
           } catch (e) {
             return body
           }
-        })(body)
+        })()
 
         // If no error occurred i.e. all statuses but 2xx - or a 304 (cache)
         if (Math.floor(response.statusCode / 100) === 2 || response.statusCode === 304) {
