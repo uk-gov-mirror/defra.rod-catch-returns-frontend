@@ -27,6 +27,10 @@ module.exports = class SummaryHandler extends BaseHandler {
     // Clean the cache
     const cache = await this.clearCacheErrorsAndPayload(request)
 
+    // Clear other global cache artifacts
+    delete cache.add
+    delete cache.delete
+
     // Find or create a submission object
     const submission = await submissionsApi.getById(request, cache.submissionId)
 
