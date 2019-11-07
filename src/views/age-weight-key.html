@@ -83,9 +83,9 @@
     {% endif %}
 
     {% if error.type === 'FILE_TOO_LARGE' %}
-      {% set fileErrorMessage = { text: "The selected file must be smaller than 1MB" } %}
+      {% set fileErrorMessage = { text: "The selected file must be smaller than 100K" } %}
       {{ errorList.push({
-        text: "The selected file must be smaller than 1MB",
+        text: "The selected file must be smaller than 100K",
         href: "#upload"
       }) }}
     {% endif %}
