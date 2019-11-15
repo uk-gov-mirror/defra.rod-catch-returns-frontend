@@ -93,6 +93,11 @@ CATCH_RETURNS_GOV_UK=https://www.gov.uk/catch-return
 # Max file upload size - 1Mb
 MAX_FILE_UPLOAD_BYTES=1000000
 
+# Scanner deamon location
+CLAMD_SOCK=
+CLAMD_PORT=
+TEMP_DIR=
+
 ```
 ## To Run
 ```
@@ -104,3 +109,36 @@ For automated testing, to force the user to choose this or the previous year run
 ```
 node index.js --force-year-choose
 ```
+
+### Virus Scanner
+The file uploader may use the ClamAV deamon if it is available. In order to installer the scanner type:
+
+``sudo apt-get install clamav``
+
+Install the deamon 
+
+``sudo apt-get install clamav-daemon``
+
+Check that the deamon is running
+
+``ps ax | grep [c]lamd``
+
+And the version
+
+```clamdscan --version```
+
+The configuration for the deamon can be found here
+
+```/etc/clamav/clamd.conf```
+
+Find the LocalSocket file and use to set the clam variables - if these are not set then clam will run in local mode
+ 
+```
+CLAMD_SOCK=/var/run/clamav/clamd.ctl
+CLAMD_PORT=3310
+```
+Note: the program creates a ./temp directory on startup for the temporary storage of uploaded files before passing them to the API. Please ensure the clamd user can read, write and execute on that directory.  
+
+```chmod 777 ./temp```
+
+When running locally the deamon will not be able to read files in the user area. In this case the location temporary directory can be moved by setting TEMP_DIR. It may also be necessary to disable AppArmor - see https://help.ubuntu.com/lts/serverguide/apparmor.html

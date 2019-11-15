@@ -11,7 +11,7 @@ module.exports = {
    */
   checkTempDir: async () => {
     return new Promise((resolve, reject) => {
-      Fs.mkdir(TEMP, { mode: 0o700 }, (err) => {
+      Fs.mkdir(TEMP, { mode: 0o777 }, (err) => {
         if (err) {
           if (err.code === 'EEXIST') {
             logger.info(`Temporary file directory: ${TEMP} exists, delete old files...`)

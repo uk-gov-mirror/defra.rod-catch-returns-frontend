@@ -173,10 +173,17 @@
           html: "<img src='/public/images/csv-example.png' alt='a screenshot of an example .csv opened in Microsoft Excel'>"
         }) }}
 
-        {{ govukButton({
+
+      {{ govukButton({
           name: "submit",
-          text: "Upload"
+          text: "Upload",
+          attributes: { onclick: "setTimeout(function(){document.getElementById('spinner').style.visibility = 'visible';},500);return true;" }
         }) }}
+
+      <div id="spinner" class="spinner-container">
+        <div class="spinner"></div>
+        <div class="govuk-label">Checking file for viruses, please wait...</div>
+      </div>
 
       {% endcall %}
       {{ extra() }}
