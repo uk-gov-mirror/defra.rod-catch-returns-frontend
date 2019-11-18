@@ -37,6 +37,9 @@ env:
     CONTEXT=ANGLER
     AUTH_PW=1234567890123456
     CATCH_RETURNS_GOV_UK=https://www.gov.uk/catch-return
+    CLAMD_SOCK=/var/run/clamav/clamd.ctl
+    CLAMD_PORT=3310
+    TEMP_DIR=/tmp
 
 services:
   - redis-server

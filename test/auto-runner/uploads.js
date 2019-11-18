@@ -129,7 +129,7 @@ experiment('File upload: ', () => {
     expect(response.headers.location).to.equal('/age-weight-key')
   })
 
-  test('An virus file', async () => {
+  test('An infected file', async () => {
     const response = await makeUpload(YEAR, GATE, VIRUS_FILE)
     expect(response.statusCode).to.equal(302)
     expect(response.headers.location).to.equal('/age-weight-key')
