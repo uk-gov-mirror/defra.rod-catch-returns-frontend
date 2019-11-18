@@ -14,8 +14,7 @@ module.exports = {
       Fs.mkdir(TEMP, { mode: 0o777 }, (err) => {
         if (err) {
           if (err.code === 'EEXIST') {
-            logger.info(`Temporary file directory: ${TEMP} exists, delete old files...`)
-            Fs.readdirSync(TEMP).forEach(file => Fs.unlinkSync(Path.join(TEMP, file)))
+            logger.info(`Using temporary file directory: ${TEMP}`)
             resolve()
           } else {
             logger.error(err)
