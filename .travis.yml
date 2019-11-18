@@ -42,8 +42,8 @@ services:
   - redis-server
 
 before_install:
-  - apt-get install clamav
-  - apt-get install clamav-daemon
+  - sudo apt-get install clamav
+  - sudo apt-get install clamav-daemon
   - nvm install $NODE_VERSION
   - npm rebuild node-sass
   - git clone https://github.com/DEFRA/rod-catch-returns-api.git
