@@ -31,6 +31,7 @@ const MISSING_COLUMN = Path.join(ROOT, 'test/files/age-weight-key (missing colum
 const MIXED_ERRORS = Path.join(ROOT, 'test/files/age-weight-key (mixed errors).csv')
 const NOT_A_CSV = Path.join(ROOT, 'test/files/age-weight-key (not a csv).png')
 const VALID_FILE = Path.join(ROOT, 'test/files/age-weight-key (valid).csv')
+const VIRUS_FILE = Path.join(ROOT, 'test/files/eicar.com.csv')
 
 const YEAR = require('moment')().year()
 const GATE = 1
@@ -124,6 +125,12 @@ experiment('File upload: ', () => {
 
   test('An empty file', async () => {
     const response = await makeUpload(YEAR, GATE, EMPTY_FILE)
+    expect(response.statusCode).to.equal(302)
+    expect(response.headers.location).to.equal('/age-weight-key')
+  })
+
+  test('An virus file', async () => {
+    const response = await makeUpload(YEAR, GATE, VIRUS_FILE)
     expect(response.statusCode).to.equal(302)
     expect(response.headers.location).to.equal('/age-weight-key')
   })

@@ -1,16 +1,17 @@
 div.spinner-container {
-  display: inline-block;
-  padding-left: 30px;
-  margin-top: -17px;
   visibility: hidden;
+  position: absolute;
+  top: calc(50% - 30px);
+  left: calc(50% - 30px);
+  z-index: 10;
 }
 
 .spinner {
   border: 12px solid #DEE0E2;
   border-radius: 50%;
   border-top-color: #005EA5;
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   -webkit-animation: spin 2s linear infinite;
   animation: spin 2s linear infinite;
 }

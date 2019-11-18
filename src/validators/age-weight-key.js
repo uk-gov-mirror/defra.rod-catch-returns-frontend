@@ -102,9 +102,12 @@ module.exports = async (request) => {
     logger.debug(`Uploaded age weight key file: ${tempFilePath}`)
 
     const fileScanner = new FileScanner(request.payload.upload.filename, tempFilePath)
-    const { is_infected: isInfected, file, viruses } = await fileScanner.scan()
+    const { is_infected: isInfected } = await fileScanner.scan()
 
-    console.log({ isInfected, file, viruses })
+    // console.log({ isInfected, file, viruses })
+    if (isInfected) {
+      return [{ type: 'FILE_HAS_VIRUS' }]
+    }
 
     const response = await AgeWeightKeyApi.postNew(request, request.payload.year,
       request.payload.gate, tempFilePath, !!request.payload.overwrite)

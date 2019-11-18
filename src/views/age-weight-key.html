@@ -106,6 +106,14 @@
       }) }}
     {% endif %}
 
+    {% if error.type === 'FILE_HAS_VIRUS' %}
+      {% set fileErrorMessage = { text: "A virus has been detected in the selected file." } %}
+      {{ errorList.push({
+        text: "The selected file must not contain a virus infection",
+        href: "#upload"
+      }) }}
+    {% endif %}
+
   {% endfor %}
 {% endif %}
 
@@ -177,18 +185,17 @@
       {{ govukButton({
           name: "submit",
           text: "Upload",
-          attributes: { onclick: "setTimeout(function(){document.getElementById('spinner').style.visibility = 'visible';},500);return true;" }
+          attributes: { onclick: "setTimeout(function(){document.getElementById('spinner-container').style.visibility = 'visible';},500);return true;" }
         }) }}
-
-      <div id="spinner" class="spinner-container">
-        <div class="spinner"></div>
-        <div class="govuk-label">Checking file for viruses, please wait...</div>
-      </div>
 
       {% endcall %}
       {{ extra() }}
     </form>
     <a id="licence" class="govuk-link govuk-body-m" href="/age-weight-key-cancel">Cancel</a>
+  </div>
+
+  <div id = "spinner-container" class="spinner-container">
+    <div class="spinner"></div>
   </div>
 </div>
 {% endblock %}
