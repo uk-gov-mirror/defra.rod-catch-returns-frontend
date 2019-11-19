@@ -49,10 +49,11 @@ experiment('File upload: ', () => {
     sessionCookie = Runner.getCookies(response)['sid']
   })
 
-  const makeUpload = async (year, gate, file) => {
+  const makeUpload = async (year, gate, file, vmock) => {
       const form = new FormData()
       form.append('year', year)
       form.append('gate', gate)
+      vmock && form.append('vmock', 'true')
       form.append('upload', Fs.createReadStream(file))
       const headers = form.getHeaders()
       Object.assign(headers, {cookie: 'sid=' + sessionCookie})
@@ -130,7 +131,7 @@ experiment('File upload: ', () => {
   })
 
   test('An infected file', async () => {
-    const response = await makeUpload(YEAR, GATE, VIRUS_FILE)
+    const response = await makeUpload(YEAR, GATE, VIRUS_FILE, true)
     expect(response.statusCode).to.equal(302)
     expect(response.headers.location).to.equal('/age-weight-key')
   })

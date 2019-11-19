@@ -37,19 +37,11 @@ env:
     CONTEXT=ANGLER
     AUTH_PW=1234567890123456
     CATCH_RETURNS_GOV_UK=https://www.gov.uk/catch-return
-    CLAMD_SOCK=/var/run/clamav/clamd.ctl
-    CLAMD_PORT=3310
-    TEMP_DIR=/tmp
 
 services:
   - redis-server
 
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq clamav clamav-daemon
-  - chmod a+x start-clam.sh
-  - sudo ./start-clam.sh
-  - ps ax | grep [c]lamd
   - nvm install $NODE_VERSION
   - npm rebuild node-sass
   - git clone https://github.com/DEFRA/rod-catch-returns-api.git

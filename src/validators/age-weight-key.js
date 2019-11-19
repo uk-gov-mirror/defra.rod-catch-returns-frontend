@@ -41,7 +41,7 @@ function FileScanner (filename, path) {
   }
 })()
 
-FileScanner.prototype.scan = async function () {
+FileScanner.prototype.scan = async function (vmock) {
   try {
     // Ensure that the clamd user can read, write and execute the file
     logger.info(`Scanning ${this.filename} for viruses...`)
@@ -50,7 +50,7 @@ FileScanner.prototype.scan = async function () {
     })
 
     return this.scanner ? this.scanner.is_infected(this.path) : {
-      is_infected: false,
+      is_infected: !!vmock,
       file: this.filename,
       viruses: []
     }
@@ -102,7 +102,7 @@ module.exports = async (request) => {
     logger.debug(`Uploaded age weight key file: ${tempFilePath}`)
 
     const fileScanner = new FileScanner(request.payload.upload.filename, tempFilePath)
-    const { is_infected: isInfected } = await fileScanner.scan()
+    const { is_infected: isInfected } = await fileScanner.scan(request.payload.vmock)
 
     // console.log({ isInfected, file, viruses })
     if (isInfected) {
