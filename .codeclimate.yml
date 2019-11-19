@@ -37,3 +37,9 @@ checks:
   method-complexity:
     config:
       threshold: 15
+
+no-vendor-prefixes:
+  - 1
+  -
+    excluded-identifiers:
+      - webkit
