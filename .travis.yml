@@ -47,10 +47,8 @@ services:
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq clamav clamav-daemon
-  - sudo service clamav-freshclam restart
-  - sudo service clamav-daemon start
-  - sleep 60
-  - sudo service clamav-daemon status
+  - chmod a+x start-clam.sh
+  - ./start-clam.sh
   - clamdscan --version
   - nvm install $NODE_VERSION
   - npm rebuild node-sass
