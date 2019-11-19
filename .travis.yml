@@ -45,10 +45,10 @@ services:
   - redis-server
 
 before_install:
-  - sudo apt-get update
-  - sudo apt install clamav clamav-daemon
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq clamav clamav-daemon
   - /etc/init.d/clamav-daemon restart
-  - while [ $(ps ax | grep [c]lamd | wc -l) -eq 0 ]; do x=1 sleep 1; x=$(( $x + 1 )); if [ $x -gt 15 ]; then exit 1; fi done
+  - sleep 15
   - clamdscan -V
   - nvm install $NODE_VERSION
   - npm rebuild node-sass
