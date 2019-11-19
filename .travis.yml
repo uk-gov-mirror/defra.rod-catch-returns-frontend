@@ -47,9 +47,11 @@ services:
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq clamav clamav-daemon
-  - sudo /etc/init.d/clamav-daemon restart
-  - sleep 15
-  - clamdscan -V
+  - sudo service clamav-freshclam restart
+  - sudo service clamav-daemon start
+  - sleep 60
+  - sudo service clamav-daemon status
+  - clamdscan --version
   - nvm install $NODE_VERSION
   - npm rebuild node-sass
   - git clone https://github.com/DEFRA/rod-catch-returns-api.git
