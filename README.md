@@ -111,7 +111,11 @@ node index.js --force-year-choose
 ```
 
 ### Virus Scanner
-The file uploader may use the ClamAV deamon if it is available. In order to installer the scanner type:
+The file uploader may use the ClamAV deamon if it is available. 
+
+See https://www.clamav.net/ for details
+
+In order to installer the scanner type:
 
 ``sudo apt-get install clamav``
 
