@@ -71,6 +71,10 @@ experiment('File upload: ', () => {
     return response
   }
 
+  test ('test directory creation: illegal (This prints an error to the console)', async() => {
+     expect(checkTempDir('/not/a/legal/dir')).to.reject()
+  })
+
   test('Visit the age weight key page', async () => {
     const response = await server.inject({ url: '/age-weight-key', method: 'GET', headers: { cookie: 'sid=' + sessionCookie } })
     expect(response.statusCode).to.equal(200)
