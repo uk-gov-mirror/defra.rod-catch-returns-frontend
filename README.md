@@ -119,6 +119,10 @@ Install the deamon
 
 ``sudo apt-get install clamav-daemon``
 
+The deamon can be started and stopped as follows
+``sudo systemctl start clamav-daemon``
+``sudo systemctl stop clamav-daemon``
+
 Check that the deamon is running
 
 ``ps ax | grep [c]lamd``
@@ -131,7 +135,7 @@ The configuration for the deamon can be found here
 
 ```/etc/clamav/clamd.conf```
 
-Find the LocalSocket file and use to set the clam variables - if these are not set then clam will run in local mode
+Find the LocalSocket file and use to set the clam variables - if these are not set then clam will run in local binary mode. There is no fallback 
  
 ```
 CLAMD_SOCK=/var/run/clamav/clamd.ctl
