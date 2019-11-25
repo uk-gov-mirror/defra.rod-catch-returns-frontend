@@ -107,9 +107,9 @@
     {% endif %}
 
     {% if error.type === 'FILE_HAS_VIRUS' %}
-      {% set fileErrorMessage = { text: "A virus has been detected in the selected file." } %}
+      {% set fileErrorMessage = { text: "The selected file contains a virus" } %}
       {{ errorList.push({
-        text: "The selected file must not contain a virus infection",
+        text: "The selected file contains a virus, upload another file",
         href: "#upload"
       }) }}
     {% endif %}
@@ -150,7 +150,7 @@
         <span class='govuk-hint'>For example, 2017</span>
 
         {{ govukInput({
-          idPrefix: "year",
+          id: "year",
           name: "year",
           label: {
             text: "Year"
