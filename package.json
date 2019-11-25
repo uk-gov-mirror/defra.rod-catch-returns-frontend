@@ -31,6 +31,7 @@
     "bash": "^0.0.1",
     "blankie": "^4.1.1",
     "blipp": "^4.0.0",
+    "clamscan": "^1.1.0",
     "defra-logging-facade": "git+https://github.com/DEFRA/defra-logging-facade.git#02459ac",
     "disinfect": "^1.0.0",
     "dot-prop": "^5.1.0",

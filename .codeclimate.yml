@@ -29,6 +29,7 @@ exclude_paths:
   - "**.json"
   - gulpfile.js
   - LICENSE
+  - src/assets/sass/defra/_spinner.scss
 
 checks:
   method-lines:

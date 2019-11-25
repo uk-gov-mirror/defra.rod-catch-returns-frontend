@@ -31,6 +31,7 @@ const MISSING_COLUMN = Path.join(ROOT, 'test/files/age-weight-key (missing colum
 const MIXED_ERRORS = Path.join(ROOT, 'test/files/age-weight-key (mixed errors).csv')
 const NOT_A_CSV = Path.join(ROOT, 'test/files/age-weight-key (not a csv).png')
 const VALID_FILE = Path.join(ROOT, 'test/files/age-weight-key (valid).csv')
+const VIRUS_FILE = Path.join(ROOT, 'test/files/eicar.com.csv')
 
 const YEAR = require('moment')().year()
 const GATE = 1
@@ -48,10 +49,11 @@ experiment('File upload: ', () => {
     sessionCookie = Runner.getCookies(response)['sid']
   })
 
-  const makeUpload = async (year, gate, file) => {
+  const makeUpload = async (year, gate, file, vmock) => {
       const form = new FormData()
       form.append('year', year)
       form.append('gate', gate)
+      vmock && form.append('vmock', 'true')
       form.append('upload', Fs.createReadStream(file))
       const headers = form.getHeaders()
       Object.assign(headers, {cookie: 'sid=' + sessionCookie})
@@ -68,6 +70,10 @@ experiment('File upload: ', () => {
     const response = await server.inject({ url: '/age-weight-key-conflict-check', method: 'POST', payload: payload, headers: headers })
     return response
   }
+
+  test ('test directory creation: illegal (This prints an error to the console)', async() => {
+     expect(checkTempDir('/not/a/legal/dir')).to.reject()
+  })
 
   test('Visit the age weight key page', async () => {
     const response = await server.inject({ url: '/age-weight-key', method: 'GET', headers: { cookie: 'sid=' + sessionCookie } })
@@ -124,6 +130,12 @@ experiment('File upload: ', () => {
 
   test('An empty file', async () => {
     const response = await makeUpload(YEAR, GATE, EMPTY_FILE)
+    expect(response.statusCode).to.equal(302)
+    expect(response.headers.location).to.equal('/age-weight-key')
+  })
+
+  test('An infected file', async () => {
+    const response = await makeUpload(YEAR, GATE, VIRUS_FILE, true)
     expect(response.statusCode).to.equal(302)
     expect(response.headers.location).to.equal('/age-weight-key')
   })

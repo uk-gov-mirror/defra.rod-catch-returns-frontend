@@ -106,6 +106,14 @@
       }) }}
     {% endif %}
 
+    {% if error.type === 'FILE_HAS_VIRUS' %}
+      {% set fileErrorMessage = { text: "The selected file contains a virus" } %}
+      {{ errorList.push({
+        text: "The selected file contains a virus, upload another file",
+        href: "#upload"
+      }) }}
+    {% endif %}
+
   {% endfor %}
 {% endif %}
 
@@ -142,7 +150,7 @@
         <span class='govuk-hint'>For example, 2017</span>
 
         {{ govukInput({
-          idPrefix: "year",
+          id: "year",
           name: "year",
           label: {
             text: "Year"
@@ -173,15 +181,21 @@
           html: "<img src='/public/images/csv-example.png' alt='a screenshot of an example .csv opened in Microsoft Excel'>"
         }) }}
 
-        {{ govukButton({
+
+      {{ govukButton({
           name: "submit",
-          text: "Upload"
+          text: "Upload",
+          attributes: { onclick: "setTimeout(function(){document.getElementById('spinner-container').style.visibility = 'visible';},500);return true;" }
         }) }}
 
       {% endcall %}
       {{ extra() }}
     </form>
     <a id="licence" class="govuk-link govuk-body-m" href="/age-weight-key-cancel">Cancel</a>
+  </div>
+
+  <div id = "spinner-container" class="spinner-container">
+    <div class="spinner"></div>
   </div>
 </div>
 {% endblock %}
