@@ -29,12 +29,12 @@ module.exports = class BaseHandler {
     try {
       let errors
       if (request.method.toUpperCase() === 'GET') {
-        return this.doGet(request, h)
+        return await this.doGet(request, h)
       } else {
         if (this.validator) {
           errors = await this.validator(request, h)
         }
-        return this.doPost(request, h, errors)
+        return await this.doPost(request, h, errors)
       }
     } catch (err) {
       // Crypto error
