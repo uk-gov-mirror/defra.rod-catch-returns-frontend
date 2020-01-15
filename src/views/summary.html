@@ -5,6 +5,7 @@
 {% from "fieldset/macro.njk" import govukFieldset %}
 {% from "checkboxes/macro.njk" import govukCheckboxes %}
 {% from "navigation.njk" import navigationHeaderBlock %}
+{% from "govuk-table-grouped.njk" import govukTableGrouped %}
 
 {% block header %}
     {% if fmt %}
@@ -83,8 +84,8 @@
     {% for fish in catches %}
         {% if fmt %}
             {{ salmonAndLargeTroutItems.push([
-                { text: fish.dateCaught + (' * ' if fish.onlyMonthRecorded or fish.noDateRecorded else ''), attributes: { 'data-label': largeCatchHeader[0].text} },
-                { text: fish.activity.river.name, attributes: { 'data-label': largeCatchHeader[1].text} },
+                { text: fish.dateCaught + (' * ' if fish.onlyMonthRecorded or fish.noDateRecorded else ''), rowspan: fish.rowspan, hide: fish.hide, attributes: { 'data-label': largeCatchHeader[0].text} },
+                { text: fish.activity.river.name, hide: fish.riverHide, rowspan: fish.riverRowspan, attributes: { 'data-label': largeCatchHeader[1].text} },
                 { text: fish.species.name, attributes: { 'data-label': largeCatchHeader[2].text} },
                 { text: fish.weight, attributes: { 'data-label': largeCatchHeader[3].text} },
                 { text: fish.method.name, attributes: { 'data-label': largeCatchHeader[4].text} },
@@ -94,8 +95,8 @@
             ]) }}
         {% else %}
             {{ salmonAndLargeTroutItems.push([
-                { text: fish.dateCaught, attributes: { 'data-label': largeCatchHeader[0].text} },
-                { text: fish.activity.river.name, attributes: { 'data-label': largeCatchHeader[1].text} },
+                { text: fish.dateCaught, hide: fish.hide, rowspan: fish.rowspan, attributes: { 'data-label': largeCatchHeader[0].text} },
+                { text: fish.activity.river.name, hide: fish.riverHide, rowspan: fish.riverRowspan, attributes: { 'data-label': largeCatchHeader[1].text} },
                 { text: fish.species.name, attributes: { 'data-label': largeCatchHeader[2].text} },
                 { text: fish.weight, attributes: { 'data-label': largeCatchHeader[3].text} },
                 { text: fish.method.name, attributes: { 'data-label': largeCatchHeader[4].text} },
@@ -147,7 +148,7 @@
     {% for catch in smallCatches %}
         {% if fmt %}
             {{ smallCatchItems.push([
-                { text: catch.month + (' * ' if catch.noMonthRecorded else ''), attributes: { 'data-label': smallCatchHeader[0].text} },
+                { text: catch.month + (' * ' if catch.noMonthRecorded else ''), rowspan: catch.rowspan, hide: catch.hide, attributes: { 'data-label': smallCatchHeader[0].text} },
                 { text: catch.river, attributes: { 'data-label': smallCatchHeader[1].text} },
                 { text: catch.fly or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[2].text} },
                 { text: catch.spinner or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[3].text} },
@@ -160,7 +161,7 @@
         {% else %}
             {% if foundInternal %}
                 {{ smallCatchItems.push([
-                    { text: catch.month, attributes: { 'data-label': smallCatchHeader[0].text} },
+                    { text: catch.month, rowspan: catch.rowspan, hide: catch.hide, attributes: { 'data-label': smallCatchHeader[0].text} },
                     { text: catch.river, attributes: { 'data-label': smallCatchHeader[1].text} },
                     { text: catch.fly or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[2].text} },
                     { text: catch.spinner or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[3].text} },
@@ -171,7 +172,7 @@
                 ]) }}
             {% else %}
                 {{ smallCatchItems.push([
-                    { text: catch.month, attributes: { 'data-label': smallCatchHeader[0].text} },
+                    { text: catch.month, rowspan: catch.rowspan, hide: catch.hide, attributes: { 'data-label': smallCatchHeader[0].text} },
                     { text: catch.river, attributes: { 'data-label': smallCatchHeader[1].text} },
                     { text: catch.fly or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[2].text} },
                     { text: catch.spinner or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[3].text} },
@@ -189,12 +190,12 @@
     <div class="govuk-grid-column-full">
         <form method="post">
             <h1 class="govuk-heading-l">Your {{ year }} catch return</h1>
-            <h2 class="govuk-heading-m govuk-!-margin-bottom-1">Rivers fished</h2>
 
             {{ govukTable({
                 classes: "rcr-responsive-summary-table",
                 captionClasses: "govuk-heading-m",
-                firstCellIsHeader: false,
+                firstCellIsHeader: true,
+                caption: "Rivers fished",
                 attributes: { id: "river" },
                 head: [
                     { text: activityTableHeadings.river },
@@ -217,10 +218,10 @@
                 <h2 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-1">Small adult sea trout (1lb and under)</h2>
                 <span class="govuk-caption-m govuk-!-margin-bottom-5">Skip this section if you did not catch any small adult sea trout</span>
 
-                {{ govukTable({
+                {{ govukTableGrouped({
                     classes: "rcr-responsive-summary-table exclusion-cb" if fmt else "rcr-responsive-summary-table",
                     captionClasses: "govuk-heading-m",
-                    firstCellIsHeader: false,
+                    numberOfCellHeaders: 2,
                     attributes: { id: "small" },
                     head: smallCatchHeader,
                     rows: smallCatchItems
@@ -237,10 +238,10 @@
                 <h2 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-1">Salmon and large adult sea trout</h2>
                 <span class="govuk-caption-m govuk-!-margin-bottom-5">Skip this section if you did not catch any salmon or large adult sea trout</span>
 
-                {{ govukTable({
+                {{ govukTableGrouped({
                     classes: "rcr-responsive-summary-table exclusion-cb" if fmt else "rcr-responsive-summary-table",
                     captionClasses: "govuk-heading-m",
-                    firstCellIsHeader: false,
+                    numberOfCellHeaders: 2,
                     attributes: { id: "large" },
                     head: largeCatchHeader,
                     rows: salmonAndLargeTroutItems

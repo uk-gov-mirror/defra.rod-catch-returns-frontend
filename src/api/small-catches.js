@@ -107,6 +107,14 @@ module.exports = class SmallCatchesApi extends EntityApi {
       return 1
     }
 
+    if (a.noMonthRecorded < b.noMonthRecorded) {
+      return -1
+    }
+
+    if (a.noMonthRecorded > b.noMonthRecorded) {
+      return 1
+    }
+
     if (a.activity.river.name < b.activity.river.name) {
       return -1
     }

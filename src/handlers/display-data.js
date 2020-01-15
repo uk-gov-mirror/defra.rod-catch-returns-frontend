@@ -33,6 +33,24 @@ module.exports = async (request, submission) => {
       return c
     })
 
+  const catchIsEqual = (a, b) => process.env.CONTEXT === 'ANGLER' ? a.dateCaught === b.dateCaught : a.dateCaught === b.dateCaught &&
+    ((b.onlyMonthRecorded || b.noDateRecorded) === (a.onlyMonthRecorded || a.noDateRecorded))
+
+  const riverIsEqual = (a, b) => catchIsEqual(a, b) &&
+    a.activity.river.id === b.activity.river.id
+
+  // Add show flag and rowspan for customized table template
+  catches.forEach((val, idx, arr) => {
+    val.rowspan = arr.filter(ent => catchIsEqual(ent, val)).length
+    val.riverRowspan = arr.filter(ent => riverIsEqual(ent, val)).length
+
+    arr.filter(ent => catchIsEqual(ent, val))
+      .forEach((elem, idx, arr2) => (arr2[idx]['hide'] = idx !== 0))
+
+    arr.filter(ent => riverIsEqual(ent, val))
+      .forEach((elem, idx, arr2) => (arr2[idx]['riverHide'] = idx !== 0))
+  })
+
   // Need to show the unknown method if set by the administrator
   let foundInternal = false
 
@@ -51,6 +69,17 @@ module.exports = async (request, submission) => {
       delete c.counts
       return c
     })
+
+  const smallCatchIsEqual = (a, b) => process.env.CONTEXT === 'ANGLER' ? a.month === b.month : a.month === b.month &&
+     a.noMonthRecorded === b.noMonthRecorded
+
+  // Add show flag and rowspan for customized table template
+  smallCatches.forEach((val, idx, arr) => {
+    val.rowspan = arr.filter(ent => smallCatchIsEqual(ent, val)).length
+
+    arr.filter(ent => smallCatchIsEqual(ent, val))
+      .forEach((elem, idx, arr2) => (arr2[idx]['hide'] = idx !== 0))
+  })
 
   return {
     activities: activities,
