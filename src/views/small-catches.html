@@ -189,9 +189,9 @@
 {% endif %}
 
 {% if add %}
-    {% set leg = "<h1 class=\"govuk-heading-l\">Add a small adult sea trout catch " + suffix + "</h1><p class=\"govuk-body-l\">Add details of small adult sea trout (1lb and under) catches by month</p>" %}
+    {% set leg = '<h1 class="govuk-heading-l">Add a small adult sea trout catch ' + suffix + '</h1><p class="govuk-body-l">Add details of small adult sea trout (1lb and under) catches by month</p>' %}
 {% else %}
-    {% set leg = "<h1 class=\"govuk-heading-l\">Edit a small adult sea trout catch " + suffix + "</h1>" %}
+    {% set leg = '<h1 class="govuk-heading-l">Edit a small adult sea trout catch ' + suffix + '</h1>' %}
 {% endif %}
 
 {% block content %}
@@ -237,10 +237,9 @@
 
                 {% call govukFieldset({
                     legend: {
-                        html: "<label class=\"govuk-label govuk-!-font-weight-bold\">Month caught</label><span id=\"fly-hint\" class=\"govuk-hint\">For example, 6</span>"
+                        html: '<label class="govuk-label govuk-!-font-weight-bold">Month caught</label><span id="fly-hint" class="govuk-hint">For example, 6</span>'
                     }
-                    }) %}
-
+                }) %}
 
                     {% if monthsErrorMessage %}
                     <div class="govuk-form-group govuk-form-group--error">
