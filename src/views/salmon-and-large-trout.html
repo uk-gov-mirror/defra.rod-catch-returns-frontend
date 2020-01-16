@@ -117,7 +117,7 @@
             {% set typeErrorMessage = { text: "Select the type of fish" } %}
             {{ errorList.push({
                 text: "You have not selected the type of fish",
-                href: "#type-1"
+                href: "#type"
             }) }}
         {% endif %}
 
@@ -125,7 +125,7 @@
             {% set systemErrorMessage = { text: "Select either pounds and ounces or kilograms" } %}
             {{ errorList.push({
                 text: "You have not selected pounds and ounces or kilograms",
-                href: "#system-1"
+                href: "#system"
             }) }}
         {% endif %}
 
@@ -157,7 +157,7 @@
             {% set methodErrorMessage = { text: "Select a method" } %}
             {{ errorList.push({
                 text: "You have not selected a method",
-                href: "#method-1"
+                href: "#method"
             }) }}
         {% endif %}
 
@@ -165,7 +165,7 @@
             {% set releasedErrorMessage = { text: "Select yes or no" } %}
             {{ errorList.push({
                 text: "You have not told us whether you released this fish",
-                href: "#released-1"
+                href: "#released"
             }) }}
         {% endif %}
 
@@ -173,7 +173,7 @@
             {% set systemErrorMessage = { text: "Enter a weight less than 50kg (110lbs)" } %}
             {{ errorList.push({
                 text: "You have not entered a valid weight",
-                href: "#system-1"
+                href: "#system"
             }) }}
         {% endif %}
 
@@ -181,7 +181,7 @@
             {% set systemErrorMessage = { text: "Enter a weight greater than 0" } %}
             {{ errorList.push({
                 text: "You have not entered a valid weight",
-                href: "#system-1"
+                href: "#system"
             }) }}
         {% endif %}
 
@@ -189,7 +189,7 @@
             {% set systemErrorMessage = { text: "Enter a valid weight" } %}
             {{ errorList.push({
                 text: "You have not entered a weight for this fish",
-                href: "#system-1"
+                href: "#system"
             }) }}
         {% endif %}
 
