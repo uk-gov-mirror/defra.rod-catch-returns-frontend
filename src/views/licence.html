@@ -40,11 +40,13 @@
                 }) }}
             {% endif %}
 
-            <h1 class="govuk-heading-l">
-                Enter your licence details and postcode
-            </h1>
-
-            {% call govukFieldset({}) %}
+            {% call govukFieldset({
+                legend: {
+                    text: "Enter your licence details and postcode",
+                    classes: "govuk-fieldset__legend--l",
+                    isPageHeading: true
+                }
+            }) %}
 
                 {{ govukInput({
                     label: {
