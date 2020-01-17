@@ -81,7 +81,7 @@
 {% endif %}
 
 {% if add %}
-    {% set leg = '<h1 class="govuk-heading-l">Add a river where you fished</h1><p class="govuk-body-m">If you fished in more than one river, you can add another afterwards</p>' %}
+    {% set leg = '<h1 class="govuk-heading-l">Add a river where you fished in ' + details.year + '</h1><p class="govuk-body-m">If you fished in more than one river, you can add another afterwards</p>' %}
 {% else %}
     {% set leg = '<h1 class="govuk-heading-l">Edit a river</h1>' %}
 {% endif %}

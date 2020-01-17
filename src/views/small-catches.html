@@ -237,7 +237,7 @@
 
                 {% call govukFieldset({
                     legend: {
-                        html: '<label class="govuk-label govuk-!-font-weight-bold">Month caught</label><span id="fly-hint" class="govuk-hint">For example, 6</span>'
+                        html: '<span class="govuk-label govuk-!-font-weight-bold">Month caught</span><span id="fly-hint" class="govuk-hint">For example, 6</span>'
                     }
                 }) %}
 
@@ -257,9 +257,9 @@
                                     text: "Month",
                                     classes: "govuk-date-input__label"
                                 },
-                                type: "number",
+                                type: "text",
                                 value: payload.month,
-                                attributes: { maxlength: 2, pattern: "[0-9]*" },
+                                attributes: { maxlength: 2 },
                                 classes: "govuk-input--width-2 govuk-input--error" if monthsErrorMessage else "govuk-input--width-2"
                             }) }}
                         </div>
@@ -289,7 +289,6 @@
                     {% if monthsErrorMessage %}
                     </div>
                     {% endif %}
-
                 {% endcall %}
 
                 {% if errors %}{% for error in errors %}{% if error.SmallCatch === 'SMALL_CATCH_COUNTS_REQUIRED' %}

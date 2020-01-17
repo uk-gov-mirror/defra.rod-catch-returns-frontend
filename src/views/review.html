@@ -13,7 +13,12 @@
     {% endif %}
 {% endblock %}
 
-{% set title = "Your " + year + " catch return report" %}
+{% if not locked %}
+    {% set title = "Confirm your " + year + " catch return report" %}
+{% else %}
+    {% set title = "Your " + year + " catch return report" %}
+{% endif %}
+
 {% block pageTitle %}{{ title }} - GOV.UK{% endblock %}
 
 {% block content %}

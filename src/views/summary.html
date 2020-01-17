@@ -25,14 +25,14 @@
     {% set editurl = id %}
     {% set deleteurl = "/delete/" + id %}
 <!--suppress ALL -->
-<span><a id="edit-{{ id }}" class="govuk-link" href="{{ editurl }}">Change<label class="govuk-visually-hidden">&nbsp;{{ desc }}</label></a>&nbsp;&#x7c;&nbsp;<a id="delete-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete<label class="govuk-visually-hidden">&nbsp;{{ desc }}</label></a></span>
+<span><a id="edit-{{ id }}" class="govuk-link" href="{{ editurl }}">Change<span class="govuk-visually-hidden">&nbsp;{{ desc }}</span></a>&nbsp;&#x7c;&nbsp;<a id="delete-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete<span class="govuk-visually-hidden">&nbsp;{{ desc }}</span></a></span>
 {% endmacro %}
 
-{% macro renderCheck(id, name, checked) %}
+{% macro renderCheck(id, name, checked, desc) %}
 <div class="govuk-checkboxes govuk-checkboxes--small">
     <div class="govuk-checkboxes__item">
         <input class="govuk-checkboxes__input" type="checkbox" id="exclude-{{ id }}" name="{{ name }}" value="{{ id }}" {% if checked %}checked="checked"{% endif %}>
-        <label class="govuk-label govuk-checkboxes__label" for="exclude-{{ id }}"></label>
+        <label class="govuk-label govuk-checkboxes__label" for="exclude-{{ id }}"><span class="govuk-visually-hidden">Exclude {{ desc }}</span></label>
     </div>
 </div>
 {% endmacro %}
@@ -82,6 +82,7 @@
 
 {% if catches.length %}
     {% for fish in catches %}
+        {% set desc = 'Salmon and large adult sea trout, for ' + fish.dateCaught + ' on ' + fish.activity.river.name %}
         {% if fmt %}
             {{ salmonAndLargeTroutItems.push([
                 { text: fish.dateCaught + (' * ' if fish.onlyMonthRecorded or fish.noDateRecorded else ''), rowspan: fish.rowspan, hide: fish.hide, attributes: { 'data-label': largeCatchHeader[0].text} },
@@ -90,8 +91,8 @@
                 { text: fish.weight, attributes: { 'data-label': largeCatchHeader[3].text} },
                 { text: fish.method.name, attributes: { 'data-label': largeCatchHeader[4].text} },
                 { text: "Yes" if fish.released else "No", attributes: { 'data-label': largeCatchHeader[5].text} },
-                { html: renderLinks(fish.id, 'Salmon and large adult sea trout, for ' + fish.dateCaught + ' on ' + fish.activity.river.name), format: "numeric", attributes: { 'data-label': largeCatchHeader[6].text}  },
-                { html: renderCheck(fish.id, "exclude-catch", fish.reportingExclude), format: "numeric", attributes: { 'data-label': largeCatchHeader[7].text}  }
+                { html: renderLinks(fish.id, desc), format: "numeric", attributes: { 'data-label': largeCatchHeader[6].text}  },
+                { html: renderCheck(fish.id, "exclude-catch", fish.reportingExclude, desc), format: "numeric", attributes: { 'data-label': largeCatchHeader[7].text}  }
             ]) }}
         {% else %}
             {{ salmonAndLargeTroutItems.push([
@@ -101,7 +102,7 @@
                 { text: fish.weight, attributes: { 'data-label': largeCatchHeader[3].text} },
                 { text: fish.method.name, attributes: { 'data-label': largeCatchHeader[4].text} },
                 { text: "Yes" if fish.released else "No", attributes: { 'data-label': largeCatchHeader[5].text} },
-                { html: renderLinks(fish.id, 'Salmon and large adult sea trout, for ' + fish.dateCaught + ' on ' + fish.activity.river.name), format: "numeric", attributes: { 'data-label': largeCatchHeader[6].text} }
+                { html: renderLinks(fish.id, desc), format: "numeric", attributes: { 'data-label': largeCatchHeader[6].text} }
             ]) }}
         {% endif %}
     {% endfor %}
@@ -146,6 +147,7 @@
 
 {% if smallCatches.length %}
     {% for catch in smallCatches %}
+        {% set desc = 'Small adult sea trout, for ' + catch.month + ' on ' + catch.river %}
         {% if fmt %}
             {{ smallCatchItems.push([
                 { text: catch.month + (' * ' if catch.noMonthRecorded else ''), rowspan: catch.rowspan, hide: catch.hide, attributes: { 'data-label': smallCatchHeader[0].text} },
@@ -155,8 +157,8 @@
                 { text: catch.bait or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[4].text} },
                 { text: catch.unknown or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[5].text} },
                 { text: catch.released, format: "numeric", attributes: { 'data-label': smallCatchHeader[6].text} },
-                { html: renderLinks(catch.id | replace("smallCatches", "small-catches"), 'Small adult sea trout, for ' + catch.month + ' on ' + catch.river), format: "numeric", attributes: { 'data-label': smallCatchHeader[7].text} },
-                { html: renderCheck(catch.id, "exclude-small-catch", catch.reportingExclude), format: "numeric", attributes: { 'data-label': smallCatchHeader[8].text} }
+                { html: renderLinks(catch.id | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[7].text} },
+                { html: renderCheck(catch.id, "exclude-small-catch", catch.reportingExclude, desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[8].text} }
             ]) }}
         {% else %}
             {% if foundInternal %}
@@ -168,7 +170,7 @@
                     { text: catch.bait or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[4].text} },
                     { text: catch.unknown or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[5].text} },
                     { text: catch.released, format: "numeric", attributes: { 'data-label': smallCatchHeader[5].text} },
-                    { html: renderLinks(catch.id | replace("smallCatches", "small-catches"), 'Small adult sea trout, for ' + catch.month + ' on ' + catch.river), format: "numeric", attributes: { 'data-label': smallCatchHeader[6].text} }
+                    { html: renderLinks(catch.id | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[6].text} }
                 ]) }}
             {% else %}
                 {{ smallCatchItems.push([
@@ -178,7 +180,7 @@
                     { text: catch.spinner or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[3].text} },
                     { text: catch.bait or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[4].text} },
                     { text: catch.released, format: "numeric", attributes: { 'data-label': smallCatchHeader[5].text} },
-                    { html: renderLinks(catch.id | replace("smallCatches", "small-catches"), catch.month + ' ' + catch.river), format: "numeric", attributes: { 'data-label': smallCatchHeader[6].text} }
+                    { html: renderLinks(catch.id | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[6].text} }
                 ]) }}
             {% endif %}
         {% endif %}
