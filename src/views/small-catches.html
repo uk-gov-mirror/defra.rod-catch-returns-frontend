@@ -189,9 +189,9 @@
 {% endif %}
 
 {% if add %}
-    {% set leg = '<h1 class="govuk-heading-l">Add a small adult sea trout catch ' + suffix + '</h1><p class="govuk-body-l">Add details of small adult sea trout (1lb and under) catches by month</p>' %}
+    {% set leg = '<span class="govuk-heading-l">Add a small adult sea trout catch ' + suffix + '</span><p class="govuk-body-l">Add details of small adult sea trout (1lb and under) catches by month</p>' %}
 {% else %}
-    {% set leg = '<h1 class="govuk-heading-l">Edit a small adult sea trout catch ' + suffix + '</h1>' %}
+    {% set leg = '<span class="govuk-heading-l">Edit a small adult sea trout catch ' + suffix + '</span>' %}
 {% endif %}
 
 {% block content %}
@@ -263,14 +263,14 @@
                                 classes: "govuk-input--width-2 govuk-input--error" if monthsErrorMessage else "govuk-input--width-2"
                             }) }}
                         </div>
-                        <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                                {{ govukLabel({
-                                    text: "Year",
-                                    classes: "govuk-date-input__label",
-                                    for: "year"
-                                }) }}
-                                <input id="year" disabled aria-disabled="true" class="govuk-input date-disabled govuk-input--width-4" value="{{ details.year }}"/>
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            {{ govukLabel({
+                                text: "Year",
+                                classes: "govuk-date-input__label",
+                                for: "year"
+                            }) }}
+                            <input id="year" disabled aria-disabled="true" class="govuk-input date-disabled govuk-input--width-4" value="{{ details.year }}"/>
                             </div>
                         </div>
                     </div>

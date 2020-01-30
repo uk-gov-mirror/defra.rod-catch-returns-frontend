@@ -28,6 +28,18 @@
 <span><a id="edit-{{ id }}" class="govuk-link" href="{{ editurl }}">Change<span class="govuk-visually-hidden">&nbsp;{{ desc }}</span></a>&nbsp;&#x7c;&nbsp;<a id="delete-{{ id }}" class="govuk-link" href="{{ deleteurl }}">Delete<span class="govuk-visually-hidden">&nbsp;{{ desc }}</span></a></span>
 {% endmacro %}
 
+{% macro renderChange(id, desc) %}
+    {% set url = id %}
+    <!--suppress ALL -->
+    <span><a id="edit-{{ id }}" class="govuk-link" href="{{url }}">Change<span class="govuk-visually-hidden">&nbsp;{{ desc }}</span></a></span>
+{% endmacro %}
+
+{% macro renderDelete(id, desc) %}
+    {% set url = "/delete/" + id %}
+    <!--suppress ALL -->
+    <span><a id="delete-{{ id }}" class="govuk-link" href="{{ url }}">Delete<span class="govuk-visually-hidden">&nbsp;{{ desc }}</span></a></span>
+{% endmacro %}
+
 {% macro renderCheck(id, name, checked, desc) %}
 <div class="govuk-checkboxes govuk-checkboxes--small">
     <div class="govuk-checkboxes__item">
@@ -42,7 +54,8 @@
         river: "River",
         daysFishedMandatory: "Days fished (1 Jan-16 Jun)",
         daysFishedOther: "Days fished (17 Jun-31 Dec)",
-        actions: "Actions"
+        change: "Change",
+        delete: "Delete"
     }
 %}
 
@@ -52,7 +65,8 @@
             { text: activity.river.name, attributes: { 'data-label': activityTableHeadings.river} },
             { text: activity.daysFishedWithMandatoryRelease, format: "numeric", attributes: { 'data-label': activityTableHeadings.daysFishedMandatory} },
             { text: activity.daysFishedOther, format: "numeric", attributes: { 'data-label': activityTableHeadings.daysFishedOther} },
-            { html: renderLinks(activity.id, 'river ' + activity.river.name), format: "numeric", attributes: { 'data-label': activityTableHeadings.actions} }
+            { html: renderChange(activity.id, 'river ' + activity.river.name), format: "numeric", attributes: { 'data-label': activityTableHeadings.change} },
+            { html: renderDelete(activity.id, 'river ' + activity.river.name), format: "numeric", attributes: { 'data-label': activityTableHeadings.delete} }
         ]) }}
     {% endfor %}
 {% endif %}
@@ -65,7 +79,8 @@
         { text: "Weight" },
         { text: "Method" },
         { text: "Released" },
-        { text: "Actions", format: "numeric" },
+        { text: "Change", format: "numeric" },
+        { text: "Delete", format: "numeric" },
         { text: "Ex.", format: "numeric" }
     ] %}
 {% else %}
@@ -76,7 +91,8 @@
         { text: "Weight" },
         { text: "Method" },
         { text: "Released" },
-        { text: "Actions", format: "numeric" }
+        { text: "Change", format: "numeric" },
+        { text: "Delete", format: "numeric" }
     ] %}
 {% endif %}
 
@@ -91,8 +107,9 @@
                 { text: fish.weight, attributes: { 'data-label': largeCatchHeader[3].text} },
                 { text: fish.method.name, attributes: { 'data-label': largeCatchHeader[4].text} },
                 { text: "Yes" if fish.released else "No", attributes: { 'data-label': largeCatchHeader[5].text} },
-                { html: renderLinks(fish.id, desc), format: "numeric", attributes: { 'data-label': largeCatchHeader[6].text}  },
-                { html: renderCheck(fish.id, "exclude-catch", fish.reportingExclude, desc), format: "numeric", attributes: { 'data-label': largeCatchHeader[7].text}  }
+                { html: renderChange(fish.id, desc), format: "numeric", attributes: { 'data-label': largeCatchHeader[6].text}  },
+                { html: renderDelete(fish.id, desc), format: "numeric", attributes: { 'data-label': largeCatchHeader[7].text}  },
+                { html: renderCheck(fish.id, "exclude-catch", fish.reportingExclude, desc), format: "numeric", attributes: { 'data-label': largeCatchHeader[8].text}  }
             ]) }}
         {% else %}
             {{ salmonAndLargeTroutItems.push([
@@ -102,7 +119,8 @@
                 { text: fish.weight, attributes: { 'data-label': largeCatchHeader[3].text} },
                 { text: fish.method.name, attributes: { 'data-label': largeCatchHeader[4].text} },
                 { text: "Yes" if fish.released else "No", attributes: { 'data-label': largeCatchHeader[5].text} },
-                { html: renderLinks(fish.id, desc), format: "numeric", attributes: { 'data-label': largeCatchHeader[6].text} }
+                { html: renderChange(fish.id, desc), format: "numeric", attributes: { 'data-label': largeCatchHeader[6].text}  },
+                { html: renderDelete(fish.id, desc), format: "numeric", attributes: { 'data-label': largeCatchHeader[7].text}  }
             ]) }}
         {% endif %}
     {% endfor %}
@@ -117,7 +135,8 @@
         { text: "Bait", format: "numeric" },
         { text: "Unknown", format: "numeric" },
         { text: "Released", format: "numeric" },
-        { text: "Actions", format: "numeric" },
+        { text: "Change", format: "numeric" },
+        { text: "Delete", format: "numeric" },
         { text: "Ex.", format: "numeric"  }
     ] %}
 {% else %}
@@ -130,7 +149,8 @@
             { text: "Bait", format: "numeric" },
             { text: "Unknown", format: "numeric" },
             { text: "Released", format: "numeric" },
-            { text: "Actions", format: "numeric" }
+            { text: "Change", format: "numeric" },
+            { text: "Delete", format: "numeric" }
         ] %}
     {% else %}
         {% set smallCatchHeader = [
@@ -140,7 +160,8 @@
             { text: "Spinner", format: "numeric" },
             { text: "Bait", format: "numeric" },
             { text: "Released", format: "numeric" },
-            { text: "Actions", format: "numeric" }
+            { text: "Change", format: "numeric" },
+            { text: "Delete", format: "numeric" }
         ] %}
     {% endif %}
 {% endif %}
@@ -157,8 +178,9 @@
                 { text: catch.bait or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[4].text} },
                 { text: catch.unknown or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[5].text} },
                 { text: catch.released, format: "numeric", attributes: { 'data-label': smallCatchHeader[6].text} },
-                { html: renderLinks(catch.id | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[7].text} },
-                { html: renderCheck(catch.id, "exclude-small-catch", catch.reportingExclude, desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[8].text} }
+                { html: renderChange(catch.id | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[7].text} },
+                { html: renderDelete(catch.id | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[8].text} },
+                { html: renderCheck(catch.id, "exclude-small-catch", catch.reportingExclude, desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[9].text} }
             ]) }}
         {% else %}
             {% if foundInternal %}
@@ -169,8 +191,9 @@
                     { text: catch.spinner or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[3].text} },
                     { text: catch.bait or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[4].text} },
                     { text: catch.unknown or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[5].text} },
-                    { text: catch.released, format: "numeric", attributes: { 'data-label': smallCatchHeader[5].text} },
-                    { html: renderLinks(catch.id | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[6].text} }
+                    { text: catch.released, format: "numeric", attributes: { 'data-label': smallCatchHeader[6].text} },
+                    { html: renderChange(catch.id | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[7].text} },
+                    { html: renderDelete(catch.id | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[8].text} }
                 ]) }}
             {% else %}
                 {{ smallCatchItems.push([
@@ -180,7 +203,8 @@
                     { text: catch.spinner or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[3].text} },
                     { text: catch.bait or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[4].text} },
                     { text: catch.released, format: "numeric", attributes: { 'data-label': smallCatchHeader[5].text} },
-                    { html: renderLinks(catch.id | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[6].text} }
+                    { html: renderChange(catch.id | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[6].text} },
+                    { html: renderDelete(catch.id | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[7].text} }
                 ]) }}
             {% endif %}
         {% endif %}
@@ -203,7 +227,8 @@
                     { text: activityTableHeadings.river },
                     { text: activityTableHeadings.daysFishedMandatory, format: "numeric" },
                     { text: activityTableHeadings.daysFishedOther, format: "numeric" },
-                    { text: activityTableHeadings.actions, format: "numeric" }
+                    { text: activityTableHeadings.change, format: "numeric" },
+                    { text: activityTableHeadings.delete, format: "numeric" }
                 ],
                 rows: riverRows
             }) }}

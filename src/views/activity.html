@@ -118,7 +118,7 @@
                     id: "daysFishedWithMandatoryRelease",
                     name: "daysFishedWithMandatoryRelease",
                     label: {
-                        text: "How many days did you fish in this river between 1 January and 16 June?"
+                        text: "How many days did you fish in this river between 1 January and 16 June " + details.year + "?"
                     },
                     hint: { text: "Include days without a catch" },
                     value: payload.daysFishedWithMandatoryRelease,
@@ -131,7 +131,7 @@
                     id: "daysFishedOther",
                     name: "daysFishedOther",
                     label: {
-                        text: "How many days did you fish in this river between 17 June and 31 Dec?"
+                        text: "How many days did you fish in this river between 17 June and 31 December " + details.year + "?"
                     },
                     hint: { text: "Include days without a catch" },
                     value: payload.daysFishedOther,
