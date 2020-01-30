@@ -81,7 +81,7 @@
         { text: "Released" },
         { text: "Change", format: "numeric" },
         { text: "Delete", format: "numeric" },
-        { text: "Ex.", format: "numeric" }
+        { text: "Exclude", format: "numeric" }
     ] %}
 {% else %}
     {% set largeCatchHeader = [
@@ -137,7 +137,7 @@
         { text: "Released", format: "numeric" },
         { text: "Change", format: "numeric" },
         { text: "Delete", format: "numeric" },
-        { text: "Ex.", format: "numeric"  }
+        { text: "Exclude", format: "numeric"  }
     ] %}
 {% else %}
     {% if foundInternal %}
@@ -242,7 +242,6 @@
             </p>
 
             {% if activities.length %}
-                <span class="govuk-caption-m">Skip this section if you did not catch any small adult sea trout</span>
 
                 {{ govukTableGrouped({
                     caption: "Small adult sea trout (1lb and under)",
@@ -262,7 +261,9 @@
                     {% endif %}
                 </p>
 
-                <span class="govuk-caption-m">Skip this section if you did not catch any salmon or large adult sea trout</span>
+                {% if smallCatches.length === 0 %}
+                    <span class="govuk-caption-m govuk-!-margin-bottom-8">Skip this section if you did not catch any small adult sea trout</span>
+                {% endif %}
 
                 {{ govukTableGrouped({
                     caption: "Salmon and large adult sea trout",
@@ -281,6 +282,11 @@
                         <a id="catches-add" class="govuk-link " href="catches/add">Add another salmon or large adult sea trout</a>
                     {% endif %}
                 </p>
+
+                {% if catches.length === 0 %}
+                    <span class="govuk-caption-m govuk-!-margin-bottom-8">Skip this section if you did not catch any salmon or large adult sea trout</span>
+                {% endif %}
+
             {% endif %}
 
             {% if activities.length %}
