@@ -188,6 +188,16 @@ module.exports = [
     }
   },
 
+  // Accessibility statement handler
+  {
+    path: '/accessibility',
+    method: 'GET',
+    options: { auth: false },
+    handler: (request, h) => {
+      return h.view('accessibility')
+    }
+  },
+
   // Privacy policy handler
   {
     path: '/privacy',
