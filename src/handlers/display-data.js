@@ -45,10 +45,10 @@ module.exports = async (request, submission) => {
     val.riverRowspan = arr.filter(ent => riverIsEqual(ent, val)).length
 
     arr.filter(ent => catchIsEqual(ent, val))
-      .forEach((elem, idx, arr2) => (arr2[idx]['hide'] = idx !== 0))
+      .forEach((elem, idx1, arr2) => (arr2[idx1]['hide'] = idx1 !== 0))
 
     arr.filter(ent => riverIsEqual(ent, val))
-      .forEach((elem, idx, arr2) => (arr2[idx]['riverHide'] = idx !== 0))
+      .forEach((elem, idx1, arr2) => (arr2[idx1]['riverHide'] = idx1 !== 0))
   })
 
   // Need to show the unknown method if set by the administrator
@@ -78,7 +78,7 @@ module.exports = async (request, submission) => {
     val.rowspan = arr.filter(ent => smallCatchIsEqual(ent, val)).length
 
     arr.filter(ent => smallCatchIsEqual(ent, val))
-      .forEach((elem, idx, arr2) => (arr2[idx]['hide'] = idx !== 0))
+      .forEach((elem, idx1, arr2) => (arr2[idx1]['hide'] = idx1 !== 0))
   })
 
   return {
