@@ -38,3 +38,5 @@ checks:
   method-complexity:
     config:
       threshold: 15
+  return-statements:
+    enabled: false
