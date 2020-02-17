@@ -108,6 +108,14 @@ module.exports = class CatchesApi extends EntityApi {
       return 1
     }
 
+    if ((a.onlyMonthRecorded || a.noDateRecorded) < (b.onlyMonthRecorded || b.noDateRecorded)) {
+      return -1
+    }
+
+    if ((a.onlyMonthRecorded || a.noDateRecorded) > (b.onlyMonthRecorded || b.noDateRecorded)) {
+      return 1
+    }
+
     if (a.activity.river.name < b.activity.river.name) {
       return -1
     }

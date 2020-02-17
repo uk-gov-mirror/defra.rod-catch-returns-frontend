@@ -37,6 +37,7 @@ module.exports = class SaveHandler extends BaseHandler {
       extendPeriod: Number.parseInt(cache.year) === now.year() - 1,
       catchReturnsRef: catchReturnsRef,
       catchReturnsLink: catchReturnsLink,
+      year: cache.year,
       fmt: process.env.CONTEXT === 'FMT'
     })
   }

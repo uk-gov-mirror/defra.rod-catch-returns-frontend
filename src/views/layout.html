@@ -85,26 +85,35 @@
 {% endblock %}
 
 {% set footerHtml %}
-    <p class="govuk-!-margin-top-5 govuk-!-margin-bottom-0">Environment Agency Helpline: <a href="tel:03708506506">03708 506 506</a></p>
+    <ul class="govuk-footer__inline-list">
+        <li class="govuk-footer__inline-list-item">
+            <a class="govuk-link" href="https://www.gov.uk/government/organisations/environment-agency/about/personal-information-charter" target="_blank" rel="noopener noreferrer">
+                Privacy Policy
+            </a>
+        </li>
+
+        <li class="govuk-footer__inline-list-item">
+            <a class="govuk-link" href="/accessibility">
+                Accessibility Statement
+            </a>
+        </li>
+
+        <li class="govuk-footer__inline-list-item">
+            <a class="govuk-link" href="/cookies">
+                Cookies
+            </a>
+        </li>
+    </ul>
+
+    <p class="govuk-!-margin-top-5 govuk-!-margin-bottom-0">Environment Agency Helpline: <a class="govuk-link" href="tel:03708506506">03708 506 506</a></p>
     <p class="govuk-!-margin-top-0">(Open 8am to 6pm, Monday to Friday)</p>
-    <p>Built by the <a href="#" class="govuk-footer__link">Government Digital Service</a></p>
+    <p>Built by the <a href="#" class="govuk-link">Government Digital Service</a></p>
 {% endset -%}
 
 
 {% block footer %}
     {{ govukFooter({
         meta: {
-            items: [
-                {
-                    href: "https://www.gov.uk/government/organisations/environment-agency/about/personal-information-charter",
-                    text: "Privacy Policy",
-                    attributes: { target: "_blank" }
-                },
-                {
-                    href: "/cookies",
-                    text: "Cookies"
-                }
-            ],
             html: footerHtml
         }
     }) }}

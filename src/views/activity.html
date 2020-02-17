@@ -80,6 +80,12 @@
     {% endfor %}
 {% endif %}
 
+{% if add %}
+    {% set leg = '<h1 class="govuk-heading-l">Add a river where you fished in ' + details.year + '</h1><p class="govuk-body-m">If you fished in more than one river, you can add another afterwards</p>' %}
+{% else %}
+    {% set leg = '<h1 class="govuk-heading-l">Edit a river</h1>' %}
+{% endif %}
+
 
 {% block content %}
 <div class="govuk-grid-row">
@@ -92,13 +98,10 @@
                 }) }}
             {% endif %}
 
-            {% if add %}
-                <h1 class="govuk-heading-l">Add a river where you fished</h1><p class="govuk-body-m">If you fished in more than one river, you can add another afterwards</p>
-            {% else %}
-                <h1 class="govuk-heading-l">Edit a river</h1>
-            {% endif %}
-
-            {% call govukFieldset({}) %}
+            {% call govukFieldset({
+                legend: { html: leg },
+                isPageHeading: true
+            }) %}
 
                 {{ govukSelect({
                     id: "river",
@@ -115,7 +118,7 @@
                     id: "daysFishedWithMandatoryRelease",
                     name: "daysFishedWithMandatoryRelease",
                     label: {
-                        text: "How many days did you fish in this river between 1 January and 16 June?"
+                        text: "How many days did you fish in this river between 1 January and 16 June " + details.year + "?"
                     },
                     hint: { text: "Include days without a catch" },
                     value: payload.daysFishedWithMandatoryRelease,
@@ -128,7 +131,7 @@
                     id: "daysFishedOther",
                     name: "daysFishedOther",
                     label: {
-                        text: "How many days did you fish in this river between 17 June and 31 Dec?"
+                        text: "How many days did you fish in this river between 17 June and 31 December " + details.year + "?"
                     },
                     hint: { text: "Include days without a catch" },
                     value: payload.daysFishedOther,

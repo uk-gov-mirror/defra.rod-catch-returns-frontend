@@ -184,6 +184,14 @@
 
 {% if rivers.length === 1 %}
     {% set suffix = "caught on river " + rivers[0].name %}
+{% else %}
+    {% set suffix = "" %}
+{% endif %}
+
+{% if add %}
+    {% set leg = '<span class="govuk-heading-l">Add a small adult sea trout catch ' + suffix + '</span><p class="govuk-body-l">Add details of small adult sea trout (1lb and under) catches by month</p>' %}
+{% else %}
+    {% set leg = '<span class="govuk-heading-l">Edit a small adult sea trout catch ' + suffix + '</span>' %}
 {% endif %}
 
 {% block content %}
@@ -197,13 +205,13 @@
                 }) }}
             {% endif %}
 
-            {% if add %}
-                <h1 class="govuk-heading-l">Add a small adult sea trout catch {{ suffix }}</h1><p class="govuk-body-l">Add details of small adult sea trout (1lb and under) catches by month</p>
-            {% else %}
-                <h1 class="govuk-heading-l">Edit a small adult sea trout catch {{ suffix }}</h1>
-            {% endif %}
-
-            {% call govukFieldset({}) %}
+            {% call govukFieldset({
+                legend: {
+                    html: leg,
+                    classes: "govuk-heading-l",
+                    isPageHeading: true
+                }
+            }) %}
 
                 {% if rivers.length > 1 %}
                     {{ govukSelect({
@@ -227,45 +235,47 @@
                     <input type="hidden" id="river" name="river" value="{{ rivers[0].id }}"/>
                 {% endif %}
 
-                <label class="govuk-label govuk-!-font-weight-bold">Month caught</label>
-                <span id="fly-hint" class="govuk-hint">For example, 6</span>
+                {% call govukFieldset({
+                    legend: {
+                        html: '<span class="govuk-label govuk-!-font-weight-bold">Month caught</span><span id="fly-hint" class="govuk-hint">For example, 6</span>'
+                    }
+                }) %}
 
-                {% if monthsErrorMessage %}
-                <div class="govuk-form-group govuk-form-group--error">
-                        <span id="month-error" class="govuk-error-message">
-                            {{ monthsErrorMessage.text }}
-                        </span>
-                {% endif %}
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-one-half">
 
-                <div class="govuk-date-input--inline">
-                    <div class="govuk-date-input__item">
-                        {{ govukInput({
-                            id: "month",
-                            name: "month",
-                            label: {
-                                text: "Month",
-                                classes: "govuk-date-input__label"
-                            },
-                            type: "number",
-                            value: payload.month,
-                            attributes: { maxlength: 2, pattern: "[0-9]*" },
-                            classes: "govuk-input--width-2 govuk-input--error" if monthsErrorMessage else "govuk-input--width-2"
-                        }) }}
-                    </div>
-                    <div class="govuk-date-input__item">
-                        <div class="govuk-form-group">
-                            {{ govukLabel({
-                                text: "Year",
-                                classes: "govuk-date-input__label",
-                                for: "year"
-                            }) }}
-                            <input id="year" disabled aria-disabled="true" class="govuk-input date-disabled govuk-input--width-4" value="{{ details.year }}"/>
+                        {% if monthsErrorMessage %}
+                        <div class="govuk-form-group govuk-form-group--error">
+                                <span id="month-error" class="govuk-error-message">
+                                    {{ monthsErrorMessage.text }}
+                                </span>
+                        {% endif %}
+
+                        <div class="govuk-date-input--inline">
+                            <div class="govuk-date-input__item">
+                                {{ govukInput({
+                                    id: "month",
+                                    name: "month",
+                                    label: {
+                                        text: "Month",
+                                        classes: "govuk-date-input__label"
+                                    },
+                                    type: "text",
+                                    value: payload.month,
+                                    attributes: { maxlength: 2 },
+                                    classes: "govuk-input--width-2 govuk-input--error" if monthsErrorMessage else "govuk-input--width-2"
+                                }) }}
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                {% if fmt %}
-                    <div class="rcr-default-date--single">
+                        {% if monthsErrorMessage %}
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                    {% if fmt %}
+                    <div class="govuk-grid-column-one-half">
                         <div class="govuk-checkboxes govuk-checkboxes--small">
                             <div class="govuk-checkboxes__item">
                                 <input class="govuk-checkboxes__input" type="checkbox" id="no_month_recorded" name="noMonthRecorded" value="{{ payload.noMonthRecorded }}" {% if payload|existsOn("noMonthRecorded") %}checked="checked"{% endif %}>
@@ -273,11 +283,13 @@
                             </div>
                         </div>
                     </div>
-                {% endif %}
+                    {% endif %}
 
-                {% if monthsErrorMessage %}
-                </div>
-                {% endif %}
+
+                    </div>
+                {% endcall %}
+
+
 
                 {% if errors %}{% for error in errors %}{% if error.SmallCatch === 'SMALL_CATCH_COUNTS_REQUIRED' %}
                 <div class="govuk-form-group govuk-form-group--error">

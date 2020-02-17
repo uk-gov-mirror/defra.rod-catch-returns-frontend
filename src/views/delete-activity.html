@@ -11,9 +11,13 @@
     <div class="govuk-grid-column-full">
         <form method="post">
 
-            <h1 class="govuk-heading-l">Do you want to delete river {{ river.name }}?</h1><p class="govuk-body-l">Deleting a river will also delete all the fish added to it.</p>
-
-            {% call govukFieldset({}) %}
+            {% call govukFieldset({
+                legend: {
+                    html: '<span class="govuk-heading-l">Do you want to delete river ' + river.name + ' from your ' + details.year + ' catch return?</span><p class="govuk-body-l">Deleting a river will also delete all the fish added to it.</p>',
+                    isPageHeading: true,
+                    classes: "govuk-heading-l"
+                }
+            }) %}
 
                 {{ govukButton({
                     name: "continue",
