@@ -22,7 +22,7 @@ const activitiesApi = new ActivitiesApi()
 const methodsApi = new MethodsApi()
 const speciesApi = new SpeciesApi()
 
-module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
+class SalmonAndLargeTroutHandler extends BaseHandler {
   constructor (...args) {
     super(args)
   }
@@ -162,4 +162,15 @@ module.exports = class SalmonAndLargeTroutHandler extends BaseHandler {
     return this.writeCacheAndRedirect(request, h, errors, next,
       `/catches/${encodeURIComponent(request.params.id)}`, cache)
   }
+}
+
+class SalmonAndLargeTroutHandlerClear extends SalmonAndLargeTroutHandler {
+  async doGet (request, h) {
+    await this.clearCacheErrorsAndPayload(request)
+    return super.doGet(request, h)
+  }
+}
+
+module.exports = {
+  SalmonAndLargeTroutHandler, SalmonAndLargeTroutHandlerClear
 }

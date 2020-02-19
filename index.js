@@ -363,6 +363,12 @@ const options = {
       process.exit((err) ? 1 : 0)
     })
 
+    // Attempt to log uncaught exceptions
+    process.on('uncaughtExceptionMonitor', (err, origin) => {
+      logger.error(`${err}:${origin}`)
+      process.exit(1)
+    })
+
     // Print the banner
     require('figlet')('Rod Catch Returns', function (err, data) {
       if (err) {

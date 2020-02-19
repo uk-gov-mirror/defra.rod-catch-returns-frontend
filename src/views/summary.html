@@ -31,7 +31,7 @@
 {% macro renderChange(id, desc) %}
     {% set url = id %}
     <!--suppress ALL -->
-    <span><a id="edit-{{ id }}" class="govuk-link" href="{{url }}">Change<span class="govuk-visually-hidden">&nbsp;{{ desc }}</span></a></span>
+    <span><a id="edit-{{ id }}" class="govuk-link" href="{{ url }}">Change<span class="govuk-visually-hidden">&nbsp;{{ desc }}</span></a></span>
 {% endmacro %}
 
 {% macro renderDelete(id, desc) %}
@@ -65,7 +65,7 @@
             { text: activity.river.name, attributes: { 'data-label': activityTableHeadings.river} },
             { text: activity.daysFishedWithMandatoryRelease, format: "numeric", attributes: { 'data-label': activityTableHeadings.daysFishedMandatory} },
             { text: activity.daysFishedOther, format: "numeric", attributes: { 'data-label': activityTableHeadings.daysFishedOther} },
-            { html: renderChange(activity.id, 'river ' + activity.river.name), format: "numeric", attributes: { 'data-label': activityTableHeadings.change} },
+            { html: renderChange(activity.id + '/clear', 'river ' + activity.river.name), format: "numeric", attributes: { 'data-label': activityTableHeadings.change} },
             { html: renderDelete(activity.id, 'river ' + activity.river.name), format: "numeric", attributes: { 'data-label': activityTableHeadings.delete} }
         ]) }}
     {% endfor %}
@@ -107,7 +107,7 @@
                 { text: fish.weight, attributes: { 'data-label': largeCatchHeader[3].text} },
                 { text: fish.method.name, attributes: { 'data-label': largeCatchHeader[4].text} },
                 { text: "Yes" if fish.released else "No", attributes: { 'data-label': largeCatchHeader[5].text} },
-                { html: renderChange(fish.id, desc), format: "numeric", attributes: { 'data-label': largeCatchHeader[6].text}  },
+                { html: renderChange(fish.id + '/clear', desc), format: "numeric", attributes: { 'data-label': largeCatchHeader[6].text}  },
                 { html: renderDelete(fish.id, desc), format: "numeric", attributes: { 'data-label': largeCatchHeader[7].text}  },
                 { html: renderCheck(fish.id, "exclude-catch", fish.reportingExclude, desc), format: "numeric", attributes: { 'data-label': largeCatchHeader[8].text}  }
             ]) }}
@@ -119,7 +119,7 @@
                 { text: fish.weight, attributes: { 'data-label': largeCatchHeader[3].text} },
                 { text: fish.method.name, attributes: { 'data-label': largeCatchHeader[4].text} },
                 { text: "Yes" if fish.released else "No", attributes: { 'data-label': largeCatchHeader[5].text} },
-                { html: renderChange(fish.id, desc), format: "numeric", attributes: { 'data-label': largeCatchHeader[6].text}  },
+                { html: renderChange(fish.id + '/clear', desc), format: "numeric", attributes: { 'data-label': largeCatchHeader[6].text}  },
                 { html: renderDelete(fish.id, desc), format: "numeric", attributes: { 'data-label': largeCatchHeader[7].text}  }
             ]) }}
         {% endif %}
@@ -178,7 +178,7 @@
                 { text: catch.bait or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[4].text} },
                 { text: catch.unknown or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[5].text} },
                 { text: catch.released, format: "numeric", attributes: { 'data-label': smallCatchHeader[6].text} },
-                { html: renderChange(catch.id | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[7].text} },
+                { html: renderChange((catch.id  + '/clear') | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[7].text} },
                 { html: renderDelete(catch.id | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[8].text} },
                 { html: renderCheck(catch.id, "exclude-small-catch", catch.reportingExclude, desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[9].text} }
             ]) }}
@@ -192,7 +192,7 @@
                     { text: catch.bait or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[4].text} },
                     { text: catch.unknown or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[5].text} },
                     { text: catch.released, format: "numeric", attributes: { 'data-label': smallCatchHeader[6].text} },
-                    { html: renderChange(catch.id | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[7].text} },
+                    { html: renderChange((catch.id  + '/clear') | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[7].text} },
                     { html: renderDelete(catch.id | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[8].text} }
                 ]) }}
             {% else %}
@@ -203,7 +203,7 @@
                     { text: catch.spinner or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[3].text} },
                     { text: catch.bait or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[4].text} },
                     { text: catch.released, format: "numeric", attributes: { 'data-label': smallCatchHeader[5].text} },
-                    { html: renderChange(catch.id | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[6].text} },
+                    { html: renderChange((catch.id + '/clear' )| replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[6].text} },
                     { html: renderDelete(catch.id | replace("smallCatches", "small-catches"), desc), format: "numeric", attributes: { 'data-label': smallCatchHeader[7].text} }
                 ]) }}
             {% endif %}
@@ -235,9 +235,9 @@
 
             <p class="govuk-body summary-link-right">
                 {% if activities.length === 0 %}
-                    <a id="activities-add" class="govuk-link " href="/activities/add">Add a river</a>
+                    <a id="activities-add" class="govuk-link " href="/activities/add/clear">Add a river</a>
                 {% else %}
-                    <a id="activities-add" class="govuk-link " href="/activities/add">Add another river</a>
+                    <a id="activities-add" class="govuk-link " href="/activities/add/clear">Add another river</a>
                 {% endif %}
             </p>
 
@@ -255,9 +255,9 @@
 
                 <p class="govuk-body summary-link-right">
                     {% if smallCatches.length === 0 %}
-                        <a id="small-catches-add" class="govuk-link " href="small-catches/add">Add a small adult sea trout catch</a>
+                        <a id="small-catches-add" class="govuk-link " href="small-catches/add/clear">Add a small adult sea trout catch</a>
                     {% else %}
-                        <a id="small-catches-add" class="govuk-link " href="small-catches/add">Add another small adult sea trout catch</a>
+                        <a id="small-catches-add" class="govuk-link " href="small-catches/add/clear">Add another small adult sea trout catch</a>
                     {% endif %}
                 </p>
 
@@ -277,9 +277,9 @@
 
                 <p class="govuk-body summary-link-right">
                     {% if catches.length === 0 %}
-                        <a id="catches-add" class="govuk-link " href="catches/add">Add a salmon or large adult sea trout</a>
+                        <a id="catches-add" class="govuk-link " href="catches/add/clear">Add a salmon or large adult sea trout</a>
                     {% else %}
-                        <a id="catches-add" class="govuk-link " href="catches/add">Add another salmon or large adult sea trout</a>
+                        <a id="catches-add" class="govuk-link " href="catches/add/clear">Add another salmon or large adult sea trout</a>
                     {% endif %}
                 </p>
 
