@@ -1,6 +1,17 @@
 {% extends "layout.html" %}
+{% from "back-link/macro.njk" import govukBackLink %}
 
 {% block pageTitle %}Privacy - GOV.UK{% endblock %}
+
+{% block beforeContent %}
+<div class="hide-if-js-disabled">
+    {{ super() }}
+    {{ govukBackLink({
+        text: "Back",
+        href: "javascript:history.back()"
+    }) }}
+</div>
+{% endblock %}
 
 {% block content %}
 <div class="govuk-grid-row">
