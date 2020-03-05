@@ -29,7 +29,7 @@ const months = [...Array(12).keys()].map(m => {
   }
 })
 
-module.exports = class SmallCatchHandler extends BaseHandler {
+class SmallCatchHandler extends BaseHandler {
   constructor (...args) {
     super(args)
   }
@@ -169,3 +169,12 @@ module.exports = class SmallCatchHandler extends BaseHandler {
       `/small-catches/${encodeURIComponent(request.params.id)}`, cache)
   }
 }
+
+class SmallCatchHandlerClear extends SmallCatchHandler {
+  async doGet (request, h) {
+    await this.clearCacheErrorsAndPayload(request)
+    return super.doGet(request, h)
+  }
+}
+
+module.exports = { SmallCatchHandler, SmallCatchHandlerClear }

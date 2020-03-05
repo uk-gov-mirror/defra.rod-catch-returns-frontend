@@ -25,7 +25,7 @@ module.exports = class SummaryHandler extends BaseHandler {
    */
   async doGet (request, h) {
     // Clean the cache
-    const cache = await this.clearCacheErrorsAndPayload(request)
+    const cache = await request.cache().get()
 
     // Clear other global cache artifacts
     delete cache.add

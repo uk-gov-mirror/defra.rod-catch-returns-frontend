@@ -141,12 +141,14 @@
                             { text: catch.released, format: "numeric", attributes: { 'data-label': smallCatchHeader[5].text} }
                         ]) }}
                     {% else %}
+                        {{ smallCatchItems.push([
                             { text: catch.month, rowspan: catch.rowspan, hide: catch.hide, attributes: { 'data-label': smallCatchHeader[0].text} },
                             { text: catch.river, attributes: { 'data-label': smallCatchHeader[1].text} },
                             { text: catch.fly or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[2].text} },
                             { text: catch.spinner or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[3].text} },
                             { text: catch.bait or 0, format: "numeric", attributes: { 'data-label': smallCatchHeader[4].text} },
                             { text: catch.released, format: "numeric", attributes: { 'data-label': smallCatchHeader[5].text} }
+                         ]) }}
                     {% endif %}
                 {% endif %}
             {% endfor %}

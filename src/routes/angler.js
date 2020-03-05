@@ -10,11 +10,11 @@ const LicenceAuthNotFoundHandler = require('../handlers/licence-login-fail')
 const DidYouFishHandler = require('../handlers/did-you-fish')
 const YearHandler = require('../handlers/year')
 const SummaryHandler = require('../handlers/summary')
-const ActivityHandler = require('../handlers/activities')
+const { ActivitiesHandler, ActivitiesHandlerClear } = require('../handlers/activities')
 const DeleteActivityHandler = require('../handlers/delete-activity')
-const SalmonAndLargeTroutHandler = require('../handlers/salmon-and-large-trout')
+const { SalmonAndLargeTroutHandler, SalmonAndLargeTroutHandlerClear } = require('../handlers/salmon-and-large-trout')
 const DeleteSalmonAndLargeTroutHandler = require('../handlers/delete-salmon-and-large-trout')
-const SmallCatchHandler = require('../handlers/small-catches')
+const { SmallCatchHandler, SmallCatchHandlerClear } = require('../handlers/small-catches')
 const DeleteSmallCatchHandler = require('../handlers/delete-small-catch')
 const ConfirmationHandler = require('../handlers/confirmation')
 const ReviewHandler = require('../handlers/review')
@@ -35,12 +35,20 @@ const yearHandler = new YearHandler('select-year', yearValidator)
 
 const didYouFishHandler = new DidYouFishHandler('did-you-fish', didYouFishValidator)
 const summaryHandler = new SummaryHandler('summary')
-const activityHandler = new ActivityHandler('activity', activityValidator)
+
+const activityHandler = new ActivitiesHandler('activity', activityValidator, 'activityContext')
+const activityHandlerClear = new ActivitiesHandlerClear('activity', activityValidator, 'activityContext')
 const deleteActivityHandler = new DeleteActivityHandler('delete-activity', activityValidator)
-const salmonAndLargeTroutHandler = new SalmonAndLargeTroutHandler('salmon-and-large-trout', salmonAndLargeTroutValidator)
+
+const salmonAndLargeTroutHandler = new SalmonAndLargeTroutHandler('salmon-and-large-trout', salmonAndLargeTroutValidator, 'largeCatchContext')
+const salmonAndLargeTroutHandlerClear = new SalmonAndLargeTroutHandlerClear('salmon-and-large-trout', salmonAndLargeTroutValidator, 'largeCatchContext')
 const deleteSalmonAndLargeTroutHandler = new DeleteSalmonAndLargeTroutHandler('delete-salmon-and-large-trout')
-const smallCatchHandler = new SmallCatchHandler('small-catches', smallCatchValidator)
+
+const smallCatchHandler = new SmallCatchHandler('small-catches', smallCatchValidator, 'smallCatchContext')
+const smallCatchHandlerClear = new SmallCatchHandlerClear('small-catches', smallCatchValidator, 'smallCatchContext')
+
 const deleteSmallCatchHandler = new DeleteSmallCatchHandler('delete-small-catch')
+
 const reviewHandler = new ReviewHandler('review')
 const confirmationHandler = new ConfirmationHandler('confirmation')
 const saveHandler = new SaveHandler('save')
@@ -122,6 +130,13 @@ module.exports = [
     handler: activityHandler.handler
   },
 
+  // Activity handler clear cache
+  {
+    path: '/activities/{id}/clear',
+    method: ['GET', 'POST'],
+    handler: activityHandlerClear.handler
+  },
+
   // Delete activity handler
   {
     path: '/delete/activities/{id}',
@@ -136,6 +151,13 @@ module.exports = [
     handler: salmonAndLargeTroutHandler.handler
   },
 
+  // Add/edit salmon and large sea trout handler with cache clear
+  {
+    path: '/catches/{id}/clear',
+    method: ['GET', 'POST'],
+    handler: salmonAndLargeTroutHandlerClear.handler
+  },
+
   // Delete salmon and sea trout handler
   {
     path: '/delete/catches/{id}',
@@ -148,6 +170,13 @@ module.exports = [
     path: '/small-catches/{id}',
     method: ['GET', 'POST'],
     handler: smallCatchHandler.handler
+  },
+
+  // Add/edit the small catch handler with cache clear
+  {
+    path: '/small-catches/{id}/clear',
+    method: ['GET', 'POST'],
+    handler: smallCatchHandlerClear.handler
   },
 
   // Delete the small catch handler

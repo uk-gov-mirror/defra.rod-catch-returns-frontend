@@ -314,9 +314,9 @@
                                             text: "Day",
                                             classes: "govuk-date-input__label"
                                         },
-                                        type: "number",
+                                        type: "text",
                                         value: payload.day,
-                                        attributes: { maxlength: 2, pattern: "[0-9]*" },
+                                        attributes: { maxlength: 2 },
                                         classes:  "govuk-input--width-2 govuk-input--error" if dateErrorMessage else "govuk-input--width-2"
                                     }) }}
                                 </div>
@@ -329,9 +329,9 @@
                                             text: "Month",
                                             classes: "govuk-date-input__label"
                                         },
-                                        type: "number",
+                                        type: "text",
                                         value: payload.month,
-                                        attributes: { maxlength: 2, pattern: "[0-9]*" },
+                                        attributes: { maxlength: 2 },
                                         classes: "govuk-input--width-2 govuk-input--error" if dateErrorMessage else "govuk-input--width-2"
                                     }) }}
                                 </div>

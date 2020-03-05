@@ -12,7 +12,7 @@ const submissionsApi = new SubmissionsApi()
 const riversApi = new RiversApi()
 const activitiesApi = new ActivitiesApi()
 
-module.exports = class ActivitiesHandler extends BaseHandler {
+class ActivitiesHandler extends BaseHandler {
   constructor (...args) {
     super(args)
   }
@@ -112,3 +112,12 @@ module.exports = class ActivitiesHandler extends BaseHandler {
       `/activities/${encodeURIComponent(request.params.id)}`)
   }
 }
+
+class ActivitiesHandlerClear extends ActivitiesHandler {
+  async doGet (request, h) {
+    await this.clearCacheErrorsAndPayload(request)
+    return super.doGet(request, h)
+  }
+}
+
+module.exports = { ActivitiesHandler, ActivitiesHandlerClear }
