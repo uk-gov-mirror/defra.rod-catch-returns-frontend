@@ -6,6 +6,9 @@
   "license": "ISC",
   "author": "Graham Willis, Sam Gardner-Dell",
   "main": "index.js",
+  "engines": {
+    "node": ">14.0.0"
+  },
   "scripts": {
     "aws": "node proto.js",
     "postinstall": "gulp",
@@ -63,7 +66,8 @@
     "gulp": "^4.0.2",
     "gulp-merge": "^0.1.1",
     "gulp-minify": "^3.1.0",
-    "gulp-sass": "^4.0.2",
+    "gulp-sass": "^4.1.0",
+    "node-sass": "^4.14.1",
     "gulp-sourcemaps": "^2.6.5",
     "merge-stream": "^2.0.0",
     "run-sequence": "^2.2.1",
