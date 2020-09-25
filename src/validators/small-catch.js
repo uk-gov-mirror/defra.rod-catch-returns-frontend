@@ -50,24 +50,22 @@ const apiMethodErrorRemapper = (errors, apiCounts, apiIgnore, methods) => {
     })
 }
 
+const calculateMonth = payload => {
+  const month = parseInt(payload.month)
+  if (month <= 12 && month >= 1) {
+    return month
+  }
+  return null
+}
+
 module.exports = async (request) => {
   const payload = request.payload
   const errors = []
   const cache = await request.cache().get()
-  let monthForApi
-
-  if (!payload.month.trim()) {
-    monthForApi = null
-  } else if (isNaN(payload.month)) {
-    monthForApi = null
-  } else if (Number.parseInt(payload.month) < 1 || Number.parseInt(payload.month) > 12) {
-    monthForApi = null
-  } else {
-    monthForApi = Number.parseInt(payload.month)
-  }
+  const monthForApi = calculateMonth(payload)
 
   /*
-   * Check methods - allow blanks in the input which will be translated to zero's for display purposes
+   * Check methods - allow blanks in the input which will be translated to zeroes for display purposes
    * but don't create entries in the counts array where the number is not set
    * because the API will not accept them. Otherwise we assign to counts and allow the API to perform validation
    */
@@ -75,36 +73,21 @@ module.exports = async (request) => {
   const apiCounts = []
   const apiIgnore = []
 
-  methods.forEach(m => {
-    const name = m.name.toLowerCase()
-    if (Object.keys(payload).includes(name)) {
-      const count = payload[name]
-      if (count.trim()) {
-        if (isInt(count)) {
-          if (Number.parseInt(count) !== 0) {
-            apiCounts.push({
-              method: m.id,
-              count: count
-            })
-          }
-        } else {
-          /*
-           * We have to send something that will fail the validation otherwise we might erroneously save the data.
-           * ignore the api error here and replace with a front end generated one
-           */
-          apiCounts.push({
-            method: m.id,
-            count: null
-          })
-
-          // Push the array index of the count payload to ignore
-          apiIgnore.push(apiCounts.length - 1)
-
-          errors.push({ SmallCatch: 'SMALL_CATCH_' + m.name.toUpperCase() + '_COUNT_INVALID' })
-        }
+  const apiNames = Object.keys(payload)
+  for (const method of methods) {
+    const name = method.name.toLowerCase()
+    if (apiNames.includes(name)) {
+      const count = parseInt(payload[name]) || null
+      apiCounts.push({
+        count,
+        method: method.id
+      })
+      if (count === null) {
+        apiIgnore.push(apiCounts.length - 1)
+        errors.push({ SmallCatch: `SMALL_CATCH_${method.name.toUpperCase()}_COUNT_INVALID` })
       }
     }
-  })
+  }
 
   const submission = await submissionsApi.getById(request, cache.submissionId)
   const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
@@ -118,26 +101,16 @@ module.exports = async (request) => {
   /*
    * Add or change the result in the API merging any validation errors
    */
-  let result
-  if (cache.smallCatch) {
-    result = await smallCatchesApi.change(request,
-      cache.smallCatch.id,
-      activityId,
-      monthForApi,
-      apiCounts,
-      subNumber(payload.released),
-      Object.keys(payload).includes('noMonthRecorded')
-    )
-  } else {
-    result = await smallCatchesApi.add(request,
-      cache.submissionId,
-      activityId,
-      monthForApi,
-      apiCounts,
-      subNumber(payload.released),
-      Object.keys(payload).includes('noMonthRecorded')
-    )
-  }
+  const catchId = cache.smallCatch ? cache.smallCatch.id : cache.submissionId
+  const result = await smallCatchesApi(
+    request,
+    catchId,
+    activityId,
+    monthForApi,
+    apiCounts,
+    subNumber(payload.released),
+    Object.keys(payload).includes('noMonthRecorded')
+  )
 
   const sorter = getSorterForApiErrors('SmallCatch',
     'ACTIVITY',
