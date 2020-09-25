@@ -11,7 +11,6 @@ require('dotenv').config()
 const Glue = require('@hapi/glue')
 const Nunjucks = require('nunjucks')
 const Uuid = require('uuid')
-const Joi = require('@hapi/joi')
 const Crypto = require('crypto')
 const { logger } = require('defra-logging-facade')
 const AuthorizationSchemes = require('./src/lib/authorization-schemes')
@@ -198,7 +197,7 @@ const options = {
     /**
      * Test that the environment is set up correctly
      */
-    Joi.validate(process.env, EnvironmentSchema, { allowUnknown: true }, (err) => {
+    EnvironmentSchema.validate(process.env, { allowUnknown: true }, (err) => {
       if (err) {
         throw new Error('Schema validation error: ' + err.message)
       }

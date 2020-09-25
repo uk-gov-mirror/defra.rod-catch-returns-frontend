@@ -130,6 +130,8 @@ module.exports = [
     handler: ageWeightKeyHandler.handler,
     options: {
       payload: {
+        multipart: true,
+        allow: 'multipart/form-data',
         output: 'file',
         parse: true,
         maxBytes: 1000 * 1000,

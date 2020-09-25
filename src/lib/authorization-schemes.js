@@ -34,7 +34,7 @@ module.exports = {
 
         request.payload.user = request.payload.user.replace(/\s+/g, '')
 
-        const result = Joi.validate(request.payload, activeDirectorySchema,
+        const result = activeDirectorySchema.validate(request.payload,
           { allowUnknown: true, abortEarly: true })
 
         // If cannot validate the schema is not authorized
@@ -92,8 +92,7 @@ module.exports = {
         request.payload.licence = request.payload.licence.replace(/\s+/g, '')
         request.payload.postcode = request.payload.postcode.trim()
 
-        const result = Joi.validate(request.payload, licenceSchema,
-          { allowUnknown: true, abortEarly: true })
+        const result = licenceSchema.validate(request.payload, { allowUnknown: true, abortEarly: true })
 
         // If cannot validate the schema is not authorized
         if (result.error) {
