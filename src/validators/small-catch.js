@@ -50,31 +50,15 @@ const apiMethodErrorRemapper = (errors, apiCounts, apiIgnore, methods) => {
     })
 }
 
-module.exports = async (request) => {
-  const payload = request.payload
-  const errors = []
-  const cache = await request.cache().get()
-  let monthForApi
-
-  if (!payload.month.trim()) {
-    monthForApi = null
-  } else if (isNaN(payload.month)) {
-    monthForApi = null
-  } else if (Number.parseInt(payload.month) < 1 || Number.parseInt(payload.month) > 12) {
-    monthForApi = null
-  } else {
-    monthForApi = Number.parseInt(payload.month)
+const calculateMonth = payload => {
+  const month = parseInt(payload.month)
+  if (month <= 12 && month >= 1) {
+    return month
   }
+  return null
+}
 
-  /*
-   * Check methods - allow blanks in the input which will be translated to zero's for display purposes
-   * but don't create entries in the counts array where the number is not set
-   * because the API will not accept them. Otherwise we assign to counts and allow the API to perform validation
-   */
-  const methods = await methodsApi.list(request)
-  const apiCounts = []
-  const apiIgnore = []
-
+function calculateCounts (methods, payload, apiCounts, apiIgnore, errors) {
   methods.forEach(m => {
     const name = m.name.toLowerCase()
     if (Object.keys(payload).includes(name)) {
@@ -105,15 +89,29 @@ module.exports = async (request) => {
       }
     }
   })
+}
+
+module.exports = async (request) => {
+  const payload = request.payload
+  const errors = []
+  const cache = await request.cache().get()
+  const monthForApi = calculateMonth(payload)
+
+  /*
+   * Check methods - allow blanks in the input which will be translated to zeroes for display purposes
+   * but don't create entries in the counts array where the number is not set
+   * because the API will not accept them. Otherwise we assign to counts and allow the API to perform validation
+   */
+  const methods = await methodsApi.list(request)
+  const apiCounts = []
+  const apiIgnore = []
+  calculateCounts(methods, payload, apiCounts, apiIgnore, errors)
 
   const submission = await submissionsApi.getById(request, cache.submissionId)
   const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
 
   // Get the activity from the river id
-  const activityId = (() => {
-    const activity = activities.find(a => a.river.id === payload.river)
-    return activity ? activity.id : null
-  })()
+  const activityId = activities.find(a => a.river.id === payload.river)?.id
 
   /*
    * Add or change the result in the API merging any validation errors

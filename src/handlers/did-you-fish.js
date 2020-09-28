@@ -63,7 +63,8 @@ module.exports = class DidYouFishHandler extends BaseHandler {
       details: {
         licenceNumber: cache.licenceNumber,
         postcode: cache.postcode,
-        year: cache.year }
+        year: cache.year
+      }
     })
   }
 

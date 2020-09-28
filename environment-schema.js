@@ -7,7 +7,7 @@ const Joi = require('@hapi/joi')
 
 module.exports = Joi.object().keys({
   NODE_ENV: Joi.string().required(),
-  CONTEXT: Joi.string().valid(['ANGLER', 'FMT']).required(),
+  CONTEXT: Joi.string().valid('ANGLER', 'FMT').required(),
   REDIS_HOSTNAME: Joi.string().required(),
   REDIS_PORT: Joi.number().port().required(),
   COOKIE_PW: Joi.string().length(32).required(),

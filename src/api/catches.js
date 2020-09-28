@@ -100,30 +100,24 @@ module.exports = class CatchesApi extends EntityApi {
   }
 
   sort (a, b) {
+    let result
+
     if (Moment(a.dateCaught, 'YYYY-MM-DD').unix() < Moment(b.dateCaught, 'YYYY-MM-DD').unix()) {
-      return -1
+      result = -1
+    } else if (Moment(a.dateCaught, 'YYYY-MM-DD').unix() > Moment(b.dateCaught, 'YYYY-MM-DD').unix()) {
+      result = 1
+    } else if ((a.onlyMonthRecorded || a.noDateRecorded) < (b.onlyMonthRecorded || b.noDateRecorded)) {
+      result = -1
+    } else if ((a.onlyMonthRecorded || a.noDateRecorded) > (b.onlyMonthRecorded || b.noDateRecorded)) {
+      result = 1
+    } else if (a.activity.river.name < b.activity.river.name) {
+      result = -1
+    } else if (a.activity.river.name > b.activity.river.name) {
+      result = 1
+    } else {
+      result = 0
     }
 
-    if (Moment(a.dateCaught, 'YYYY-MM-DD').unix() > Moment(b.dateCaught, 'YYYY-MM-DD').unix()) {
-      return 1
-    }
-
-    if ((a.onlyMonthRecorded || a.noDateRecorded) < (b.onlyMonthRecorded || b.noDateRecorded)) {
-      return -1
-    }
-
-    if ((a.onlyMonthRecorded || a.noDateRecorded) > (b.onlyMonthRecorded || b.noDateRecorded)) {
-      return 1
-    }
-
-    if (a.activity.river.name < b.activity.river.name) {
-      return -1
-    }
-
-    if (a.activity.river.name > b.activity.river.name) {
-      return 1
-    }
-
-    return 0
+    return result
   }
 }

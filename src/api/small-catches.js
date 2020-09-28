@@ -99,30 +99,24 @@ module.exports = class SmallCatchesApi extends EntityApi {
   }
 
   sort (a, b) {
+    let result
+
     if (a.month < b.month) {
-      return -1
+      result = -1
+    } else if (a.month > b.month) {
+      result = 1
+    } else if (a.noMonthRecorded < b.noMonthRecorded) {
+      result = -1
+    } else if (a.noMonthRecorded > b.noMonthRecorded) {
+      result = 1
+    } else if (a.activity.river.name < b.activity.river.name) {
+      result = -1
+    } else if (a.activity.river.name > b.activity.river.name) {
+      result = 1
+    } else {
+      result = 0
     }
 
-    if (a.month > b.month) {
-      return 1
-    }
-
-    if (a.noMonthRecorded < b.noMonthRecorded) {
-      return -1
-    }
-
-    if (a.noMonthRecorded > b.noMonthRecorded) {
-      return 1
-    }
-
-    if (a.activity.river.name < b.activity.river.name) {
-      return -1
-    }
-
-    if (a.activity.river.name > b.activity.river.name) {
-      return 1
-    }
-
-    return 0
+    return result
   }
 }

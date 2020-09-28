@@ -1,11 +1,11 @@
 @media screen and (max-width: 43em) {
-  table.rcr-responsive-summary-table {
+  .rcr-responsive-summary-table {
     font-size: 1rem;
   }
 }
 
 @media screen and (max-width: 37em) {
-  table.rcr-responsive-summary-table {
+  .rcr-responsive-summary-table {
     thead {
       clip: rect(0 0 0 0);
       height: 1px;
@@ -15,6 +15,7 @@
       position: absolute;
       width: 1px;
     }
+
     tr {
       border: 1px solid #ddd;
     }
@@ -25,9 +26,9 @@
 
     td {
       display: block;
-      padding-left: 0.5em !important;
-      padding-right: 0.5em !important;
-      border-bottom: none;
+      padding-left: .5em !important;
+      padding-right: .5em !important;
+      border-bottom: 0;
       text-align: right;
     }
 
