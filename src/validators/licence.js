@@ -8,7 +8,7 @@ const ResponseError = require('../handlers/response-error')
  */
 module.exports = async (request) => {
   const payload = request.payload
-  const errors = []
+  let errors = []
 
   // Unmatched licence number
   if (!payload.licence) {
@@ -21,18 +21,15 @@ module.exports = async (request) => {
       payload.contact = await LicenceApi.getContactFromLicenceKey(request, payload.licence, payload.postcode)
       if (!payload.contact) {
         errors.push({ licence: 'NOT_FOUND' })
-        return errors
       }
     } catch (err) {
       if (err.statusCode === ResponseError.status.NOT_FOUND || err.statusCode === ResponseError.status.FORBIDDEN) {
         errors.push({ licence: 'NOT_FOUND' })
-        return errors
       } else {
-        return null
+        errors = null
       }
     }
-    return null
   }
 
-  return errors
+  return errors.length ? errors : null
 }

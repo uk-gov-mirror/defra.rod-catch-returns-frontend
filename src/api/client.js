@@ -19,6 +19,50 @@ const Request = new ETagRequest({
 
 const { logger } = require('defra-logging-facade')
 
+function requestCallback (reject, method, uri, resolve, throwOnNotFound) {
+  return (err, response, body) => {
+    if (err) {
+      return reject(new Error(err))
+    } else {
+      logger.debug(`API; ${method}:${uri} ${response.statusCode}`)
+    }
+
+    // If we can deserialize the body as JSON then do so
+    const responseBody = (() => {
+      try {
+        return JSON.parse(body || {})
+      } catch (e) {
+        return body
+      }
+    })()
+
+    // If no error occurred i.e. all statuses but 2xx - or a 304 (cache)
+    if (Math.floor(response.statusCode / 100) === 2 || response.statusCode === 304) {
+      resolve(responseBody)
+    } else if (response.statusCode === ResponseError.status.NOT_FOUND) {
+      // Not found is ignored for searches otherwise it is treated as an error
+      if (throwOnNotFound) {
+        reject(new ResponseError.Error(response.statusMessage, ResponseError.status.NOT_FOUND))
+      } else {
+        resolve()
+      }
+    } else if (response.statusCode === ResponseError.status.CONFLICT) {
+      // Conflicts are key violations and treated as validation errors
+      resolve({ statusCode: response.statusCode, statusMessage: response.statusMessage })
+    } else if (response.statusCode === ResponseError.status.BAD_REQUEST) {
+      // Bad requests may be API validation errors
+      if (Object.keys(responseBody).includes('errors')) {
+        resolve(responseBody)
+      } else {
+        reject(new ResponseError.Error(response.statusMessage, response.statusCode))
+      }
+    } else {
+      // All other errors are thrown 403 forbidden and server 500 errors
+      reject(new ResponseError.Error(response.statusMessage, response.statusCode))
+    }
+  }
+}
+
 const internals = {
   method: {
     GET: 'GET', POST: 'POST', PUT: 'PUT', DELETE: 'DELETE', PATCH: 'PATCH'
@@ -98,47 +142,7 @@ const internals = {
 
       requestObject.headers = { 'Content-Type': typeHeader }
 
-      Request(requestObject, (err, response, body) => {
-        if (err) {
-          return reject(new Error(err))
-        } else {
-          logger.debug(`API; ${method}:${uri} ${response.statusCode}`)
-        }
-
-        // If we can deserialize the body as JSON then do so
-        const responseBody = (() => {
-          try {
-            return JSON.parse(body || {})
-          } catch (e) {
-            return body
-          }
-        })()
-
-        // If no error occurred i.e. all statuses but 2xx - or a 304 (cache)
-        if (Math.floor(response.statusCode / 100) === 2 || response.statusCode === 304) {
-          resolve(responseBody)
-        } else if (response.statusCode === ResponseError.status.NOT_FOUND) {
-          // Not found is ignored for searches otherwise it is treated as an error
-          if (throwOnNotFound) {
-            reject(new ResponseError.Error(response.statusMessage, ResponseError.status.NOT_FOUND))
-          } else {
-            resolve()
-          }
-        } else if (response.statusCode === ResponseError.status.CONFLICT) {
-          // Conflicts are key violations and treated as validation errors
-          resolve({ statusCode: response.statusCode, statusMessage: response.statusMessage })
-        } else if (response.statusCode === ResponseError.status.BAD_REQUEST) {
-          // Bad requests may be API validation errors
-          if (Object.keys(responseBody).includes('errors')) {
-            resolve(responseBody)
-          } else {
-            reject(new ResponseError.Error(response.statusMessage, response.statusCode))
-          }
-        } else {
-          // All other errors are thrown 403 forbidden and server 500 errors
-          reject(new ResponseError.Error(response.statusMessage, response.statusCode))
-        }
-      })
+      Request(requestObject, requestCallback(reject, method, uri, resolve, throwOnNotFound))
     })
   }
 }

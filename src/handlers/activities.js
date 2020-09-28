@@ -17,6 +17,67 @@ class ActivitiesHandler extends BaseHandler {
     super(args)
   }
 
+  async add (request, h, cache, activities, rivers) {
+    delete cache.activity
+    cache.back = request.path
+    await request.cache().set(cache)
+
+    // Filter out the rivers already selected
+    return this.readCacheAndDisplayView(request, h, {
+      rivers: rivers.filter(r => !activities.map(a => a.river.id).includes(r.id)),
+      add: true,
+      details: {
+        licenceNumber: cache.licenceNumber,
+        postcode: cache.postcode,
+        year: cache.year
+      }
+    })
+  }
+
+  async change (request, h, cache, activities, rivers, submission) {
+    let activity = await activitiesApi.getById(request, `activities/${request.params.id}`)
+
+    if (!activity) {
+      throw new ResponseError.Error('unknown activity', ResponseError.status.UNAUTHORIZED)
+    }
+
+    const activitySubmission = await submissionsApi.getFromLink(request, activity._links.submission.href)
+    activity = await activitiesApi.doMap(request, activity)
+
+    // Check they are not messing about with somebody else's activity
+    if (activitySubmission.id !== submission.id) {
+      throw new ResponseError.Error('Action attempted on not owned submission', ResponseError.status.UNAUTHORIZED)
+    }
+
+    // Write the catch id onto the cache
+    cache.activity = { id: activity.id }
+    cache.back = request.path
+    await request.cache().set(cache)
+
+    // Prepare a the payload
+    const payload = {
+      river: activity.river.id,
+      daysFishedOther: activity.daysFishedOther,
+      daysFishedWithMandatoryRelease: activity.daysFishedWithMandatoryRelease
+    }
+
+    /*
+     * Do not allow to switch to a river that is already in the submission other than the
+     * one we are currently editing
+     */
+    return this.readCacheAndDisplayView(request, h, {
+      rivers: rivers.filter(r => ![].concat(...activities.map(a => a.river))
+        .filter(r => r.id !== activity.river.id)
+        .map(r2 => r2.id).includes(r.id)).sort(riversApi.sort),
+      payload: payload,
+      details: {
+        licenceNumber: cache.licenceNumber,
+        postcode: cache.postcode,
+        year: cache.year
+      }
+    })
+  }
+
   /**
    * Get handler for add activity page
    * @param request
@@ -40,64 +101,8 @@ class ActivitiesHandler extends BaseHandler {
       return h.redirect('/review')
     }
 
-    if (request.params.id === 'add') {
-      delete cache.activity
-      cache.back = request.path
-      await request.cache().set(cache)
-
-      // Filter out the rivers already selected
-      return this.readCacheAndDisplayView(request, h, {
-        rivers: rivers.filter(r => !activities.map(a => a.river.id).includes(r.id)),
-        add: true,
-        details: {
-          licenceNumber: cache.licenceNumber,
-          postcode: cache.postcode,
-          year: cache.year
-        }
-      })
-    } else {
-      let activity = await activitiesApi.getById(request, `activities/${request.params.id}`)
-
-      if (!activity) {
-        throw new ResponseError.Error('unknown activity', ResponseError.status.UNAUTHORIZED)
-      }
-
-      const activitySubmission = await submissionsApi.getFromLink(request, activity._links.submission.href)
-      activity = await activitiesApi.doMap(request, activity)
-
-      // Check they are not messing about with somebody else's activity
-      if (activitySubmission.id !== submission.id) {
-        throw new ResponseError.Error('Action attempted on not owned submission', ResponseError.status.UNAUTHORIZED)
-      }
-
-      // Write the catch id onto the cache
-      cache.activity = { id: activity.id }
-      cache.back = request.path
-      await request.cache().set(cache)
-
-      // Prepare a the payload
-      const payload = {
-        river: activity.river.id,
-        daysFishedOther: activity.daysFishedOther,
-        daysFishedWithMandatoryRelease: activity.daysFishedWithMandatoryRelease
-      }
-
-      /*
-       * Do not allow to switch to a river that is already in the submission other than the
-       * one we are currently editing
-       */
-      return this.readCacheAndDisplayView(request, h, {
-        rivers: rivers.filter(r => ![].concat(...activities.map(a => a.river))
-          .filter(r => r.id !== activity.river.id)
-          .map(r2 => r2.id).includes(r.id)).sort(riversApi.sort),
-        payload: payload,
-        details: {
-          licenceNumber: cache.licenceNumber,
-          postcode: cache.postcode,
-          year: cache.year
-        }
-      })
-    }
+    return (request.params.id === 'add') ? this.add(request, h, cache, activities, rivers)
+      : this.change(request, h, cache, activities, rivers, submission)
   }
 
   /**
