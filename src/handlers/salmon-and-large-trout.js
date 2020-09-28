@@ -28,6 +28,103 @@ class SalmonAndLargeTroutHandler extends BaseHandler {
   }
 
   /**
+   * Get request calls this method to gather the data needed for the add large catch operation
+   * @param request
+   * @param h
+   * @param cache
+   * @param rivers
+   * @param methods
+   * @returns {Promise<never>}
+   */
+  async add (request, h, cache, rivers, methods) {
+    // Clear any existing catch id
+    delete cache.largeCatch
+    await request.cache().set(cache)
+
+    // If are doing add again then filter the rivers
+    if (cache.add && cache.add.river) {
+      rivers = rivers.filter(r => r.id === cache.add.river)
+    }
+
+    // Add a new salmon and large trout
+    return this.readCacheAndDisplayView(request, h, {
+      rivers: rivers,
+      year: cache.year,
+      types: await speciesApi.list(request),
+      methods: methods,
+      add: true,
+      details: {
+        licenceNumber: cache.licenceNumber,
+        postcode: cache.postcode,
+        year: cache.year
+      }
+    })
+  }
+
+  /**
+   * Get request calls this method to gather the data needed for the change large catch operation
+   * @param request
+   * @param h
+   * @param cache
+   * @param rivers
+   * @param methods
+   * @param activities
+   * @returns {Promise<never>}
+   */
+  async change (request, h, cache, rivers, methods, activities) {
+    // Modify an existing catch
+    let largeCatch = await catchesApi.getById(request, `catches/${request.params.id}`)
+    if (!largeCatch) {
+      throw new ResponseError.Error('Unauthorized access to large catch', ResponseError.status.UNAUTHORIZED)
+    }
+
+    // Check they are not messing about with somebody else's activity
+    if (!activities.map(a => a._links.self.href).includes(largeCatch._links.activityEntity.href)) {
+      throw new ResponseError.Error('Unauthorized access to large catch', ResponseError.status.UNAUTHORIZED)
+    }
+    largeCatch = await catchesApi.doMap(request, largeCatch)
+
+    // Write the catch id onto the cache
+    cache.largeCatch = { id: largeCatch.id }
+    await request.cache().set(cache)
+
+    const dateCaught = Moment(largeCatch.dateCaught)
+    const payload = {
+      river: largeCatch.activity.river.id,
+      day: dateCaught.format('DD'),
+      month: dateCaught.format('MM'),
+      type: largeCatch.species.id,
+      pounds: Math.floor(largeCatch.mass.oz / 16),
+      ounces: Math.round(largeCatch.mass.oz % 16),
+      system: largeCatch.mass.type,
+      kilograms: Math.round(largeCatch.mass.kg * 1000) / 1000,
+      method: largeCatch.method.id,
+      released: largeCatch.released ? 'true' : 'false'
+    }
+
+    if (largeCatch.noDateRecorded) {
+      payload.noDateRecorded = 'true'
+    }
+
+    if (largeCatch.onlyMonthRecorded) {
+      payload.onlyMonthRecorded = 'true'
+    }
+
+    return this.readCacheAndDisplayView(request, h, {
+      rivers: rivers,
+      year: cache.year,
+      types: await speciesApi.list(request),
+      methods: methods,
+      payload: payload,
+      details: {
+        licenceNumber: cache.licenceNumber,
+        postcode: cache.postcode,
+        year: cache.year
+      }
+    })
+  }
+
+  /**
    * Get handler for select salmon and large trout page
    * @param request
    * @param h
@@ -43,7 +140,7 @@ class SalmonAndLargeTroutHandler extends BaseHandler {
     cache.back = request.path
     const submission = await submissionsApi.getById(request, cache.submissionId)
     const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
-    let rivers = activities.map(a => a.river)
+    const rivers = activities.map(a => a.river)
       .filter(r => process.env.CONTEXT === 'FMT' ? true : !r.internal)
 
     const methods = (await methodsApi.list(request))
@@ -54,81 +151,8 @@ class SalmonAndLargeTroutHandler extends BaseHandler {
       return h.redirect('/review')
     }
 
-    if (request.params.id === 'add') {
-      // Clear any existing catch id
-      delete cache.largeCatch
-      await request.cache().set(cache)
-
-      // If are doing add again then filter the rivers
-      if (cache.add && cache.add.river) {
-        // Filter to single river and filter the allowed months
-        rivers = rivers.filter(r => r.id === cache.add.river)
-      }
-
-      // Add a new salmon and large trout
-      return this.readCacheAndDisplayView(request, h, {
-        rivers: rivers,
-        year: cache.year,
-        types: await speciesApi.list(request),
-        methods: methods,
-        add: true,
-        details: {
-          licenceNumber: cache.licenceNumber,
-          postcode: cache.postcode,
-          year: cache.year
-        }
-      })
-    } else {
-      // Modify an existing catch
-      let largeCatch = await catchesApi.getById(request, `catches/${request.params.id}`)
-      if (!largeCatch) {
-        throw new ResponseError.Error('Unauthorized access to large catch', ResponseError.status.UNAUTHORIZED)
-      }
-      // Check they are not messing about with somebody else's activity
-      if (!activities.map(a => a._links.self.href).includes(largeCatch._links.activityEntity.href)) {
-        throw new ResponseError.Error('Unauthorized access to large catch', ResponseError.status.UNAUTHORIZED)
-      }
-      largeCatch = await catchesApi.doMap(request, largeCatch)
-
-      // Write the catch id onto the cache
-      cache.largeCatch = { id: largeCatch.id }
-      await request.cache().set(cache)
-
-      const dateCaught = Moment(largeCatch.dateCaught)
-      const payload = {
-        river: largeCatch.activity.river.id,
-        day: dateCaught.format('DD'),
-        month: dateCaught.format('MM'),
-        type: largeCatch.species.id,
-        pounds: Math.floor(largeCatch.mass.oz / 16),
-        ounces: Math.round(largeCatch.mass.oz % 16),
-        system: largeCatch.mass.type,
-        kilograms: Math.round(largeCatch.mass.kg * 1000) / 1000,
-        method: largeCatch.method.id,
-        released: largeCatch.released ? 'true' : 'false'
-      }
-
-      if (largeCatch.noDateRecorded) {
-        payload.noDateRecorded = 'true'
-      }
-
-      if (largeCatch.onlyMonthRecorded) {
-        payload.onlyMonthRecorded = 'true'
-      }
-
-      return this.readCacheAndDisplayView(request, h, {
-        rivers: rivers,
-        year: cache.year,
-        types: await speciesApi.list(request),
-        methods: methods,
-        payload: payload,
-        details: {
-          licenceNumber: cache.licenceNumber,
-          postcode: cache.postcode,
-          year: cache.year
-        }
-      })
-    }
+    return request.params.id === 'add' ? this.add(request, h, cache, rivers, methods)
+      : this.change(request, h, cache, rivers, methods, activities)
   }
 
   /**

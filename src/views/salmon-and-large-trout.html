@@ -22,7 +22,7 @@
 {% set riverItems = [] %}
 
 {% if not payload or not payload.river %}
-    {{ riverItems.push(null) }}
+    {{ riverItems.push({ value: null, text: '', selected: true }) }}
 {% endif %}
 
 {% for river in rivers %}
@@ -463,6 +463,7 @@
                 {% endif %}
             {% endcall %}
             {{ extra() }}
+
         </form>
         {{ summaryLink() }}
     </div>
