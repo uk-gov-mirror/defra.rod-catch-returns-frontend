@@ -30,11 +30,11 @@ function cleanDate (payload, cache) {
 }
 
 function conversion (payload, errors) {
-  if (payload.system === 'METRIC' && errors.filter(e => e['kilograms']).length === 0) {
+  if (payload.system === 'METRIC' && errors.filter(e => e.kilograms).length === 0) {
     const oz = 35.27396195 * Number.parseFloat(payload.kilograms)
     payload.pounds = Math.floor(oz / 16)
     payload.ounces = Math.round(oz % 16)
-  } else if (payload.system === 'IMPERIAL' && errors.filter(e => e['pounds']).length === 0 && errors.filter(e => e['ounces']).length === 0) {
+  } else if (payload.system === 'IMPERIAL' && errors.filter(e => e.pounds).length === 0 && errors.filter(e => e.ounces).length === 0) {
     const oz = (16 * Number.parseInt(payload.pounds)) + Number.parseInt(payload.ounces)
     payload.kilograms = Math.round(0.0283495 * oz * 1000) / 1000
   }
@@ -61,20 +61,8 @@ module.exports = async (request) => {
   }
 
   // Get the activity from the river id
-  const activityId = (() => {
-    const activity = activities.find(a => a.river.id === payload.river)
-    return activity ? activity.id : null
-  })()
-
-  const released = (() => {
-    if (payload.released === 'true') {
-      return true
-    } else if (payload.released === 'false') {
-      return false
-    } else {
-      return null
-    }
-  })(errors)
+  const activityId = activities.find(a => a.river.id === payload.river)?.id
+  const released = payload.released ? payload.released === 'true' : null
 
   // Test if we are adding or updating
   let result

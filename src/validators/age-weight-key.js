@@ -34,7 +34,7 @@ function FileScanner (filename, path) {
       FileScanner.prototype.scanner = await new NodeClam().init({
         preference: 'clamscan'
       })
-      logger.info(`Found virus scanner: - running using local binary`)
+      logger.info('Found virus scanner: - running using local binary')
     }
   } catch (err) {
     logger.error(`No virus scanner found; ${this.filename} will not be virus checked`)
@@ -59,14 +59,8 @@ FileScanner.prototype.scan = async function (vmock) {
   }
 }
 
-/**
- * Validate the did you fish input
- */
-module.exports = async (request) => {
-  const errors = []
-
-  const now = moment()
-  const years = [-2, -1, 0, 1, 2].map(y => (now.year() + y).toString())
+function preValidate (request, errors) {
+  const years = [-2, -1, 0, 1, 2].map(y => (moment().year() + y).toString())
 
   if (!request.payload.gate) {
     errors.push({ type: 'NO_GATE_SELECTED' })
@@ -93,6 +87,14 @@ module.exports = async (request) => {
       }
     }
   }
+}
+
+/**
+ * Validate the did you fish input
+ */
+module.exports = async (request) => {
+  const errors = []
+  preValidate(request, errors)
 
   /**
    * Upload the file and then retrieve tha API errors

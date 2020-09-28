@@ -35,6 +35,105 @@ class SmallCatchHandler extends BaseHandler {
   }
 
   /**
+   * Get request calls this method to gather the data needed for the add a new small catch operation
+   * @param request
+   * @param h
+   * @param rivers
+   * @param cache
+   * @param methods
+   * @param activities
+   * @returns {Promise<never|*>}
+   */
+  async add (request, h, rivers, cache, methods, activities) {
+    // Clear any existing catch id
+    delete cache.smallCatch
+    await request.cache().set(cache)
+    let monthsFiltered
+
+    // If we only have one river or we are doing add again then filter the months
+    if (rivers.length === 1 || cache.add) {
+      if (cache.add && cache.add.river) {
+        // Filter to single river and filter the allowed months
+        rivers = rivers.filter(r => r.id === cache.add.river)
+      }
+      const smallCatches = await smallCatchesApi.getAllChildren(request, activities, '_links.smallCatches.href')
+      const activity = activities.find(a => a.river.id === rivers[0].id)
+      const monthsSelected = smallCatches.filter(s => s.activity.id === activity.id).map(m => m.month)
+      monthsFiltered = months.filter(m => !monthsSelected.includes(m.value))
+      if (monthsFiltered.length === 0) {
+        return h.redirect('/summary')
+      }
+    }
+
+    // Add a new salmon and large trout
+    return this.readCacheAndDisplayView(request, h, {
+      rivers: rivers,
+      methods: methods,
+      add: true,
+      details: {
+        licenceNumber: cache.licenceNumber,
+        postcode: cache.postcode,
+        year: cache.year
+      }
+    })
+  }
+
+  /**
+   * Get request calls this method to gather the data needed for the change small catch operation
+   * @param request
+   * @param h
+   * @param rivers
+   * @param cache
+   * @param methods
+   * @param activities
+   * @returns {Promise<never|*>}
+   */
+  async change (request, h, rivers, cache, methods, activities) {
+    // Modify an existing catch
+    let smallCatch = await smallCatchesApi.getById(request, `smallCatches/${request.params.id}`)
+
+    if (!smallCatch) {
+      throw new ResponseError.Error('Unauthorized access to small catch', ResponseError.status.UNAUTHORIZED)
+    }
+
+    // Check they are not messing about with somebody else's activity
+    if (!activities.map(a => a._links.self.href).includes(smallCatch._links.activityEntity.href)) {
+      throw new ResponseError.Error('Unauthorized access to small catch', ResponseError.status.UNAUTHORIZED)
+    }
+
+    smallCatch = await smallCatchesApi.doMap(request, smallCatch)
+
+    // Write the catch id onto the cache
+    cache.smallCatch = { id: smallCatch.id }
+    await request.cache().set(cache)
+
+    const payload = {
+      river: smallCatch.activity.river.id,
+      released: smallCatch.released,
+      month: smallCatch.month
+    }
+
+    if (smallCatch.noMonthRecorded) {
+      payload.noMonthRecorded = 'true'
+    }
+
+    smallCatch.counts.forEach(t => {
+      payload[t.name.toLowerCase()] = t.count
+    })
+
+    return this.readCacheAndDisplayView(request, h, {
+      rivers: rivers,
+      methods: methods,
+      payload: payload,
+      details: {
+        licenceNumber: cache.licenceNumber,
+        postcode: cache.postcode,
+        year: cache.year
+      }
+    })
+  }
+
+  /**
    * Get handler for select salmon and large trout page
    * @param request
    * @param h
@@ -43,7 +142,7 @@ class SmallCatchHandler extends BaseHandler {
    */
   async doGet (request, h) {
     if (!isAllowedParam(request.params.id)) {
-      throw new ResponseError.Error('Unknown activity', ResponseError.status.UNAUTHORIZED)
+      throw new ResponseError.Error('Unknown small catch', ResponseError.status.UNAUTHORIZED)
     }
 
     const cache = await request.cache().get()
@@ -52,7 +151,7 @@ class SmallCatchHandler extends BaseHandler {
     const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
 
     // Filter rivers and methods by the internal only
-    let rivers = activities.map(a => a.river)
+    const rivers = activities.map(a => a.river)
       .filter(r => process.env.CONTEXT === 'FMT' ? true : !r.internal)
     const methods = (await methodsApi.list(request))
       .filter(r => process.env.CONTEXT === 'FMT' ? true : !r.internal)
@@ -62,79 +161,8 @@ class SmallCatchHandler extends BaseHandler {
       return h.redirect('/review')
     }
 
-    if (request.params.id === 'add') {
-      // Clear any existing catch id
-      delete cache.smallCatch
-      await request.cache().set(cache)
-      let monthsFiltered
-
-      // If we only have one river or we are doing add again then filter the months
-      if (rivers.length === 1 || cache.add) {
-        if (cache.add && cache.add.river) {
-          // Filter to single river and filter the allowed months
-          rivers = rivers.filter(r => r.id === cache.add.river)
-        }
-        const smallCatches = await smallCatchesApi.getAllChildren(request, activities, '_links.smallCatches.href')
-        const activity = activities.find(a => a.river.id === rivers[0].id)
-        const monthsSelected = smallCatches.filter(s => s.activity.id === activity.id).map(m => m.month)
-        monthsFiltered = months.filter(m => !monthsSelected.includes(m.value))
-        if (monthsFiltered.length === 0) {
-          return h.redirect('/summary')
-        }
-      }
-
-      // Add a new salmon and large trout
-      return this.readCacheAndDisplayView(request, h, {
-        rivers: rivers,
-        methods: methods,
-        add: true,
-        details: {
-          licenceNumber: cache.licenceNumber,
-          postcode: cache.postcode,
-          year: cache.year
-        }
-      })
-    } else {
-      // Modify an existing catch
-      let smallCatch = await smallCatchesApi.getById(request, `smallCatches/${request.params.id}`)
-      if (!smallCatch) {
-        throw new ResponseError.Error('Unauthorized access to small catch', ResponseError.status.UNAUTHORIZED)
-      }
-      // Check they are not messing about with somebody else's activity
-      if (!activities.map(a => a._links.self.href).includes(smallCatch._links.activityEntity.href)) {
-        throw new ResponseError.Error('Unauthorized access to large catch', ResponseError.status.UNAUTHORIZED)
-      }
-      smallCatch = await smallCatchesApi.doMap(request, smallCatch)
-
-      // Write the catch id onto the cache
-      cache.smallCatch = { id: smallCatch.id }
-      await request.cache().set(cache)
-
-      const payload = {
-        river: smallCatch.activity.river.id,
-        released: smallCatch.released,
-        month: smallCatch.month
-      }
-
-      if (smallCatch.noMonthRecorded) {
-        payload.noMonthRecorded = 'true'
-      }
-
-      smallCatch.counts.forEach(t => {
-        payload[t.name.toLowerCase()] = t.count
-      })
-
-      return this.readCacheAndDisplayView(request, h, {
-        rivers: rivers,
-        methods: methods,
-        payload: payload,
-        details: {
-          licenceNumber: cache.licenceNumber,
-          postcode: cache.postcode,
-          year: cache.year
-        }
-      })
-    }
+    return request.params.id === 'add' ? this.add(request, h, rivers, cache, methods, activities)
+      : this.change(request, h, rivers, cache, methods, activities)
   }
 
   /**

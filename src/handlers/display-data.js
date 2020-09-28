@@ -44,10 +44,10 @@ function addRowSpansForLargeCatch (catchIsEqual, riverIsEqual) {
     val.riverRowspan = arr.filter(ent => riverIsEqual(ent, val)).length
 
     arr.filter(ent => catchIsEqual(ent, val))
-      .forEach((elem, idx1, arr2) => (arr2[idx1]['hide'] = idx1 !== 0))
+      .forEach((elem, idx1, arr2) => (arr2[idx1].hide = idx1 !== 0))
 
     arr.filter(ent => riverIsEqual(ent, val))
-      .forEach((elem, idx1, arr2) => (arr2[idx1]['riverHide'] = idx1 !== 0))
+      .forEach((elem, idx1, arr2) => (arr2[idx1].riverHide = idx1 !== 0))
   }
 }
 
@@ -56,7 +56,7 @@ function addRowSpansForSmallCatch (smallCatchIsEqual) {
     val.rowspan = arr.filter(ent => smallCatchIsEqual(ent, val)).length
 
     arr.filter(ent => smallCatchIsEqual(ent, val))
-      .forEach((elem, idx1, arr2) => (arr2[idx1]['hide'] = idx1 !== 0))
+      .forEach((elem, idx1, arr2) => (arr2[idx1].hide = idx1 !== 0))
   }
 }
 

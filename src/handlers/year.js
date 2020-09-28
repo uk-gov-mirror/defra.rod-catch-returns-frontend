@@ -32,7 +32,8 @@ module.exports = class YearHandler extends BaseHandler {
         details: {
           licenceNumber: cache.licenceNumber,
           postcode: cache.postcode
-        } })
+        }
+      })
     } else {
       const cache = await request.cache().get()
       cache.year = now.year()

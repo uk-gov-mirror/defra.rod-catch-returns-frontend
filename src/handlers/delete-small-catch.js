@@ -55,7 +55,8 @@ module.exports = class DeleteRiverHandler extends DeleteCatchHandler {
     cache.delete = smallCatch.id
     cache.back = request.path
     await request.cache().set(cache)
-    return h.view(this.path, { smallCatch: c,
+    return h.view(this.path, {
+      smallCatch: c,
       details: {
         licenceNumber: cache.licenceNumber,
         postcode: cache.postcode,

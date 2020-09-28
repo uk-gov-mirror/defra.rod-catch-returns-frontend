@@ -36,7 +36,7 @@ class SalmonAndLargeTroutHandler extends BaseHandler {
    */
   async doGet (request, h) {
     if (!isAllowedParam(request.params.id)) {
-      throw new ResponseError.Error('Unknown activity', ResponseError.status.UNAUTHORIZED)
+      throw new ResponseError.Error('Unknown large catch', ResponseError.status.UNAUTHORIZED)
     }
 
     const cache = await request.cache().get()
