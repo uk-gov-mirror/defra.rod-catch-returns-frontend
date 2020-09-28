@@ -25,7 +25,7 @@ branches:
 
 env:
   - >
-    NODE_VERSION="10.13.0"
+    NODE_VERSION="14.12.0"
     DYNAMICS_IMPL=mock
     COOKIE_PW=532fdfghdf62645872aaau121qsqw112
     API_PATH=/api
