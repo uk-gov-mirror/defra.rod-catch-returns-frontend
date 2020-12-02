@@ -8,6 +8,8 @@ const id = Joi.string()
 const LoginHandler = require('../handlers/login')
 const FailedLogin = require('../handlers/login-fail')
 const LicenceHandler = require('../handlers/licence')
+const UserSearchHandler = require('../handlers/user-search')
+const UserSearchResultsHandler = require('../handlers/user-search-results')
 const ReportsHandler = require('../handlers/reports')
 const ReportDownloadHandler = require('../handlers/report-download')
 const LookupHandler = require('../handlers/lookup')
@@ -30,6 +32,8 @@ const failedLogin = new FailedLogin('login', loginValidator)
 const reportsHandler = new ReportsHandler('reports')
 const reportDownloadHandler = new ReportDownloadHandler()
 const licenceHandler = new LicenceHandler('licence', licenceValidator)
+const userSearchHandler = new UserSearchHandler('user-search')
+const userSearchResultsHandler = new UserSearchResultsHandler('user-search-results')
 const lookupHandler = new LookupHandler('lookup')
 const ageWeightKeyHandler = new AgeWeightKeyHandler('age-weight-key', ageWeightKeyValidator, 'ageWeightContext')
 const ageWeightKeyOkHandler = new AgeWeightKeyOkHandler('age-weight-key-ok', null, 'ageWeightContext')
@@ -100,6 +104,18 @@ module.exports = [
     path: '/licence',
     method: ['GET', 'POST'],
     handler: licenceHandler.handler
+  },
+
+  {
+    path: '/user-search',
+    method: ['GET', 'POST'],
+    handler: userSearchHandler.handler
+  },
+
+  {
+    path: '/user-search-results',
+    method: ['GET', 'POST'],
+    handler: userSearchResultsHandler.handler
   },
 
   // Reports handler

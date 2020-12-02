@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% from "button/macro.njk" import govukButton %}
+{% from "navigation.njk" import navigationHeaderBlock %}
+{% from "fieldset/macro.njk" import govukFieldset %}
+{% from "input/macro.njk" import govukInput %}
+
+{% block header %}
+    {% if fmt %}
+        {{ navigationHeaderBlock() }}
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l govuk-!-margin-bottom-6">
+  
+            <h1 class="govuk-fieldset__heading">
+              Enter your licence details
+            </h1>
+          
+          </legend>
+
+{{ govukInput({
+    label: {
+        text: "Search by license number"
+    },
+    hint: {
+        text: "Your licence number is printed on any correspondence from us. It also appears on the back of your licence card. e.g. 17241121-2WC3FNE-AB9840"
+    },
+    id: "licence",
+    name: "licence",
+    errorMessage: licenceErrorMessage,
+    attributes: { maxlength: 16 },
+    classes: "govuk-input govuk-input--width-20" })
+}}
+
+{{ govukButton({
+    name: "continue",
+    text: "Continue" })
+}}
+</div>
+</div>
+
+{% endblock %}

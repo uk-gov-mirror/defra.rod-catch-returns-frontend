@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% from "button/macro.njk" import govukButton %}
+{% from "navigation.njk" import navigationHeaderBlock %}
+{% from "fieldset/macro.njk" import govukFieldset %}
+{% from "input/macro.njk" import govukInput %}
+
+{% block header %}
+    {% if fmt %}
+        {{ navigationHeaderBlock() }}
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l govuk-!-margin-bottom-6">
+  
+            <h1 class="govuk-fieldset__heading">
+              Submissions for user: Bob Jones
+            </h1>
+          
+          </legend>
+<ul>
+<li><a href="/lookup?submissionId=submissions/1" class="govuk-link">2019</a></li>
+<li><a href="/lookup?submissionId=submissions/1" class="govuk-link">2020</a></li>
+</ul>
+    </div>
+    </div>
+
+{% endblock %}
