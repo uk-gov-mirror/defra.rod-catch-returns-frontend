@@ -15,6 +15,7 @@ pipeline {
             steps {
                 script {
                     sh  "npm install"
+                    sh  "npm rebuild node-sass"
                 }
             }
         }
