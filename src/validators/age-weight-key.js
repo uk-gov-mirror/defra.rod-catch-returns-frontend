@@ -7,8 +7,8 @@ const AgeWeightKeyApi = require('../api/age-weight-key')
 const ResponseError = require('../handlers/response-error')
 
 const Path = require('path')
-const NodeClam = require('clamscan')
 const Fs = require('fs')
+const { retryAntiVirusInit } = require('../lib/antivirus')
 
 const MAX_FILE_UPLOAD_BYTES = process.env.MAX_FILE_UPLOAD_BYTES || 100 * 1000 // 100Kb
 
@@ -20,20 +20,20 @@ function FileScanner (filename, path) {
 (async () => {
   try {
     if (process.env.CLAMD_SOCK && process.env.CLAMD_PORT) {
-      FileScanner.prototype.scanner = await new NodeClam().init({
+      FileScanner.prototype.scanner = await retryAntiVirusInit({
         clamdscan: {
           socket: process.env.CLAMD_SOCK,
           port: process.env.CLAMD_PORT,
           local_fallback: false
         },
         preference: 'clamdscan'
-      })
+      }, 5, 10000)
       const version = await FileScanner.prototype.scanner.get_version()
       logger.info(`Found virus scanner: ${version} - running using sockets`)
     } else {
-      FileScanner.prototype.scanner = await new NodeClam().init({
+      FileScanner.prototype.scanner = await retryAntiVirusInit({
         preference: 'clamscan'
-      })
+      }, 5, 10000)
       logger.info('Found virus scanner: - running using local binary')
     }
   } catch (err) {
