@@ -14,7 +14,6 @@ module.exports = class RecordsHandler extends BaseHandler {
    * Get handler for records
    * @param request
    * @param h
-   * @param user
    * @returns {Promise<*>}
    */
   async doGet (request, h) {
@@ -28,7 +27,14 @@ module.exports = class RecordsHandler extends BaseHandler {
    * @param errors
    * @returns {Promise<*>}
    */
-  async doPost (request, h) {
-    return h.view(this.path)
+  async doPost (request, h, errors) {
+    if (errors) {
+      return h.view(this.path, { errors: { errors }, payload: request.payload })
+    }
+    const cache = await request.cache().get()
+    cache.contactId = request.payload.licence.contact.id
+    await request.cache().set(cache)
+
+    return h.redirect('/records-search-results')
   }
 }

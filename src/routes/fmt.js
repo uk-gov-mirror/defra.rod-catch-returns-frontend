@@ -11,6 +11,7 @@ const LicenceHandler = require('../handlers/licence')
 const ReportsHandler = require('../handlers/reports')
 const ReportDownloadHandler = require('../handlers/report-download')
 const RecordsHandler = require('../handlers/records')
+const RecordsSearchResultsHandler = require('../handlers/records-search-results')
 const LookupHandler = require('../handlers/lookup')
 const AgeWeightKeyHandler = require('../handlers/age-weight-key')
 const AgeWeightKeyOkHandler = require('../handlers/age-weight-key-ok')
@@ -22,6 +23,7 @@ const ExclusionsHandler = require('../handlers/exclusions')
 // Define the validators
 const loginValidator = require('../validators/login')
 const licenceValidator = require('../validators/licence')
+const licenceFullValidator = require('../validators/licence-full')
 const ageWeightKeyValidator = require('../validators/age-weight-key')
 const ageWeightKeyConflictValidator = require('../validators/age-weight-key-conflict')
 
@@ -30,7 +32,8 @@ const loginHandler = new LoginHandler('login', loginValidator)
 const failedLogin = new FailedLogin('login', loginValidator)
 const reportsHandler = new ReportsHandler('reports')
 const reportDownloadHandler = new ReportDownloadHandler()
-const recordsHandler = new RecordsHandler('records')
+const recordsHandler = new RecordsHandler('records', licenceFullValidator)
+const recordsSearchResultsHandler = new RecordsSearchResultsHandler('records-search-results')
 const licenceHandler = new LicenceHandler('licence', licenceValidator)
 const lookupHandler = new LookupHandler('lookup')
 const ageWeightKeyHandler = new AgeWeightKeyHandler('age-weight-key', ageWeightKeyValidator, 'ageWeightContext')
@@ -109,6 +112,13 @@ module.exports = [
     path: '/records',
     method: ['GET', 'POST'],
     handler: recordsHandler.handler
+  },
+
+  // Records search results handler
+  {
+    path: '/records-search-results',
+    method: ['GET'],
+    handler: recordsSearchResultsHandler.handler
   },
 
   // Reports handler
