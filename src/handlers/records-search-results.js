@@ -30,7 +30,8 @@ module.exports = class RecordsSearchResultsHandler extends BaseHandler {
     await request.cache().set(cache)
 
     return h.view(this.path, {
-      submissions
+      submissions,
+      fullName: cache.fullName
     })
   }
 }

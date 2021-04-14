@@ -33,6 +33,7 @@ module.exports = class RecordsHandler extends BaseHandler {
     }
     const cache = await request.cache().get()
     cache.contactId = request.payload.licence.contact.id
+    cache.fullName = request.payload.licence.contact.fullName
     await request.cache().set(cache)
 
     return h.redirect('/records-search-results')
