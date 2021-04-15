@@ -45,7 +45,8 @@ describe('records', () => {
         payload: {
           licence: {
             contact: {
-              id: '123'
+              id: '123',
+              fullName: 'Homer Simpson'
             }
           }
         },
@@ -60,7 +61,7 @@ describe('records', () => {
 
       expect(mockRedirect.mock.calls.length).toBe(1)
       expect(mockRedirect.mock.calls[0][0]).toBe('/records-search-results')
-      expect(mockCacheSet.mock.calls[0][0]).toStrictEqual({ contactId: '123' })
+      expect(mockCacheSet.mock.calls[0][0]).toStrictEqual({ contactId: '123', fullName: 'Homer Simpson' })
     })
   })
 })
