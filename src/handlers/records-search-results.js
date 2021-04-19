@@ -21,17 +21,23 @@ module.exports = class RecordsSearchResultsHandler extends BaseHandler {
    */
   async doGet (request, h) {
     const cache = await request.cache().get()
-    if (!cache.contactId) {
+    if (!cache.recordsContactId) {
       return h.redirect('/records')
     }
-    const submissions = await submissionsApi.getByContactId(request, cache.contactId)
-
-    delete cache.contactId
-    await request.cache().set(cache)
+    const submissions = await submissionsApi.getByContactId(request, cache.recordsContactId)
 
     return h.view(this.path, {
       submissions,
       fullName: cache.fullName
     })
+  }
+
+  async doPost (request, h) {
+    const cache = await request.cache().get()
+    cache.recordsSubmissionId = request.payload.submissionId
+
+    await request.cache().set(cache)
+
+    return h.redirect('/records-submissions')
   }
 }
