@@ -13,12 +13,15 @@ const Nunjucks = require('nunjucks')
 const Uuid = require('uuid')
 const Crypto = require('crypto')
 const { logger } = require('defra-logging-facade')
+const HapiGapi = require('@defra/hapi-gapi')
+
 const AuthorizationSchemes = require('./src/lib/authorization-schemes')
 const AuthorizationStrategies = require('./src/lib/authorization-strategies')
 const EnvironmentSchema = require('./environment-schema')
 const CacheDecorator = require('./src/lib/cache-decorator')
 const { checkTempDir } = require('./src/lib/misc')
 const manFishing = require('./manFishing')
+const { sessionIdProducer } = require('./src/lib/analytics')
 
 const manifest = {
 
@@ -249,7 +252,7 @@ const options = {
         return {
           pgid: Uuid.v4(),
           fmt: process.env.CONTEXT === 'FMT',
-          gtm: process.env.GA_TAG_MANAGER
+          ga: process.env.GA_TRACKING_ID
         }
       }
 
@@ -313,6 +316,24 @@ const options = {
      * simple setters and getters hiding the session key.
      */
     server.decorate('request', 'cache', CacheDecorator)
+
+    /*
+     * HapiGapi plugin
+     */
+    await server.register({
+      plugin: HapiGapi,
+      options: {
+        propertySettings: [
+          {
+            id: process.env.GA_TRACKING_ID,
+            hitTypes: ['pageview', 'event', 'ecommerce']
+          }
+        ],
+        sessionIdProducer: sessionIdProducer,
+        batchSize: 20,
+        batchInterval: 15000
+      }
+    })
 
     /*
      * Test that cryptographic support is enabled on the build
