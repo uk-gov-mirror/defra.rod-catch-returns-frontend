@@ -159,8 +159,41 @@
     <script src="/public/javascript/accessible-autocomplete.min.js"></script>
 
     <script>
+        const riversSelect = document.querySelector('#river')
+        const rivers = []
+        for (let i = 0; i < riversSelect.length; i++) {
+            rivers.push({ name: riversSelect.options[i].text, id: riversSelect.options[i].value })
+        }
+
+        function normalise (string) {
+            const bracketIndex = string.indexOf('(')
+            const stringWithoutBracketEnding = bracketIndex >= 0 ? string.slice(0, bracketIndex) : string
+            return stringWithoutBracketEnding.toLowerCase().trim()
+        }
+
+        function score (name, query) {
+            if (name.startsWith(query)) {
+                return -2
+            }
+            if (name.includes(query)) {
+                return -1
+            }
+            return 0
+        }
+
+        function getRiversSuggestions (query, populateResults) {
+            const filteredRivers = rivers.map(river => ({ ...river, score: score(normalise(river.name), normalise(query)) }))
+                .filter(river => river.score < 0)
+                .sort((a, b) => {
+                    return a.score - b.score
+                }).map(river => river.name)
+
+            populateResults(filteredRivers)
+        }
+
         accessibleAutocomplete.enhanceSelectElement({
-            selectElement: document.querySelector('#river')
+            selectElement: document.querySelector('#river'),
+            source: getRiversSuggestions
         })
     </script>
 {% endblock %}
