@@ -1,6 +1,6 @@
 const riversSelect = document.querySelector('#river')
 const rivers = []
-for (let i = 1; i < riversSelect.length; i++) {
+for (let i = 0; i < riversSelect.length; i++) {
   rivers.push(riversSelect.options[i].text)
 }
 
@@ -23,9 +23,12 @@ function score(name, query) {
 function getRiversSuggestions(query, populateResults) {
   const filteredRivers = rivers.map(river => ({ name: river, score: score(normalise(river), normalise(query)) }))
     .filter(river => river.score < 0)
-    .sort((a, b) => {
-      return a.score - b.score
-    }).map(river => river.name)
+    .sort((a, b) => a.score - b.score)
+    .map(river => river.name)
 
-  populateResults(filteredRivers)
+  return populateResults(filteredRivers)
+}
+
+module.exports = {
+  getRiversSuggestions
 }
