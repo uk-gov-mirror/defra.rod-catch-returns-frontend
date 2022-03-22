@@ -111,11 +111,7 @@ describe('activities', () => {
   describe('add', () => {
     it('should display the authentication page', async () => {
       const activitiesApi = new ActivitiesApi()
-      const request = {
-        cache: () => ({
-          get: jest.fn(() => ({ authorization: null }))
-        })
-      }
+      const request = getSampleRequest()
       const href = 'http://example.com/path/to/somewhere'
       const submissionId = '1'
       const river = 'Goyt'
@@ -128,11 +124,7 @@ describe('activities', () => {
 
     it('when adding new river it should return the ID as the original input if errors are found in the request', async () => {
       const activitiesApi = new ActivitiesApi()
-      const request = {
-        cache: () => ({
-          get: jest.fn(() => ({ authorization: null }))
-        })
-      }
+      const request = getSampleRequest()
       const errors = 'errors'
       const href = 'http://example.com/path/to/somewhere'
       const originalSub = 'original ID'
@@ -149,11 +141,7 @@ describe('activities', () => {
   describe('change', () => {
     it('should change the days', async () => {
       const activitiesApi = new ActivitiesApi()
-      const request = {
-        cache: () => ({
-          get: jest.fn(() => ({ authorization: null }))
-        })
-      }
+      const request = getSampleRequest()
       const href = 'http://example.com/path/to/somewhere'
       const activityId = '1'
       const submissionId = '1'
@@ -167,11 +155,7 @@ describe('activities', () => {
 
     it('when changing river details it should return the ID as the original input if errors are found in the request', async () => {
       const activitiesApi = new ActivitiesApi()
-      const request = {
-        cache: () => ({
-          get: jest.fn(() => ({ authorization: null }))
-        })
-      }
+      const request = getSampleRequest()
       const errors = 'errors'
       const href = 'http://example.com/path/to/somewhere'
       const activityId = '1'
@@ -237,6 +221,12 @@ describe('activities', () => {
       const result = await activitiesApi.sort(a, b)
       expect(result).toEqual(0)
     })
+  })
+})
+
+const getSampleRequest = () => ({
+  cache: () => ({
+    get: () => ({ authorization: null })
   })
 })
 
