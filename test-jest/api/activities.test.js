@@ -126,7 +126,7 @@ describe('activities', () => {
       expect(result.id).toMatchSnapshot()
     })
 
-    it('should return the ID as the original input if errors are found in the request', async () => {
+    it('when adding new river it should return the ID as the original input if errors are found in the request', async () => {
       const activitiesApi = new ActivitiesApi()
       const request = {
         cache: () => ({
@@ -135,13 +135,14 @@ describe('activities', () => {
       }
       const errors = 'errors'
       const href = 'http://example.com/path/to/somewhere'
-      const submissionId = 'an ID'
+      const originalSub = 'original ID'
+      const submissionId = 'new ID'
       const river = 'Goyt'
       const daysFishedWithMandatoryRelease = 1
       const daysFishedOther = 1
-      mockRequest.mockImplementationOnce(() => ({ id: submissionId, errors, _links: { self: { href: href } }, river, daysFishedOther, daysFishedWithMandatoryRelease }))
+      mockRequest.mockImplementationOnce(() => ({ id: originalSub, errors, _links: { self: { href: href } }, river, daysFishedOther, daysFishedWithMandatoryRelease }))
       const result = await activitiesApi.add(request, { submissionId, river, daysFishedWithMandatoryRelease, daysFishedOther })
-      expect(result.id).toEqual(submissionId)
+      expect(result.id).toEqual(originalSub)
     })
   })
 
@@ -161,14 +162,10 @@ describe('activities', () => {
       const daysFishedOther = 1
       mockRequest.mockImplementationOnce(() => ({ id: '1', _links: { self: { href: href } }, activityId, riverId, daysFishedOther, daysFishedWithMandatoryRelease }))
       const result = await activitiesApi.change(request, { submissionId, activityId, riverId, daysFishedWithMandatoryRelease, daysFishedOther })
-      expect(result.id).toEqual('/path/to/somewhere')
-      expect(result.activityId).toEqual(activityId)
-      expect(result.daysFishedOther).toEqual(daysFishedOther)
-      expect(result.daysFishedWithMandatoryRelease).toEqual(daysFishedWithMandatoryRelease)
-      expect(result.riverId).toEqual(riverId)
+      expect(result).toMatchSnapshot()
     })
 
-    it('should display error if there is an error', async () => {
+    it('when changing river details it should return the ID as the original input if errors are found in the request', async () => {
       const activitiesApi = new ActivitiesApi()
       const request = {
         cache: () => ({
@@ -178,13 +175,14 @@ describe('activities', () => {
       const errors = 'errors'
       const href = 'http://example.com/path/to/somewhere'
       const activityId = '1'
-      const submissionId = '1'
+      const originalSubId = 'original'
+      const submissionId = 'new ID'
       const riverId = '1'
       const daysFishedWithMandatoryRelease = 1
       const daysFishedOther = 1
-      mockRequest.mockImplementationOnce(() => ({ id: 1, errors, _links: { self: { href: href } }, activityId, riverId, daysFishedOther, daysFishedWithMandatoryRelease }))
+      mockRequest.mockImplementationOnce(() => ({ id: originalSubId, errors, _links: { self: { href: href } }, activityId, riverId, daysFishedOther, daysFishedWithMandatoryRelease }))
       const result = await activitiesApi.change(request, { submissionId, activityId, riverId, daysFishedWithMandatoryRelease, daysFishedOther })
-      expect(result.id).toEqual(1)
+      expect(result.id).toEqual(originalSubId)
     })
   })
 
