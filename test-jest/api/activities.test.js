@@ -2,7 +2,6 @@ const mockGetFromLink = jest.fn()
 const mockRequest = jest.fn()
 const ActivitiesApi = require('../../src/api/activities')
 
-// jest.mock('../../src/api/entity-api')
 jest.mock('../../src/api/rivers', () => {
   return jest.fn().mockImplementation(() => {
     return {
