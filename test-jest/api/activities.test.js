@@ -96,18 +96,15 @@ describe('activities', () => {
     })
 
     it.each([
-      ['http://example.com/path/to/somewhere', '/path', 'Tyne', 'Tyne', 'internal', 'internal'],
-      ['http://example.com/unwise/path/to/the/dark/side', 'the', 'Tyne', 'Tyne', 'internal', 'internal'],
-      ['http://example.com/unwise/path/to/the/dark/side/', 'side', 'Tyne', 'Tyne', 'internal', 'internal']
-    ])('sets the _links attribute values id, name and internal', async (href, apiPath, name, nameExpectedValue, internal, internalExpectedValue) => {
+      ['http://example.com/path/to/somewhere', '/path', 'Tyne', 'internal'],
+      ['http://example.com/unwise/path/to/the/dark/side', 'the', 'Tyne', 'internal'],
+      ['http://example.com/unwise/path/to/the/dark/side/', 'side', 'Tyne', 'internal']
+    ])('sets the _links attribute values id, name and internal', async (href, apiPath, name, internal) => {
       process.env.API_PATH = apiPath
       const activitiesApi = new ActivitiesApi()
       mockGetFromLink.mockImplementationOnce(() => ({ _links: { self: { href: href } } }))
       const mapped = await activitiesApi.doMap(({ }), createMockContext({ href, name, internal }))
-      expect(mapped._links.river.href).toEqual(href)
-      expect(mapped._links.river.name).toEqual(nameExpectedValue)
-      expect(mapped._links.river.internal).toEqual(internalExpectedValue)
-      expect(mapped._links.self.href).toEqual(href)
+      expect(mapped._links).toMatchSnapshot()
     })
   })
 
@@ -126,10 +123,7 @@ describe('activities', () => {
       const daysFishedOther = 1
       mockRequest.mockImplementationOnce(() => ({ id: '1', _links: { self: { href: href } }, river, daysFishedOther, daysFishedWithMandatoryRelease }))
       const result = await activitiesApi.add(request, { submissionId, river, daysFishedWithMandatoryRelease, daysFishedOther })
-      expect(result.id).toEqual('/path/to/somewhere')
-      expect(result.daysFishedOther).toEqual(daysFishedOther)
-      expect(result.daysFishedWithMandatoryRelease).toEqual(daysFishedWithMandatoryRelease)
-      expect(result.river).toEqual(river)
+      expect(result.id).toMatchSnapshot()
     })
 
     it('should display error if there is an error', async () => {
