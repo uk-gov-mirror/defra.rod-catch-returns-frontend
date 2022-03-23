@@ -171,55 +171,24 @@ describe('activities', () => {
   })
 
   describe('sort', () => {
-    it('if in alphabetical order should not change', async () => {
+    it.each([
+      [['Ouse', 'Derwent', 'Foss'], 'Derwent, Foss, Ouse'],
+      [['Lune', 'Mersey', 'Ribble'], 'Lune, Mersey, Ribble'],
+      [['Thames', 'Severn', 'Great Ouse'], 'Great Ouse, Severn, Thames'],
+      [['Trent', 'Tyne', 'Tay'], 'Tay, Trent, Tyne']
+    ])('sorts river data by name', (riversToSort, expectedResult) => {
       const activitiesApi = new ActivitiesApi()
-      const a = {
-        river: {
-          name: 'a test'
-        }
-      }
-      const b = {
-        river: {
-          name: 'b test'
-        }
-      }
-
-      const result = await activitiesApi.sort(a, b)
-      expect(result).toEqual(-1)
+      const arrayToTest = riversToSort.map(riverName => ({
+        river: { name: riverName }
+      }))
+      expect(arrayToTest.sort(activitiesApi.sort).map(riverData => riverData.river.name).join(', ')).toEqual(expectedResult)
     })
 
-    it('if not in alphabetical order should rearrange', async () => {
+    it('keeps data order the same if the same river has been fished several times', () => {
       const activitiesApi = new ActivitiesApi()
-      const a = {
-        river: {
-          name: 'b test'
-        }
-      }
-      const b = {
-        river: {
-          name: 'a test'
-        }
-      }
-
-      const result = await activitiesApi.sort(a, b)
-      expect(result).toEqual(1)
-    })
-
-    it('if same river they should not be rearranged', async () => {
-      const activitiesApi = new ActivitiesApi()
-      const a = {
-        river: {
-          name: 'a test'
-        }
-      }
-      const b = {
-        river: {
-          name: 'a test'
-        }
-      }
-
-      const result = await activitiesApi.sort(a, b)
-      expect(result).toEqual(0)
+      const riverData = [{ river: { name: 'Tweed', dateFished: '2021-07-22' } }, { river: { name: 'Tweed', dateFished: '2021-07-15' } }]
+      const result = riverData.sort(activitiesApi.sort)
+      expect(result[0].dateFished).toEqual(result[0].dateFished)
     })
   })
 })
