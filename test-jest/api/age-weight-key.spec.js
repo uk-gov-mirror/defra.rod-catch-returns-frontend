@@ -1,7 +1,6 @@
 const mockRequest = jest.fn()
 const mockRequestFileUpload = jest.fn()
 const AgeWeightKeyApi = require('../../src/api/age-weight-key')
-const Client = require('../../src/api/client')
 
 jest.mock('../../src/api/client', () => {
   const originalModule = jest.requireActual('../../src/api/client')
@@ -21,9 +20,9 @@ describe('age-weight-key', () => {
       ['1990'],
       ['2021']
     ])('return Client.request', async (year) => {
-      mockRequest.mockImplementationOnce(() => ({ }))
-      await AgeWeightKeyApi.getByYear({}, year)
-      expect(mockRequest).toBeCalledWith(null, Client.method.GET, `reporting/reference/grilse-probabilities/${year}`)
+      mockRequest.mockImplementationOnce(() => ({ rows: ['1', '2', '3', '4'] }))
+      const result = await AgeWeightKeyApi.getByYear({}, year)
+      expect(result).toStrictEqual({ rows: ['1', '2', '3', '4'] })
     })
   })
 
@@ -33,9 +32,9 @@ describe('age-weight-key', () => {
       ['1990', 'gates', 'another file path', false],
       ['2021', 'another gate', 'a different file path', true]
     ])('returns Client.requestFileUpload', async (year, gate, filePath, overwrite) => {
-      mockRequestFileUpload.mockImplementationOnce(() => ({ }))
-      await AgeWeightKeyApi.postNew({}, year, gate, filePath, overwrite)
-      expect(mockRequestFileUpload).toBeCalledWith(null, `reporting/reference/grilse-probabilities/${year}/${gate}`, `overwrite=${overwrite}`, filePath)
+      mockRequestFileUpload.mockImplementationOnce(() => ({ rows: ['1', '2', '3', '4'] }))
+      const result = await AgeWeightKeyApi.postNew({}, year, gate, filePath, overwrite)
+      expect(result).toStrictEqual({ rows: ['1', '2', '3', '4'] })
     })
   })
 })
