@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`activities add should display the authentication page 1`] = `"/path/to/somewhere"`;
+
+exports[`activities change should change the days 1`] = `
+Object {
+  "_links": Object {
+    "self": Object {
+      "href": "http://example.com/path/to/somewhere",
+    },
+  },
+  "activityId": "1",
+  "daysFishedOther": 1,
+  "daysFishedWithMandatoryRelease": 1,
+  "id": "/path/to/somewhere",
+  "riverId": "1",
+}
+`;
+
+exports[`activities mapper sets the _links attribute values id, name and internal 1`] = `
+Object {
+  "river": Object {
+    "href": "http://example.com/path/to/somewhere",
+    "internal": "internal",
+    "name": "Tyne",
+  },
+  "self": Object {
+    "href": "http://example.com/path/to/somewhere",
+  },
+}
+`;
+
+exports[`activities mapper sets the _links attribute values id, name and internal 2`] = `
+Object {
+  "river": Object {
+    "href": "http://example.com/unwise/path/to/the/dark/side",
+    "internal": "internal",
+    "name": "Tyne",
+  },
+  "self": Object {
+    "href": "http://example.com/unwise/path/to/the/dark/side",
+  },
+}
+`;
+
+exports[`activities mapper sets the _links attribute values id, name and internal 3`] = `
+Object {
+  "river": Object {
+    "href": "http://example.com/unwise/path/to/the/dark/side/",
+    "internal": "internal",
+    "name": "Tyne",
+  },
+  "self": Object {
+    "href": "http://example.com/unwise/path/to/the/dark/side/",
+  },
+}
+`;
