@@ -84,7 +84,7 @@ describe('age-weight-key', () => {
       )
     })
 
-    it('presents client.method.GET in cirrect format', async () => {
+    it('presents client.method.GET in correct format', async () => {
       await AgeWeightKeyApi.getByYear({}, '1999')
       expect(Client.request).toHaveBeenCalledWith(
         null,
