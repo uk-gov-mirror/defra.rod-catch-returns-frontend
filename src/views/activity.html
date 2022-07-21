@@ -119,7 +119,7 @@
                     },
                     hint: { text: "No, really" },
                     items: [ { value: null } ].concat(drinks),
-                    errorMessage: "Drinking error"
+                    errorMessage: ""
                 }) }}
 
                 {{ govukSelect({
@@ -182,6 +182,10 @@
         accessibleAutocomplete.enhanceSelectElement({
             selectElement: document.querySelector('#river'),
             source: getRiversSuggestions
+        })
+        accessibleAutocomplete.enhanceSelectElement({
+            selectElement: document.querySelector('#drink'),
+            source: getDrinkSuggestions
         })
     </script>
 {% endblock %}
