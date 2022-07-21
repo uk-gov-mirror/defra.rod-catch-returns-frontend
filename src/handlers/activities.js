@@ -95,6 +95,7 @@ class ActivitiesHandler extends BaseHandler {
     const activities = await activitiesApi.getFromLink(request, submission._links.activities.href)
     const rivers = (await riversApi.list(request))
       .filter(r => process.env.CONTEXT === 'FMT' ? true : !r.internal).sort(riversApi.sort)
+    const optionList = [{ name: 'beer', id: 1 }, { name: 'wine', id: 2 }, { name: 'cider', id: 3 }, { name: 'rum', id: 4 }, { name: 'gin', id: 5 }]
 
     // Test if the submission is locked and if so redirect to the review screen
     if (await testLocked(request, cache, submission)) {
@@ -102,8 +103,8 @@ class ActivitiesHandler extends BaseHandler {
     }
 
     return (request.params.id === 'add')
-      ? this.add(request, h, cache, activities, rivers)
-      : this.change(request, h, cache, activities, rivers, submission)
+      ? this.add(request, h, cache, activities, rivers, optionList)
+      : this.change(request, h, cache, activities, rivers, submission, optionList)
   }
 
   /**

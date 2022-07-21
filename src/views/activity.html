@@ -25,6 +25,14 @@
         selected: river.id.toString() === payload.river
     }) }}
 {% endfor %}
+{% set drinks = [] %}
+{% for option in optionList %}
+    {{ drinks.push({
+        text: option.name,
+        value: option.id,
+        selected: option.id.toString() === payload.drink
+    }) }}
+{% endfor %}
 
 {% set errorList = [] %}
 {% set riverErrorMessage = null %}
@@ -102,6 +110,17 @@
                 legend: { html: leg },
                 isPageHeading: true
             }) %}
+
+                {{ govukSelect({
+                    id: "drink",
+                    name: "drink",
+                    label: {
+                        text: "What were you drinking?"
+                    },
+                    hint: { text: "No, really" },
+                    items: [ { value: null } ].concat(drinks),
+                    errorMessage: "Drinking error"
+                }) }}
 
                 {{ govukSelect({
                     id: "river",
