@@ -20,7 +20,7 @@ module.exports = class ReportsHandler extends BaseHandler {
    */
   async doGet (request, h) {
     await aws.reportLocationExists()
-    const reportsList = await aws.listReports()
-    return this.readCacheAndDisplayView(request, h, { reports: reportsList })
+    const reports = await aws.listReports()
+    return this.readCacheAndDisplayView(request, h, { reports })
   }
 }
