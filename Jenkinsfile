@@ -25,7 +25,10 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    sh  "npm ci"
+                    sh  """
+                        . /var/lib/jenkins/.bashrc && nvm install v18
+                        npm ci
+                    """
                 }
             }
         }
