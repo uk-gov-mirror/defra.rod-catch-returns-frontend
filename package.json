@@ -7,7 +7,7 @@
   "author": "Graham Willis, Sam Gardner-Dell",
   "main": "index.js",
   "engines": {
-    "node": ">18"
+    "node": ">18.0.0"
   },
   "scripts": {
     "aws": "node proto.js",
