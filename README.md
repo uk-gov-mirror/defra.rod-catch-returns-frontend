@@ -23,7 +23,6 @@ docker-compose up -d
 ## Environment file
 The service will require a `.env` file in the root directory. This can be obtained from the rod-catch-returns-env-vars repo in GitLab.
 
-```
 ## To Run
 ```
 npm start && open http://localhost:3000
@@ -43,15 +42,15 @@ In order to installer the scanner type:
 
 ``sudo apt-get install clamav``
 
-Install the deamon 
+Install the daemon 
 
 ``sudo apt-get install clamav-daemon``
 
-The deamon can be started and stopped as follows
+The daemon can be started and stopped as follows
 ``sudo systemctl start clamav-daemon``
 ``sudo systemctl stop clamav-daemon``
 
-Check that the deamon is running
+Check that the daemon is running
 
 ``ps ax | grep [c]lamd``
 
@@ -59,7 +58,7 @@ And the version
 
 ```clamdscan --version```
 
-The configuration for the deamon can be found here
+The configuration for the daemon can be found here
 
 ```/etc/clamav/clamd.conf```
 
@@ -73,13 +72,13 @@ Note: the program creates a ./temp directory on startup for the temporary storag
 
 ```chmod 777 ./temp```
 
-When running locally the deamon will not be able to read files in the user area. In this case the location temporary directory can be moved by setting TEMP_DIR. It may also be necessary to disable AppArmor - see https://help.ubuntu.com/lts/serverguide/apparmor.html
+When running locally the daemon will not be able to read files in the user area. In this case the location temporary directory can be moved by setting TEMP_DIR. It may also be necessary to disable AppArmor - see https://help.ubuntu.com/lts/serverguide/apparmor.html
 
 ## Installing clamav on a mac 
 
 It is difficult to build from source; the homebrew process is outlined here: https://gist.github.com/zhurui1008/4fdc875e557014c3a34e
 
-(1) Install from brew
+1. Install from brew
 
 ```brew install clamav```
 
@@ -87,7 +86,7 @@ OR
 
 ```brew upgrade clamav ```
 
-(2) Configure
+2. Configure
 
 ```cd /usr/local/etc/clamav```
 
@@ -95,32 +94,35 @@ Edit /usr/local/etc/clamav/freshclam.conf
  - Remove or comment the ‘Example’ line
  - Note the database location: DatabaseDirectory /var/lib/clamav – make sure it exists (ls -ld  /var/lib/clamav)
 
-(3) Download the virus database
+3. Download the virus database
  - /usr/local/Cellar/clamav/0.102.4/bin/freshclam
 
-(4) Configure the deamon
+4. Configure the daemon
  - cp clamd.conf.sample clamd.conf
  - Remove or comment the ‘Example’ line
  - Set the database location as above
  - Set the socket location; LocalSocket /usr/local/var/run/clamav/clamd.sock
  - Make sure the directory exists: mkdir -p  /usr/local/var/run/clamav
 
-(5) Run the clam deamon
+5. Run the clam daemon
  - /usr/local/sbin/clamd
  - Go to the activity monitor and make sure its running.
 
-(6) Configure RCR
+6. Configure RCR
  - The the .env file ensure you have the following:
 ```
 CLAMD_SOCK=/usr/local/var/run/clamav/clamd.sock
 CLAMD_PORT=3310
 TEMP_DIR=/tmp
 ```
-(7) Test it
+7. Test it
 
 Fire up RCR in admin mode – a console log should print indicating it has found clam via the socket
 Log in using admin1@example.com/admin	
 Go to file uploads and load test/files/age-weigth-key (valid).csv
 
-	
-The tests should now all run. 
+## Lab Tests
+1. Run RCR API in 'standard' mode (i.e. not with in memory database)
+2. Ensure you have the .env file pointing at your local env (`API_HOSTNAME=localhost`) and set to run in admin mode (`CONTEXT=FMT`)
+3. Start the frontend (`npm start`)
+4. Run the tests (`npm run test:lab`)
