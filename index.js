@@ -348,18 +348,23 @@ const options = {
     // Register an onPreResponse handler so that errors can be properly trapped.
     server.ext('onPreResponse', (request, h) => {
       if (request.response.isBoom) {
+        console.log('response isBoom')
         // An error occurred processing the request
         const statusCode = request.response.output.statusCode || 500
 
         if (Math.floor(statusCode / 100) === 4) {
+          console.log('error4')
           // Custom handling for 4xx codes
           return h.view('error4', { status: statusCode }).code(statusCode)
         } else {
+          console.log('server error')
           // 5xx Server failure, log an error to airbrake/errbit - the response object is actually an instanceof Error
           logger.serverError(request.response, request)
           // Return a 500 to the client (avoid propagating other 5xx codes to the client)
           return h.view('error500').code(500)
         }
+      } else {
+        console.log('response is not boom')
       }
       return h.continue
     })
