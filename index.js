@@ -347,8 +347,12 @@ const options = {
 
     // Register an onPreResponse handler so that errors can be properly trapped.
     server.ext('onPreResponse', (request, h) => {
+      const notAFileRequest = !/\.[a-z0-9]{2,5}$/.test(request.url)
+      if (notAFileRequest) {
+        console.log('request.url', request.url)
+      }
       if (request.response.isBoom) {
-        console.log('response isBoom')
+        if (notAFileRequest) { console.log('response isBoom') }
         // An error occurred processing the request
         const statusCode = request.response.output.statusCode || 500
 
@@ -363,9 +367,8 @@ const options = {
           // Return a 500 to the client (avoid propagating other 5xx codes to the client)
           return h.view('error500').code(500)
         }
-      } else {
-        console.log('response is not boom')
       }
+      if (notAFileRequest) { console.log('response is not boom') }
       return h.continue
     })
 
