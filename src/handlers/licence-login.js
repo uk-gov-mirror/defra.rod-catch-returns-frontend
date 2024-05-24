@@ -39,4 +39,43 @@ module.exports = class LicenceAuthHandler extends BaseHandler {
     await authenticateUser(request)
     return h.redirect('/select-year')
   }
+
+  /**
+   * This is the high level handler function
+   * @param request
+   * @param h
+   * @returns {Promise<*>}
+   */
+  async handler (request, h) {
+    console.log('licence-login handler', `${request.method.toUpperCase()} request`)
+    try {
+      let errors
+      if (request.method.toUpperCase() === 'GET') {
+        console.log('calling this.doGet')
+        return await this.doGet(request, h)
+      } else {
+        if (this.validator) {
+          console.log('validating')
+          errors = await this.validator(request, h)
+          console.log('validated', errors)
+        }
+        return await this.doPost(request, h, errors)
+      }
+    } catch (err) {
+      console.log('ERROR!', err)
+      // Crypto error
+      if (err instanceof CryptoError) {
+        logger.error(err)
+        return h.redirect('/')
+      }
+
+      // Response error
+      if (err instanceof ResponseError.Error) {
+        logger.debug(err)
+        return h.redirect(`/error/${err.statusCode}`)
+      } else {
+        throw err
+      }
+    }
+  }
 }
