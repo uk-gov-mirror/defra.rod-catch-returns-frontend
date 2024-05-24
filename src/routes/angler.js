@@ -61,7 +61,10 @@ module.exports = [
     method: 'GET',
     options: { auth: false },
     handler: (request, h) => {
-      return process.env.CONTEXT === 'ANGLER' ? h.redirect('/licence-auth') : h.redirect('/login')
+      const redirectTo = process.env.CONTEXT === 'ANGLER' ? 'licence-auth' : 'login'
+      console.log(`received request for /, redirecting to /${redirectTo}`)
+      return h.redirect(redirectTo)
+      // return process.env.CONTEXT === 'ANGLER' ? h.redirect('/licence-auth') : h.redirect('/login')
     }
   },
 
@@ -74,7 +77,14 @@ module.exports = [
   {
     path: '/licence-auth',
     method: 'GET',
-    handler: process.env.CONTEXT === 'ANGLER' ? licenceAuthHandler.handler : (request, h) => { return h.redirect('/') },
+    // handler: process.env.CONTEXT === 'ANGLER' ? licenceAuthHandler.handler : (request, h) => { return h.redirect('/') },
+    handler: (request, h) => {
+      console.log('licence auth page', request.info)
+      if (process.env.CONTEXT === 'ANGLER') {
+        return licenceAuthHandler.handler(request, h)
+      }
+      return h.redirect('/')
+    },
     options: { auth: false }
   },
 

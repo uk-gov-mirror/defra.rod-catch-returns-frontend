@@ -350,6 +350,7 @@ const options = {
       const logRequest = !/\.[a-z0-9]{2,5}$|health$/.test(request.url)
       if (logRequest) {
         console.log('request.url', request.url)
+        console.log('referrer', request.info)
       }
       if (request.response.isBoom) {
         if (logRequest) { console.log('response isBoom') }
