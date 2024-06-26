@@ -50,10 +50,11 @@
 
             {{ govukInput({
                     label: {
-                        text: "Last 6 characters of your licence number"
+                        text: "Last 6 characters of rod licence number",
+                        classes: "govuk-label--m"
                     },
                     hint: {
-                        text: "Your licence number is printed on any correspondence from us. It also appears on the back of your licence card. For example, B7A718"
+                        text: "This can be found on your licence or your catch return reminder. For example, B7A718."
                     },
                     id: "licence",
                     name: "licence",
@@ -64,10 +65,11 @@
 
                 {{ govukInput({
                     label: {
-                        text: "Postcode"
+                        text: "Postcode",
+                        classes: "govuk-label--m"
                     },
                     hint: {
-                        text: "For example, WA4 8HT"
+                        text: "For example, WA4 8HT."
                     },
                     id: "postcode",
                     name: "postcode",
