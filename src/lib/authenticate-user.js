@@ -15,8 +15,10 @@ module.exports = async (request) => {
     throw new Error('Cannot set up session cookie and cache for an unauthenticated user')
   }
 
-  // Set the cookie to the new session identifier
-  request.cookieAuth.set({ sid: uuid() })
+  /*
+   *  Set the cookie to the new session identifier
+   * request.cookieAuth.set({ sid: uuid() })
+   */
 
   if (request.app.authorization.username) {
     // If it is a user authentication then set the encrypted authorization details in the cache

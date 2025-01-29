@@ -74,32 +74,32 @@ module.exports = [
   {
     path: '/licence-auth',
     method: 'GET',
-    handler: process.env.CONTEXT === 'ANGLER' ? licenceAuthHandler.handler : (request, h) => { return h.redirect('/') },
-    options: { auth: false }
+    handler: process.env.CONTEXT === 'ANGLER' ? licenceAuthHandler.handler : (request, h) => { return h.redirect('/') }
+    // options: { auth: false }
   },
 
   // Licence auth POST handler
   {
     path: '/licence-auth',
     method: 'POST',
-    handler: licenceAuthHandler.handler,
-    options: { auth: { strategies: ['licence-strategy', 'session'] } }
+    handler: licenceAuthHandler.handler
+    // options: { auth: { strategies: ['licence-strategy', 'session'] } }
   },
 
   // Licence not found GET handler
   {
     path: '/licence-auth-fail',
     method: 'GET',
-    handler: process.env.CONTEXT === 'ANGLER' ? licenceAuthNotFound.handler : (request, h) => { return h.redirect('/') },
-    options: { auth: false }
+    handler: process.env.CONTEXT === 'ANGLER' ? licenceAuthNotFound.handler : (request, h) => { return h.redirect('/') }
+    // options: { auth: false }
   },
 
   // Licence not found POST handler
   {
     path: '/licence-auth-fail',
     method: 'POST',
-    handler: licenceAuthHandler.handler,
-    options: { auth: { strategies: ['licence-strategy', 'session'] } }
+    handler: licenceAuthHandler.handler
+    // options: { auth: { strategies: ['licence-strategy', 'session'] } }
   },
 
   // Year handler

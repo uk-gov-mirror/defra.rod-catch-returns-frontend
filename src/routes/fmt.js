@@ -20,6 +20,7 @@ const AgeWeightKeyConflictCheckHandler = require('../handlers/age-weight-key-con
 const AgeWeightKeyErrorBreakdownHandler = require('../handlers/age-weight-key-error-breakdown')
 const AgeWeightKeyCancel = require('../handlers/age-weight-key-cancel')
 const ExclusionsHandler = require('../handlers/exclusions')
+const OIDCHandler = require('../handlers/oidc-handler.js')
 
 // Define the validators
 const loginValidator = require('../validators/login')
@@ -65,37 +66,43 @@ const lookupQuerySchema = Joi.object({
  * required by the FMT interface
  */
 module.exports = [
+  {
+    path: '/oidc/signin',
+    method: 'POST',
+    handler: OIDCHandler.signIn,
+    options: { auth: false }
+  },
 
   // Login GET handler
   {
     path: '/login',
     method: 'GET',
-    handler: loginHandler.handler,
-    options: { auth: false }
+    handler: loginHandler.handler
+    // options: { auth: false }
   },
 
   // Login POST handler
   {
     path: '/login',
     method: 'POST',
-    handler: loginHandler.handler,
-    options: { auth: { strategies: ['active-dir-strategy', 'session'] } }
+    handler: loginHandler.handler
+    // options: { auth: { strategies: ['active-dir-strategy', 'session'] } }
   },
 
   // Failed Login GET handler
   {
     path: '/login-fail',
     method: 'GET',
-    handler: failedLogin.handler,
-    options: { auth: false }
+    handler: failedLogin.handler
+    // options: { auth: false }
   },
 
   // Failed Login POST handler
   {
     path: '/login-fail',
     method: 'POST',
-    handler: failedLogin.handler,
-    options: { auth: { strategies: ['active-dir-strategy', 'session'] } }
+    handler: failedLogin.handler
+    // options: { auth: { strategies: ['active-dir-strategy', 'session'] } }
   },
 
   /*

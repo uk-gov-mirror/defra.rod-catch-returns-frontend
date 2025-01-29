@@ -6,10 +6,10 @@ WORKDIR /app
 
 COPY / /app
 
-RUN npm i
+RUN npm install pm2 -g && npm i
 
 USER node
 
 EXPOSE 4000
 
-CMD npm start
+ENTRYPOINT [ "pm2-dev", "ecosystem.config.yml" ]

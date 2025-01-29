@@ -6,15 +6,18 @@ services:
       NODE_ENV: production
     env_file:
       - ./docker/env/.fmt.env
+    volumes:
+      - .:/app
+      - /app/node_modules
     ports:
       - 4000:4000
   nginx:
     image: nginx:alpine
     environment:
-      - FMT_LISTEN=4043
+      - FMT_LISTEN=3143 # we are using 3143 (same as telesales) because that is what is in the app registration
       - FMT_UPSTREAM_PORT=4000
     ports:
-      - "4043:4043"
+      - "3143:3143"
     volumes:
       - ./docker/resources/infrastructure/nginx/templates:/etc/nginx/templates
       - ./docker/resources/infrastructure/nginx/ssl:/etc/nginx/ssl
