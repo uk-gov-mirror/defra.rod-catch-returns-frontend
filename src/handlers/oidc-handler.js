@@ -1,6 +1,8 @@
 const Boom = require('@hapi/boom')
 const OpenIdClient = require('openid-client')
+const Crypto = require('../lib/crypto')
 const { logger } = require('defra-logging-facade')
+const { v4: uuid } = require('uuid')
 
 const { generators, Issuer } = OpenIdClient
 
@@ -73,7 +75,7 @@ const signIn = async (request, h) => {
   const success = !!request.payload.id_token
   if (success) {
     // Retrieve the nonce from the server cache for the given state value
-    const { nonce, state, postAuthRedirect = '/login' } = (await cache.get(request.payload.state)) ?? {}
+    const { nonce, state, postAuthRedirect = '/licence' } = (await cache.get(request.payload.state)) ?? {}
     // Validate the jwt token
 
     const tokenSet = await client.callback(redirectUri, request.payload, { nonce: nonce, state: state })
@@ -93,10 +95,21 @@ const signIn = async (request, h) => {
     } else if (!hasTelesalesRole) {
       return h.redirect('/oidc/role-required')
     } else {
-      request.cookieAuth.set({ oid, name, email })
+      request.cookieAuth.set({ oid, name, email, sid: uuid() })
       const expMs = exp * 1000 // expiry is in seconds, convert to ms
       logger.info('Token expires at: %s', new Date(expMs))
       request.cookieAuth.ttl(expMs - Date.now())
+
+      const authorization = {
+        username: email,
+        password: name
+      }
+
+      const cache = { authorization: await Crypto.writeObj(request.server.app.cache, authorization) }
+      console.log(cache)
+      await request.cache().set(cache)
+
+      logger.debug('User is authenticated: ' + JSON.stringify(authorization))
       return h.redirect(postAuthRedirect)
     }
   } else {

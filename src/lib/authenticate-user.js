@@ -26,7 +26,10 @@ module.exports = async (request) => {
     await request.cache().set(cache)
     logger.debug('User is authenticated: ' + JSON.stringify(request.app.authorization.username))
   } else {
-    // If the user is authenticated by the license set the contactId
+    /*
+     * TODO need to have separate cookie auth public users
+     * If the user is authenticated by the license set the contactId
+     */
     const cache = { contactId: request.app.authorization.contactId }
     await request.cache().set(cache)
     logger.debug('Contact is authenticated: ' + JSON.stringify(request.app.authorization.contactId))
