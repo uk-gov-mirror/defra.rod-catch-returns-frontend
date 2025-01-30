@@ -67,10 +67,16 @@ const lookupQuerySchema = Joi.object({
  */
 module.exports = [
   {
+    // try just doing a console.log here
     path: '/oidc/signin',
     method: 'POST',
     handler: OIDCHandler.signIn,
-    options: { auth: false }
+    options: {
+      auth: false,
+      plugins: {
+        crumb: false
+      }
+    }
   },
 
   // Login GET handler

@@ -7,8 +7,9 @@ services:
     env_file:
       - ./docker/env/.fmt.env
     volumes:
-      - .:/app
-      - /app/node_modules
+      - .:/app # copy everything to container, to allow pm2 to restart when a file is saved
+      - /app/node_modules # ignore local node_modules
+      - /app/public # ignore local public folder
     ports:
       - 4000:4000
   nginx:

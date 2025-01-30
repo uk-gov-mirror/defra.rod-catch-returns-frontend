@@ -70,13 +70,12 @@ const oidcRedirect = request => {
  * @returns {Promise}
  */
 const signIn = async (request, h) => {
-  logger.info('before success')
   const success = !!request.payload.id_token
   if (success) {
     // Retrieve the nonce from the server cache for the given state value
     const { nonce, state, postAuthRedirect = '/login' } = (await cache.get(request.payload.state)) ?? {}
     // Validate the jwt token
-    console.log('here1')
+
     const tokenSet = await client.callback(redirectUri, request.payload, { nonce: nonce, state: state })
 
     logger.info('Received and validated oidc token.  Claims: %o', tokenSet.claims())
@@ -94,12 +93,10 @@ const signIn = async (request, h) => {
     } else if (!hasTelesalesRole) {
       return h.redirect('/oidc/role-required')
     } else {
-      console.log('here')
       request.cookieAuth.set({ oid, name, email })
-      console.log(oid, name, email)
-      console.log(postAuthRedirect)
-      logger.info('Token expires at: %s', new Date(exp))
-      request.cookieAuth.ttl((exp - new Date()) * 1000)
+      const expMs = exp * 1000 // expiry is in seconds, convert to ms
+      logger.info('Token expires at: %s', new Date(expMs))
+      request.cookieAuth.ttl(expMs - Date.now())
       return h.redirect(postAuthRedirect)
     }
   } else {
