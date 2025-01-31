@@ -335,6 +335,13 @@ const options = {
     // initialise OIDC
     if (process.env.CONTEXT === 'FMT') {
       await initialise(server)
+    } else {
+      server.auth.strategy(
+        'session',
+        'cookie',
+        AuthorizationStrategies.sessionCookie
+      )
+      server.auth.default('session')
     }
 
     /*

@@ -5,6 +5,8 @@
  */
 const BaseHandler = require('./base')
 const authenticateUser = require('../lib/authenticate-user')
+const { v4: uuid } = require('uuid')
+const { logger } = require('defra-logging-facade')
 
 module.exports = class LicenceAuthHandler extends BaseHandler {
   constructor (...args) {
@@ -35,8 +37,15 @@ module.exports = class LicenceAuthHandler extends BaseHandler {
       return h.redirect('/licence-auth-fail')
     }
 
-    // No errors so we can authenticate this user
-    await authenticateUser(request)
+    /*
+     *  No errors so we can authenticate this user
+     * await authenticateUser(request)
+     */
+    request.cookieAuth.set({ sid: uuid() })
+    const cache = { contactId: request.app.authorization.contactId }
+    await request.cache().set(cache)
+    logger.debug('Contact is authenticated: ' + JSON.stringify(request.app.authorization.contactId))
+
     return h.redirect('/select-year')
   }
 }

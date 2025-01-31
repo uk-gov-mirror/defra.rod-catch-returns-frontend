@@ -127,12 +127,9 @@ const internals = {
         json: false // This influences both the headers and treatment of the response body so deserialization is done explicitly
       }
 
+      requestObject.headers = { 'Content-Type': typeHeader }
       if (auth) {
-        requestObject.auth = {
-          user: auth.username,
-          pass: auth.password,
-          sendImmediately: true
-        }
+        requestObject.headers.role = auth.role
       }
 
       if (body) {
@@ -140,7 +137,7 @@ const internals = {
         requestObject.body = typeHeader === internals.typeHeader.JSON ? JSON.stringify(body) : body
       }
 
-      requestObject.headers = { 'Content-Type': typeHeader }
+      console.log(requestObject)
 
       Request(requestObject, requestCallback(reject, method, uri, resolve, throwOnNotFound))
     })

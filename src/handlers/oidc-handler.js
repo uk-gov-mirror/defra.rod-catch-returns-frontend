@@ -1,8 +1,8 @@
 const Boom = require('@hapi/boom')
 const OpenIdClient = require('openid-client')
-const Crypto = require('../lib/crypto')
 const { logger } = require('defra-logging-facade')
 const { v4: uuid } = require('uuid')
+const Client = require('../api/client')
 
 const { generators, Issuer } = OpenIdClient
 
@@ -87,12 +87,12 @@ const signIn = async (request, h) => {
      *  const userDetails = await salesApi.getSystemUser(oid)
      *    const hasTelesalesRole = !!userDetails?.roles.find(role => role.name === process.env.OIDC_REQUIRE_DYNAMICS_ROLE)
      */
-    const userDetails = oid
-    const hasTelesalesRole = true
+    const userDetails = await getSystemUser(oid)
+    const hasFmtOrAdminRole = !!userDetails?.roles.find(role => role.name === 'System Administrator' || role.name === 'RCR CRM Integration User')
 
     if (!userDetails || userDetails.isDisabled) {
       return h.redirect('/oidc/account-disabled')
-    } else if (!hasTelesalesRole) {
+    } else if (!hasFmtOrAdminRole) {
       return h.redirect('/oidc/role-required')
     } else {
       request.cookieAuth.set({ oid, name, email, sid: uuid() })
@@ -100,14 +100,18 @@ const signIn = async (request, h) => {
       logger.info('Token expires at: %s', new Date(expMs))
       request.cookieAuth.ttl(expMs - Date.now())
 
-      const authorization = {
-        username: email,
-        password: name
+      let role = null
+      if (userDetails.roles.some(r => r.name === 'System Administrator')) {
+        role = 'RcrAdminUser'
+      } else if (userDetails.roles.some(r => r.name === 'RCR CRM Integration User')) {
+        role = 'RcrFMTUser'
       }
 
-      const cache = { authorization: await Crypto.writeObj(request.server.app.cache, authorization) }
-      console.log(cache)
-      await request.cache().set(cache)
+      const authorization = {
+        ...userDetails,
+        role
+      }
+      await request.cache().set({ authorization })
 
       logger.debug('User is authenticated: ' + JSON.stringify(authorization))
       return h.redirect(postAuthRedirect)
@@ -117,6 +121,10 @@ const signIn = async (request, h) => {
     console.error('OIDC redirect with error: ', error, errorDescription)
     throw Boom.badImplementation(`Authentication error: ${error}: ${errorDescription}`)
   }
+}
+
+const getSystemUser = (oid) => {
+  return Client.request(null, Client.method.GET, `systemUsers/${oid}`)
 }
 
 module.exports = {
