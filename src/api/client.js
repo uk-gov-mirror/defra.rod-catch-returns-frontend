@@ -129,7 +129,7 @@ const internals = {
 
       requestObject.headers = { 'Content-Type': typeHeader }
       if (auth) {
-        requestObject.headers.role = auth.role
+        requestObject.headers.sessionId = auth
       }
 
       if (body) {

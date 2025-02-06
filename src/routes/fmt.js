@@ -20,7 +20,7 @@ const AgeWeightKeyConflictCheckHandler = require('../handlers/age-weight-key-con
 const AgeWeightKeyErrorBreakdownHandler = require('../handlers/age-weight-key-error-breakdown')
 const AgeWeightKeyCancel = require('../handlers/age-weight-key-cancel')
 const ExclusionsHandler = require('../handlers/exclusions')
-const OIDCHandler = require('../handlers/oidc-handler.js')
+const OidcForwardHandler = require('../handlers/oidc-forward')
 
 // Define the validators
 const loginValidator = require('../validators/login')
@@ -67,10 +67,20 @@ const lookupQuerySchema = Joi.object({
  */
 module.exports = [
   {
-    // try just doing a console.log here
+    path: '/oidc/authorize',
+    method: 'GET',
+    handler: OidcForwardHandler.authorize,
+    options: {
+      auth: false,
+      plugins: {
+        crumb: false
+      }
+    }
+  },
+  {
     path: '/oidc/signin',
     method: 'POST',
-    handler: OIDCHandler.signIn,
+    handler: OidcForwardHandler.signIn,
     options: {
       auth: false,
       plugins: {

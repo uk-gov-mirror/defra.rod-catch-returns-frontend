@@ -9,10 +9,16 @@ module.exports = {
       name: 'sid',
       password: process.env.COOKIE_PW,
       isSecure: process.env.HTTPS === 'true',
-      clearInvalid: true
+      clearInvalid: true,
+      ttl: null,
+      isHttpOnly: process.env.NODE_ENV !== 'development',
+      isSameSite: 'Lax',
+      path: '/'
     },
 
-    redirectTo: process.env.CONTEXT === 'ANGLER' ? '/licence-auth' : '/login',
+    redirectTo: (request) => {
+      return process.env.CONTEXT === 'ANGLER' ? '/licence-auth' : '/oidc/authorize'
+    },
     appendNext: process.env.CONTEXT === 'FMT',
     /**
      * validation function called on every request

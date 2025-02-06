@@ -83,7 +83,7 @@ module.exports = [
     path: '/licence-auth',
     method: 'POST',
     handler: licenceAuthHandler.handler,
-    options: { auth: { strategies: process.env.CONTEXT === 'ANGLER' ? ['licence-strategy', 'session'] : ['licence-strategy'] } }
+    options: { auth: { strategies: ['licence-strategy', 'session'] } }
   },
 
   // Licence not found GET handler
@@ -99,7 +99,7 @@ module.exports = [
     path: '/licence-auth-fail',
     method: 'POST',
     handler: licenceAuthHandler.handler,
-    options: { auth: { strategies: process.env.CONTEXT === 'ANGLER' ? ['licence-strategy', 'session'] : ['licence-strategy'] } }
+    options: { auth: { strategies: ['licence-strategy', 'session'] } }
   },
 
   // Year handler
