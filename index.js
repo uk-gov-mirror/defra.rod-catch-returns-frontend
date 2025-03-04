@@ -22,6 +22,7 @@ const CacheDecorator = require('./src/lib/cache-decorator')
 const { checkTempDir } = require('./src/lib/misc')
 const manFishing = require('./manFishing')
 const { sessionIdProducer } = require('./src/lib/analytics')
+const { initialise } = require('./src/handlers/oidc-handler')
 
 const manifest = {
   // Configure Hapi server and server-caching subsystem
@@ -322,13 +323,16 @@ const options = {
     server.auth.scheme('licence-scheme', AuthorizationSchemes.licenceScheme)
     server.auth.strategy('active-dir-strategy', 'active-dir-scheme')
     server.auth.strategy('licence-strategy', 'licence-scheme')
-    server.auth.strategy(
-      'session',
-      'cookie',
-      AuthorizationStrategies.sessionCookie
-    )
-    server.auth.default('session')
-
+    if (process.env.CONTEXT === 'FMT') {
+      await initialise(server)
+    } else {
+      server.auth.strategy(
+        'session',
+        'cookie',
+        AuthorizationStrategies.sessionCookie
+      )
+      server.auth.default('session')
+    }
     /*
      * Plugin to automatically load the routes based on their file location
      * See https://www.npmjs.com/package/hapi-router. Run last so the default authentication

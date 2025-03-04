@@ -61,7 +61,7 @@ module.exports = [
     method: 'GET',
     options: { auth: false },
     handler: (request, h) => {
-      return process.env.CONTEXT === 'ANGLER' ? h.redirect('/licence-auth') : h.redirect('/login')
+      return process.env.CONTEXT === 'ANGLER' ? h.redirect('/licence-auth') : h.redirect('/licence')
     }
   },
 
@@ -83,7 +83,7 @@ module.exports = [
     path: '/licence-auth',
     method: 'POST',
     handler: licenceAuthHandler.handler,
-    options: { auth: { strategies: ['licence-strategy', 'session'] } }
+    options: { auth: { strategies: process.env.CONTEXT === 'ANGLER' ? ['licence-strategy', 'session'] : ['licence-strategy'] } }
   },
 
   // Licence not found GET handler
@@ -91,7 +91,7 @@ module.exports = [
     path: '/licence-auth-fail',
     method: 'GET',
     handler: process.env.CONTEXT === 'ANGLER' ? licenceAuthNotFound.handler : (request, h) => { return h.redirect('/') },
-    options: { auth: false }
+    options: { auth: { strategies: process.env.CONTEXT === 'ANGLER' ? ['licence-strategy'] : ['licence-strategy'] } }
   },
 
   // Licence not found POST handler
@@ -99,7 +99,7 @@ module.exports = [
     path: '/licence-auth-fail',
     method: 'POST',
     handler: licenceAuthHandler.handler,
-    options: { auth: { strategies: ['licence-strategy', 'session'] } }
+    options: { auth: { strategies: process.env.CONTEXT === 'ANGLER' ? ['licence-strategy'] : ['licence-strategy'] } }
   },
 
   // Year handler

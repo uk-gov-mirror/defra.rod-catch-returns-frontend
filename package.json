@@ -57,6 +57,7 @@
     "hapi-router": "^4.0.1",
     "moment": "^2.29.1",
     "nunjucks": "^3.2.3",
+    "openid-client": "^4.9.1",
     "proxy-agent": "^4.0.1",
     "request": "^2.88.2",
     "request-etag": "^2.0.3",

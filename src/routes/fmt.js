@@ -46,6 +46,7 @@ const ageWeightKeyErrorBreakdownHandler = new AgeWeightKeyErrorBreakdownHandler(
   null, 'ageWeightContext')
 const ageWeightKeyCancel = new AgeWeightKeyCancel(null, null, 'ageWeightContext')
 const exclusionsHandler = new ExclusionsHandler('exclusions')
+const OIDCHandler = require('../handlers/oidc-handler.js')
 
 const api = {
   host: process.env.API_HOSTNAME || 'localhost',
@@ -65,37 +66,16 @@ const lookupQuerySchema = Joi.object({
  * required by the FMT interface
  */
 module.exports = [
-
-  // Login GET handler
   {
-    path: '/login',
-    method: 'GET',
-    handler: loginHandler.handler,
-    options: { auth: false }
-  },
-
-  // Login POST handler
-  {
-    path: '/login',
+    path: '/oidc/signin',
     method: 'POST',
-    handler: loginHandler.handler,
-    options: { auth: { strategies: ['active-dir-strategy', 'session'] } }
-  },
-
-  // Failed Login GET handler
-  {
-    path: '/login-fail',
-    method: 'GET',
-    handler: failedLogin.handler,
-    options: { auth: false }
-  },
-
-  // Failed Login POST handler
-  {
-    path: '/login-fail',
-    method: 'POST',
-    handler: failedLogin.handler,
-    options: { auth: { strategies: ['active-dir-strategy', 'session'] } }
+    handler: OIDCHandler.signIn,
+    options: {
+      auth: false,
+      plugins: {
+        crumb: false
+      }
+    }
   },
 
   /*
