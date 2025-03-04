@@ -47,6 +47,7 @@ const ageWeightKeyErrorBreakdownHandler = new AgeWeightKeyErrorBreakdownHandler(
 const ageWeightKeyCancel = new AgeWeightKeyCancel(null, null, 'ageWeightContext')
 const exclusionsHandler = new ExclusionsHandler('exclusions')
 const OIDCHandler = require('../handlers/oidc-handler.js')
+const MSALHandler = require('../handlers/msal-handler.js')
 
 const api = {
   host: process.env.API_HOSTNAME || 'localhost',
@@ -69,7 +70,18 @@ module.exports = [
   {
     path: '/oidc/signin',
     method: 'POST',
-    handler: OIDCHandler.signIn,
+    handler: MSALHandler.oidcSignIn,
+    options: {
+      auth: false,
+      plugins: {
+        crumb: false
+      }
+    }
+  },
+  {
+    path: '/login',
+    method: 'GET',
+    handler: MSALHandler.signInUrl,
     options: {
       auth: false,
       plugins: {

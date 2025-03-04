@@ -23,6 +23,7 @@ const { checkTempDir } = require('./src/lib/misc')
 const manFishing = require('./manFishing')
 const { sessionIdProducer } = require('./src/lib/analytics')
 const { initialise } = require('./src/handlers/oidc-handler')
+const { initialiseAuth } = require('./src/handlers/msal-handler')
 
 const manifest = {
   // Configure Hapi server and server-caching subsystem
@@ -324,7 +325,7 @@ const options = {
     server.auth.strategy('active-dir-strategy', 'active-dir-scheme')
     server.auth.strategy('licence-strategy', 'licence-scheme')
     if (process.env.CONTEXT === 'FMT') {
-      await initialise(server)
+      initialiseAuth(server)
     } else {
       server.auth.strategy(
         'session',

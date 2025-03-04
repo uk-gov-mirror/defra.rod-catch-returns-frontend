@@ -22,7 +22,7 @@ const initialise = async (server) => {
     client_id: process.env.OIDC_CLIENT_ID,
     client_secret: process.env.OIDC_CLIENT_SECRET,
     redirect_uris: [redirectUri],
-    response_types: ['code', 'id_token', 'token']
+    response_types: ['code', 'id_token']
   })
   cache = server.cache({ segment: 'oidc', expiresIn: 12 * 60 * 60 * 1000 })
 
