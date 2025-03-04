@@ -1,35 +1,26 @@
-version: "2.0"
 services:
-
-#######################################################
-# Redis
-#######################################################
-  redis:
-    image: redis
-    ports:
-      - "6379:6379"
-    networks:
-      - dev_net
-    mem_limit: 1024000000
-    volumes:
-      - ./volumes/redisdata:/data
-      - ./volumes/redisconf/redis.conf:/usr/local/etc/redis/redis.conf
-    restart: always
-    command: redis-server --appendonly yes
-
-  redis-commander:
-    image: rediscommander/redis-commander:latest
+  fmt:
+    build:
+      context: .
     environment:
-    - REDIS_HOSTS=local:redis:6379
+      NODE_ENV: production
+    env_file:
+      - ./docker/env/.fmt.env
+    volumes:
+      - .:/app # copy everything to container, to allow pm2 to restart when a file is saved
+      - /app/node_modules # ignore local node_modules
+      - /app/public # ignore local public folder
     ports:
-    - 8081:8081
-    mem_limit: 256000000
+      - 4000:4000
+  nginx:
+    image: nginx:alpine
+    environment:
+      - FMT_LISTEN=3143 # we are using 3143 (same as telesales) because that is what is in the app registration
+      - FMT_UPSTREAM_PORT=4000
+    ports:
+      - "3143:3143"
+    volumes:
+      - ./docker/resources/infrastructure/nginx/templates:/etc/nginx/templates
+      - ./docker/resources/infrastructure/nginx/ssl:/etc/nginx/ssl
     depends_on:
-      - redis
-    restart: always
-    networks:
-      - dev_net
-
-networks:
-  dev_net:
-    driver: bridge
+      - fmt
