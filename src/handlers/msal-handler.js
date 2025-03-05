@@ -18,7 +18,7 @@ const initialiseAuth = (server) => {
   server.auth.strategy("session", "cookie", {
     cookie: {
       name: "sid",
-      password: "supersecretpasswordshouldbe32characters",
+      password: process.env.COOKIE_PW,
       ttl: null,
       isSecure: process.env.NODE_ENV !== "development",
       isHttpOnly: process.env.NODE_ENV !== "development",
@@ -33,7 +33,7 @@ const initialiseAuth = (server) => {
 
 const signInUrl = async (_, h) => {
   const authUrl = await msalClient.getAuthCodeUrl({
-    scopes: [],
+    scopes: [`${process.env.MSAL_CLIENT_ID}/.default`],
     redirectUri: config.auth.redirectUri,
     responseMode: 'form_post'
   });
@@ -55,7 +55,7 @@ const oidcSignIn = async (request, h) => {
 
     request.cookieAuth.set({
       name: tokenResponse.account.name,
-      accessToken: tokenResponse.accessToken,
+      token: tokenResponse.accessToken,
       sid: uuid() 
     });
 

@@ -129,7 +129,7 @@ const internals = {
 
       requestObject.headers = { 'Content-Type': typeHeader }
       if (auth) {
-        requestObject.headers.accessToken = auth
+        requestObject.headers.token = auth
       }
 
       if (body) {

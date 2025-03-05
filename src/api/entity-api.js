@@ -24,7 +24,7 @@ module.exports = class EntityApi {
   }
 
   static async getAuth (request) {
-    return request.auth.credentials.accessToken
+    return request.auth.credentials.token
   }
 
   // Calculate the object key from the link. Used in payloads
