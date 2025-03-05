@@ -2,6 +2,7 @@ const msal = require("@azure/msal-node");
 const Boom = require('@hapi/boom');
 const { name } = require("browser-sync");
 const { v4: uuid } = require('uuid')
+const Client = require('../api/client')
 
 const config = {
   auth: {
@@ -52,6 +53,9 @@ const oidcSignIn = async (request, h) => {
       scopes: [],
       redirectUri: config.auth.redirectUri,
     });
+
+    // call /profile, if the user is unauthorized it will return a 401
+    await Client.request(tokenResponse.accessToken, Client.method.GET, "profile")
 
     request.cookieAuth.set({
       name: tokenResponse.account.name,
