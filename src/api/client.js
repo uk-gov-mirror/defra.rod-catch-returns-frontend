@@ -89,9 +89,9 @@ const internals = {
   createRequest: (path, search) => {
     try {
       const uriObj = {
-        protocol: 'http',
+        protocol: process.env.API_PROTOCOL || 'http',
         hostname: process.env.API_HOSTNAME || 'localhost',
-        port: Number.parseInt(process.env.API_PORT || 9580),
+        port: process.env.API_PORT ? Number.parseInt(process.env.API_PORT) : undefined,
         pathname: path ? process.env.API_PATH + '/' + path : process.env.API_PATH
       }
 
