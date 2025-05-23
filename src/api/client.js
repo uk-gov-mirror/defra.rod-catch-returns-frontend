@@ -182,7 +182,9 @@ module.exports = {
    * @returns {Promise<*|Promise<void>>}
    */
   requestFromLink: async (auth, link) => {
-    return internals.makeRequest(auth, link, internals.method.GET,
+    // TODO see why app is putting http instead of https in link
+    const newLink = link.replace('http://', 'https://')
+    return internals.makeRequest(auth, newLink, internals.method.GET,
       null, true, internals.typeHeader.JSON)
   },
 
