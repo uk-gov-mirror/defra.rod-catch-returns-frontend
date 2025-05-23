@@ -99,7 +99,11 @@ const internals = {
         uriObj.search = search
       }
 
-      return Url.format(uriObj)
+      const url = Url.format(uriObj)
+
+      console.log(url)
+
+      return url
     } catch (err) {
       logger.error(err)
       throw err
