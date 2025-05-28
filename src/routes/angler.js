@@ -53,6 +53,8 @@ const reviewHandler = new ReviewHandler('review')
 const confirmationHandler = new ConfirmationHandler('confirmation')
 const saveHandler = new SaveHandler('save')
 
+const testHandler = require('../handlers/test-handler')
+
 module.exports = [
 
   // Redirect to the start page
@@ -62,6 +64,43 @@ module.exports = [
     options: { auth: false },
     handler: (request, h) => {
       return process.env.CONTEXT === 'ANGLER' ? h.redirect('/licence-auth') : h.redirect('/licence')
+    }
+  },
+
+  // TODO test endpoint remove after
+  {
+    path: '/test-js-api',
+    method: 'GET',
+    handler: testHandler.testJSAPI,
+    options: {
+      auth: false,
+      plugins: {
+        crumb: false
+      }
+    }
+  },
+
+  {
+    path: '/test-js-api-fetch',
+    method: 'GET',
+    handler: testHandler.testJSAPIFetch,
+    options: {
+      auth: false,
+      plugins: {
+        crumb: false
+      }
+    }
+  },
+
+   {
+    path: '/test-java-api-fetch',
+    method: 'GET',
+    handler: testHandler.testJavaAPIFetch,
+    options: {
+      auth: false,
+      plugins: {
+        crumb: false
+      }
     }
   },
 

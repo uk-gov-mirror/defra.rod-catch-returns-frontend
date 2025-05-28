@@ -97,8 +97,6 @@ const internals = {
         url.search = search
       }
 
-      console.log(url.toString())
-
       return url.toString()
     } catch (err) {
       logger.error(err)
@@ -136,6 +134,15 @@ const internals = {
         logger.debug(`Payload; ${JSON.stringify(body, null, 2)}`)
         requestObject.body = typeHeader === internals.typeHeader.JSON ? JSON.stringify(body) : body
       }
+
+      console.log('request', requestObject)
+
+      const proxyVars = ['HTTP_PROXY', 'http_proxy', 'HTTPS_PROXY', 'https_proxy', 'NO_PROXY', 'no_proxy']
+      proxyVars.forEach(key => {
+        if (process.env[key]) {
+          console.log(`${key} = ${process.env[key]}`)
+        }
+      })
 
       Request(requestObject, requestCallback(reject, method, uri, resolve, throwOnNotFound))
     })
