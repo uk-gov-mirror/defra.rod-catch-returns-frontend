@@ -88,22 +88,18 @@ const internals = {
    */
   createRequest: (path, search) => {
     try {
-      const uriObj = {
-        protocol: process.env.API_PROTOCOL || 'http',
-        hostname: process.env.API_HOSTNAME || 'localhost',
-        port: process.env.API_PORT ? Number.parseInt(process.env.API_PORT) : undefined,
-        pathname: path ? process.env.API_PATH + '/' + path : process.env.API_PATH
-      }
+      const baseUrl = process.env.JS_API_URL
+      const url = new URL(baseUrl)
+
+      url.pathname = path ? `/api/${path}` : '/api'
 
       if (search) {
-        uriObj.search = search
+        url.search = search
       }
 
-      const url = Url.format(uriObj)
+      console.log(url.toString())
 
-      console.log(url)
-
-      return url
+      return url.toString()
     } catch (err) {
       logger.error(err)
       throw err
@@ -182,8 +178,9 @@ module.exports = {
    * @returns {Promise<*|Promise<void>>}
    */
   requestFromLink: async (auth, link) => {
-    // TODO see why app is putting http instead of https in link
+    // TODO remove this when JS API changes have been deployed
     const newLink = link.replace('http://', 'https://')
+    // const newLink = link
     return internals.makeRequest(auth, newLink, internals.method.GET,
       null, true, internals.typeHeader.JSON)
   },
