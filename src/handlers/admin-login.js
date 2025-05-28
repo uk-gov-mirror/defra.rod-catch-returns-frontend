@@ -47,11 +47,16 @@ module.exports = class LoginHandler extends BaseHandler {
         throw new Error('No authorization code provided')
       }
 
+      console.log('before')
+      console.log(code)
+
       const tokenResponse = await msalClient.acquireTokenByCode({
         code,
         scopes: [],
         redirectUri: process.env.MSAL_REDIRECT_URI
       })
+
+      console.log('after acquire')
 
       if (!tokenResponse.accessToken) {
         throw new Error('No access token in response from Microsoft')
