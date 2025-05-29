@@ -53,6 +53,9 @@ const testJavaAPIFetch = async (request, h) => {
 const testMSFetch = async () => {
   const url = 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration'
 
+  console.log('Microsoft endpoint using fetch')
+  console.log(url)
+
   const proxyVars = ['HTTP_PROXY', 'http_proxy', 'HTTPS_PROXY', 'https_proxy', 'NO_PROXY', 'no_proxy']
   proxyVars.forEach(key => {
     if (process.env[key]) {
