@@ -8,6 +8,7 @@ const config = {
     authority: process.env.MSAL_ENDPOINT
   },
   system: {
+    proxyUrl: process.env.https_proxy,
     loggerOptions: {
       logLevel: msal.LogLevel.Verbose,
       loggerCallback: (level, message, containsPii) => {
