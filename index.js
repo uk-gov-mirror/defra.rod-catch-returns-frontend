@@ -22,8 +22,6 @@ const { checkTempDir } = require('./src/lib/misc')
 const manFishing = require('./manFishing')
 const { sessionIdProducer } = require('./src/lib/analytics')
 
-process.env.NODE_OPTIONS = '--dns-result-order=ipv4first'
-
 const manifest = {
   // Configure Hapi server and server-caching subsystem
   server: {
