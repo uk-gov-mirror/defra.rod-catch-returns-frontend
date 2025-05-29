@@ -92,10 +92,10 @@ module.exports = [
     }
   },
 
-   {
-    path: '/test-java-api-fetch',
+  {
+    path: '/test-ms-fetch',
     method: 'GET',
-    handler: testHandler.testJavaAPIFetch,
+    handler: testHandler.testMSFetch,
     options: {
       auth: false,
       plugins: {

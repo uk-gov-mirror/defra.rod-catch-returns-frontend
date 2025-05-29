@@ -50,7 +50,27 @@ const testJavaAPIFetch = async (request, h) => {
   return data
 }
 
+const testMSFetch = async () => {
+  const url = 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration'
+
+  const proxyVars = ['HTTP_PROXY', 'http_proxy', 'HTTPS_PROXY', 'https_proxy', 'NO_PROXY', 'no_proxy']
+  proxyVars.forEach(key => {
+    if (process.env[key]) {
+      console.log(`${key} = ${process.env[key]}`)
+    }
+  })
+
+  const response = await fetch(url)
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch profile: ${response.status} ${response.statusText}`)
+  }
+
+  const data = await response.json()
+  return data
+}
 module.exports = {
+  testMSFetch,
   testJSAPI,
   testJSAPIFetch,
   testJavaAPIFetch
