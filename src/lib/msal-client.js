@@ -1,4 +1,5 @@
 const msal = require('@azure/msal-node')
+const { HttpsProxyAgent } = require('https-proxy-agent')
 
 /** @type {msal.Configuration} */
 const config = {
@@ -8,7 +9,7 @@ const config = {
     authority: process.env.MSAL_ENDPOINT
   },
   system: {
-    proxyUrl: process.env.https_proxy,
+    customAgentOptions: new HttpsProxyAgent(process.env.https_proxy),
     loggerOptions: {
       logLevel: msal.LogLevel.Verbose,
       loggerCallback: (level, message, containsPii) => {
