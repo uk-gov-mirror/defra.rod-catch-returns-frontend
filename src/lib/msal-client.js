@@ -1,6 +1,6 @@
 const msal = require('@azure/msal-node')
 const axios = require('axios')
-const HttpsProxyAgent = require('https-proxy-agent')
+const { HttpsProxyAgent } = require('https-proxy-agent')
 
 const proxyUrl = process.env.https_proxy
 const proxyAgent = new HttpsProxyAgent(proxyUrl)
