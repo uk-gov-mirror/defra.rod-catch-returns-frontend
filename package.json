@@ -15,7 +15,7 @@
     "lint-fix": "npm run lint -- --fix",
     "postinstall": "gulp",
     "release": "standard-version",
-    "start": "node index.js",
+    "start": "node --dns-result-order=ipv4first index.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "watch": "nohup gulp watch&",
