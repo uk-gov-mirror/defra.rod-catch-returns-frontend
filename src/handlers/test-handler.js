@@ -1,5 +1,6 @@
 const Client = require('../api/client')
 const { HttpsProxyAgent } = require('https-proxy-agent')
+const axios = require('axios')
 
 const testJSAPI = async (request, h) => {
   console.log('calling JS API using existing api client')
@@ -100,10 +101,22 @@ const testMSFetchWithoutProxy = async () => {
   return data
 }
 
+const testMSAxios= async () => {
+  const url = 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration'
+
+  console.log('Microsoft endpoint using axios')
+  console.log(url)
+
+  const result = await axios.get(url)
+
+  return result.data
+}
+
 module.exports = {
   testMSFetchProxy,
   testMSFetchWithoutProxy,
   testJSAPI,
   testJSAPIFetch,
-  testJavaAPIFetch
+  testJavaAPIFetch,
+  testMSAxios
 }
