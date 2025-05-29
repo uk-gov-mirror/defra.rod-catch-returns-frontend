@@ -56,8 +56,9 @@ const testMSFetchProxy = async () => {
   const proxyAgent = new HttpsProxyAgent(proxyUrl)
   const url = 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration'
 
-  console.log('Microsoft endpoint using fetch')
+  console.log('Microsoft endpoint using fetch with proxy')
   console.log(url)
+  console.log(proxyAgent)
 
   const proxyVars = ['HTTP_PROXY', 'http_proxy', 'HTTPS_PROXY', 'https_proxy', 'NO_PROXY', 'no_proxy']
   proxyVars.forEach(key => {
@@ -79,7 +80,7 @@ const testMSFetchProxy = async () => {
 const testMSFetchWithoutProxy = async () => {
   const url = 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration'
 
-  console.log('Microsoft endpoint using fetch')
+  console.log('Microsoft endpoint using fetch without proxy')
   console.log(url)
 
   const proxyVars = ['HTTP_PROXY', 'http_proxy', 'HTTPS_PROXY', 'https_proxy', 'NO_PROXY', 'no_proxy']
