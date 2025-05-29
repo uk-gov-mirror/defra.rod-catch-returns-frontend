@@ -1,7 +1,9 @@
 const msal = require('@azure/msal-node')
-const { HttpsProxyAgent } = require('https-proxy-agent')
+const axios = require('axios')
+const HttpsProxyAgent = require('https-proxy-agent')
 
 const proxyUrl = process.env.https_proxy
+const proxyAgent = new HttpsProxyAgent(proxyUrl)
 
 /** @type {msal.Configuration} */
 const config = {
@@ -35,20 +37,26 @@ const config = {
     },
     networkClient: {
       sendGetRequestAsync: async (url, options) => {
-        options.agent = new HttpsProxyAgent(proxyUrl)
-        const res = await fetch(url, options)
+        const res = await axios.get(url, {
+          headers: options.headers,
+          httpsAgent: proxyAgent
+        })
+
         return {
-          headers: res.headers.raw(),
-          body: await res.text(),
+          headers: res.headers,
+          body: res.data,
           status: res.status
         }
       },
       sendPostRequestAsync: async (url, options) => {
-        options.agent = new HttpsProxyAgent(proxyUrl)
-        const res = await fetch(url, options)
+        const res = await axios.post(url, options.body, {
+          headers: options.headers,
+          httpsAgent: proxyAgent
+        })
+
         return {
-          headers: res.headers.raw(),
-          body: await res.text(),
+          headers: res.headers,
+          body: res.data,
           status: res.status
         }
       }
