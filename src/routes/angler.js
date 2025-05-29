@@ -128,6 +128,18 @@ module.exports = [
     }
   },
 
+    {
+    path: '/test-ms-axios-with-proxy',
+    method: 'GET',
+    handler: testHandler.testMSAxiosProxy,
+    options: {
+      auth: false,
+      plugins: {
+        crumb: false
+      }
+    }
+  },
+
   /*
    * The following set of handlers are concerned with angler login - those users authenticated
    * by the CRM using their licence and postcode

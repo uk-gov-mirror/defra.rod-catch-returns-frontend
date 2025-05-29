@@ -101,7 +101,7 @@ const testMSFetchWithoutProxy = async () => {
   return data
 }
 
-const testMSAxios= async () => {
+const testMSAxios = async () => {
   const url = 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration'
 
   console.log('Microsoft endpoint using axios')
@@ -112,11 +112,25 @@ const testMSAxios= async () => {
   return result.data
 }
 
+const testMSAxiosProxy = async () => {
+  const url = 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration'
+  const proxyUrl = process.env.https_proxy
+  const proxyAgent = new HttpsProxyAgent(proxyUrl)
+
+  console.log('Microsoft endpoint using axios proxy')
+  console.log(url)
+
+  const result = await axios.get(url, { httpsAgent: proxyAgent })
+
+  return result.data
+}
+
 module.exports = {
   testMSFetchProxy,
   testMSFetchWithoutProxy,
   testJSAPI,
   testJSAPIFetch,
   testJavaAPIFetch,
-  testMSAxios
+  testMSAxios,
+  testMSAxiosProxy
 }

@@ -7,7 +7,6 @@
  */
 
 require('dotenv').config()
-
 const Glue = require('@hapi/glue')
 const Nunjucks = require('nunjucks')
 const Uuid = require('uuid')
@@ -22,6 +21,8 @@ const CacheDecorator = require('./src/lib/cache-decorator')
 const { checkTempDir } = require('./src/lib/misc')
 const manFishing = require('./manFishing')
 const { sessionIdProducer } = require('./src/lib/analytics')
+
+process.env.NODE_OPTIONS = '--dns-result-order=ipv4first'
 
 const manifest = {
   // Configure Hapi server and server-caching subsystem
