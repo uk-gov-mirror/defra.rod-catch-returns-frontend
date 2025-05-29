@@ -81,9 +81,21 @@ module.exports = [
   },
 
   {
-    path: '/test-js-api-fetch',
+    path: '/test-js-api-fetch-without-proxy',
     method: 'GET',
-    handler: testHandler.testJSAPIFetch,
+    handler: testHandler.testMSFetchWithoutProxy,
+    options: {
+      auth: false,
+      plugins: {
+        crumb: false
+      }
+    }
+  },
+
+  {
+    path: '/test-js-api-fetch-with-proxy',
+    method: 'GET',
+    handler: testHandler.testMSFetchProxy,
     options: {
       auth: false,
       plugins: {
