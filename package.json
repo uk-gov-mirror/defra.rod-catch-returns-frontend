@@ -87,6 +87,9 @@
     "standard-version": "^9.3.2"
   },
   "jest": {
+    "moduleNameMapper": {
+      "^axios$": "axios/dist/node/axios.cjs"
+    },
     "collectCoverage": true,
     "coverageReporters": [
       "lcov",

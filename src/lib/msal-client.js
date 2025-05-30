@@ -30,6 +30,30 @@ const sendRequest = async (method, url, options) => {
   }
 }
 
+const loggerCallback = (level, message, containsPii) => {
+  if (containsPii) return
+  switch (level) {
+    case msal.LogLevel.Error:
+      console.error(message)
+      break
+    case msal.LogLevel.Info:
+    case msal.LogLevel.Verbose:
+    case msal.LogLevel.Warning:
+      console.log(message)
+      break
+  }
+}
+
+// Define optional loggerOptions only in development
+const loggerOptions =
+  process.env.NODE_ENV === 'development'
+    ? {
+      logLevel: msal.LogLevel.Verbose,
+      loggerCallback,
+      piiLoggingEnabled: false
+    }
+    : undefined
+
 /** @type {msal.Configuration} */
 const config = {
   auth: {
@@ -38,28 +62,7 @@ const config = {
     authority: process.env.MSAL_ENDPOINT
   },
   system: {
-    loggerOptions: {
-      logLevel: msal.LogLevel.Verbose,
-      loggerCallback: (level, message, containsPii) => {
-        if (containsPii) {
-          return
-        }
-        switch (level) {
-          case msal.LogLevel.Error:
-            console.error(message)
-            return
-          case msal.LogLevel.Info:
-            console.log(message)
-            return
-          case msal.LogLevel.Verbose:
-            console.log(message)
-            return
-          case msal.LogLevel.Warning:
-            console.log(message)
-        }
-      },
-      piiLoggingEnabled: false
-    },
+    ...(loggerOptions && { loggerOptions }),
     /*
      * Workaround use native axios with our proxy settings
      * Original HTTP client used by msal-node: https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-node/src/network/HttpClient.ts
