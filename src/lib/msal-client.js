@@ -35,6 +35,11 @@ const config = {
       },
       piiLoggingEnabled: false
     },
+    /*
+     * Workaround use native axios with our proxy settings
+     * Original HTTP client used by msal-node: https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-node/src/network/HttpClient.ts
+     * Github issue related: https://github.com/AzureAD/microsoft-authentication-library-for-js/issues/6527#issuecomment-2073238927
+     */
     networkClient: {
       sendGetRequestAsync: async (url, options) => {
         const res = await axios.get(url, {

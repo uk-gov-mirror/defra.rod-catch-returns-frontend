@@ -53,8 +53,6 @@ const reviewHandler = new ReviewHandler('review')
 const confirmationHandler = new ConfirmationHandler('confirmation')
 const saveHandler = new SaveHandler('save')
 
-const testHandler = require('../handlers/test-handler')
-
 module.exports = [
 
   // Redirect to the start page
@@ -64,79 +62,6 @@ module.exports = [
     options: { auth: false },
     handler: (request, h) => {
       return process.env.CONTEXT === 'ANGLER' ? h.redirect('/licence-auth') : h.redirect('/licence')
-    }
-  },
-
-  // TODO test endpoint remove after
-  {
-    path: '/test-js-api',
-    method: 'GET',
-    handler: testHandler.testJSAPI,
-    options: {
-      auth: false,
-      plugins: {
-        crumb: false
-      }
-    }
-  },
-
-  {
-    path: '/test-js-api-fetch-without-proxy',
-    method: 'GET',
-    handler: testHandler.testJSAPIFetch,
-    options: {
-      auth: false,
-      plugins: {
-        crumb: false
-      }
-    }
-  },
-
-  {
-    path: '/test-ms-fetch-without-proxy',
-    method: 'GET',
-    handler: testHandler.testMSFetchWithoutProxy,
-    options: {
-      auth: false,
-      plugins: {
-        crumb: false
-      }
-    }
-  },
-
-  {
-    path: '/test-ms-fetch-with-proxy',
-    method: 'GET',
-    handler: testHandler.testMSFetchProxy,
-    options: {
-      auth: false,
-      plugins: {
-        crumb: false
-      }
-    }
-  },
-
-   {
-    path: '/test-ms-axios',
-    method: 'GET',
-    handler: testHandler.testMSAxios,
-    options: {
-      auth: false,
-      plugins: {
-        crumb: false
-      }
-    }
-  },
-
-    {
-    path: '/test-ms-axios-with-proxy',
-    method: 'GET',
-    handler: testHandler.testMSAxiosProxy,
-    options: {
-      auth: false,
-      plugins: {
-        crumb: false
-      }
     }
   },
 

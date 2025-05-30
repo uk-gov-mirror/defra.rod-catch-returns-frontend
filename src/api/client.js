@@ -3,7 +3,6 @@
 /**
  * This module is responsible for the API rest interface and is data agnostic.
  */
-const Url = require('url')
 const Hoek = require('@hapi/hoek')
 const ResponseError = require('../handlers/response-error')
 const ETagRequest = require('request-etag')
@@ -135,15 +134,6 @@ const internals = {
         requestObject.body = typeHeader === internals.typeHeader.JSON ? JSON.stringify(body) : body
       }
 
-      console.log('request', requestObject)
-
-      const proxyVars = ['HTTP_PROXY', 'http_proxy', 'HTTPS_PROXY', 'https_proxy', 'NO_PROXY', 'no_proxy']
-      proxyVars.forEach(key => {
-        if (process.env[key]) {
-          console.log(`${key} = ${process.env[key]}`)
-        }
-      })
-
       Request(requestObject, requestCallback(reject, method, uri, resolve, throwOnNotFound))
     })
   }
@@ -185,10 +175,7 @@ module.exports = {
    * @returns {Promise<*|Promise<void>>}
    */
   requestFromLink: async (auth, link) => {
-    // TODO remove this when JS API changes have been deployed
-    const newLink = link.replace('http://', 'https://')
-    // const newLink = link
-    return internals.makeRequest(auth, newLink, internals.method.GET,
+    return internals.makeRequest(auth, link, internals.method.GET,
       null, true, internals.typeHeader.JSON)
   },
 
