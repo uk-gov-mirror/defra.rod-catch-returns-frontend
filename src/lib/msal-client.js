@@ -3,7 +3,32 @@ const axios = require('axios')
 const { HttpsProxyAgent } = require('https-proxy-agent')
 
 const proxyUrl = process.env.https_proxy
-const proxyAgent = new HttpsProxyAgent(proxyUrl)
+const proxyAgent = proxyUrl ? new HttpsProxyAgent(proxyUrl) : undefined
+
+/**
+ * Sends an HTTP request using axios, with optional proxy support
+ * @param {'get'|'post'} method - The HTTP method
+ * @param {string} url - The request URL
+ * @param {{ headers: Record<string, string>, body?: any }} options - Request options
+ * @returns {Promise<{ headers: any, body: any, status: number }>}
+ */
+const sendRequest = async (method, url, options) => {
+  const axiosOptions = {
+    method,
+    url,
+    headers: options.headers,
+    ...(options.body && { data: options.body }),
+    ...(proxyAgent && { httpsAgent: proxyAgent })
+  }
+
+  const res = await axios(axiosOptions)
+
+  return {
+    headers: res.headers,
+    body: res.data,
+    status: res.status
+  }
+}
 
 /** @type {msal.Configuration} */
 const config = {
@@ -41,30 +66,8 @@ const config = {
      * Github issue related: https://github.com/AzureAD/microsoft-authentication-library-for-js/issues/6527#issuecomment-2073238927
      */
     networkClient: {
-      sendGetRequestAsync: async (url, options) => {
-        const res = await axios.get(url, {
-          headers: options.headers,
-          httpsAgent: proxyAgent
-        })
-
-        return {
-          headers: res.headers,
-          body: res.data,
-          status: res.status
-        }
-      },
-      sendPostRequestAsync: async (url, options) => {
-        const res = await axios.post(url, options.body, {
-          headers: options.headers,
-          httpsAgent: proxyAgent
-        })
-
-        return {
-          headers: res.headers,
-          body: res.data,
-          status: res.status
-        }
-      }
+      sendGetRequestAsync: async (url, options) => sendRequest('get', url, options),
+      sendPostRequestAsync: async (url, options) => sendRequest('post', url, options)
     }
   }
 }
