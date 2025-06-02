@@ -64,7 +64,8 @@ const config = {
   system: {
     ...(loggerOptions && { loggerOptions }),
     /*
-     * Workaround use native axios with our proxy settings
+     * We are required to explicitly set the proxy by WebOps in order for login.microsoftonline.com to not be blocked
+     * The @azure/msal-node has a proxyUrl that you can set, but it does not work, instead we have to use a workaround with axios
      * Original HTTP client used by msal-node: https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-node/src/network/HttpClient.ts
      * Github issue related: https://github.com/AzureAD/microsoft-authentication-library-for-js/issues/6527#issuecomment-2073238927
      */
