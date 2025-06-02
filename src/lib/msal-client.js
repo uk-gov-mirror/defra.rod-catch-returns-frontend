@@ -35,16 +35,10 @@ const loggerCallback = (level, message, containsPii) => {
     return
   }
 
-  switch (level) {
-    case msal.LogLevel.Error:
-      console.error(message)
-      break
-    case msal.LogLevel.Info:
-    case msal.LogLevel.Verbose:
-    case msal.LogLevel.Warning:
-    default:
-      console.log(message)
-      break
+  if (level === msal.LogLevel.Error) {
+    console.error(message)
+  } else {
+    console.log(message)
   }
 }
 
