@@ -31,7 +31,10 @@ const sendRequest = async (method, url, options) => {
 }
 
 const loggerCallback = (level, message, containsPii) => {
-  if (containsPii) return
+  if (containsPii) {
+    return
+  }
+
   switch (level) {
     case msal.LogLevel.Error:
       console.error(message)
@@ -39,6 +42,7 @@ const loggerCallback = (level, message, containsPii) => {
     case msal.LogLevel.Info:
     case msal.LogLevel.Verbose:
     case msal.LogLevel.Warning:
+    default:
       console.log(message)
       break
   }
