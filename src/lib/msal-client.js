@@ -17,7 +17,9 @@ const sendRequest = async (method, url, options) => {
   const requestOptions = {
     method,
     headers: options.headers,
-    ...(options.body && { data: options.body }),
+    ...(options.body && {
+      body: typeof options.body === 'string' ? options.body : JSON.stringify(options.body)
+    }),
     ...(proxyAgent && { agent: proxyAgent })
   }
 

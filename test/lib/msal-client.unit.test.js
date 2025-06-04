@@ -51,11 +51,41 @@ describe('msal-client', () => {
       expect(msalClient.config.system.loggerOptions.logLevel).toBe(msal.LogLevel.Verbose)
     })
 
-    it('sets proxy agent when https_proxy is defined', async () => {
-      process.env.https_proxy = 'http://proxy.test'
-
+    it('sets the body in the request to a string, if it is already string', async () => {
       const { msalClient } = loadMsalClient()
 
+      await msalClient.config.system.networkClient.sendGetRequestAsync(
+        'https://api.test',
+        { body: '{"test":"test"}' }
+      )
+
+      expect(fetch).toHaveBeenCalledWith(
+        'https://api.test',
+        expect.objectContaining(
+          { body: '{"test":"test"}' }
+        )
+      )
+    })
+
+    it('sets the body in the request to a string, if it is json object', async () => {
+      const { msalClient } = loadMsalClient()
+
+      await msalClient.config.system.networkClient.sendGetRequestAsync(
+        'https://api.test',
+        { body: { test: 'test' } }
+      )
+
+      expect(fetch).toHaveBeenCalledWith(
+        'https://api.test',
+        expect.objectContaining(
+          { body: '{"test":"test"}' }
+        )
+      )
+    })
+
+    it('sets proxy agent when https_proxy is defined', async () => {
+      process.env.https_proxy = 'http://proxy.test'
+      const { msalClient } = loadMsalClient()
       const testHeaders = { Authorization: 'Bearer token' }
 
       const result = await msalClient.config.system.networkClient.sendGetRequestAsync(
@@ -77,9 +107,7 @@ describe('msal-client', () => {
 
     it('does not set httpsAgent if https_proxy is not defined', async () => {
       delete process.env.https_proxy
-
       const { msalClient } = loadMsalClient()
-
       const testHeaders = { Authorization: 'Bearer token' }
 
       const result = await msalClient.config.system.networkClient.sendPostRequestAsync(
