@@ -1,32 +1,34 @@
 const msal = require('@azure/msal-node')
-const axios = require('axios')
+const fetch = require('node-fetch')
 const { HttpsProxyAgent } = require('https-proxy-agent')
 
 const proxyUrl = process.env.https_proxy
 const proxyAgent = proxyUrl ? new HttpsProxyAgent(proxyUrl) : undefined
 
 /**
- * Sends an HTTP request using axios, with optional proxy support
+ * Sends an HTTP request using node-fetch, with optional proxy
+ * This will not work with native fetch, see this comment https://github.com/AzureAD/microsoft-authentication-library-for-js/issues/6527#issuecomment-2073238927
  * @param {'get'|'post'} method - The HTTP method
  * @param {string} url - The request URL
  * @param {{ headers: Record<string, string>, body?: any }} options - Request options
  * @returns {Promise<{ headers: any, body: any, status: number }>}
  */
 const sendRequest = async (method, url, options) => {
-  const axiosOptions = {
+  const requestOptions = {
     method,
-    url,
     headers: options.headers,
     ...(options.body && { data: options.body }),
-    ...(proxyAgent && { httpsAgent: proxyAgent })
+    ...(proxyAgent && { agent: proxyAgent })
   }
 
-  const res = await axios(axiosOptions)
+  const response = await fetch(url, requestOptions)
+
+  const data = await response.json()
 
   return {
-    headers: res.headers,
-    body: res.data,
-    status: res.status
+    headers: Object.fromEntries(response.headers.entries()),
+    body: data,
+    status: response.status
   }
 }
 
@@ -63,9 +65,9 @@ const config = {
     ...(loggerOptions && { loggerOptions }),
     /*
      * We are required to explicitly set the proxy by WebOps in order for login.microsoftonline.com to not be blocked
-     * The @azure/msal-node has a proxyUrl that you can set, but it does not work, instead we have to use a workaround with axios
+     * The @azure/msal-node has a proxyUrl that you can set, but it does not work, instead we have to use a workaround with node-fetch
      * Original HTTP client used by msal-node: https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-node/src/network/HttpClient.ts
-     * Github issue related: https://github.com/AzureAD/microsoft-authentication-library-for-js/issues/6527#issuecomment-2073238927
+     * Github issue related: https://github.com/AzureAD/microsoft-authentication-library-for-js/issues/6527
      */
     networkClient: {
       sendGetRequestAsync: async (url, options) => sendRequest('get', url, options),

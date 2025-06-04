@@ -1,8 +1,8 @@
-const mockAxiosResponse = jest.fn(() => Promise.resolve({ data: { hello: 'world' } }))
-const axios = require('axios')
+const mockFetch = jest.fn()
+const fetch = require('node-fetch')
 const msal = require('@azure/msal-node')
 
-jest.mock('axios', () => mockAxiosResponse)
+jest.mock('node-fetch', () => mockFetch)
 jest.mock('https-proxy-agent', () => ({
   HttpsProxyAgent: jest.fn()
 }))
@@ -22,13 +22,11 @@ describe('msal-client', () => {
       jest.spyOn(console, 'log').mockImplementation(() => {})
       jest.spyOn(console, 'error').mockImplementation(() => {})
 
-      axios.mockImplementation(() =>
-        Promise.resolve({
-          headers: { 'content-type': 'application/json' },
-          data: { access_token: 'fake-token' },
-          status: 200
-        })
-      )
+      mockFetch.mockResolvedValue({
+        headers: new Map([['content-type', 'application/json']]),
+        json: () => Promise.resolve({ access_token: 'fake-token' }),
+        status: 200
+      })
     })
 
     afterAll(() => {
@@ -59,23 +57,22 @@ describe('msal-client', () => {
       const { msalClient } = loadMsalClient()
 
       const testHeaders = { Authorization: 'Bearer token' }
-      const testResponse = { data: 'ok', status: 200, headers: { foo: 'bar' } }
-      mockAxiosResponse.mockResolvedValueOnce(testResponse)
 
       const result = await msalClient.config.system.networkClient.sendGetRequestAsync(
         'https://api.test',
         { headers: testHeaders }
       )
 
-      expect(axios).toHaveBeenCalledWith(
+      expect(fetch).toHaveBeenCalledWith(
+        'https://api.test',
         expect.objectContaining({
-          url: 'https://api.test',
           headers: testHeaders,
-          httpsAgent: expect.any(Object)
+          method: 'get',
+          agent: expect.any(Object)
         })
       )
       expect(result.status).toBe(200)
-      expect(result.body).toBe('ok')
+      expect(result.body).toStrictEqual({ access_token: 'fake-token' })
     })
 
     it('does not set httpsAgent if https_proxy is not defined', async () => {
@@ -84,19 +81,18 @@ describe('msal-client', () => {
       const { msalClient } = loadMsalClient()
 
       const testHeaders = { Authorization: 'Bearer token' }
-      const testResponse = { data: 'ok', status: 200, headers: {} }
-      mockAxiosResponse.mockResolvedValueOnce(testResponse)
 
       const result = await msalClient.config.system.networkClient.sendPostRequestAsync(
         'https://api.test',
         { headers: testHeaders, body: { foo: 'bar' } }
       )
 
-      expect(axios).toHaveBeenCalledWith(
+      expect(fetch).toHaveBeenCalledWith(
+        'https://api.test',
         expect.not.objectContaining({ httpsAgent: expect.anything() })
       )
       expect(result.status).toBe(200)
-      expect(result.body).toBe('ok')
+      expect(result.body).toStrictEqual({ access_token: 'fake-token' })
     })
 
     it('does not log messages that contain PII', () => {
