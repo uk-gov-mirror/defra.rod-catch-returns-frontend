@@ -1,5 +1,7 @@
 'use strict'
 
+const { validateSession } = require('./session-validator')
+
 /**
  * This file contains the handlers for the authorization strategies used by hapi
  */
@@ -13,24 +15,7 @@ module.exports = {
     },
 
     redirectTo: '/licence-auth',
-    /**
-     * validation function called on every request
-     * When the cache-entry expires the user has to re-authenticate
-     */
-    validateFunc: async (request, session) => {
-      const server = request.server
-      const cached = await server.app.cache.get(session.sid)
-
-      const out = {
-        valid: !!cached
-      }
-
-      if (out.valid) {
-        out.credentials = cached.authorization
-      }
-
-      return out
-    }
+    validateFunc: validateSession
   },
   adminCookie: {
     cookie: {
@@ -43,6 +28,7 @@ module.exports = {
       path: '/'
     },
     redirectTo: '/login',
-    appendNext: true
+    appendNext: true,
+    validateFunc: validateSession
   }
 }
