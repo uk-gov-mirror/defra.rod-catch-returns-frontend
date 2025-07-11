@@ -247,16 +247,16 @@ const options = {
             }
           },
           prepare: (options, next) => {
-            options.compileOptions.environment = Nunjucks.configure(
-              options.path,
-              { watch: false }
+            const env = Nunjucks.configure(options.path, { watch: false })
+
+            env.addFilter('existsOn', (obj, item) =>
+              Object.keys(obj || {}).includes(item)
             )
 
-            // Add a custom filter for use to test the existence of a key on an object
-            options.compileOptions.environment.addFilter(
-              'existsOn',
-              (obj, item) => Object.keys(obj || {}).includes(item)
-            )
+            // Add a global variable
+            env.addGlobal('govukRebrand', true)
+
+            options.compileOptions.environment = env
             return next()
           }
         }
