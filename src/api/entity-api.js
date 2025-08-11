@@ -8,7 +8,6 @@
  */
 
 const Client = require('./client')
-const Crypto = require('../lib/crypto')
 const { URL } = require('url')
 const dotProp = require('dot-prop')
 
@@ -25,13 +24,14 @@ module.exports = class EntityApi {
 
   static async getAuth (request) {
     const cache = await request.cache().get()
-    return cache.authorization ? Crypto.readObj(request.server.app.cache, cache.authorization) : null
+    // authorization will have the token and user's name
+    return cache.authorization ? cache.authorization.token : null
   }
 
   // Calculate the object key from the link. Used in payloads
   static keyFromLink (obj) {
     const url = new URL(obj._links.self.href)
-    return url.pathname.replace(process.env.API_PATH + '/', '')
+    return url.pathname.replace('/api/', '')
   }
 
   /*
