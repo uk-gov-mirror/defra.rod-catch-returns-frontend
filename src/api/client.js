@@ -3,7 +3,6 @@
 /**
  * This module is responsible for the API rest interface and is data agnostic.
  */
-const Url = require('url')
 const Hoek = require('@hapi/hoek')
 const ResponseError = require('../handlers/response-error')
 const ETagRequest = require('request-etag')
@@ -58,7 +57,7 @@ function requestCallback (reject, method, uri, resolve, throwOnNotFound) {
       }
     } else {
       // All other errors are thrown 403 forbidden and server 500 errors
-      reject(new ResponseError.Error(response.statusMessage, response.statusCode))
+      reject(new ResponseError.Error(response.statusMessage, response.statusCode, JSON.parse(body || '{}')))
     }
   }
 }
@@ -88,18 +87,16 @@ const internals = {
    */
   createRequest: (path, search) => {
     try {
-      const uriObj = {
-        protocol: 'http',
-        hostname: process.env.API_HOSTNAME || 'localhost',
-        port: Number.parseInt(process.env.API_PORT || 9580),
-        pathname: path ? process.env.API_PATH + '/' + path : process.env.API_PATH
-      }
+      const baseUrl = process.env.JS_API_URL
+      const url = new URL(baseUrl)
+
+      url.pathname = path ? `/api/${path}` : '/api'
 
       if (search) {
-        uriObj.search = search
+        url.search = search
       }
 
-      return Url.format(uriObj)
+      return url.toString()
     } catch (err) {
       logger.error(err)
       throw err
@@ -127,20 +124,15 @@ const internals = {
         json: false // This influences both the headers and treatment of the response body so deserialization is done explicitly
       }
 
+      requestObject.headers = { 'Content-Type': typeHeader }
       if (auth) {
-        requestObject.auth = {
-          user: auth.username,
-          pass: auth.password,
-          sendImmediately: true
-        }
+        requestObject.headers.token = auth
       }
 
       if (body) {
         logger.debug(`Payload; ${JSON.stringify(body, null, 2)}`)
         requestObject.body = typeHeader === internals.typeHeader.JSON ? JSON.stringify(body) : body
       }
-
-      requestObject.headers = { 'Content-Type': typeHeader }
 
       Request(requestObject, requestCallback(reject, method, uri, resolve, throwOnNotFound))
     })

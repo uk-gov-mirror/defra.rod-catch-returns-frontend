@@ -1,6 +1,6 @@
 {
   "name": "rod-catch-returns-frontend",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "description": "Rod catch returns webservice",
   "repository": "https://github.com/DEFRA/rod-catch-returns-frontend.git",
   "license": "ISC",
@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.316.0",
+    "@azure/msal-node": "^3.4.1",
     "@defra/hapi-gapi": "^1.2.1",
     "@hapi/basic": "^6.0.0",
     "@hapi/catbox-redis": "^6.0.1",
@@ -54,7 +55,9 @@
     "hapi-alive": "^2.0.4",
     "hapi-robots": "^3.2.2",
     "hapi-router": "^4.0.1",
+    "https-proxy-agent": "^7.0.6",
     "moment": "^2.29.1",
+    "node-fetch": "^2.6.7",
     "nunjucks": "^3.2.3",
     "proxy-agent": "^4.0.1",
     "request": "^2.88.2",
