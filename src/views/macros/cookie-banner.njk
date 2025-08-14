@@ -1,17 +1,34 @@
+{% from "cookie-banner/macro.njk" import govukCookieBanner %}
 {% macro cookieBanner() %}
-    <div id="global-cookie-message" class="cookie-banner no-print" role="region" aria-label="cookie banner">
-      <div class="govuk-width-container">
-        <p class="govuk-body">
-          This website only stores the cookies that are essential to make it work. Read more about <a class="govuk-link" href="/cookies">how we use cookies</a>
-        </p>
-        <button id="close-global-cookie-message" class="govuk-button govuk-!-margin-bottom-0" type="submit">
-            Close<span class="govuk-visually-hidden"> cookie banner</span>
-        </button>
-      </div>
-    </div>
+    {% set html %}
+      <p class="govuk-body">This website only stores the cookies that are essential to make it work.</p>
+    {% endset %}
+
+    {{ govukCookieBanner({
+      classes: "global-cookie-message",
+      ariaLabel: "Cookies on 'Report your salmon or sea trout catch'",
+      messages: [
+        {
+          headingText: "Cookies on 'Report your salmon or sea trout catch'",
+          html: html,
+          actions: [
+            {
+              text: "Close",
+              classes: "close-global-cookie-message",
+              type: "button"
+            },
+            {
+              text: "View cookies",
+              href: "/cookies"
+            }
+          ]
+        }
+      ]
+    }) }}
+
     <script type="text/javascript">
         function removeCookieMessage() {
-            var elem = document.getElementById('global-cookie-message')
+            var elem = document.getElementsByClassName('global-cookie-message')[0]
             if (elem.parentNode) {
                 elem.parentNode.removeChild(elem)
             }
@@ -22,7 +39,7 @@
             if (gds_seen_cookie_message) {
                 removeCookieMessage()
             } else {
-                document.getElementById('close-global-cookie-message').addEventListener('click', function() {
+                document.getElementsByClassName('close-global-cookie-message')[0].addEventListener('click', function() {
                     var expiry = new Date()
                     expiry.setDate(expiry.getDate() + 90)
                     document.cookie = 'gds_seen_cookie_message=true; expires=' + expiry.toUTCString() + '; path=/;'

@@ -23,17 +23,25 @@ const clean = () => {
   return del(paths.public, { force: true })
 }
 
-const copyGovUKAssets = () => {
+const copyGovUKRebrandImages = () => {
   return gulp
     .src(
-      'node_modules/govuk-frontend/dist/govuk/assets/{images/**/*.*,fonts/**/*.*}'
+      'node_modules/govuk-frontend/dist/govuk/assets/rebrand/images/**/*.*'
     )
-    .pipe(gulp.dest(paths.public))
+    .pipe(gulp.dest(paths.public + '/images'))
+}
+
+const copyGovUKFonts = () => {
+  return gulp
+    .src(
+      'node_modules/govuk-frontend/dist/govuk/assets/fonts/**/*.*'
+    )
+    .pipe(gulp.dest(paths.public + '/fonts'))
 }
 
 const copyGovUKManifest = () => {
   return gulp
-    .src('node_modules/govuk-frontend/dist/govuk/assets/manifest.json')
+    .src('node_modules/govuk-frontend/dist/govuk/assets/rebrand/manifest.json')
     .pipe(gulp.dest(paths.public))
 }
 
@@ -93,7 +101,8 @@ gulp.task(
   gulp.series(
     clean,
     copyGovUKJS,
-    copyGovUKAssets,
+    copyGovUKFonts,
+    copyGovUKRebrandImages,
     copyGovUKManifest,
     copyLocalImages,
     copyLocalJS,
