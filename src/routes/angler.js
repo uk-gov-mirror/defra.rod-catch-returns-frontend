@@ -27,6 +27,7 @@ const didYouFishValidator = require('../validators/did-you-fish')
 const activityValidator = require('../validators/activity')
 const salmonAndLargeTroutValidator = require('../validators/salmon-and-large-trout')
 const smallCatchValidator = require('../validators/small-catch')
+const { logger } = require('defra-logging-facade')
 
 // Define the handlers
 const licenceAuthHandler = new LicenceAuthHandler('licence', loginValidator)
@@ -234,6 +235,25 @@ module.exports = [
     options: { auth: false },
     handler: (request, h) => {
       return h.view('privacy')
+    }
+  },
+
+  /*
+   * Test errbit
+   * Use the below command to test, replace the domain and key as required
+   * curl 'https://localhost:3043/test/airbrake' -H 'key: test'
+   */
+  {
+    path: '/test/airbrake',
+    method: 'GET',
+    options: { auth: false },
+    handler: (request, h) => {
+      logger.info('Testing airbrake integration')
+      if (request.headers.key === process.env.AIRBRAKE_TEST_KEY) {
+        logger.info('Correct API KEY')
+        logger.serverError('Test airbrake integration')
+      }
+      return h.response('').code(200)
     }
   }
 ]
