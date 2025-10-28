@@ -1,4 +1,4 @@
-const { formatWithOptions, inspect } = require('node:util')
+const { formatWithOptions, inspect } = require('util')
 const { Notifier } = require('@airbrake/node')
 
 const INSPECT_OPTS = {
