@@ -1,7 +1,9 @@
 const { Notifier } = require('@airbrake/node')
 const AirbrakeClient = require('../../src/lib/airbrake')
+const logger = require('../../src/lib/logger-utils')
 
 jest.mock('@airbrake/node')
+jest.mock('../../src/lib/logger-utils')
 
 expect.extend({
   errorWithMessageMatching (received, ...matchers) {
@@ -59,11 +61,10 @@ describe('airbrake', () => {
     it('logs an info message if the required environment variables are missing', async () => {
       delete process.env.AIRBRAKE_HOST
       delete process.env.AIRBRAKE_PROJECT_KEY
-      jest.spyOn(console, 'info').mockImplementation(() => {})
 
       const airbrake = new AirbrakeClient()
 
-      expect(console.info).toHaveBeenCalledWith(
+      expect(logger.info).toHaveBeenCalledWith(
         '[Airbrake] Not initialised. Missing environment variables:',
         { AIRBRAKE_HOST: false, AIRBRAKE_PROJECT_KEY: false }
       )
@@ -255,6 +256,124 @@ describe('airbrake', () => {
         expect(processExitSpy).toHaveBeenCalledWith(1)
       }
     )
+  })
+
+  describe('reportToAirbrake', () => {
+    it('does nothing when airbrake is not initialised', () => {
+      delete process.env.AIRBRAKE_HOST
+      delete process.env.AIRBRAKE_PROJECT_KEY
+
+      const airbrake = new AirbrakeClient()
+      airbrake.reportToAirbrake('error', 'test')
+
+      // No Notifier instance means no notify calls should happen
+      expect(Notifier).not.toHaveBeenCalled()
+    })
+
+    it('sends an Error instance when the first arg is not an error', () => {
+      const mockNotifier = getMockNotifier()
+      Notifier.mockImplementation(() => mockNotifier)
+
+      const airbrake = new AirbrakeClient()
+      airbrake.reportToAirbrake('warn', 'simple message')
+
+      expect(mockNotifier.notify).toHaveBeenCalledWith(
+        expect.objectContaining({
+          error: expect.any(Error),
+          params: expect.objectContaining({
+            consoleInvocationDetails: {
+              method: 'warn',
+              arguments: expect.any(Array)
+            }
+          }),
+          context: {},
+          environment: {}
+        })
+      )
+    })
+
+    it('uses the Error instance passed in args when present', () => {
+      const mockNotifier = getMockNotifier()
+      Notifier.mockImplementation(() => mockNotifier)
+
+      const airbrake = new AirbrakeClient()
+      const error = new Error('boom')
+      airbrake.reportToAirbrake('error', 'something happened', error)
+
+      expect(mockNotifier.notify).toHaveBeenCalledWith(
+        expect.objectContaining({
+          error,
+          params: expect.objectContaining({
+            consoleInvocationDetails: expect.objectContaining({
+              method: 'error'
+            })
+          })
+        })
+      )
+    })
+
+    it('captures request state and adds it to the session object', () => {
+      const mockNotifier = getMockNotifier()
+      Notifier.mockImplementation(() => mockNotifier)
+
+      const airbrake = new AirbrakeClient()
+      const request = { state: { id: '123' }, headers: {} }
+
+      airbrake.reportToAirbrake('error', request)
+
+      expect(mockNotifier.notify).toHaveBeenCalledWith(
+        expect.objectContaining({
+          session: { id: '123' }
+        })
+      )
+    })
+
+    it('captures request method/path and maps to context.action', () => {
+      const mockNotifier = getMockNotifier()
+      Notifier.mockImplementation(() => mockNotifier)
+
+      const airbrake = new AirbrakeClient()
+      const request = { method: 'POST', path: '/abc', headers: {} }
+
+      airbrake.reportToAirbrake('error', request)
+
+      expect(mockNotifier.notify).toHaveBeenCalledWith(
+        expect.objectContaining({
+          context: { action: 'POST /abc' }
+        })
+      )
+    })
+
+    it('includes user agent in context when available', () => {
+      const mockNotifier = getMockNotifier()
+      Notifier.mockImplementation(() => mockNotifier)
+
+      const airbrake = new AirbrakeClient()
+      const request = { headers: { 'user-agent': 'Mozilla/5.0' } }
+
+      airbrake.reportToAirbrake('warn', request)
+
+      expect(mockNotifier.notify).toHaveBeenCalledWith(
+        expect.objectContaining({
+          context: { userAgent: 'Mozilla/5.0' }
+        })
+      )
+    })
+
+    it('includes environment name when process.env.name is set', () => {
+      const mockNotifier = getMockNotifier()
+      Notifier.mockImplementation(() => mockNotifier)
+      process.env.name = 'int-test'
+
+      const airbrake = new AirbrakeClient()
+      airbrake.reportToAirbrake('error', 'oops')
+
+      expect(mockNotifier.notify).toHaveBeenCalledWith(
+        expect.objectContaining({
+          environment: { name: 'int-test' }
+        })
+      )
+    })
   })
 
   describe('flush', () => {

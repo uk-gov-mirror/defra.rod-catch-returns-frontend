@@ -1,5 +1,6 @@
 const { formatWithOptions, inspect } = require('util')
 const { Notifier } = require('@airbrake/node')
+const logger = require('../lib/logger-utils')
 
 const INSPECT_OPTS = {
   depth: null,
@@ -25,7 +26,7 @@ class AirbrakeClient {
     const { AIRBRAKE_PROJECT_KEY, AIRBRAKE_HOST } = process.env
 
     if (!AIRBRAKE_PROJECT_KEY || !AIRBRAKE_HOST) {
-      console.info('[Airbrake] Not initialised. Missing environment variables:', {
+      logger.info('[Airbrake] Not initialised. Missing environment variables:', {
         AIRBRAKE_PROJECT_KEY: !!AIRBRAKE_PROJECT_KEY,
         AIRBRAKE_HOST: !!AIRBRAKE_HOST
       })
@@ -69,13 +70,16 @@ class AirbrakeClient {
   }
 
   /**
-   * Reports a console method invocation to Airbrake.
+   * Reports a method invocation to Airbrake.
    *
-   * @param {string} method - The console method being called (e.g., "warn" or "error").
-   * @param {...any} args - The arguments passed to the console method.
+   * @param {string} method - The method being called (e.g., "warn" or "error").
+   * @param {...any} args - The arguments passed to the method.
    * @returns {void}
    */
   reportToAirbrake (method, ...args) {
+    if (!this.airbrake) {
+      return
+    }
     const error =
     args.find((arg) => arg instanceof Error) ??
     new Error(formatWithOptions(INSPECT_OPTS, ...args))
