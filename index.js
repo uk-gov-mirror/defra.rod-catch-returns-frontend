@@ -21,7 +21,7 @@ const { checkTempDir } = require('./src/lib/misc')
 const manFishing = require('./manFishing')
 const { sessionIdProducer } = require('./src/lib/analytics')
 const logger = require('./src/lib/logger-utils')
-const airbrake = require('./src/lib/airbrake')
+const AirbrakeClient = require('./src/lib/airbrake')
 
 const manifest = {
   // Configure Hapi server and server-caching subsystem
@@ -207,6 +207,7 @@ const options = {
 };
 
 (async () => {
+  const airbrake = new AirbrakeClient()
   try {
     /**
      * Test that the environment is set up correctly
@@ -216,7 +217,6 @@ const options = {
         throw new Error('Schema validation error: ' + err.message)
       }
     })
-
     airbrake.initialise()
 
     logger.error = airbrake.attachAirbrakeToDebugLogger(logger.error)
