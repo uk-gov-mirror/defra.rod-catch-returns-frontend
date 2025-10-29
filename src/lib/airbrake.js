@@ -19,6 +19,7 @@ class AirbrakeClient {
    * If the required environment variables are not set, Airbrake will not be initialised.
    */
   constructor () {
+    /** @type {Notifier} */
     this.airbrake = null
 
     const { AIRBRAKE_PROJECT_KEY, AIRBRAKE_HOST } = process.env
