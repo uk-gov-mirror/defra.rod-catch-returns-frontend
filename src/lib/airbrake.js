@@ -136,13 +136,6 @@ class AirbrakeClient {
       this.airbrake.close()
     }
   }
-
-  /**
-   * Resets the Airbrake notifier instance.
-   */
-  reset () {
-    this.airbrake = null
-  }
 }
 
 module.exports = AirbrakeClient
