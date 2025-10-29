@@ -1,6 +1,11 @@
 const createDebug = require('debug')
 
 const IGNORE_PATHS = ['/public/', '/robots.txt']
+const COLORS = {
+  GREEN: 2,
+  RED: 1,
+  BLUE: 4
+}
 
 // if DEBUG is not set, default to show error and info
 if (!process.env.DEBUG) {
@@ -9,13 +14,13 @@ if (!process.env.DEBUG) {
 createDebug.inspectOpts.colors = true
 
 const info = createDebug('rcr-frontend:info')
-info.color = 2 // green
+info.color = COLORS.GREEN
 
 const error = createDebug('rcr-frontend:error')
-error.color = 1 // red
+error.color = COLORS.RED
 
 const debug = createDebug('rcr-frontend:debug')
-debug.color = 4 // blue
+debug.color = COLORS.BLUE
 
 function logRequest (request, h) {
   if (IGNORE_PATHS.some(ignorePath => request.path.includes(ignorePath))) {

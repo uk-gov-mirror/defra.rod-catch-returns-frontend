@@ -64,6 +64,19 @@ describe('airbrake', () => {
       expect(Notifier).not.toHaveBeenCalled()
     })
 
+    it('logs an info message if the required environment variables are missing', async () => {
+      delete process.env.AIRBRAKE_HOST
+      delete process.env.AIRBRAKE_PROJECT_KEY
+      jest.spyOn(console, 'info').mockImplementation(() => {})
+
+      expect(airbrake.initialise()).toEqual(false)
+
+      expect(console.info).toHaveBeenCalledWith(
+        '[Airbrake] Not initialised. Missing environment variables:',
+        { AIRBRAKE_HOST: false, AIRBRAKE_PROJECT_KEY: false }
+      )
+    })
+
     it('initialises airbrake if the required environment variables are present', async () => {
       expect(airbrake.initialise()).toEqual(true)
 

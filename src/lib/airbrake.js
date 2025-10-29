@@ -70,12 +70,18 @@ const reportToAirbrake = (method, ...args) => {
  * @returns {boolean} `true` if the Airbrake client was initialized, `false` otherwise.
  */
 const initialise = () => {
-  if (
-    airbrake ||
-    !process.env.AIRBRAKE_PROJECT_KEY ||
-    !process.env.AIRBRAKE_HOST
-  ) {
-    return !!airbrake
+  if (airbrake) {
+    return true
+  }
+
+  const { AIRBRAKE_PROJECT_KEY, AIRBRAKE_HOST } = process.env
+
+  if (!AIRBRAKE_PROJECT_KEY || !AIRBRAKE_HOST) {
+    console.info('[Airbrake] Not initialised. Missing environment variables:', {
+      AIRBRAKE_PROJECT_KEY: !!AIRBRAKE_PROJECT_KEY,
+      AIRBRAKE_HOST: !!AIRBRAKE_HOST
+    })
+    return false
   }
 
   airbrake = new Notifier({
