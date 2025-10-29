@@ -217,7 +217,6 @@ const options = {
         throw new Error('Schema validation error: ' + err.message)
       }
     })
-    airbrake.initialise()
 
     logger.error = airbrake.attachAirbrakeToDebugLogger(logger.error)
 

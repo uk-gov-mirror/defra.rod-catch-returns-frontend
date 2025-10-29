@@ -12,9 +12,59 @@ const INSPECT_OPTS = {
 }
 
 class AirbrakeClient {
+  /**
+   * Initializes the Airbrake client and intercepts `console.warn` and `console.error`
+   * to send notifications to Airbrake/Errbit.
+   *
+   * If the required environment variables are not set, Airbrake will not be initialised.
+   */
   constructor () {
-    /** @type {Notifier} */
     this.airbrake = null
+
+    const { AIRBRAKE_PROJECT_KEY, AIRBRAKE_HOST } = process.env
+
+    if (!AIRBRAKE_PROJECT_KEY || !AIRBRAKE_HOST) {
+      console.info('[Airbrake] Not initialised. Missing environment variables:', {
+        AIRBRAKE_PROJECT_KEY: !!AIRBRAKE_PROJECT_KEY,
+        AIRBRAKE_HOST: !!AIRBRAKE_HOST
+      })
+      return
+    }
+
+    this.airbrake = new Notifier({
+      projectId: 4,
+      projectKey: process.env.AIRBRAKE_PROJECT_KEY,
+      host: process.env.AIRBRAKE_HOST,
+      environment: process.env.NODE_ENV,
+      errorNotifications: true,
+      performanceStats: false,
+      remoteConfig: false
+    })
+
+    const originalError = console.error.bind(console)
+    const originalWarn = console.warn.bind(console)
+
+    console.error = (...args) => {
+      this.reportToAirbrake('error', ...args)
+      originalError(...args)
+    }
+
+    console.warn = (...args) => {
+      this.reportToAirbrake('warn', ...args)
+      originalWarn(...args)
+    }
+
+    // Ensure uncaught errors are logged
+    process.on('uncaughtExceptionMonitor', originalError)
+
+    // Override Airbrake's uncaughtException/unhandledRejection handlers to flush before exit
+    const flushAndExit = async () => {
+      await this.airbrake.flush()
+      process.exit(1)
+    }
+
+    process.on('uncaughtException', flushAndExit)
+    process.on('unhandledRejection', flushAndExit)
   }
 
   /**
@@ -58,66 +108,6 @@ class AirbrakeClient {
   }
 
   /**
-   * Initializes the Airbrake client and intercepts `console.warn` and `console.error`
-   * to send notifications to Airbrake/Errbit.
-   *
-   * If the required environment variables are not set, Airbrake will not be initialized.
-   *
-   * @returns {boolean} `true` if the Airbrake client was initialized, `false` otherwise.
-   */
-  initialise () {
-    if (this.airbrake) {
-      return true
-    }
-
-    const { AIRBRAKE_PROJECT_KEY, AIRBRAKE_HOST } = process.env
-
-    if (!AIRBRAKE_PROJECT_KEY || !AIRBRAKE_HOST) {
-      console.info('[Airbrake] Not initialised. Missing environment variables:', {
-        AIRBRAKE_PROJECT_KEY: !!AIRBRAKE_PROJECT_KEY,
-        AIRBRAKE_HOST: !!AIRBRAKE_HOST
-      })
-      return false
-    }
-
-    this.airbrake = new Notifier({
-      projectId: 4,
-      projectKey: process.env.AIRBRAKE_PROJECT_KEY,
-      host: process.env.AIRBRAKE_HOST,
-      environment: process.env.NODE_ENV,
-      errorNotifications: true,
-      performanceStats: false,
-      remoteConfig: false
-    })
-
-    const originalError = console.error.bind(console)
-    const originalWarn = console.warn.bind(console)
-
-    console.error = (...args) => {
-      this.reportToAirbrake('error', ...args)
-      originalError(...args)
-    }
-
-    console.warn = (...args) => {
-      this.reportToAirbrake('warn', ...args)
-      originalWarn(...args)
-    }
-
-    // Ensure uncaught errors are logged
-    process.on('uncaughtExceptionMonitor', originalError)
-
-    // Override Airbrake's uncaughtException/unhandledRejection handlers to flush before exit
-    const flushAndExit = async () => {
-      await this.airbrakeairbrake.flush()
-      process.exit(1)
-    }
-    process.on('uncaughtException', flushAndExit)
-    process.on('unhandledRejection', flushAndExit)
-
-    return true
-  }
-
-  /**
    * Wraps a debug logging function so that log messages are also reported to Airbrake.
    *
    * @param {Function} logFunction - The debug logging function to wrap.
@@ -141,7 +131,7 @@ class AirbrakeClient {
    * @returns {Promise<void>}
    */
   async flush () {
-    if (this.initialise()) {
+    if (this.airbrake) {
       await this.airbrake.flush()
       this.airbrake.close()
     }
