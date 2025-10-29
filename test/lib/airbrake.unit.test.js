@@ -266,7 +266,6 @@ describe('airbrake', () => {
       const airbrake = new AirbrakeClient()
       airbrake.reportToAirbrake('error', 'test')
 
-      // No Notifier instance means no notify calls should happen
       expect(Notifier).not.toHaveBeenCalled()
     })
 
