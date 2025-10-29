@@ -24,9 +24,12 @@ expect.extend({
 
 describe('airbrake', () => {
   const OLD_ENV = process.env
-  const mockNotify = jest.fn()
-  const mockFlush = jest.fn()
-  const mockClose = jest.fn()
+
+  const getMockNotifier = () => ({
+    notify: jest.fn(),
+    flush: jest.fn(),
+    close: jest.fn()
+  })
 
   beforeEach(() => {
     jest.clearAllMocks()
@@ -35,12 +38,6 @@ describe('airbrake', () => {
     process.env.AIRBRAKE_HOST = 'https://test-airbrake.com'
     process.env.AIRBRAKE_PROJECT_KEY = '123'
     airbrake.reset()
-
-    Notifier.mockImplementation(() => ({
-      notify: mockNotify,
-      flush: mockFlush,
-      close: mockClose
-    }))
   })
 
   afterEach(() => {
@@ -80,12 +77,14 @@ describe('airbrake', () => {
     })
 
     it('intercepts console.error and reports to Airbrake', () => {
+      const mockNotifier = getMockNotifier()
+      Notifier.mockImplementation(() => mockNotifier)
       airbrake.initialise()
 
       const error = new Error('Test error')
       console.error(error)
 
-      expect(mockNotify).toHaveBeenCalledWith(
+      expect(mockNotifier.notify).toHaveBeenCalledWith(
         expect.objectContaining({
           error: expect.any(Error),
           params: expect.objectContaining({
@@ -99,12 +98,14 @@ describe('airbrake', () => {
     })
 
     it('intercepts console.warn and reports to Airbrake', () => {
+      const mockNotifier = getMockNotifier()
+      Notifier.mockImplementation(() => mockNotifier)
       airbrake.initialise()
       const warning = 'Test warning'
 
       console.warn(warning)
 
-      expect(mockNotify).toHaveBeenCalledWith(
+      expect(mockNotifier.notify).toHaveBeenCalledWith(
         expect.objectContaining({
           error: expect.any(Error),
           params: expect.objectContaining({
@@ -136,6 +137,8 @@ describe('airbrake', () => {
         { context: { userAgent: 'chrome' } }
       ]
     ])('%s', (_, requestDetail, expectedContext) => {
+      const mockNotifier = getMockNotifier()
+      Notifier.mockImplementation(() => mockNotifier)
       airbrake.initialise()
 
       console.error(
@@ -144,7 +147,7 @@ describe('airbrake', () => {
         {}
       )
 
-      expect(mockNotify).toHaveBeenLastCalledWith({
+      expect(mockNotifier.notify).toHaveBeenLastCalledWith({
         error: expect.errorWithMessageMatching(expect.stringMatching('Error')),
         params: expect.objectContaining({
           consoleInvocationDetails: {
@@ -158,6 +161,8 @@ describe('airbrake', () => {
     })
 
     it('should output the environment if process.env.name is present', () => {
+      const mockNotifier = getMockNotifier()
+      Notifier.mockImplementation(() => mockNotifier)
       process.env.name = 'test'
       airbrake.initialise()
 
@@ -167,7 +172,7 @@ describe('airbrake', () => {
         {}
       )
 
-      expect(mockNotify).toHaveBeenLastCalledWith({
+      expect(mockNotifier.notify).toHaveBeenLastCalledWith({
         error: expect.errorWithMessageMatching(expect.stringMatching('Error')),
         params: expect.objectContaining({
           consoleInvocationDetails: {
@@ -195,11 +200,13 @@ describe('airbrake', () => {
     ])(
       'formats the error message in a consistent manner with the native console.error call: [%j] === %s',
       async (input, output) => {
+        const mockNotifier = getMockNotifier()
+        Notifier.mockImplementation(() => mockNotifier)
         airbrake.initialise()
 
         console.error(...input)
 
-        expect(mockNotify).toHaveBeenLastCalledWith({
+        expect(mockNotifier.notify).toHaveBeenLastCalledWith({
           error: expect.errorWithMessageMatching(expect.stringMatching(output)),
           params: expect.objectContaining({
             consoleInvocationDetails: {
@@ -214,6 +221,8 @@ describe('airbrake', () => {
     )
 
     it('hooks the process for uncaughtExceptions', async () => {
+      const mockNotifier = getMockNotifier()
+      Notifier.mockImplementation(() => mockNotifier)
       const processExitSpy = jest
         .spyOn(process, 'exit')
         .mockImplementation(jest.fn())
@@ -224,13 +233,15 @@ describe('airbrake', () => {
 
       await new Promise((resolve) => setImmediate(resolve))
 
-      expect(mockFlush).toHaveBeenCalled()
+      expect(mockNotifier.flush).toHaveBeenCalled()
       expect(processExitSpy).toHaveBeenCalledWith(1)
     })
 
     it.each([['uncaughtException'], ['unhandledRejection']])(
       'hooks the process for %s',
       async (event) => {
+        const mockNotifier = getMockNotifier()
+        Notifier.mockImplementation(() => mockNotifier)
         const processExitSpy = jest
           .spyOn(process, 'exit')
           .mockImplementation(jest.fn())
@@ -241,7 +252,7 @@ describe('airbrake', () => {
 
         await new Promise((resolve) => setImmediate(resolve))
 
-        expect(mockFlush).toHaveBeenCalled()
+        expect(mockNotifier.flush).toHaveBeenCalled()
         expect(processExitSpy).toHaveBeenCalledWith(1)
       }
     )
@@ -249,36 +260,44 @@ describe('airbrake', () => {
 
   describe('flush', () => {
     it('should flush and close Notifier, when airbrake is flushed, if it is initialised', async () => {
+      const mockNotifier = getMockNotifier()
+      Notifier.mockImplementation(() => mockNotifier)
       airbrake.initialise()
       await airbrake.flush()
 
-      expect(mockFlush).toHaveBeenCalled()
-      expect(mockClose).toHaveBeenCalled()
+      expect(mockNotifier.flush).toHaveBeenCalled()
+      expect(mockNotifier.close).toHaveBeenCalled()
     })
 
     it('should not flush and close Notifier, when airbrake is flushed, if it is not initialised', async () => {
+      const mockNotifier = getMockNotifier()
+      Notifier.mockImplementation(() => mockNotifier)
       delete process.env.AIRBRAKE_HOST
       delete process.env.AIRBRAKE_PROJECT_KEY
 
       await airbrake.flush()
 
-      expect(mockFlush).not.toHaveBeenCalled()
-      expect(mockClose).not.toHaveBeenCalled()
+      expect(mockNotifier.flush).not.toHaveBeenCalled()
+      expect(mockNotifier.close).not.toHaveBeenCalled()
     })
   })
 
   describe('attachAirbrakeToDebugLogger', () => {
     it('returns the log function when airbrake is not available', () => {
+      const mockNotifier = getMockNotifier()
+      Notifier.mockImplementation(() => mockNotifier)
       const mockLogFunction = jest.fn()
       const logFunction = airbrake.attachAirbrakeToDebugLogger(mockLogFunction)
 
       logFunction('test message')
 
       expect(mockLogFunction).toHaveBeenCalledWith('test message')
-      expect(mockNotify).not.toHaveBeenCalled()
+      expect(mockNotifier.notify).not.toHaveBeenCalled()
     })
 
     it('attaches Airbrake reporting to the log function when airbrake is available', () => {
+      const mockNotifier = getMockNotifier()
+      Notifier.mockImplementation(() => mockNotifier)
       const mockLogFunction = jest.fn()
       airbrake.initialise()
       const logFunction = airbrake.attachAirbrakeToDebugLogger(mockLogFunction)
@@ -286,10 +305,12 @@ describe('airbrake', () => {
       logFunction('test message')
 
       expect(mockLogFunction).toHaveBeenCalledWith('test message')
-      expect(mockNotify).toHaveBeenCalled()
+      expect(mockNotifier.notify).toHaveBeenCalled()
     })
 
     it('passes all arguments to both notify and the log function', () => {
+      const mockNotifier = getMockNotifier()
+      Notifier.mockImplementation(() => mockNotifier)
       const mockLogFunction = jest.fn()
       mockLogFunction.namespace = 'testNamespace'
       airbrake.initialise()
@@ -300,7 +321,7 @@ describe('airbrake', () => {
       expect(mockLogFunction).toHaveBeenCalledWith('test message', 123, {
         some: 'object'
       })
-      expect(mockNotify).toHaveBeenCalledWith({
+      expect(mockNotifier.notify).toHaveBeenCalledWith({
         error: expect.errorWithMessageMatching(
           expect.stringMatching('test message')
         ),
