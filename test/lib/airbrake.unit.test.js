@@ -23,23 +23,19 @@ expect.extend({
 })
 
 describe('airbrake', () => {
-  const originalEnv = process.env
-  let mockNotify
-  let mockFlush
-  let mockClose
+  const OLD_ENV = process.env
+  const mockNotify = jest.fn()
+  const mockFlush = jest.fn()
+  const mockClose = jest.fn()
 
   beforeEach(() => {
-    process.env = {
-      ...originalEnv
-    }
+    jest.clearAllMocks()
+    process.env = { ...OLD_ENV }
+
     process.env.AIRBRAKE_HOST = 'https://test-airbrake.com'
     process.env.AIRBRAKE_PROJECT_KEY = '123'
     airbrake.reset()
 
-    // Mocking es6 class in jest.mock('@airbrake/node') does not work, this is a workaround
-    mockNotify = jest.fn()
-    mockFlush = jest.fn()
-    mockClose = jest.fn()
     Notifier.mockImplementation(() => ({
       notify: mockNotify,
       flush: mockFlush,
@@ -48,7 +44,7 @@ describe('airbrake', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    process.env = OLD_ENV
     process.removeAllListeners('uncaughtExceptionMonitor')
     process.removeAllListeners('uncaughtException')
     process.removeAllListeners('unhandledRejection')
