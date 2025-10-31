@@ -103,4 +103,29 @@ describe('catches.unit', () => {
       )
     })
   })
+
+  describe('add', () => {
+    it('calls super.add with converted month and correct payload', async () => {
+      const superAddMock = EntityApi.prototype.add = jest.fn()
+      const request = {}
+
+      const catchesApi = new CatchesApi()
+      await catchesApi.add(request, 'sub-1', 'act-1', '2024-06-24', 1, 1, 2, true, false, false)
+
+      expect(superAddMock).toHaveBeenCalledWith(
+        request,
+        expect.objectContaining({
+          submission: 'sub-1',
+          activity: 'act-1',
+          dateCaught: '2024-06-24',
+          mass: 1,
+          method: 2,
+          noDateRecorded: false,
+          onlyMonthRecorded: false,
+          released: true,
+          species: 1
+        })
+      )
+    })
+  })
 })
