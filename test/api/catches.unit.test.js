@@ -128,4 +128,48 @@ describe('catches.unit', () => {
       )
     })
   })
+
+  describe('change', () => {
+    it('returns result immediately when super.change returns errors', async () => {
+      EntityApi.prototype.change = jest.fn().mockResolvedValueOnce({
+        errors: ['something bad']
+      })
+
+      const catchesApi = new CatchesApi()
+      const result = await catchesApi.change({}, 'catch-1', 'act-1', '2024-06-24', 1, 1, 2, true, false, false)
+
+      expect(result).toEqual({ errors: ['something bad'] })
+    })
+
+    it('changes association if mapped activity differs', async () => {
+      const mockResult = { id: 'C1' }
+      EntityApi.prototype.change = jest.fn().mockResolvedValueOnce(mockResult)
+      const request = {}
+      EntityApi.prototype.changeAssoc = jest.fn().mockResolvedValueOnce({})
+      const catchesApi = new CatchesApi()
+      catchesApi.doMap = jest.fn().mockResolvedValueOnce({
+        activity: { id: 'A2' }
+      })
+
+      const result = await catchesApi.change(request, 'C1', 'A1', '2024-06-24', 1, 1, 2, true, false, false)
+
+      expect(EntityApi.prototype.changeAssoc).toHaveBeenCalledWith(request, 'C1/activity', 'A1')
+      expect(result).toBe(mockResult)
+    })
+
+    it('does not change associate if mapped activity is the same', async () => {
+      const mockResult = { id: 'C1' }
+      EntityApi.prototype.change = jest.fn().mockResolvedValueOnce(mockResult)
+      EntityApi.prototype.changeAssoc = jest.fn().mockResolvedValueOnce({})
+      const catchesApi = new CatchesApi()
+      catchesApi.doMap = jest.fn().mockResolvedValueOnce({
+        activity: { id: 'A1' }
+      })
+
+      const result = await catchesApi.change({}, 'C1', 'A1', '2024-06-24', 1, 1, 2, true, false, false)
+
+      expect(EntityApi.prototype.changeAssoc).not.toHaveBeenCalled()
+      expect(result).toBe(mockResult)
+    })
+  })
 })
