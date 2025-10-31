@@ -52,11 +52,11 @@ describe('small-catches.unit', () => {
         { id: 'M2', name: 'Spin', internal: true }
       ]
 
-      ActivityApi.prototype.getFromLink.mockResolvedValue(fakeActivity)
-      RiversApi.prototype.getFromLink.mockResolvedValue(fakeRiver)
-      MethodsApi.prototype.list.mockResolvedValue(fakeMethods)
-      MethodsApi.prototype.getFromLink.mockImplementation(async (_req, href) => ({ id: href }))
-      MethodsApi.prototype.doMap.mockResolvedValue({ name: 'Fly' })
+      ActivityApi.prototype.getFromLink.mockResolvedValueOnce(fakeActivity)
+      RiversApi.prototype.getFromLink.mockResolvedValueOnce(fakeRiver)
+      MethodsApi.prototype.list.mockResolvedValueOnce(fakeMethods)
+      MethodsApi.prototype.getFromLink.mockImplementationOnce(async (_req, href) => ({ id: href }))
+      MethodsApi.prototype.doMap.mockResolvedValueOnce({ name: 'Fly' })
 
       monthHelper.find.numFromKey.mockReturnValue(6)
 
@@ -130,7 +130,7 @@ describe('small-catches.unit', () => {
 
   describe('change', () => {
     it('returns result immediately when super.change returns errors', async () => {
-      EntityApi.prototype.change = jest.fn().mockResolvedValue({
+      EntityApi.prototype.change = jest.fn().mockResolvedValueOnce({
         errors: ['something bad']
       })
 
@@ -141,11 +141,11 @@ describe('small-catches.unit', () => {
     })
 
     it('changes association if mapped activity differs', async () => {
-      EntityApi.prototype.change = jest.fn().mockResolvedValue({ id: 'C1' })
+      EntityApi.prototype.change = jest.fn().mockResolvedValueOnce({ id: 'C1' })
       const request = {}
-      EntityApi.prototype.changeAssoc = jest.fn().mockResolvedValue({})
+      EntityApi.prototype.changeAssoc = jest.fn().mockResolvedValueOnce({})
       const smallCatchesApi = new SmallCatchesApi()
-      smallCatchesApi.doMap = jest.fn().mockResolvedValue({
+      smallCatchesApi.doMap = jest.fn().mockResolvedValueOnce({
         activity: { id: 'A2' }
       })
 
@@ -155,10 +155,10 @@ describe('small-catches.unit', () => {
     })
 
     it('returns duplicate error on conflict when changing association', async () => {
-      EntityApi.prototype.change = jest.fn().mockResolvedValue({ id: 'C1' })
-      EntityApi.prototype.changeAssoc = jest.fn().mockResolvedValue({ statusCode: ResponseError.status.CONFLICT })
+      EntityApi.prototype.change = jest.fn().mockResolvedValueOnce({ id: 'C1' })
+      EntityApi.prototype.changeAssoc = jest.fn().mockResolvedValueOnce({ statusCode: ResponseError.status.CONFLICT })
       const smallCatchesApi = new SmallCatchesApi()
-      smallCatchesApi.doMap = jest.fn().mockResolvedValue({
+      smallCatchesApi.doMap = jest.fn().mockResolvedValueOnce({
         activity: { id: 'A2' }
       })
 
@@ -192,57 +192,67 @@ describe('small-catches.unit', () => {
   })
 
   describe('sort', () => {
+    const buildCatch = (overrides = {}) => ({
+      month: 6,
+      noMonthRecorded: false,
+      activity: {
+        river: { name: 'Default River' },
+        ...(overrides.activity || {})
+      },
+      ...overrides
+    })
+
     it('returns -1 when a.month < b.month', () => {
-      const a = { month: 1, noMonthRecorded: false, activity: { river: { name: 'A' } } }
-      const b = { month: 2, noMonthRecorded: false, activity: { river: { name: 'B' } } }
+      const a = buildCatch({ month: 1 })
+      const b = buildCatch({ month: 2 })
 
       const smallCatchesApi = new SmallCatchesApi()
       expect(smallCatchesApi.sort(a, b)).toBe(-1)
     })
 
     it('returns 1 when a.month > b.month', () => {
-      const a = { month: 5, noMonthRecorded: false, activity: { river: { name: 'A' } } }
-      const b = { month: 3, noMonthRecorded: false, activity: { river: { name: 'B' } } }
+      const a = buildCatch({ month: 5 })
+      const b = buildCatch({ month: 3 })
 
       const smallCatchesApi = new SmallCatchesApi()
       expect(smallCatchesApi.sort(a, b)).toBe(1)
     })
 
     it('returns -1 when months equal and a.noMonthRecorded < b.noMonthRecorded', () => {
-      const a = { month: 6, noMonthRecorded: false, activity: { river: { name: 'A' } } }
-      const b = { month: 6, noMonthRecorded: true, activity: { river: { name: 'B' } } }
+      const a = buildCatch({ noMonthRecorded: false })
+      const b = buildCatch({ noMonthRecorded: true })
 
       const smallCatchesApi = new SmallCatchesApi()
       expect(smallCatchesApi.sort(a, b)).toBe(-1)
     })
 
     it('returns 1 when months equal and a.noMonthRecorded > b.noMonthRecorded', () => {
-      const a = { month: 6, noMonthRecorded: true, activity: { river: { name: 'A' } } }
-      const b = { month: 6, noMonthRecorded: false, activity: { river: { name: 'B' } } }
+      const a = buildCatch({ noMonthRecorded: true })
+      const b = buildCatch({ noMonthRecorded: false })
 
       const smallCatchesApi = new SmallCatchesApi()
       expect(smallCatchesApi.sort(a, b)).toBe(1)
     })
 
     it('returns -1 when months + noMonthRecorded equal and river name a < b', () => {
-      const a = { month: 6, noMonthRecorded: false, activity: { river: { name: 'Amazon' } } }
-      const b = { month: 6, noMonthRecorded: false, activity: { river: { name: 'Zambezi' } } }
+      const a = buildCatch({ activity: { river: { name: 'Amazon' } } })
+      const b = buildCatch({ activity: { river: { name: 'Zambezi' } } })
 
       const smallCatchesApi = new SmallCatchesApi()
       expect(smallCatchesApi.sort(a, b)).toBe(-1)
     })
 
     it('returns 1 when months + noMonthRecorded equal and river name a > b', () => {
-      const a = { month: 6, noMonthRecorded: false, activity: { river: { name: 'Zambezi' } } }
-      const b = { month: 6, noMonthRecorded: false, activity: { river: { name: 'Amazon' } } }
+      const a = buildCatch({ activity: { river: { name: 'Zambezi' } } })
+      const b = buildCatch({ activity: { river: { name: 'Amazon' } } })
 
       const smallCatchesApi = new SmallCatchesApi()
       expect(smallCatchesApi.sort(a, b)).toBe(1)
     })
 
     it('returns 0 when all compared fields are equal', () => {
-      const a = { month: 7, noMonthRecorded: false, activity: { river: { name: 'Nile' } } }
-      const b = { month: 7, noMonthRecorded: false, activity: { river: { name: 'Nile' } } }
+      const a = buildCatch()
+      const b = buildCatch()
 
       const smallCatchesApi = new SmallCatchesApi()
       expect(smallCatchesApi.sort(a, b)).toBe(0)
